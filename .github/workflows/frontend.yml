@@ -1,0 +1,49 @@
+name: Deploy sofa frontend to EC2
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: sofa_frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: sofa_frontend
+        run: npm ci
+
+      - name: Build
+        working-directory: sofa_frontend
+        run: npm run build
+
+      - name: Clean remote dist
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
+          script: |
+            rm -rf ${{ secrets.DEPLOY_PATH }}/backend_sofa/dist
+            mkdir -p ${{ secrets.DEPLOY_PATH }}/backend_sofa/dist
+
+      - name: Upload dist
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
+          source: "sofa_frontend/dist/*"
+          strip_components: 2
+          target: ${{ secrets.DEPLOY_PATH }}/backend_sofa/dist
