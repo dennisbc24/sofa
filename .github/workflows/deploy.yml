@@ -1,4 +1,4 @@
-name: Deploy sofa frontend to EC2
+name: Deploy sofa to EC2
 
 on:
   push:
@@ -9,7 +9,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -18,15 +19,15 @@ jobs:
           cache: npm
           cache-dependency-path: sofa_frontend/package-lock.json
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         working-directory: sofa_frontend
         run: npm ci
 
-      - name: Build
+      - name: Build frontend
         working-directory: sofa_frontend
         run: npm run build
 
-      - name: Clean remote dist
+      - name: Update remote dist
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -34,6 +35,7 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
           script: |
+            set -e
             rm -rf ${{ secrets.DEPLOY_PATH }}/backend_sofa/dist
             mkdir -p ${{ secrets.DEPLOY_PATH }}/backend_sofa/dist
 
@@ -47,3 +49,20 @@ jobs:
           source: "sofa_frontend/dist/*"
           strip_components: 2
           target: ${{ secrets.DEPLOY_PATH }}/backend_sofa/dist
+
+      - name: Deploy backend
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
+          script: |
+            set -e
+            export NVM_DIR="$HOME/.nvm"
+            . "$NVM_DIR/nvm.sh"
+            cd ${{ secrets.DEPLOY_PATH }}
+            git pull origin main
+            cd backend_sofa
+            npm ci
+            pm2 restart sofa
