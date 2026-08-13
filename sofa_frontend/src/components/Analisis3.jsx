@@ -1,0 +1,155 @@
+import { useState } from "react"
+import axios from "axios"
+import { API_URL } from "../config.js"
+import { Desplegable } from "./Desplegable.jsx"
+import { TablaAnalisis3 } from "./TablaAnalisis3.jsx"
+import { TablaProbabilidadesOver } from "./TablaProbabilidadesOver.jsx"
+
+export const Analisis3 = () => {
+  const [probaTab, setProbaTab] = useState("resultados")
+  const [ligas, setLigas] = useState([])
+  const [jornada, setJornada] = useState("")
+  const [local1T, setLocal1T] = useState("")
+  const [visitante1T, setVisitante1T] = useState("")
+  const [resultados, setResultados] = useState(null)
+  const [golesProb, setGolesProb] = useState(null)
+  const [cargando, setCargando] = useState(false)
+  const [error, setError] = useState(null)
+
+  const handleLigaChange = (e) => {
+    const liga = e.target.value
+    setLigas((prev) => (prev.includes(liga) ? prev : [...prev, liga]))
+  }
+
+  const limpiar = () => {
+    setLigas([])
+    setJornada("")
+    setLocal1T("")
+    setVisitante1T("")
+    setResultados(null)
+    setGolesProb(null)
+    setError(null)
+  }
+
+  const enviar = async () => {
+    setCargando(true)
+    setError(null)
+    try {
+      const params = {
+        ligas,
+        jornada: Number(jornada) || 0,
+      }
+      if (local1T !== "") params.local1T = local1T
+      if (visitante1T !== "") params.visitante1T = visitante1T
+      const [resResultados, resGoles] = await Promise.all([
+        axios.get(`${API_URL}/api/probabilidades/analisis3`, { params }),
+        axios.get(`${API_URL}/api/probabilidades/analisis3/goles`, { params }),
+      ])
+      setResultados(resResultados.data)
+      setGolesProb(resGoles.data)
+    } catch (err) {
+      console.error("Error al consultar el análisis 3:", err)
+      setError(err)
+    } finally {
+      setCargando(false)
+    }
+  }
+
+  return (
+    <section className="analisis3">
+      <h2 className="view-title">Análisis 3</h2>
+
+      <Desplegable onChange={handleLigaChange} />
+
+      <section className="card">
+        <div className="card-header">Selección</div>
+        <div className="result-row">
+          <span className="result-label">Liga 1</span>
+          <span className="result-value">{ligas[0] || "—"}</span>
+        </div>
+        <div className="result-row">
+          <span className="result-label">Liga 2</span>
+          <span className="result-value">{ligas[1] || "—"}</span>
+        </div>
+        <div className="result-row">
+          <span className="result-label">Jornada</span>
+          <span className="result-value">{jornada < 1 ? "Todas" : jornada}</span>
+        </div>
+      </section>
+
+      <section className="card">
+        <div className="card-header">Marcador 1T</div>
+        <label className="field">
+          <span className="field-label">Jornada</span>
+          <input
+            className="field-input"
+            type="number"
+            min="0"
+            value={jornada}
+            onChange={(e) => setJornada(e.target.value)}
+          />
+        </label>
+        <label className="field">
+          <span className="field-label">Goles equipo local (1T)</span>
+          <input
+            className="field-input"
+            type="number"
+            min="0"
+            value={local1T}
+            onChange={(e) => setLocal1T(e.target.value)}
+          />
+        </label>
+        <label className="field">
+          <span className="field-label">Goles equipo visitante (1T)</span>
+          <input
+            className="field-input"
+            type="number"
+            min="0"
+            value={visitante1T}
+            onChange={(e) => setVisitante1T(e.target.value)}
+          />
+        </label>
+      </section>
+
+      <div className="actions">
+        <button className="btn btn-secondary" onClick={limpiar}>Limpiar</button>
+        <button className="btn btn-primary" onClick={enviar} disabled={cargando}>
+          {cargando ? "Consultando..." : "Fetch"}
+        </button>
+      </div>
+
+      <div className="tabs">
+        {[
+          { key: "resultados", etiqueta: "Resultados" },
+          { key: "goles", etiqueta: "Goles" },
+        ].map(({ key, etiqueta }) => (
+          <button
+            key={key}
+            className={`tab ${probaTab === key ? "tab-active" : ""}`}
+            onClick={() => setProbaTab(key)}
+          >
+            {etiqueta}
+          </button>
+        ))}
+      </div>
+
+      <section className="card">
+        <div className="card-header">
+          {probaTab === "goles" ? "Probabilidad de goles" : "Resultados Análisis 3"}
+        </div>
+        {error && <p className="tabla-status tabla-status-error">Error al consultar el análisis 3.</p>}
+        {!error &&
+          !cargando &&
+          ((probaTab === "resultados" && resultados && resultados.length === 0) ||
+            (probaTab === "goles" && golesProb && golesProb.length === 0)) && (
+            <p className="tabla-status">Sin resultados con los filtros seleccionados.</p>
+          )}
+        {probaTab === "resultados" ? (
+          <TablaAnalisis3 resultados={resultados} />
+        ) : (
+          <TablaProbabilidadesOver resultados={golesProb} etiqueta="Goles" />
+        )}
+      </section>
+    </section>
+  )
+}
