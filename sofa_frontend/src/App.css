@@ -199,6 +199,89 @@
   color: #052e16;
 }
 
+/* ---- Menú acordeón ---- */
+
+.menu-acordeon {
+  margin-bottom: 24px;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+}
+
+.acordeon-section {
+  border-bottom: 1px solid var(--card-border);
+}
+
+.acordeon-section:last-child {
+  border-bottom: none;
+}
+
+.acordeon-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.acordeon-header:hover {
+  color: var(--accent);
+}
+
+.acordeon-header-open {
+  color: var(--accent);
+}
+
+.acordeon-chevron {
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+
+.acordeon-body {
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px 8px;
+}
+
+.acordeon-item {
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: left;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.acordeon-item:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.acordeon-item-active {
+  color: #052e16;
+  background: var(--accent);
+  font-weight: 600;
+}
+
+.acordeon-item-active:hover {
+  color: #052e16;
+  background: var(--accent);
+}
+
 /* ---- Título de vista ---- */
 
 .view-title {
@@ -280,6 +363,14 @@
   background: rgba(255, 255, 255, 0.03);
 }
 
+.tabla-equipo {
+  background: rgba(var(--accent-rgb), 0.16);
+}
+
+.tabla-rival {
+  background: rgba(var(--accent-rgb), 0.04);
+}
+
 .tabla-equipos {
   white-space: nowrap;
 }
@@ -339,4 +430,15 @@
 
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.05);
+}
+
+/* ---- Tabla de promedios por equipo ---- */
+
+.equipos .tabla-scroll {
+  margin-top: 4px;
+}
+
+.tabla-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }

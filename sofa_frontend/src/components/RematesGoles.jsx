@@ -2,16 +2,17 @@ import { useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
 import { Desplegable } from "./Desplegable.jsx"
-import { TablaAnalisis3 } from "./TablaAnalisis3.jsx"
+import { TablaProbabilidades } from "./TablaProbabilidades.jsx"
 import { TablaProbabilidadesOver } from "./TablaProbabilidadesOver.jsx"
 
-export const Analisis3 = () => {
+export const RematesGoles = () => {
   const [probaTab, setProbaTab] = useState("resultados")
   const [ligas, setLigas] = useState([])
   const [jornada, setJornada] = useState("")
-  const [local1T, setLocal1T] = useState("")
-  const [visitante1T, setVisitante1T] = useState("")
+  const [remates, setRemates] = useState("")
+  const [goles, setGoles] = useState("")
   const [resultados, setResultados] = useState(null)
+  const [rematesProb, setRematesProb] = useState(null)
   const [golesProb, setGolesProb] = useState(null)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState(null)
@@ -24,9 +25,10 @@ export const Analisis3 = () => {
   const limpiar = () => {
     setLigas([])
     setJornada("")
-    setLocal1T("")
-    setVisitante1T("")
+    setRemates("")
+    setGoles("")
     setResultados(null)
+    setRematesProb(null)
     setGolesProb(null)
     setError(null)
   }
@@ -34,21 +36,23 @@ export const Analisis3 = () => {
   const enviar = async () => {
     setCargando(true)
     setError(null)
+    const params = {
+      ligas,
+      jornada: Number(jornada) || 0,
+    }
+    if (remates !== "") params.corners = remates
+    if (goles !== "") params.goles = goles
     try {
-      const params = {
-        ligas,
-        jornada: Number(jornada) || 0,
-      }
-      if (local1T !== "") params.local1T = local1T
-      if (visitante1T !== "") params.visitante1T = visitante1T
-      const [resResultados, resGoles] = await Promise.all([
-        axios.get(`${API_URL}/api/probabilidades/analisis3`, { params }),
-        axios.get(`${API_URL}/api/probabilidades/analisis3/goles`, { params }),
+      const [resResultados, resRemates, resGoles] = await Promise.all([
+        axios.get(`${API_URL}/api/probabilidades/remates`, { params }),
+        axios.get(`${API_URL}/api/probabilidades/remates/over`, { params }),
+        axios.get(`${API_URL}/api/probabilidades/goles`, { params }),
       ])
       setResultados(resResultados.data)
+      setRematesProb(resRemates.data)
       setGolesProb(resGoles.data)
     } catch (err) {
-      console.error("Error al consultar el análisis 3:", err)
+      console.error("Error al consultar probabilidades de remates:", err)
       setError(err)
     } finally {
       setCargando(false)
@@ -56,8 +60,8 @@ export const Analisis3 = () => {
   }
 
   return (
-    <section className="analisis3">
-      <h2 className="view-title">Marcador 1T</h2>
+    <section className="remates-goles">
+      <h2 className="view-title">Remates y goles</h2>
 
       <Desplegable onChange={handleLigaChange} />
 
@@ -73,12 +77,12 @@ export const Analisis3 = () => {
         </div>
         <div className="result-row">
           <span className="result-label">Jornada</span>
-          <span className="result-value">{jornada < 1 ? "Todas" : jornada}</span>
+          <span className="result-value">{jornada < 1 ? 'Todas' : jornada}</span>
         </div>
       </section>
 
       <section className="card">
-        <div className="card-header">Marcador 1T</div>
+        <div className="card-header">Filtros de mercado</div>
         <label className="field">
           <span className="field-label">Jornada</span>
           <input
@@ -90,23 +94,23 @@ export const Analisis3 = () => {
           />
         </label>
         <label className="field">
-          <span className="field-label">Goles equipo local (1T)</span>
+          <span className="field-label">Cantidad de remates 1T</span>
           <input
             className="field-input"
             type="number"
             min="0"
-            value={local1T}
-            onChange={(e) => setLocal1T(e.target.value)}
+            value={remates}
+            onChange={(e) => setRemates(e.target.value)}
           />
         </label>
         <label className="field">
-          <span className="field-label">Goles equipo visitante (1T)</span>
+          <span className="field-label">Cantidad de goles 1T</span>
           <input
             className="field-input"
             type="number"
             min="0"
-            value={visitante1T}
-            onChange={(e) => setVisitante1T(e.target.value)}
+            value={goles}
+            onChange={(e) => setGoles(e.target.value)}
           />
         </label>
       </section>
@@ -121,6 +125,7 @@ export const Analisis3 = () => {
       <div className="tabs">
         {[
           { key: "resultados", etiqueta: "Resultados" },
+          { key: "remates", etiqueta: "Remates" },
           { key: "goles", etiqueta: "Goles" },
         ].map(({ key, etiqueta }) => (
           <button
@@ -135,17 +140,24 @@ export const Analisis3 = () => {
 
       <section className="card">
         <div className="card-header">
-          {probaTab === "goles" ? "Probabilidad de goles" : "Resultados Análisis 3"}
+          {probaTab === "remates"
+            ? "Probabilidad de remates"
+            : probaTab === "goles"
+              ? "Probabilidad de goles"
+              : "Resultados"}
         </div>
-        {error && <p className="tabla-status tabla-status-error">Error al consultar el análisis 3.</p>}
+        {error && <p className="tabla-status tabla-status-error">Error al consultar probabilidades de remates.</p>}
         {!error &&
           !cargando &&
           ((probaTab === "resultados" && resultados && resultados.length === 0) ||
+            (probaTab === "remates" && rematesProb && rematesProb.length === 0) ||
             (probaTab === "goles" && golesProb && golesProb.length === 0)) && (
             <p className="tabla-status">Sin resultados con los filtros seleccionados.</p>
           )}
         {probaTab === "resultados" ? (
-          <TablaAnalisis3 resultados={resultados} />
+          <TablaProbabilidades resultados={resultados} etiqueta="Remates" prefijo="remates" />
+        ) : probaTab === "remates" ? (
+          <TablaProbabilidadesOver resultados={rematesProb} etiqueta="Remates" />
         ) : (
           <TablaProbabilidadesOver resultados={golesProb} etiqueta="Goles" />
         )}

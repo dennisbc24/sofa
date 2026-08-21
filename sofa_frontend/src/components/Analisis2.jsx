@@ -40,8 +40,8 @@ export const Analisis2 = () => {
       const params = {
         ligas,
         jornada: Number(jornada) || 0,
-        corners: Number(corners) || 0,
       }
+      if (corners !== "") params.corners = corners
       if (difGoles !== "") params.diferenciaGoles = difGoles
       const [resResultados, resCorners, resGoles] = await Promise.all([
         axios.get(`${API_URL}/api/probabilidades/analisis2`, { params }),
@@ -61,7 +61,7 @@ export const Analisis2 = () => {
 
   return (
     <section className="analisis2">
-      <h2 className="view-title">Análisis 2</h2>
+      <h2 className="view-title">Corners y diferencia</h2>
 
       <Desplegable onChange={handleLigaChange} />
 

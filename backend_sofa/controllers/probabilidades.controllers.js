@@ -9,11 +9,13 @@ const parseParams = (req) => {
       ? [req.query.ligas]
       : [];
   const jornada = Number(req.query.jornada) || 0;
-  const corners = Number(req.query.corners) || 0;
-  const goles = Number(req.query.goles) || 0;
+  const corners = req.query.corners === undefined ? "" : String(req.query.corners);
+  const goles = req.query.goles === undefined ? "" : String(req.query.goles);
   const conDiferencia = req.query.diferenciaGoles !== undefined && req.query.diferenciaGoles !== "";
   const diferenciaGoles = Number(req.query.diferenciaGoles) || 0;
-  return { ligas, jornada, corners, goles, conDiferencia, diferenciaGoles };
+  const equipo = req.query.equipo || "";
+  const goles1T = req.query.goles1T !== undefined ? req.query.goles1T : "";
+  return { ligas, jornada, corners, goles, conDiferencia, diferenciaGoles, equipo, goles1T };
 };
 
 const getProbabilidades = async (req, res, next) => {
@@ -30,6 +32,66 @@ const getProbabilidadesCorners = async (req, res, next) => {
   try {
     const { ligas, jornada, corners, goles } = parseParams(req);
     const resultados = await probabilidadesService.getProbabilidadesCorners(ligas, jornada, corners, goles);
+    res.json(resultados);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getProbabilidadesRemates = async (req, res, next) => {
+  try {
+    const { ligas, jornada, corners, goles } = parseParams(req);
+    const resultados = await probabilidadesService.getProbabilidades(ligas, jornada, corners, goles, "Total shots", "remates");
+    res.json(resultados);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getProbabilidadesRematesOver = async (req, res, next) => {
+  try {
+    const { ligas, jornada, corners, goles } = parseParams(req);
+    const resultados = await probabilidadesService.getProbabilidadesRemates(ligas, jornada, corners, goles);
+    res.json(resultados);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getRoja1t = async (req, res, next) => {
+  try {
+    const { ligas, jornada, corners, goles } = parseParams(req);
+    const resultados = await probabilidadesService.getRoja1t(ligas, jornada, corners, goles);
+    res.json(resultados);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getRoja1tCorners = async (req, res, next) => {
+  try {
+    const { ligas, jornada, corners, goles } = parseParams(req);
+    const resultados = await probabilidadesService.getRoja1tCorners(ligas, jornada, corners, goles);
+    res.json(resultados);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getRoja1tRemates = async (req, res, next) => {
+  try {
+    const { ligas, jornada, corners, goles } = parseParams(req);
+    const resultados = await probabilidadesService.getRoja1tRemates(ligas, jornada, corners, goles);
+    res.json(resultados);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getRoja1tGoles = async (req, res, next) => {
+  try {
+    const { ligas, jornada, corners, goles } = parseParams(req);
+    const resultados = await probabilidadesService.getRoja1tGoles(ligas, jornada, corners, goles);
     res.json(resultados);
   } catch (error) {
     next(error);
@@ -96,13 +158,41 @@ const getAnalisis3Goles = async (req, res, next) => {
   }
 };
 
+const getGolesEquipo = async (req, res, next) => {
+  try {
+    const { ligas, jornada, equipo, goles1T } = parseParams(req);
+    const resultados = await probabilidadesService.getGolesEquipo(equipo, goles1T, ligas, jornada);
+    res.json(resultados);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getGolesEquipoDistribucion = async (req, res, next) => {
+  try {
+    const { ligas, jornada, equipo, goles1T } = parseParams(req);
+    const resultados = await probabilidadesService.getGolesEquipoDistribucion(equipo, goles1T, ligas, jornada);
+    res.json(resultados);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getProbabilidades,
   getProbabilidadesCorners,
+  getProbabilidadesRemates,
+  getProbabilidadesRematesOver,
   getProbabilidadesGoles,
+  getRoja1t,
+  getRoja1tCorners,
+  getRoja1tRemates,
+  getRoja1tGoles,
   getAnalisis2,
   getAnalisis2Corners,
   getAnalisis2Goles,
   getAnalisis3,
   getAnalisis3Goles,
+  getGolesEquipo,
+  getGolesEquipoDistribucion,
 };

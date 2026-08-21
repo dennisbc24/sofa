@@ -2,10 +2,15 @@ import { useState } from 'react'
 import axios from 'axios'
 import './App.css'
 import { API_URL } from './config.js'
+import { MenuAcordeon } from './components/MenuAcordeon.jsx'
 import { Desplegable } from './components/Desplegable.jsx'
 import { UltimosPartidos } from './components/UltimosPartidos.jsx'
 import { Analisis2 } from './components/Analisis2.jsx'
 import { Analisis3 } from './components/Analisis3.jsx'
+import { RematesGoles } from './components/RematesGoles.jsx'
+import { Roja1t } from './components/Roja1t.jsx'
+import { GolesEquipo } from './components/GolesEquipo.jsx'
+import { Equipos } from './components/Equipos.jsx'
 import { TablaProbabilidades } from './components/TablaProbabilidades.jsx'
 import { TablaProbabilidadesOver } from './components/TablaProbabilidadesOver.jsx'
 
@@ -44,9 +49,9 @@ function App() {
     const params = {
       ligas,
       jornada: Number(jornada) || 0,
-      corners: Number(corners) || 0,
-      goles: Number(goles) || 0,
     }
+    if (corners !== "") params.corners = corners
+    if (goles !== "") params.goles = goles
     try {
       const [resResultados, resCorners, resGoles] = await Promise.all([
         axios.get(`${API_URL}/api/probabilidades`, { params }),
@@ -68,32 +73,7 @@ function App() {
     <main className="app">
       <h1 className="app-title">Sofa</h1>
 
-      <nav className="menu">
-        <button
-          className={`menu-item ${vista === "analisis1" ? "menu-item-active" : ""}`}
-          onClick={() => setVista("analisis1")}
-        >
-          Análisis 1
-        </button>
-        <button
-          className={`menu-item ${vista === "analisis2" ? "menu-item-active" : ""}`}
-          onClick={() => setVista("analisis2")}
-        >
-          Análisis 2
-        </button>
-        <button
-          className={`menu-item ${vista === "analisis3" ? "menu-item-active" : ""}`}
-          onClick={() => setVista("analisis3")}
-        >
-          Análisis 3
-        </button>
-        <button
-          className={`menu-item ${vista === "ultimos" ? "menu-item-active" : ""}`}
-          onClick={() => setVista("ultimos")}
-        >
-          Últimos partidos
-        </button>
-      </nav>
+      <MenuAcordeon vista={vista} onVista={setVista} />
 
       {vista === "ultimos" ? (
         <UltimosPartidos />
@@ -101,8 +81,18 @@ function App() {
         <Analisis2 />
       ) : vista === "analisis3" ? (
         <Analisis3 />
+      ) : vista === "remates" ? (
+        <RematesGoles />
+      ) : vista === "roja1t" ? (
+        <Roja1t />
+      ) : vista === "golesEquipo" ? (
+        <GolesEquipo />
+      ) : vista === "equipos" ? (
+        <Equipos />
       ) : (
         <>
+          <h2 className="view-title">Corners y goles</h2>
+
           <Desplegable onChange={handleLigaChange} />
 
           <section className="card">

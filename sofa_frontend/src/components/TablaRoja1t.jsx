@@ -1,9 +1,7 @@
 const numero = (valor) => (valor === null || valor === undefined ? "—" : valor)
 
-export const TablaProbabilidades = ({ resultados, etiqueta = "Corners", prefijo = "corners" }) => {
+export const TablaRoja1t = ({ resultados }) => {
   if (!resultados?.length) return null
-
-  const capitalizado = etiqueta.charAt(0).toUpperCase() + etiqueta.slice(1)
 
   return (
     <div className="tabla-scroll">
@@ -16,9 +14,12 @@ export const TablaProbabilidades = ({ resultados, etiqueta = "Corners", prefijo 
             <th>Visitante</th>
             <th>Goles 1T</th>
             <th>Goles 2T</th>
-            <th>{capitalizado} 1T</th>
-            <th>{capitalizado} 2T</th>
-            <th>Total {etiqueta}</th>
+            <th>Corners 1T</th>
+            <th>Corners 2T</th>
+            <th>Total corners</th>
+            <th>Remates 1T</th>
+            <th>Remates 2T</th>
+            <th>Total remates</th>
           </tr>
         </thead>
         <tbody>
@@ -30,9 +31,12 @@ export const TablaProbabilidades = ({ resultados, etiqueta = "Corners", prefijo 
               <td>{r.equipo_visitante}</td>
               <td>{numero(r.goles_total_1t)}</td>
               <td>{numero(r.goles_total_2t)}</td>
-              <td>{numero(r[`${prefijo}_total_1t`])}</td>
-              <td>{numero(r[`${prefijo}_total_2t`])}</td>
-              <td>{numero(r[`total_${prefijo}`])}</td>
+              <td>{numero(r.corners_total_1t)}</td>
+              <td>{numero(r.corners_total_2t)}</td>
+              <td>{numero(r.total_corners)}</td>
+              <td>{numero(r.remates_total_1t)}</td>
+              <td>{numero(r.remates_total_2t)}</td>
+              <td>{numero(r.total_remates)}</td>
             </tr>
           ))}
         </tbody>
