@@ -27,6 +27,17 @@ jobs:
         working-directory: sofa_frontend
         run: npm run build
 
+      - name: Upload backend source
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          password: ${{ secrets.DEPLOY_SSH_PASSWORD }}
+          source: "backend_sofa"
+          target: ${{ secrets.DEPLOY_PATH }}
+          strip_components: 0
+
       - name: Update remote dist
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -61,8 +72,6 @@ jobs:
             set -e
             export NVM_DIR="$HOME/.nvm"
             . "$NVM_DIR/nvm.sh"
-            cd ${{ secrets.DEPLOY_PATH }}
-            git pull origin main
-            cd backend_sofa
+            cd ${{ secrets.DEPLOY_PATH }}/backend_sofa
             npm ci
             pm2 restart sofa
