@@ -133,12 +133,21 @@ class ProbabilidadesService {
       // Menos de N: partidos con menos de N (corners/goles). Más de N: el complemento, excluyendo los que tienen exactamente N.
       const menosDe = Math.round((menosAcumulado / total) * 100);
       const masDe = Math.round(((total - menosAcumulado - r.casos) / total) * 100);
+      const partidosMenosDe = menosAcumulado;
+      const partidosMasDe = total - menosAcumulado - r.casos;
+      const partidosIgual = r.casos;
       menosAcumulado += r.casos;
       return {
         valor: r.valor,
         masDe,
         menosDe,
         partidos: total,
+        partidosMasDe,
+        partidosMenosDe,
+        partidosIgual,
+        partidosTotal: total,
+        total,
+        casos: r.casos,
       };
     });
   }
