@@ -1,5 +1,6 @@
 const path = require("path");
-require("dotenv").config();
+// Carga .env desde backend_sofa/.env siempre, independiente del cwd
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const env = process.env.NODE_ENV || "development";
 // Carga .env.development / .env.production si existe (override para permitir separar dev/prod)
 require("dotenv").config({
