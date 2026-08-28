@@ -74,4 +74,5 @@ jobs:
             . "$NVM_DIR/nvm.sh"
             cd ${{ secrets.DEPLOY_PATH }}/backend_sofa
             npm ci
-            pm2 restart sofa
+            NODE_ENV=production pm2 restart sofa --update-env || NODE_ENV=production pm2 start server.js --name sofa --update-env
+            pm2 save
