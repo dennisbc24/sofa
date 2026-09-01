@@ -15,7 +15,8 @@ const parseParams = (req) => {
   const diferenciaGoles = Number(req.query.diferenciaGoles) || 0;
   const equipo = req.query.equipo || "";
   const goles1T = req.query.goles1T !== undefined ? req.query.goles1T : "";
-  return { ligas, jornada, corners, goles, conDiferencia, diferenciaGoles, equipo, goles1T };
+  const golesEquipo1T = req.query.golesEquipo1T !== undefined ? req.query.golesEquipo1T : req.query.golesEquipo !== undefined ? req.query.golesEquipo : "";
+  return { ligas, jornada, corners, goles, conDiferencia, diferenciaGoles, equipo, goles1T, golesEquipo1T };
 };
 
 const getProbabilidades = async (req, res, next) => {
@@ -178,6 +179,17 @@ const getGolesEquipoDistribucion = async (req, res, next) => {
   }
 };
 
+const getAnalisisEquipo1T = async (req, res, next) => {
+  try {
+    const { ligas, jornada, equipo, golesEquipo1T } = parseParams(req);
+    if (!equipo) return res.status(400).json({ message: "Parámetro equipo es requerido" });
+    const resultados = await probabilidadesService.getAnalisisEquipo1T(equipo, golesEquipo1T, ligas, jornada);
+    res.json(resultados);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getProbabilidades,
   getProbabilidadesCorners,
@@ -195,4 +207,5 @@ module.exports = {
   getAnalisis3Goles,
   getGolesEquipo,
   getGolesEquipoDistribucion,
+  getAnalisisEquipo1T,
 };

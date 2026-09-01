@@ -17,6 +17,7 @@ const {
   getAnalisis3Goles,
   getGolesEquipo,
   getGolesEquipoDistribucion,
+  getAnalisisEquipo1T,
 } = require('../../controllers/probabilidades.controllers');
 
 // Ruta para consultar probabilidades según los filtros del formulario
@@ -60,5 +61,8 @@ router.get('/equipo/goles', getGolesEquipo);
 
 // Distribución de probabilidad de goles en esos partidos
 router.get('/equipo/goles/distribucion', getGolesEquipoDistribucion);
+
+// Análisis: partidos de equipo X donde equipo X hizo Y goles en 1T (detalle goles/remates/corners 1T/2T)
+router.get('/equipo/analisis-1t', getAnalisisEquipo1T);
 
 module.exports = router;

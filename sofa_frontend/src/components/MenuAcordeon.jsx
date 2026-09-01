@@ -11,6 +11,7 @@ const SECCIONES = [
       { id: "remates", etiqueta: "Remates y goles" },
       { id: "roja1t", etiqueta: "Roja 1T" },
       { id: "golesEquipo", etiqueta: "Goles por equipo" },
+      { id: "analisisEquipo1T", etiqueta: "Equipo × Goles 1T" },
     ],
   },
   {

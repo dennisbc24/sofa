@@ -493,6 +493,80 @@ class ProbabilidadesService {
     const { rows } = await pool.query(query, params);
     return this._calcularDistribucion(rows);
   }
+
+  async getAnalisisEquipo1T(equipo, golesEquipo1T, ligas, jornada) {
+    const params = [];
+    const where = [];
+
+    if (equipo) {
+      if (filtroActivo(golesEquipo1T)) {
+        params.push(equipo);
+        const idxEquipo = params.length;
+        params.push(Number(golesEquipo1T));
+        const idxGoles = params.length;
+        where.push(
+          `((p.equipo_local ILIKE '%' || $${idxEquipo} || '%' AND p.goles_local_1T = $${idxGoles}) OR (p.equipo_visitante ILIKE '%' || $${idxEquipo} || '%' AND p.goles_visitante_1T = $${idxGoles}))`
+        );
+      } else {
+        params.push(equipo);
+        where.push(`(p.equipo_local ILIKE '%' || $${params.length} || '%' OR p.equipo_visitante ILIKE '%' || $${params.length} || '%')`);
+      }
+    } else if (filtroActivo(golesEquipo1T)) {
+      // Sin equipo, filtra por goles totales 1T (fallback)
+      params.push(Number(golesEquipo1T));
+      where.push(`(p.goles_local_1T + p.goles_visitante_1T) = $${params.length}`);
+    }
+
+    if (ligas.length) {
+      params.push(ligas);
+      where.push(`p.liga = ANY($${params.length}::text[])`);
+    }
+
+    if (jornada > 0) {
+      params.push(jornada);
+      where.push(`p.fecha_jornada > $${params.length}`);
+    }
+
+    const whereSql = where.length ? `WHERE ${where.join(" AND ")}` : "";
+
+    const query = `
+      SELECT
+        p.id,
+        p.liga,
+        p.fecha_jornada,
+        p.equipo_local,
+        p.equipo_visitante,
+        p.goles_local_1T AS goles_local_1t,
+        p.goles_visitante_1T AS goles_visitante_1t,
+        (p.goles_local - COALESCE(p.goles_local_1T, 0)) AS goles_local_2t,
+        (p.goles_visitante - COALESCE(p.goles_visitante_1T, 0)) AS goles_visitante_2t,
+        (p.goles_local_1T + p.goles_visitante_1T) AS goles_total_1t,
+        ((p.goles_local - COALESCE(p.goles_local_1T,0)) + (p.goles_visitante - COALESCE(p.goles_visitante_1T,0))) AS goles_total_2t,
+        p.goles_local,
+        p.goles_visitante,
+        (p.goles_local + p.goles_visitante) AS goles_total,
+        COALESCE(MAX(CASE WHEN e.periodo = '1ST' AND e.nombre = 'Total shots' THEN e.valor_local::int END),0) AS remates_local_1t,
+        COALESCE(MAX(CASE WHEN e.periodo = '1ST' AND e.nombre = 'Total shots' THEN e.valor_visitante::int END),0) AS remates_visitante_1t,
+        (COALESCE(MAX(CASE WHEN e.periodo = '1ST' AND e.nombre = 'Total shots' THEN e.valor_local::int END),0) + COALESCE(MAX(CASE WHEN e.periodo = '1ST' AND e.nombre = 'Total shots' THEN e.valor_visitante::int END),0)) AS remates_total_1t,
+        COALESCE(MAX(CASE WHEN e.periodo = '2ND' AND e.nombre = 'Total shots' THEN e.valor_local::int END),0) AS remates_local_2t,
+        COALESCE(MAX(CASE WHEN e.periodo = '2ND' AND e.nombre = 'Total shots' THEN e.valor_visitante::int END),0) AS remates_visitante_2t,
+        (COALESCE(MAX(CASE WHEN e.periodo = '2ND' AND e.nombre = 'Total shots' THEN e.valor_local::int END),0) + COALESCE(MAX(CASE WHEN e.periodo = '2ND' AND e.nombre = 'Total shots' THEN e.valor_visitante::int END),0)) AS remates_total_2t,
+        COALESCE(MAX(CASE WHEN e.periodo = '1ST' AND e.nombre = 'Corner kicks' THEN e.valor_local::int END),0) AS corners_local_1t,
+        COALESCE(MAX(CASE WHEN e.periodo = '1ST' AND e.nombre = 'Corner kicks' THEN e.valor_visitante::int END),0) AS corners_visitante_1t,
+        (COALESCE(MAX(CASE WHEN e.periodo = '1ST' AND e.nombre = 'Corner kicks' THEN e.valor_local::int END),0) + COALESCE(MAX(CASE WHEN e.periodo = '1ST' AND e.nombre = 'Corner kicks' THEN e.valor_visitante::int END),0)) AS corners_total_1t,
+        COALESCE(MAX(CASE WHEN e.periodo = '2ND' AND e.nombre = 'Corner kicks' THEN e.valor_local::int END),0) AS corners_local_2t,
+        COALESCE(MAX(CASE WHEN e.periodo = '2ND' AND e.nombre = 'Corner kicks' THEN e.valor_visitante::int END),0) AS corners_visitante_2t,
+        (COALESCE(MAX(CASE WHEN e.periodo = '2ND' AND e.nombre = 'Corner kicks' THEN e.valor_local::int END),0) + COALESCE(MAX(CASE WHEN e.periodo = '2ND' AND e.nombre = 'Corner kicks' THEN e.valor_visitante::int END),0)) AS corners_total_2t
+      FROM partidos p
+      LEFT JOIN estadisticas e ON p.id = e.partido_id AND e.nombre IN ('Total shots','Corner kicks')
+      ${whereSql}
+      GROUP BY p.id, p.liga, p.fecha_jornada, p.equipo_local, p.equipo_visitante, p.goles_local, p.goles_visitante, p.goles_local_1T, p.goles_visitante_1T
+      ORDER BY corners_total_1t DESC, p.fecha_jornada DESC;
+    `;
+
+    const { rows } = await pool.query(query, params);
+    return rows;
+  }
 }
 
 module.exports = { ProbabilidadesService };
