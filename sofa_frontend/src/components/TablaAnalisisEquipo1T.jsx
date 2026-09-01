@@ -2,28 +2,31 @@ import { useMemo, useState } from "react"
 
 const numero = (v) => (v === null || v === undefined ? "—" : v)
 
+const ICON_LOCAL = "🏠"
+const ICON_VISITA = "✈️"
+
 const COLUMNAS_EXPANDIDA = [
   { key: "liga", label: "Liga", type: "string" },
   { key: "fecha_jornada", label: "Jornada", type: "number" },
-  { key: "equipo_local", label: "Local", type: "string" },
-  { key: "equipo_visitante", label: "Visitante", type: "string" },
-  { key: "goles_local_1t", label: "Goles L 1T", type: "number" },
-  { key: "goles_visitante_1t", label: "Goles V 1T", type: "number" },
+  { key: "equipo_local", label: `Local ${ICON_LOCAL}`, type: "string" },
+  { key: "equipo_visitante", label: `Visitante ${ICON_VISITA}`, type: "string" },
+  { key: "goles_local_1t", label: `Goles L 1T ${ICON_LOCAL}`, type: "number" },
+  { key: "goles_visitante_1t", label: `Goles V 1T ${ICON_VISITA}`, type: "number" },
   { key: "goles_total_1t", label: "Total 1T", type: "number" },
-  { key: "goles_local_2t", label: "Goles L 2T", type: "number" },
-  { key: "goles_visitante_2t", label: "Goles V 2T", type: "number" },
+  { key: "goles_local_2t", label: `Goles L 2T ${ICON_LOCAL}`, type: "number" },
+  { key: "goles_visitante_2t", label: `Goles V 2T ${ICON_VISITA}`, type: "number" },
   { key: "goles_total_2t", label: "Total 2T", type: "number" },
-  { key: "remates_local_1t", label: "Rem L 1T", type: "number" },
-  { key: "remates_visitante_1t", label: "Rem V 1T", type: "number" },
+  { key: "remates_local_1t", label: `Rem L 1T ${ICON_LOCAL}`, type: "number" },
+  { key: "remates_visitante_1t", label: `Rem V 1T ${ICON_VISITA}`, type: "number" },
   { key: "remates_total_1t", label: "Rem Total 1T", type: "number" },
-  { key: "remates_local_2t", label: "Rem L 2T", type: "number" },
-  { key: "remates_visitante_2t", label: "Rem V 2T", type: "number" },
+  { key: "remates_local_2t", label: `Rem L 2T ${ICON_LOCAL}`, type: "number" },
+  { key: "remates_visitante_2t", label: `Rem V 2T ${ICON_VISITA}`, type: "number" },
   { key: "remates_total_2t", label: "Rem Total 2T", type: "number" },
-  { key: "corners_local_1t", label: "Corn L 1T", type: "number" },
-  { key: "corners_visitante_1t", label: "Corn V 1T", type: "number" },
+  { key: "corners_local_1t", label: `Corn L 1T ${ICON_LOCAL}`, type: "number" },
+  { key: "corners_visitante_1t", label: `Corn V 1T ${ICON_VISITA}`, type: "number" },
   { key: "corners_total_1t", label: "Corn Total 1T", type: "number" },
-  { key: "corners_local_2t", label: "Corn L 2T", type: "number" },
-  { key: "corners_visitante_2t", label: "Corn V 2T", type: "number" },
+  { key: "corners_local_2t", label: `Corn L 2T ${ICON_LOCAL}`, type: "number" },
+  { key: "corners_visitante_2t", label: `Corn V 2T ${ICON_VISITA}`, type: "number" },
   { key: "corners_total_2t", label: "Corn Total 2T", type: "number" },
 ]
 
@@ -67,8 +70,8 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
           <tr>
             <th rowSpan={2} onClick={() => handleSort("liga")} style={thStyle("liga")} title="Ordenar por Liga">Liga{flecha("liga")}</th>
             <th rowSpan={2} onClick={() => handleSort("fecha_jornada")} style={thStyle("fecha_jornada")} title="Ordenar por Jornada">Jornada{flecha("fecha_jornada")}</th>
-            <th rowSpan={2} onClick={() => handleSort("equipo_local")} style={thStyle("equipo_local")} title="Ordenar por Local">Local{flecha("equipo_local")}</th>
-            <th rowSpan={2} onClick={() => handleSort("equipo_visitante")} style={thStyle("equipo_visitante")} title="Ordenar por Visitante">Visitante{flecha("equipo_visitante")}</th>
+            <th rowSpan={2} onClick={() => handleSort("equipo_local")} style={thStyle("equipo_local")} title="Ordenar por Local (casa)">Local {ICON_LOCAL}{flecha("equipo_local")}</th>
+            <th rowSpan={2} onClick={() => handleSort("equipo_visitante")} style={thStyle("equipo_visitante")} title="Ordenar por Visitante (avión)">Visitante {ICON_VISITA}{flecha("equipo_visitante")}</th>
             <th colSpan={3}>Goles</th>
             <th colSpan={3}>Remates</th>
             <th colSpan={3}>Corners</th>
@@ -77,11 +80,11 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
             <th onClick={() => handleSort("goles_total_1t")} style={thStyle("goles_total_1t")} title="Ordenar por Goles 1T">1T (L-V / Total){flecha("goles_total_1t")}</th>
             <th onClick={() => handleSort("goles_total_2t")} style={thStyle("goles_total_2t")} title="Ordenar por Goles 2T">2T (L-V / Total){flecha("goles_total_2t")}</th>
             <th onClick={() => handleSort("goles_total")} style={thStyle("goles_total")} title="Ordenar por Total">Total{flecha("goles_total")}</th>
-            <th onClick={() => handleSort("remates_local_1t")} style={thStyle("remates_local_1t")} title="Ordenar por Rem Local">Local 1T{flecha("remates_local_1t")}</th>
-            <th onClick={() => handleSort("remates_visitante_1t")} style={thStyle("remates_visitante_1t")} title="Ordenar por Rem Visita">Visita 1T{flecha("remates_visitante_1t")}</th>
+            <th onClick={() => handleSort("remates_local_1t")} style={thStyle("remates_local_1t")} title="Ordenar por Rem Local">Local 1T {ICON_LOCAL}{flecha("remates_local_1t")}</th>
+            <th onClick={() => handleSort("remates_visitante_1t")} style={thStyle("remates_visitante_1t")} title="Ordenar por Rem Visita">Visita 1T {ICON_VISITA}{flecha("remates_visitante_1t")}</th>
             <th onClick={() => handleSort("remates_total_1t")} style={thStyle("remates_total_1t")} title="Ordenar por Rem Total">Total 1T{flecha("remates_total_1t")}</th>
-            <th onClick={() => handleSort("corners_local_1t")} style={thStyle("corners_local_1t")} title="Ordenar por Corn Local">Local 1T{flecha("corners_local_1t")}</th>
-            <th onClick={() => handleSort("corners_visitante_1t")} style={thStyle("corners_visitante_1t")} title="Ordenar por Corn Visita">Visita 1T{flecha("corners_visitante_1t")}</th>
+            <th onClick={() => handleSort("corners_local_1t")} style={thStyle("corners_local_1t")} title="Ordenar por Corn Local">Local 1T {ICON_LOCAL}{flecha("corners_local_1t")}</th>
+            <th onClick={() => handleSort("corners_visitante_1t")} style={thStyle("corners_visitante_1t")} title="Ordenar por Corn Visita">Visita 1T {ICON_VISITA}{flecha("corners_visitante_1t")}</th>
             <th onClick={() => handleSort("corners_total_1t")} style={thStyle("corners_total_1t")} title="Ordenar por Corn Total">Total 1T{flecha("corners_total_1t")}</th>
           </tr>
         </thead>
@@ -92,20 +95,20 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
               <td>{numero(r.fecha_jornada)}</td>
               <td>{r.equipo_local}</td>
               <td>{r.equipo_visitante}</td>
-              <td>{numero(r.goles_local_1t)} - {numero(r.goles_visitante_1t)} <span className="tabla-muted">({numero(r.goles_total_1t)})</span></td>
-              <td>{numero(r.goles_local_2t)} - {numero(r.goles_visitante_2t)} <span className="tabla-muted">({numero(r.goles_total_2t)})</span></td>
+              <td>{ICON_LOCAL} {numero(r.goles_local_1t)} - {ICON_VISITA} {numero(r.goles_visitante_1t)} <span className="tabla-muted">({numero(r.goles_total_1t)})</span></td>
+              <td>{ICON_LOCAL} {numero(r.goles_local_2t)} - {ICON_VISITA} {numero(r.goles_visitante_2t)} <span className="tabla-muted">({numero(r.goles_total_2t)})</span></td>
               <td>{numero(r.goles_total)}</td>
-              <td title={`2T: ${numero(r.remates_local_2t)} - ${numero(r.remates_visitante_2t)} (Total ${numero(r.remates_total_2t)})`}>{numero(r.remates_local_1t)}</td>
-              <td title={`2T: ${numero(r.remates_local_2t)} - ${numero(r.remates_visitante_2t)} (Total ${numero(r.remates_total_2t)})`}>{numero(r.remates_visitante_1t)}</td>
+              <td title={`2T: ${ICON_LOCAL} ${numero(r.remates_local_2t)} - ${ICON_VISITA} ${numero(r.remates_visitante_2t)} (Total ${numero(r.remates_total_2t)})`}>{numero(r.remates_local_1t)}</td>
+              <td title={`2T: ${ICON_LOCAL} ${numero(r.remates_local_2t)} - ${ICON_VISITA} ${numero(r.remates_visitante_2t)} (Total ${numero(r.remates_total_2t)})`}>{numero(r.remates_visitante_1t)}</td>
               <td title={`2T total: ${numero(r.remates_total_2t)}`}>{numero(r.remates_total_1t)}</td>
-              <td title={`2T: ${numero(r.corners_local_2t)} - ${numero(r.corners_visitante_2t)} (Total ${numero(r.corners_total_2t)})`}>{numero(r.corners_local_1t)}</td>
-              <td title={`2T: ${numero(r.corners_local_2t)} - ${numero(r.corners_visitante_2t)} (Total ${numero(r.corners_total_2t)})`}>{numero(r.corners_visitante_1t)}</td>
+              <td title={`2T: ${ICON_LOCAL} ${numero(r.corners_local_2t)} - ${ICON_VISITA} ${numero(r.corners_visitante_2t)} (Total ${numero(r.corners_total_2t)})`}>{numero(r.corners_local_1t)}</td>
+              <td title={`2T: ${ICON_LOCAL} ${numero(r.corners_local_2t)} - ${ICON_VISITA} ${numero(r.corners_visitante_2t)} (Total ${numero(r.corners_total_2t)})`}>{numero(r.corners_visitante_1t)}</td>
               <td title={`2T total: ${numero(r.corners_total_2t)}`}>{numero(r.corners_total_1t)}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <p className="tabla-status">Click en cualquier encabezado para ordenar como Excel (↕ → ↑↓). Hover en remates/corners para ver 2T. {sort.key ? `Orden: ${sort.key} ${sort.dir}` : "Orden defecto: corners 1T ↓"}</p>
+      <p className="tabla-status">{ICON_LOCAL} Local (casa) · {ICON_VISITA} Visita (avión) · Click en encabezado para ordenar (↕→↑↓) · Hover para ver 2T · {sort.key ? `Orden: ${sort.key} ${sort.dir}` : "Orden defecto: corners 1T ↓"}</p>
     </div>
   )
 }
@@ -196,7 +199,7 @@ export const TablaAnalisisEquipo1TExpandida = ({ resultados }) => {
           ))}
         </tbody>
       </table>
-      <p className="tabla-status">Click en encabezado para ordenar A-Z / menor-mayor. Orden actual: {sort.key ? `${sort.key} ${sort.dir === "asc" ? "↑" : "↓"}` : "por defecto (corners 1T ↓)"}</p>
+      <p className="tabla-status">{ICON_LOCAL} Local · {ICON_VISITA} Visita · Click en encabezado para ordenar A-Z / menor-mayor. Orden actual: {sort.key ? `${sort.key} ${sort.dir === "asc" ? "↑" : "↓"}` : "por defecto (corners 1T ↓)"}</p>
     </div>
   )
 }
