@@ -1,4 +1,31 @@
+import { useMemo, useState } from "react"
+
 const numero = (v) => (v === null || v === undefined ? "—" : v)
+
+const COLUMNAS_EXPANDIDA = [
+  { key: "liga", label: "Liga", type: "string" },
+  { key: "fecha_jornada", label: "Jornada", type: "number" },
+  { key: "equipo_local", label: "Local", type: "string" },
+  { key: "equipo_visitante", label: "Visitante", type: "string" },
+  { key: "goles_local_1t", label: "Goles L 1T", type: "number" },
+  { key: "goles_visitante_1t", label: "Goles V 1T", type: "number" },
+  { key: "goles_total_1t", label: "Total 1T", type: "number" },
+  { key: "goles_local_2t", label: "Goles L 2T", type: "number" },
+  { key: "goles_visitante_2t", label: "Goles V 2T", type: "number" },
+  { key: "goles_total_2t", label: "Total 2T", type: "number" },
+  { key: "remates_local_1t", label: "Rem L 1T", type: "number" },
+  { key: "remates_visitante_1t", label: "Rem V 1T", type: "number" },
+  { key: "remates_total_1t", label: "Rem Total 1T", type: "number" },
+  { key: "remates_local_2t", label: "Rem L 2T", type: "number" },
+  { key: "remates_visitante_2t", label: "Rem V 2T", type: "number" },
+  { key: "remates_total_2t", label: "Rem Total 2T", type: "number" },
+  { key: "corners_local_1t", label: "Corn L 1T", type: "number" },
+  { key: "corners_visitante_1t", label: "Corn V 1T", type: "number" },
+  { key: "corners_total_1t", label: "Corn Total 1T", type: "number" },
+  { key: "corners_local_2t", label: "Corn L 2T", type: "number" },
+  { key: "corners_visitante_2t", label: "Corn V 2T", type: "number" },
+  { key: "corners_total_2t", label: "Corn Total 2T", type: "number" },
+]
 
 export const TablaAnalisisEquipo1T = ({ resultados }) => {
   if (!resultados?.length) return null
@@ -55,40 +82,58 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
   )
 }
 
-// Versión expandida opcional con todas las columnas separadas
+// Versión expandida con ordenamiento por columna (click en encabezado)
 export const TablaAnalisisEquipo1TExpandida = ({ resultados }) => {
+  const [sort, setSort] = useState({ key: null, dir: "asc" })
+
+  const handleSort = (key) => {
+    setSort((prev) => {
+      if (prev.key === key) return { key, dir: prev.dir === "asc" ? "desc" : "asc" }
+      return { key, dir: "asc" }
+    })
+  }
+
+  const sorted = useMemo(() => {
+    if (!resultados?.length) return []
+    if (!sort.key) return resultados
+    const col = COLUMNAS_EXPANDIDA.find((c) => c.key === sort.key)
+    const dir = sort.dir === "asc" ? 1 : -1
+    return [...resultados].sort((a, b) => {
+      const va = a[sort.key]
+      const vb = b[sort.key]
+      if (va === null || va === undefined) return 1
+      if (vb === null || vb === undefined) return -1
+      if (col?.type === "number") return (Number(va) - Number(vb)) * dir
+      return String(va).localeCompare(String(vb), "es", { sensitivity: "base" }) * dir
+    })
+  }, [resultados, sort])
+
+  const flecha = (key) => {
+    if (sort.key !== key) return " ↕"
+    return sort.dir === "asc" ? " ↑" : " ↓"
+  }
+
   if (!resultados?.length) return null
+
   return (
     <div className="tabla-scroll">
       <table className="tabla">
         <thead>
           <tr>
-            <th>Liga</th>
-            <th>Jornada</th>
-            <th>Local</th>
-            <th>Visitante</th>
-            <th>Goles L 1T</th>
-            <th>Goles V 1T</th>
-            <th>Total 1T</th>
-            <th>Goles L 2T</th>
-            <th>Goles V 2T</th>
-            <th>Total 2T</th>
-            <th>Rem L 1T</th>
-            <th>Rem V 1T</th>
-            <th>Rem Total 1T</th>
-            <th>Rem L 2T</th>
-            <th>Rem V 2T</th>
-            <th>Rem Total 2T</th>
-            <th>Corn L 1T</th>
-            <th>Corn V 1T</th>
-            <th>Corn Total 1T</th>
-            <th>Corn L 2T</th>
-            <th>Corn V 2T</th>
-            <th>Corn Total 2T</th>
+            {COLUMNAS_EXPANDIDA.map((c) => (
+              <th
+                key={c.key}
+                onClick={() => handleSort(c.key)}
+                title={`Ordenar por ${c.label} ${sort.key === c.key ? (sort.dir === "asc" ? "↓" : "↑") : ""}`}
+                style={{ cursor: "pointer", userSelect: "none", whiteSpace: "nowrap" }}
+              >
+                {c.label}{flecha(c.key)}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {resultados.map((r) => (
+          {sorted.map((r) => (
             <tr key={r.id}>
               <td>{r.liga}</td>
               <td>{numero(r.fecha_jornada)}</td>
@@ -116,6 +161,7 @@ export const TablaAnalisisEquipo1TExpandida = ({ resultados }) => {
           ))}
         </tbody>
       </table>
+      <p className="tabla-status">Click en encabezado para ordenar A-Z / menor-mayor. Orden actual: {sort.key ? `${sort.key} ${sort.dir === "asc" ? "↑" : "↓"}` : "por defecto (corners 1T ↓)"}</p>
     </div>
   )
 }
