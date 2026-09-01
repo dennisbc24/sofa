@@ -12,29 +12,42 @@ const IconVisita = ({ size = 13, style }) => (
     <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-2 0V9L3 14v2l8-2.5 8 2.5z" />
   </svg>
 )
+// Backgrounds por estadística (dark theme)
+const BG = {
+  goles: { th: "rgba(239,68,68,0.22)", td: "rgba(239,68,68,0.07)", border: "rgba(239,68,68,0.35)" },
+  remates: { th: "rgba(56,189,248,0.22)", td: "rgba(56,189,248,0.07)", border: "rgba(56,189,248,0.35)" },
+  corners: { th: "rgba(34,197,94,0.22)", td: "rgba(34,197,94,0.07)", border: "rgba(34,197,94,0.35)" },
+  info: { th: "rgba(255,255,255,0.04)", td: "transparent", border: "transparent" },
+}
+const grupoDe = (key) => {
+  if (key.startsWith("goles")) return "goles"
+  if (key.startsWith("remates")) return "remates"
+  if (key.startsWith("corners")) return "corners"
+  return "info"
+}
 const COLUMNAS_EXPANDIDA = [
-  { key: "liga", label: "Liga", type: "string" },
-  { key: "fecha_jornada", label: "Jornada", type: "number" },
-  { key: "equipo_local", label: "Local", type: "string", icon: "local" },
-  { key: "equipo_visitante", label: "Visitante", type: "string", icon: "visita" },
-  { key: "goles_local_1t", label: "Goles L 1T", type: "number", icon: "local" },
-  { key: "goles_visitante_1t", label: "Goles V 1T", type: "number", icon: "visita" },
-  { key: "goles_total_1t", label: "Total 1T", type: "number" },
-  { key: "goles_local_2t", label: "Goles L 2T", type: "number", icon: "local" },
-  { key: "goles_visitante_2t", label: "Goles V 2T", type: "number", icon: "visita" },
-  { key: "goles_total_2t", label: "Total 2T", type: "number" },
-  { key: "remates_local_1t", label: "Rem L 1T", type: "number", icon: "local" },
-  { key: "remates_visitante_1t", label: "Rem V 1T", type: "number", icon: "visita" },
-  { key: "remates_total_1t", label: "Rem Total 1T", type: "number" },
-  { key: "remates_local_2t", label: "Rem L 2T", type: "number", icon: "local" },
-  { key: "remates_visitante_2t", label: "Rem V 2T", type: "number", icon: "visita" },
-  { key: "remates_total_2t", label: "Rem Total 2T", type: "number" },
-  { key: "corners_local_1t", label: "Corn L 1T", type: "number", icon: "local" },
-  { key: "corners_visitante_1t", label: "Corn V 1T", type: "number", icon: "visita" },
-  { key: "corners_total_1t", label: "Corn Total 1T", type: "number" },
-  { key: "corners_local_2t", label: "Corn L 2T", type: "number", icon: "local" },
-  { key: "corners_visitante_2t", label: "Corn V 2T", type: "number", icon: "visita" },
-  { key: "corners_total_2t", label: "Corn Total 2T", type: "number" },
+  { key: "liga", label: "Liga", type: "string", grupo: "info" },
+  { key: "fecha_jornada", label: "Jornada", type: "number", grupo: "info" },
+  { key: "equipo_local", label: "Local", type: "string", icon: "local", grupo: "info" },
+  { key: "equipo_visitante", label: "Visitante", type: "string", icon: "visita", grupo: "info" },
+  { key: "goles_local_1t", label: "Goles L 1T", type: "number", icon: "local", grupo: "goles" },
+  { key: "goles_visitante_1t", label: "Goles V 1T", type: "number", icon: "visita", grupo: "goles" },
+  { key: "goles_total_1t", label: "Total 1T", type: "number", grupo: "goles" },
+  { key: "goles_local_2t", label: "Goles L 2T", type: "number", icon: "local", grupo: "goles" },
+  { key: "goles_visitante_2t", label: "Goles V 2T", type: "number", icon: "visita", grupo: "goles" },
+  { key: "goles_total_2t", label: "Total 2T", type: "number", grupo: "goles" },
+  { key: "remates_local_1t", label: "Rem L 1T", type: "number", icon: "local", grupo: "remates" },
+  { key: "remates_visitante_1t", label: "Rem V 1T", type: "number", icon: "visita", grupo: "remates" },
+  { key: "remates_total_1t", label: "Rem Total 1T", type: "number", grupo: "remates" },
+  { key: "remates_local_2t", label: "Rem L 2T", type: "number", icon: "local", grupo: "remates" },
+  { key: "remates_visitante_2t", label: "Rem V 2T", type: "number", icon: "visita", grupo: "remates" },
+  { key: "remates_total_2t", label: "Rem Total 2T", type: "number", grupo: "remates" },
+  { key: "corners_local_1t", label: "Corn L 1T", type: "number", icon: "local", grupo: "corners" },
+  { key: "corners_visitante_1t", label: "Corn V 1T", type: "number", icon: "visita", grupo: "corners" },
+  { key: "corners_total_1t", label: "Corn Total 1T", type: "number", grupo: "corners" },
+  { key: "corners_local_2t", label: "Corn L 2T", type: "number", icon: "local", grupo: "corners" },
+  { key: "corners_visitante_2t", label: "Corn V 2T", type: "number", icon: "visita", grupo: "corners" },
+  { key: "corners_total_2t", label: "Corn Total 2T", type: "number", grupo: "corners" },
 ]
 
 export const TablaAnalisisEquipo1T = ({ resultados }) => {
@@ -46,11 +59,20 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
 
   const flecha = (key) => (sort.key !== key ? " ↕" : sort.dir === "asc" ? " ↑" : " ↓")
 
-  const thStyle = (key) => ({
-    cursor: "pointer",
-    userSelect: "none",
-    whiteSpace: "nowrap",
-    background: sort.key === key ? "var(--color-accent, #eef)" : undefined,
+  const thStyle = (key) => {
+    const g = grupoDe(key)
+    const base = BG[g].th
+    const sortedBg = "rgba(var(--accent-rgb), 0.28)"
+    return {
+      cursor: "pointer",
+      userSelect: "none",
+      whiteSpace: "nowrap",
+      background: sort.key === key ? sortedBg : base,
+      borderBottom: `2px solid ${BG[g].border}`,
+    }
+  }
+  const tdStyle = (grupo) => ({
+    background: BG[grupo].td,
   })
 
   const sorted = useMemo(() => {
@@ -79,9 +101,9 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
             <th rowSpan={2} onClick={() => handleSort("fecha_jornada")} style={thStyle("fecha_jornada")} title="Ordenar por Jornada">Jornada{flecha("fecha_jornada")}</th>
             <th rowSpan={2} onClick={() => handleSort("equipo_local")} style={thStyle("equipo_local")} title="Ordenar por Local (casa)">Local <IconLocal />{flecha("equipo_local")}</th>
             <th rowSpan={2} onClick={() => handleSort("equipo_visitante")} style={thStyle("equipo_visitante")} title="Ordenar por Visitante (avión)">Visitante <IconVisita />{flecha("equipo_visitante")}</th>
-            <th colSpan={3}>Goles</th>
-            <th colSpan={3}>Remates</th>
-            <th colSpan={3}>Corners</th>
+            <th colSpan={3} style={{ background: BG.goles.th, borderBottom: `2px solid ${BG.goles.border}`, textAlign: "center" }}>Goles</th>
+            <th colSpan={3} style={{ background: BG.remates.th, borderBottom: `2px solid ${BG.remates.border}`, textAlign: "center" }}>Remates</th>
+            <th colSpan={3} style={{ background: BG.corners.th, borderBottom: `2px solid ${BG.corners.border}`, textAlign: "center" }}>Corners</th>
           </tr>
           <tr>
             <th onClick={() => handleSort("goles_total_1t")} style={thStyle("goles_total_1t")} title="Ordenar por Goles 1T">1T (L-V / Total){flecha("goles_total_1t")}</th>
@@ -98,24 +120,30 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
         <tbody>
           {sorted.map((r) => (
             <tr key={r.id}>
-              <td>{r.liga}</td>
-              <td>{numero(r.fecha_jornada)}</td>
-              <td>{r.equipo_local}</td>
-              <td>{r.equipo_visitante}</td>
-              <td><span style={{ color: "inherit" }}><IconLocal /> {numero(r.goles_local_1t)}</span> - <span style={{ color: "inherit" }}><IconVisita /> {numero(r.goles_visitante_1t)}</span> <span className="tabla-muted">({numero(r.goles_total_1t)})</span></td>
-              <td><span style={{ color: "inherit" }}><IconLocal /> {numero(r.goles_local_2t)}</span> - <span style={{ color: "inherit" }}><IconVisita /> {numero(r.goles_visitante_2t)}</span> <span className="tabla-muted">({numero(r.goles_total_2t)})</span></td>
-              <td>{numero(r.goles_total)}</td>
-              <td><span style={{ color: "inherit" }}><IconLocal style={{ marginRight: 4 }} />{numero(r.remates_local_1t)}</span></td>
-              <td><span style={{ color: "inherit" }}><IconVisita style={{ marginRight: 4 }} />{numero(r.remates_visitante_1t)}</span></td>
-              <td>{numero(r.remates_total_1t)}</td>
-              <td><span style={{ color: "inherit" }}><IconLocal style={{ marginRight: 4 }} />{numero(r.corners_local_1t)}</span></td>
-              <td><span style={{ color: "inherit" }}><IconVisita style={{ marginRight: 4 }} />{numero(r.corners_visitante_1t)}</span></td>
-              <td>{numero(r.corners_total_1t)}</td>
+              <td style={tdStyle("info")}>{r.liga}</td>
+              <td style={tdStyle("info")}>{numero(r.fecha_jornada)}</td>
+              <td style={tdStyle("info")}>{r.equipo_local}</td>
+              <td style={tdStyle("info")}>{r.equipo_visitante}</td>
+              <td style={tdStyle("goles")}><span style={{ color: "inherit" }}><IconLocal /> {numero(r.goles_local_1t)}</span> - <span style={{ color: "inherit" }}><IconVisita /> {numero(r.goles_visitante_1t)}</span> <span className="tabla-muted">({numero(r.goles_total_1t)})</span></td>
+              <td style={tdStyle("goles")}><span style={{ color: "inherit" }}><IconLocal /> {numero(r.goles_local_2t)}</span> - <span style={{ color: "inherit" }}><IconVisita /> {numero(r.goles_visitante_2t)}</span> <span className="tabla-muted">({numero(r.goles_total_2t)})</span></td>
+              <td style={tdStyle("goles")}>{numero(r.goles_total)}</td>
+              <td style={tdStyle("remates")}><span style={{ color: "inherit" }}><IconLocal style={{ marginRight: 4 }} />{numero(r.remates_local_1t)}</span></td>
+              <td style={tdStyle("remates")}><span style={{ color: "inherit" }}><IconVisita style={{ marginRight: 4 }} />{numero(r.remates_visitante_1t)}</span></td>
+              <td style={tdStyle("remates")}>{numero(r.remates_total_1t)}</td>
+              <td style={tdStyle("corners")}><span style={{ color: "inherit" }}><IconLocal style={{ marginRight: 4 }} />{numero(r.corners_local_1t)}</span></td>
+              <td style={tdStyle("corners")}><span style={{ color: "inherit" }}><IconVisita style={{ marginRight: 4 }} />{numero(r.corners_visitante_1t)}</span></td>
+              <td style={tdStyle("corners")}>{numero(r.corners_total_1t)}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <p className="tabla-status"><span style={{ color: "inherit" }}><IconLocal /> Local (casa)</span> · <span style={{ color: "inherit" }}><IconVisita /> Visita (avión)</span> · Click en encabezado para ordenar (↕→↑↓) · Hover para ver 2T · {sort.key ? `Orden: ${sort.key} ${sort.dir}` : "Orden defecto: corners 1T ↓"}</p>
+      <p className="tabla-status" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconLocal /> Local (casa)</span> · <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconVisita /> Visita</span> ·
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.goles.th, border: `1px solid ${BG.goles.border}`, borderRadius: 2, display: "inline-block" }} /> Goles</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.remates.th, border: `1px solid ${BG.remates.border}`, borderRadius: 2, display: "inline-block" }} /> Remates</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.corners.th, border: `1px solid ${BG.corners.border}`, borderRadius: 2, display: "inline-block" }} /> Corners</span>
+        · Click encabezado para ordenar (↕→↑↓) · {sort.key ? `Orden: ${sort.key} ${sort.dir}` : "Orden defecto: corners 1T ↓"}
+      </p>
     </div>
   )
 }
@@ -151,12 +179,24 @@ export const TablaAnalisisEquipo1TExpandida = ({ resultados }) => {
     return sort.dir === "asc" ? " ↑" : " ↓"
   }
 
-  const thStyleExp = (key) => ({
-    cursor: "pointer",
-    userSelect: "none",
-    whiteSpace: "nowrap",
-    background: sort.key === key ? "var(--color-accent, #eef)" : undefined,
-  })
+  const thStyleExp = (key) => {
+    const col = COLUMNAS_EXPANDIDA.find((c) => c.key === key)
+    const grupo = col?.grupo || grupoDe(key)
+    const base = BG[grupo].th
+    const sortedBg = "rgba(var(--accent-rgb), 0.30)"
+    return {
+      cursor: "pointer",
+      userSelect: "none",
+      whiteSpace: "nowrap",
+      background: sort.key === key ? sortedBg : base,
+      borderBottom: `2px solid ${BG[grupo].border}`,
+    }
+  }
+  const tdStyleExp = (key) => {
+    const col = COLUMNAS_EXPANDIDA.find((c) => c.key === key)
+    const grupo = col?.grupo || grupoDe(key)
+    return { background: BG[grupo].td }
+  }
 
   if (!resultados?.length) return null
 
@@ -197,33 +237,39 @@ export const TablaAnalisisEquipo1TExpandida = ({ resultados }) => {
         <tbody>
           {sorted.map((r) => (
             <tr key={r.id}>
-              <td>{r.liga}</td>
-              <td>{numero(r.fecha_jornada)}</td>
-              <td>{r.equipo_local}</td>
-              <td>{r.equipo_visitante}</td>
-              <td><Cell icon="local" value={r.goles_local_1t} /></td>
-              <td><Cell icon="visita" value={r.goles_visitante_1t} /></td>
-              <td>{numero(r.goles_total_1t)}</td>
-              <td><Cell icon="local" value={r.goles_local_2t} /></td>
-              <td><Cell icon="visita" value={r.goles_visitante_2t} /></td>
-              <td>{numero(r.goles_total_2t)}</td>
-              <td><Cell icon="local" value={r.remates_local_1t} /></td>
-              <td><Cell icon="visita" value={r.remates_visitante_1t} /></td>
-              <td>{numero(r.remates_total_1t)}</td>
-              <td><Cell icon="local" value={r.remates_local_2t} /></td>
-              <td><Cell icon="visita" value={r.remates_visitante_2t} /></td>
-              <td>{numero(r.remates_total_2t)}</td>
-              <td><Cell icon="local" value={r.corners_local_1t} /></td>
-              <td><Cell icon="visita" value={r.corners_visitante_1t} /></td>
-              <td>{numero(r.corners_total_1t)}</td>
-              <td><Cell icon="local" value={r.corners_local_2t} /></td>
-              <td><Cell icon="visita" value={r.corners_visitante_2t} /></td>
-              <td>{numero(r.corners_total_2t)}</td>
+              <td style={tdStyleExp("liga")}>{r.liga}</td>
+              <td style={tdStyleExp("fecha_jornada")}>{numero(r.fecha_jornada)}</td>
+              <td style={tdStyleExp("equipo_local")}>{r.equipo_local}</td>
+              <td style={tdStyleExp("equipo_visitante")}>{r.equipo_visitante}</td>
+              <td style={tdStyleExp("goles_local_1t")}><Cell icon="local" value={r.goles_local_1t} /></td>
+              <td style={tdStyleExp("goles_visitante_1t")}><Cell icon="visita" value={r.goles_visitante_1t} /></td>
+              <td style={tdStyleExp("goles_total_1t")}>{numero(r.goles_total_1t)}</td>
+              <td style={tdStyleExp("goles_local_2t")}><Cell icon="local" value={r.goles_local_2t} /></td>
+              <td style={tdStyleExp("goles_visitante_2t")}><Cell icon="visita" value={r.goles_visitante_2t} /></td>
+              <td style={tdStyleExp("goles_total_2t")}>{numero(r.goles_total_2t)}</td>
+              <td style={tdStyleExp("remates_local_1t")}><Cell icon="local" value={r.remates_local_1t} /></td>
+              <td style={tdStyleExp("remates_visitante_1t")}><Cell icon="visita" value={r.remates_visitante_1t} /></td>
+              <td style={tdStyleExp("remates_total_1t")}>{numero(r.remates_total_1t)}</td>
+              <td style={tdStyleExp("remates_local_2t")}><Cell icon="local" value={r.remates_local_2t} /></td>
+              <td style={tdStyleExp("remates_visitante_2t")}><Cell icon="visita" value={r.remates_visitante_2t} /></td>
+              <td style={tdStyleExp("remates_total_2t")}>{numero(r.remates_total_2t)}</td>
+              <td style={tdStyleExp("corners_local_1t")}><Cell icon="local" value={r.corners_local_1t} /></td>
+              <td style={tdStyleExp("corners_visitante_1t")}><Cell icon="visita" value={r.corners_visitante_1t} /></td>
+              <td style={tdStyleExp("corners_total_1t")}>{numero(r.corners_total_1t)}</td>
+              <td style={tdStyleExp("corners_local_2t")}><Cell icon="local" value={r.corners_local_2t} /></td>
+              <td style={tdStyleExp("corners_visitante_2t")}><Cell icon="visita" value={r.corners_visitante_2t} /></td>
+              <td style={tdStyleExp("corners_total_2t")}>{numero(r.corners_total_2t)}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <p className="tabla-status"><span style={{ color: "inherit" }}><IconLocal /> Local</span> · <span style={{ color: "inherit" }}><IconVisita /> Visita</span> · Click en encabezado para ordenar A-Z / menor-mayor. Orden actual: {sort.key ? `${sort.key} ${sort.dir === "asc" ? "↑" : "↓"}` : "por defecto (corners 1T ↓)"}</p>
+      <p className="tabla-status" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconLocal /> Local</span> · <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconVisita /> Visita</span> ·
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.goles.th, border: `1px solid ${BG.goles.border}`, borderRadius: 2, display: "inline-block" }} /> Goles</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.remates.th, border: `1px solid ${BG.remates.border}`, borderRadius: 2, display: "inline-block" }} /> Remates</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.corners.th, border: `1px solid ${BG.corners.border}`, borderRadius: 2, display: "inline-block" }} /> Corners</span>
+        · Click encabezado para ordenar · {sort.key ? `Orden: ${sort.key} ${sort.dir === "asc" ? "↑" : "↓"}` : "Defecto: corners 1T ↓"}
+      </p>
     </div>
   )
 }
