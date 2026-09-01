@@ -25,6 +25,15 @@ const grupoDe = (key) => {
   if (key.startsWith("corners")) return "corners"
   return "info"
 }
+// Fuente diferenciada T1 vs T2 (trazo mayor para 2T)
+const FONT_T1 = { fontWeight: 400, fontSize: "0.85rem", fontStyle: "normal", opacity: 0.92 }
+const FONT_T2 = { fontWeight: 700, fontSize: "0.95rem", letterSpacing: "0.3px", textShadow: "0 0 0.5px currentColor" }
+const estiloPeriodo = (key) => {
+  if (key.endsWith("_1t")) return FONT_T1
+  if (key.endsWith("_2t")) return FONT_T2
+  if (key === "goles_total") return { ...FONT_T2, fontSize: "0.96rem" }
+  return {}
+}
 const COLUMNAS_EXPANDIDA = [
   { key: "liga", label: "Liga", type: "string", grupo: "info" },
   { key: "fecha_jornada", label: "Jornada", type: "number", grupo: "info" },
@@ -62,18 +71,23 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
   const thStyle = (key) => {
     const g = grupoDe(key)
     const base = BG[g].th
-    const sortedBg = "rgba(var(--accent-rgb), 0.28)"
+    const sortedBg = "rgba(var(--accent-rgb), 0.32)"
     return {
       cursor: "pointer",
       userSelect: "none",
       whiteSpace: "nowrap",
       background: sort.key === key ? sortedBg : base,
       borderBottom: `2px solid ${BG[g].border}`,
+      ...estiloPeriodo(key),
     }
   }
-  const tdStyle = (grupo) => ({
-    background: BG[grupo].td,
-  })
+  const tdStyle = (keyOrGrupo) => {
+    const grupo = BG[keyOrGrupo] ? keyOrGrupo : grupoDe(keyOrGrupo)
+    return {
+      background: BG[grupo].td,
+      ...estiloPeriodo(keyOrGrupo),
+    }
+  }
 
   const sorted = useMemo(() => {
     if (!resultados?.length) return []
@@ -124,15 +138,15 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
               <td style={tdStyle("info")}>{numero(r.fecha_jornada)}</td>
               <td style={tdStyle("info")}>{r.equipo_local}</td>
               <td style={tdStyle("info")}>{r.equipo_visitante}</td>
-              <td style={tdStyle("goles")}><span style={{ color: "inherit" }}><IconLocal /> {numero(r.goles_local_1t)}</span> - <span style={{ color: "inherit" }}><IconVisita /> {numero(r.goles_visitante_1t)}</span> <span className="tabla-muted">({numero(r.goles_total_1t)})</span></td>
-              <td style={tdStyle("goles")}><span style={{ color: "inherit" }}><IconLocal /> {numero(r.goles_local_2t)}</span> - <span style={{ color: "inherit" }}><IconVisita /> {numero(r.goles_visitante_2t)}</span> <span className="tabla-muted">({numero(r.goles_total_2t)})</span></td>
-              <td style={tdStyle("goles")}>{numero(r.goles_total)}</td>
-              <td style={tdStyle("remates")}><span style={{ color: "inherit" }}><IconLocal style={{ marginRight: 4 }} />{numero(r.remates_local_1t)}</span></td>
-              <td style={tdStyle("remates")}><span style={{ color: "inherit" }}><IconVisita style={{ marginRight: 4 }} />{numero(r.remates_visitante_1t)}</span></td>
-              <td style={tdStyle("remates")}>{numero(r.remates_total_1t)}</td>
-              <td style={tdStyle("corners")}><span style={{ color: "inherit" }}><IconLocal style={{ marginRight: 4 }} />{numero(r.corners_local_1t)}</span></td>
-              <td style={tdStyle("corners")}><span style={{ color: "inherit" }}><IconVisita style={{ marginRight: 4 }} />{numero(r.corners_visitante_1t)}</span></td>
-              <td style={tdStyle("corners")}>{numero(r.corners_total_1t)}</td>
+              <td style={tdStyle("goles_total_1t")}><span style={{ color: "inherit" }}><IconLocal /> {numero(r.goles_local_1t)}</span> - <span style={{ color: "inherit" }}><IconVisita /> {numero(r.goles_visitante_1t)}</span> <span className="tabla-muted">({numero(r.goles_total_1t)})</span></td>
+              <td style={tdStyle("goles_total_2t")}><span style={{ color: "inherit" }}><IconLocal /> {numero(r.goles_local_2t)}</span> - <span style={{ color: "inherit" }}><IconVisita /> {numero(r.goles_visitante_2t)}</span> <span className="tabla-muted">({numero(r.goles_total_2t)})</span></td>
+              <td style={tdStyle("goles_total")}>{numero(r.goles_total)}</td>
+              <td style={tdStyle("remates_local_1t")}><span style={{ color: "inherit" }}><IconLocal style={{ marginRight: 4 }} />{numero(r.remates_local_1t)}</span></td>
+              <td style={tdStyle("remates_visitante_1t")}><span style={{ color: "inherit" }}><IconVisita style={{ marginRight: 4 }} />{numero(r.remates_visitante_1t)}</span></td>
+              <td style={tdStyle("remates_total_1t")}>{numero(r.remates_total_1t)}</td>
+              <td style={tdStyle("corners_local_1t")}><span style={{ color: "inherit" }}><IconLocal style={{ marginRight: 4 }} />{numero(r.corners_local_1t)}</span></td>
+              <td style={tdStyle("corners_visitante_1t")}><span style={{ color: "inherit" }}><IconVisita style={{ marginRight: 4 }} />{numero(r.corners_visitante_1t)}</span></td>
+              <td style={tdStyle("corners_total_1t")}>{numero(r.corners_total_1t)}</td>
             </tr>
           ))}
         </tbody>
@@ -142,7 +156,7 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.goles.th, border: `1px solid ${BG.goles.border}`, borderRadius: 2, display: "inline-block" }} /> Goles</span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.remates.th, border: `1px solid ${BG.remates.border}`, borderRadius: 2, display: "inline-block" }} /> Remates</span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.corners.th, border: `1px solid ${BG.corners.border}`, borderRadius: 2, display: "inline-block" }} /> Corners</span>
-        · Click encabezado para ordenar (↕→↑↓) · {sort.key ? `Orden: ${sort.key} ${sort.dir}` : "Orden defecto: corners 1T ↓"}
+        · <span style={FONT_T1}>1T fino</span> / <span style={FONT_T2}>2T trazo mayor</span> · Click encabezado para ordenar (↕→↑↓) · {sort.key ? `Orden: ${sort.key} ${sort.dir}` : "Orden defecto: corners 1T ↓"}
       </p>
     </div>
   )
@@ -190,12 +204,13 @@ export const TablaAnalisisEquipo1TExpandida = ({ resultados }) => {
       whiteSpace: "nowrap",
       background: sort.key === key ? sortedBg : base,
       borderBottom: `2px solid ${BG[grupo].border}`,
+      ...estiloPeriodo(key),
     }
   }
   const tdStyleExp = (key) => {
     const col = COLUMNAS_EXPANDIDA.find((c) => c.key === key)
     const grupo = col?.grupo || grupoDe(key)
-    return { background: BG[grupo].td }
+    return { background: BG[grupo].td, ...estiloPeriodo(key) }
   }
 
   if (!resultados?.length) return null
@@ -268,7 +283,7 @@ export const TablaAnalisisEquipo1TExpandida = ({ resultados }) => {
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.goles.th, border: `1px solid ${BG.goles.border}`, borderRadius: 2, display: "inline-block" }} /> Goles</span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.remates.th, border: `1px solid ${BG.remates.border}`, borderRadius: 2, display: "inline-block" }} /> Remates</span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.corners.th, border: `1px solid ${BG.corners.border}`, borderRadius: 2, display: "inline-block" }} /> Corners</span>
-        · Click encabezado para ordenar · {sort.key ? `Orden: ${sort.key} ${sort.dir === "asc" ? "↑" : "↓"}` : "Defecto: corners 1T ↓"}
+        · <span style={FONT_T1}>1T fino</span> / <span style={FONT_T2}>2T trazo mayor</span> · Click encabezado para ordenar · {sort.key ? `Orden: ${sort.key} ${sort.dir === "asc" ? "↑" : "↓"}` : "Defecto: corners 1T ↓"}
       </p>
     </div>
   )
