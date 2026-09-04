@@ -17,21 +17,22 @@ const IconEquipoX = ({ size = 13, style }) => (
     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
   </svg>
 )
-// Backgrounds por estadística (dark theme)
+// Backgrounds por estadística (dark theme) - Rival sin background
 const BG = {
   goles: { th: "rgba(239,68,68,0.22)", td: "rgba(239,68,68,0.07)", border: "rgba(239,68,68,0.35)" },
   remates: { th: "rgba(56,189,248,0.22)", td: "rgba(56,189,248,0.07)", border: "rgba(56,189,248,0.35)" },
   corners: { th: "rgba(34,197,94,0.22)", td: "rgba(34,197,94,0.07)", border: "rgba(34,197,94,0.35)" },
   info: { th: "rgba(255,255,255,0.04)", td: "transparent", border: "transparent" },
   equipoX: { th: "rgba(168,85,247,0.22)", td: "rgba(168,85,247,0.07)", border: "rgba(168,85,247,0.35)" },
-  equipoY: { th: "rgba(255,255,255,0.06)", td: "transparent", border: "rgba(255,255,255,0.12)" },
+  equipoY: { th: "transparent", td: "transparent", border: "transparent" },
 }
 const grupoDe = (key) => {
+  // Rival (Y) sin background
+  if (key === "equipo_y" || key.includes("_y_")) return "info"
   if (key.startsWith("goles")) return "goles"
   if (key.startsWith("remates")) return "remates"
   if (key.startsWith("corners")) return "corners"
   if (key.startsWith("equipo_x") || key === "condicion_x") return "equipoX"
-  if (key.startsWith("equipo_y")) return "equipoY"
   return "info"
 }
 // Fuente diferenciada T1 vs T2 (trazo mayor para 2T)
@@ -47,25 +48,25 @@ const COLUMNAS_EXPANDIDA = [
   { key: "liga", label: "Liga", type: "string", grupo: "info" },
   { key: "fecha_jornada", label: "Jornada", type: "number", grupo: "info" },
   { key: "equipo_x", label: "Equipo X", type: "string", grupo: "equipoX" },
-  { key: "equipo_y", label: "Equipo Y", type: "string", grupo: "equipoY" },
+  { key: "equipo_y", label: "Equipo Y", type: "string", grupo: "info" },
   { key: "condicion_x", label: "Cond.", type: "string", grupo: "equipoX" },
   { key: "goles_x_1t", label: "Goles X 1T", type: "number", icon: "equipoX", grupo: "goles" },
-  { key: "goles_y_1t", label: "Goles Y 1T", type: "number", grupo: "goles" },
+  { key: "goles_y_1t", label: "Goles Y 1T", type: "number", grupo: "info" },
   { key: "goles_total_1t", label: "Total 1T", type: "number", grupo: "goles" },
   { key: "goles_x_2t", label: "Goles X 2T", type: "number", icon: "equipoX", grupo: "goles" },
-  { key: "goles_y_2t", label: "Goles Y 2T", type: "number", grupo: "goles" },
+  { key: "goles_y_2t", label: "Goles Y 2T", type: "number", grupo: "info" },
   { key: "goles_total_2t", label: "Total 2T", type: "number", grupo: "goles" },
   { key: "remates_x_1t", label: "Rem X 1T", type: "number", icon: "equipoX", grupo: "remates" },
-  { key: "remates_y_1t", label: "Rem Y 1T", type: "number", grupo: "remates" },
+  { key: "remates_y_1t", label: "Rem Y 1T", type: "number", grupo: "info" },
   { key: "remates_total_1t", label: "Rem Total 1T", type: "number", grupo: "remates" },
   { key: "remates_x_2t", label: "Rem X 2T", type: "number", icon: "equipoX", grupo: "remates" },
-  { key: "remates_y_2t", label: "Rem Y 2T", type: "number", grupo: "remates" },
+  { key: "remates_y_2t", label: "Rem Y 2T", type: "number", grupo: "info" },
   { key: "remates_total_2t", label: "Rem Total 2T", type: "number", grupo: "remates" },
   { key: "corners_x_1t", label: "Corn X 1T", type: "number", icon: "equipoX", grupo: "corners" },
-  { key: "corners_y_1t", label: "Corn Y 1T", type: "number", grupo: "corners" },
+  { key: "corners_y_1t", label: "Corn Y 1T", type: "number", grupo: "info" },
   { key: "corners_total_1t", label: "Corn Total 1T", type: "number", grupo: "corners" },
   { key: "corners_x_2t", label: "Corn X 2T", type: "number", icon: "equipoX", grupo: "corners" },
-  { key: "corners_y_2t", label: "Corn Y 2T", type: "number", grupo: "corners" },
+  { key: "corners_y_2t", label: "Corn Y 2T", type: "number", grupo: "info" },
   { key: "corners_total_2t", label: "Corn Total 2T", type: "number", grupo: "corners" },
 ]
 
