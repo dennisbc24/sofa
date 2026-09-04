@@ -132,7 +132,7 @@ export const AnalisisEquipo1T = () => {
           <p className="tabla-status">Sin partidos para {equipo} con {golesEquipo1T} gol(es) en 1T.</p>
         )}
         {!error && !cargando && !resultados && <p className="tabla-status">Selecciona equipo y goles 1T, luego Fetch.</p>}
-        {expandida ? <TablaAnalisisEquipo1TExpandida resultados={resultados} /> : <TablaAnalisisEquipo1T resultados={resultados} />}
+        {expandida ? <TablaAnalisisEquipo1TExpandida resultados={resultados} equipo={equipo} /> : <TablaAnalisisEquipo1T resultados={resultados} equipo={equipo} />}
       </section>
     </section>
   )

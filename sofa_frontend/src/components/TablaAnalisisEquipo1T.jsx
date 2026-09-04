@@ -49,27 +49,28 @@ const COLUMNAS_EXPANDIDA = [
   { key: "equipo_x", label: "Equipo X", type: "string", grupo: "equipoX" },
   { key: "equipo_y", label: "Equipo Y", type: "string", grupo: "equipoY" },
   { key: "condicion_x", label: "Cond.", type: "string", grupo: "equipoX" },
-  { key: "goles_x_1t", label: "Goles X 1T", type: "number", grupo: "goles" },
+  { key: "goles_x_1t", label: "Goles X 1T", type: "number", icon: "equipoX", grupo: "goles" },
   { key: "goles_y_1t", label: "Goles Y 1T", type: "number", grupo: "goles" },
   { key: "goles_total_1t", label: "Total 1T", type: "number", grupo: "goles" },
-  { key: "goles_x_2t", label: "Goles X 2T", type: "number", grupo: "goles" },
+  { key: "goles_x_2t", label: "Goles X 2T", type: "number", icon: "equipoX", grupo: "goles" },
   { key: "goles_y_2t", label: "Goles Y 2T", type: "number", grupo: "goles" },
   { key: "goles_total_2t", label: "Total 2T", type: "number", grupo: "goles" },
-  { key: "remates_x_1t", label: "Rem X 1T", type: "number", grupo: "remates" },
+  { key: "remates_x_1t", label: "Rem X 1T", type: "number", icon: "equipoX", grupo: "remates" },
   { key: "remates_y_1t", label: "Rem Y 1T", type: "number", grupo: "remates" },
   { key: "remates_total_1t", label: "Rem Total 1T", type: "number", grupo: "remates" },
-  { key: "remates_x_2t", label: "Rem X 2T", type: "number", grupo: "remates" },
+  { key: "remates_x_2t", label: "Rem X 2T", type: "number", icon: "equipoX", grupo: "remates" },
   { key: "remates_y_2t", label: "Rem Y 2T", type: "number", grupo: "remates" },
   { key: "remates_total_2t", label: "Rem Total 2T", type: "number", grupo: "remates" },
-  { key: "corners_x_1t", label: "Corn X 1T", type: "number", grupo: "corners" },
+  { key: "corners_x_1t", label: "Corn X 1T", type: "number", icon: "equipoX", grupo: "corners" },
   { key: "corners_y_1t", label: "Corn Y 1T", type: "number", grupo: "corners" },
   { key: "corners_total_1t", label: "Corn Total 1T", type: "number", grupo: "corners" },
-  { key: "corners_x_2t", label: "Corn X 2T", type: "number", grupo: "corners" },
+  { key: "corners_x_2t", label: "Corn X 2T", type: "number", icon: "equipoX", grupo: "corners" },
   { key: "corners_y_2t", label: "Corn Y 2T", type: "number", grupo: "corners" },
   { key: "corners_total_2t", label: "Corn Total 2T", type: "number", grupo: "corners" },
 ]
 
-export const TablaAnalisisEquipo1T = ({ resultados }) => {
+export const TablaAnalisisEquipo1T = ({ resultados, equipo }) => {
+  const nombreEquipo = equipo || "Equipo X"
   const [sort, setSort] = useState({ key: null, dir: "asc" })
 
   const handleSort = (key) => {
@@ -123,9 +124,9 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
           <tr>
             <th rowSpan={2} onClick={() => handleSort("liga")} style={thStyle("liga")} title="Ordenar por Liga">Liga{flecha("liga")}</th>
             <th rowSpan={2} onClick={() => handleSort("fecha_jornada")} style={thStyle("fecha_jornada")} title="Ordenar por Jornada">Jornada{flecha("fecha_jornada")}</th>
-            <th rowSpan={2} onClick={() => handleSort("equipo_x")} style={{ ...thStyle("equipo_x"), fontWeight: 700 }} title="Equipo X (consultado)">Equipo X <IconEquipoX />{flecha("equipo_x")}</th>
-            <th rowSpan={2} onClick={() => handleSort("equipo_y")} style={thStyle("equipo_y")} title="Equipo Y (rival)">Equipo Y{flecha("equipo_y")}</th>
-            <th rowSpan={2} onClick={() => handleSort("condicion_x")} style={thStyle("condicion_x")} title="Condición de Equipo X">Cond.{flecha("condicion_x")}</th>
+            <th rowSpan={2} onClick={() => handleSort("equipo_x")} style={{ ...thStyle("equipo_x"), fontWeight: 700 }} title={nombreEquipo}>{nombreEquipo} <IconEquipoX />{flecha("equipo_x")}</th>
+            <th rowSpan={2} onClick={() => handleSort("equipo_y")} style={thStyle("equipo_y")} title="Rival">Rival{flecha("equipo_y")}</th>
+            <th rowSpan={2} onClick={() => handleSort("condicion_x")} style={thStyle("condicion_x")} title={`Condición de ${nombreEquipo}`}>Cond.{flecha("condicion_x")}</th>
             <th colSpan={3} style={{ background: BG.goles.th, borderBottom: `2px solid ${BG.goles.border}`, textAlign: "center" }}>Goles</th>
             <th colSpan={3} style={{ background: BG.remates.th, borderBottom: `2px solid ${BG.remates.border}`, textAlign: "center" }}>Remates</th>
             <th colSpan={3} style={{ background: BG.corners.th, borderBottom: `2px solid ${BG.corners.border}`, textAlign: "center" }}>Corners</th>
@@ -180,18 +181,19 @@ export const TablaAnalisisEquipo1T = ({ resultados }) => {
         </tbody>
       </table>
       <p className="tabla-status" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconEquipoX /> Equipo X (consultado)</span> · <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconLocal /> Local</span> <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconVisita /> Visita</span> (condición de X) ·
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconEquipoX /> {nombreEquipo}</span> · <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Rival</span> · <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconLocal /> Local</span> <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconVisita /> Visita</span> (cond. de {nombreEquipo}) ·
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.goles.th, border: `1px solid ${BG.goles.border}`, borderRadius: 2, display: "inline-block" }} /> Goles</span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.remates.th, border: `1px solid ${BG.remates.border}`, borderRadius: 2, display: "inline-block" }} /> Remates</span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><span style={{ width: 12, height: 12, background: BG.corners.th, border: `1px solid ${BG.corners.border}`, borderRadius: 2, display: "inline-block" }} /> Corners</span>
-        · <span style={FONT_T1}>1T</span> / <span style={FONT_T2}>2T</span> · Click encabezado para ordenar · {sort.key ? `Orden: ${sort.key} ${sort.dir}` : "Orden defecto: corners 1T ↓"}
+        · <span style={FONT_T1}>1T fino</span> / <span style={FONT_T2}>2T trazo mayor</span> · Click encabezado para ordenar · {sort.key ? `Orden: ${sort.key} ${sort.dir}` : "Orden defecto: corners 1T ↓"}
       </p>
     </div>
   )
 }
 
 // Versión expandida con ordenamiento por columna (click en encabezado)
-export const TablaAnalisisEquipo1TExpandida = ({ resultados }) => {
+export const TablaAnalisisEquipo1TExpandida = ({ resultados, equipo }) => {
+  const nombreEquipo = equipo || "Equipo X"
   const [sort, setSort] = useState({ key: null, dir: "asc" })
 
   const handleSort = (key) => {
@@ -243,16 +245,24 @@ export const TablaAnalisisEquipo1TExpandida = ({ resultados }) => {
 
   if (!resultados?.length) return null
 
-  const renderLabel = (c) => (
-    <>
-      {c.label}
-      {c.key === "equipo_x" && <IconEquipoX style={{ marginLeft: 4 }} />}
-      {c.key === "condicion_x" && <IconLocal style={{ marginLeft: 4 }} />}
-      {c.icon === "local" && c.key !== "equipo_x" && <IconLocal style={{ marginLeft: 4 }} />}
-      {c.icon === "visita" && <IconVisita style={{ marginLeft: 4 }} />}
-      {flecha(c.key)}
-    </>
-  )
+  const renderLabel = (c) => {
+    let label = c.label
+    if (c.key === "equipo_x") label = nombreEquipo
+    if (c.key === "equipo_y") label = "Rival"
+    // Para stats X/Y, reemplazar X por nombre corto si cabe (mantener X para no saturar)
+    return (
+      <>
+        {label}
+        {c.key === "equipo_x" && <IconEquipoX style={{ marginLeft: 4 }} />}
+        {c.key === "condicion_x" && <IconLocal style={{ marginLeft: 4 }} />}
+        {c.icon === "local" && c.key !== "equipo_x" && <IconLocal style={{ marginLeft: 4 }} />}
+        {c.icon === "visita" && <IconVisita style={{ marginLeft: 4 }} />}
+        {c.key === "goles_x_1t" && <IconEquipoX style={{ marginLeft: 4 }} />}
+        {c.key === "goles_y_1t" && <span style={{ marginLeft: 4, opacity: 0.7 }}>Rival</span>}
+        {flecha(c.key)}
+      </>
+    )
+  }
 
   const Cell = ({ icon, value }) => (
     <span style={{ color: "inherit", display: "inline-flex", alignItems: "center", gap: 4 }}>
