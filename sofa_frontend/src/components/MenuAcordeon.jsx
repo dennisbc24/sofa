@@ -12,6 +12,7 @@ const SECCIONES = [
       { id: "roja1t", etiqueta: "Roja 1T" },
       { id: "golesEquipo", etiqueta: "Goles por equipo" },
       { id: "analisisEquipo1T", etiqueta: "Equipo × Goles 1T" },
+      { id: "proyeccion", etiqueta: "Proyección 2T (Betis vs Madrid)" },
     ],
   },
   {

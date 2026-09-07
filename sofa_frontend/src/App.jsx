@@ -11,6 +11,7 @@ import { RematesGoles } from './components/RematesGoles.jsx'
 import { Roja1t } from './components/Roja1t.jsx'
 import { GolesEquipo } from './components/GolesEquipo.jsx'
 import { AnalisisEquipo1T } from './components/AnalisisEquipo1T.jsx'
+import { AnalisisProyeccion } from './components/AnalisisProyeccion.jsx'
 import { Equipos } from './components/Equipos.jsx'
 import { TablaProbabilidades } from './components/TablaProbabilidades.jsx'
 import { TablaProbabilidadesOver } from './components/TablaProbabilidadesOver.jsx'
@@ -90,6 +91,8 @@ function App() {
         <GolesEquipo />
       ) : vista === "analisisEquipo1T" ? (
         <AnalisisEquipo1T />
+      ) : vista === "proyeccion" ? (
+        <AnalisisProyeccion />
       ) : vista === "equipos" ? (
         <Equipos />
       ) : (
