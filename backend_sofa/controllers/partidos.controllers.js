@@ -23,4 +23,18 @@ const getUltimosPartidosByLiga = async (req, res, next) => {
   }
 };
 
-module.exports = { getPartidosByLiga, getUltimosPartidosByLiga };
+const getPartidoDetalle = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const partido = await partidosService.getPartidoById(id);
+    if (!partido) {
+      return res.status(404).json({ message: "Partido no encontrado" });
+    }
+    const estadisticas = await partidosService.getEstadisticasByPartido(id);
+    res.json({ partido, estadisticas });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getPartidosByLiga, getUltimosPartidosByLiga, getPartidoDetalle };

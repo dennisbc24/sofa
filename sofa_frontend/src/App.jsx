@@ -5,6 +5,7 @@ import { API_URL } from './config.js'
 import { MenuAcordeon } from './components/MenuAcordeon.jsx'
 import { Desplegable } from './components/Desplegable.jsx'
 import { UltimosPartidos } from './components/UltimosPartidos.jsx'
+import { StatsPartido } from './components/StatsPartido.jsx'
 import { Analisis2 } from './components/Analisis2.jsx'
 import { Analisis3 } from './components/Analisis3.jsx'
 import { RematesGoles } from './components/RematesGoles.jsx'
@@ -79,6 +80,8 @@ function App() {
 
       {vista === "ultimos" ? (
         <UltimosPartidos />
+      ) : vista === "statsPartido" ? (
+        <StatsPartido />
       ) : vista === "analisis2" ? (
         <Analisis2 />
       ) : vista === "analisis3" ? (

@@ -18,7 +18,10 @@ const SECCIONES = [
   {
     id: "partidos",
     titulo: "Partidos",
-    items: [{ id: "ultimos", etiqueta: "Últimos partidos" }],
+    items: [
+      { id: "ultimos", etiqueta: "Últimos partidos" },
+      { id: "statsPartido", etiqueta: "Buscar stats de partido" },
+    ],
   },
   {
     id: "equipos",
