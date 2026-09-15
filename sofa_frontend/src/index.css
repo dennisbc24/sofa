@@ -3,17 +3,18 @@
   line-height: 1.5;
   color-scheme: dark;
 
-  --bg: #0b1220;
-  --card: #141c2e;
-  --card-border: #243046;
-  --text: #e6ebf4;
-  --text-muted: #94a3b8;
-  --accent: #22c55e;
-  --accent-hover: #16a34a;
-  --accent-rgb: 34, 197, 94;
-  --danger: #ef4444;
-  --input-bg: #0f172a;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --bg: #060a28;
+  --card: #10165a;
+  --card-border: #2b3591;
+  --text: #f2f5ff;
+  --text-muted: #9aa3d6;
+  --accent: #00d9ff;
+  --accent-hover: #33e2ff;
+  --accent-rgb: 0, 217, 255;
+  --accent2: #d946ef;
+  --danger: #ff5470;
+  --input-bg: #0a1033;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
 .analisis2 {
@@ -23,9 +24,9 @@
 }
 
 .analisis3 {
-  --accent: #a855f7;
-  --accent-hover: #9333ea;
-  --accent-rgb: 168, 85, 247;
+  --accent: #e879f9;
+  --accent-hover: #d946ef;
+  --accent-rgb: 232, 121, 249;
 }
 
 * {
@@ -40,6 +41,9 @@ body {
 }
 
 body {
-  background: radial-gradient(ellipse at top, #182339 0%, var(--bg) 60%);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 217, 255, 0.14) 0%, transparent 60%),
+    radial-gradient(ellipse at top, #1b2370 0%, var(--bg) 65%);
+  background-color: var(--bg);
   color: var(--text);
 }

@@ -74,7 +74,7 @@ function App() {
 
   return (
     <main className="app">
-      <h1 className="app-title">Sofa</h1>
+      <h1 className="app-title">Analytics</h1>
 
       <MenuAcordeon vista={vista} onVista={setVista} />
 

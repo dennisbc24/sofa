@@ -276,28 +276,50 @@ export const AnalisisProyeccion = () => {
       )}
 
       {promedios && (
-        <section className="card">
-          <div className="card-header">Promedios 2T y Proyección FT</div>
-          <div className="tabla-scroll"><table className="tabla"><thead><tr><th>Equipo</th><th>Goles 2T vals</th><th>Prom</th><th>Rem 2T vals</th><th>Prom</th><th>Corn 2T vals</th><th>Prom</th><th>1T real</th><th>FT estimado (1T+Prom)</th></tr></thead><tbody>
-            <tr><td>{equipoLocal}</td><td>{promedios.golesLocal.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.golesLocal.avg)}</td><td>{promedios.remLocal.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.remLocal.avg)}</td><td>{promedios.cornLocal.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.cornLocal.avg)}</td>
-              <td style={{ whiteSpace: "nowrap" }}>
-                <div><span className="result-label">Gol: </span>{golesLocal1T || "—"} - {golesVisita1T || "—"}</div>
-                <div><span className="result-label">Rem: </span>{remLocal1T || "—"} - {remVisita1T || "—"}</div>
-                <div><span className="result-label">Cór: </span>{cornLocal1T || "—"} - {cornVisita1T || "—"}</div>
-              </td>
-              <td style={{ whiteSpace: "nowrap" }}>
-                <div><span className="result-label">Gol: </span>{fmt(Number(golesLocal1T || 0) + promedios.golesLocal.avg)} - {fmt(Number(golesVisita1T || 0) + promedios.golesVisita.avg)}</div>
-                <div><span className="result-label">Rem: </span>{fmt(Number(remLocal1T || 0) + promedios.remLocal.avg, 1)} - {fmt(Number(remVisita1T || 0) + promedios.remVisita.avg, 1)}</div>
-                <div><span className="result-label">Cór: </span>{fmt(Number(cornLocal1T || 0) + promedios.cornLocal.avg, 1)} - {fmt(Number(cornVisita1T || 0) + promedios.cornVisita.avg, 1)}</div>
-              </td></tr>
-            <tr><td>{promedios.desconocido ? "Rival desconocido (estimado)" : equipoVisita}</td><td>{promedios.golesVisita.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.golesVisita.avg)}</td><td>{promedios.remVisita.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.remVisita.avg)}</td><td>{promedios.cornVisita.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.cornVisita.avg)}</td><td></td><td></td></tr>
-          </tbody></table></div>
-          <p className="tabla-status">Goles 2T: {equipoLocal} ({promedios.golesLocal.vals.length}) avg {fmt(promedios.golesLocal.avg, 3)} vs {promedios.desconocido ? "Rival desconocido" : equipoVisita} {fmt(promedios.golesVisita.avg, 3)} | Rem 2T {fmt(promedios.remLocal.avg)} vs {fmt(promedios.remVisita.avg)} | Corn {fmt(promedios.cornLocal.avg)} vs {fmt(promedios.cornVisita.avg)}</p>
-          {promedios.desconocido && (
-            <p className="tabla-status">Rival desconocido: sus promedios 2T se estiman con lo que hicieron los rivales en los partidos filtrados de {equipoLocal} (lado Y).</p>
-          )}
-          <p className="tabla-status">Ejemplo Betis 0-0 Madrid con datos del ejemplo: Goles 2T Madrid ~1.28 vs Betis 0.57 | Rem 4.66 vs 9.66 | Corn 1 vs 4.66 — suma con 1T para FT.</p>
-        </section>
+        <>
+          <section className="card">
+            <div className="card-header">Promedios 2T</div>
+            <div className="tabla-scroll"><table className="tabla"><thead><tr><th>Equipo</th><th>Goles 2T vals</th><th>Prom</th><th>Rem 2T vals</th><th>Prom</th><th>Corn 2T vals</th><th>Prom</th></tr></thead><tbody>
+              <tr><td>{equipoLocal}</td><td>{promedios.golesLocal.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.golesLocal.avg)}</td><td>{promedios.remLocal.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.remLocal.avg)}</td><td>{promedios.cornLocal.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.cornLocal.avg)}</td></tr>
+              <tr><td>{promedios.desconocido ? "Rival desconocido (estimado)" : equipoVisita}</td><td>{promedios.golesVisita.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.golesVisita.avg)}</td><td>{promedios.remVisita.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.remVisita.avg)}</td><td>{promedios.cornVisita.vals.join(", ")}</td><td className="tabla-num">{fmt(promedios.cornVisita.avg)}</td></tr>
+            </tbody></table></div>
+            <p className="tabla-status">Goles 2T: {equipoLocal} ({promedios.golesLocal.vals.length}) avg {fmt(promedios.golesLocal.avg, 3)} vs {promedios.desconocido ? "Rival desconocido" : equipoVisita} {fmt(promedios.golesVisita.avg, 3)} | Rem 2T {fmt(promedios.remLocal.avg)} vs {fmt(promedios.remVisita.avg)} | Corn {fmt(promedios.cornLocal.avg)} vs {fmt(promedios.cornVisita.avg)}</p>
+            {promedios.desconocido && (
+              <p className="tabla-status">Rival desconocido: sus promedios 2T se estiman con lo que hicieron los rivales en los partidos filtrados de {equipoLocal} (lado Y).</p>
+            )}
+            <p className="tabla-status">Ejemplo Betis 0-0 Madrid con datos del ejemplo: Goles 2T Madrid ~1.28 vs Betis 0.57 | Rem 4.66 vs 9.66 | Corn 1 vs 4.66 — suma con 1T para FT.</p>
+          </section>
+
+          <section className="card card-clara">
+            <div className="card-header">Proyección FT — 1T real + Prom 2T</div>
+            <div className="tabla-scroll"><table className="tabla"><thead><tr><th>Métrica</th><th>{equipoLocal || "Local"} 1T</th><th>{promedios.desconocido ? "Rival desc." : (equipoVisita || "Visita")} 1T</th><th>{equipoLocal || "Local"} FT</th><th>{promedios.desconocido ? "Rival desc." : (equipoVisita || "Visita")} FT</th><th>Total ambos</th></tr></thead><tbody>
+              <tr>
+                <td className="tabla-metrica">Goles</td>
+                <td className="tabla-num">{golesLocal1T || "—"}</td>
+                <td className="tabla-num">{golesVisita1T || "—"}</td>
+                <td className="tabla-num tabla-ft">{fmt(Number(golesLocal1T || 0) + promedios.golesLocal.avg)}</td>
+                <td className="tabla-num tabla-ft">{fmt(Number(golesVisita1T || 0) + promedios.golesVisita.avg)}</td>
+                <td className="tabla-num tabla-total">{fmt(Number(golesLocal1T || 0) + Number(golesVisita1T || 0) + promedios.golesLocal.avg + promedios.golesVisita.avg)}</td>
+              </tr>
+              <tr>
+                <td className="tabla-metrica">Remates</td>
+                <td className="tabla-num">{remLocal1T || "—"}</td>
+                <td className="tabla-num">{remVisita1T || "—"}</td>
+                <td className="tabla-num tabla-ft">{fmt(Number(remLocal1T || 0) + promedios.remLocal.avg, 1)}</td>
+                <td className="tabla-num tabla-ft">{fmt(Number(remVisita1T || 0) + promedios.remVisita.avg, 1)}</td>
+                <td className="tabla-num tabla-total">{fmt(Number(remLocal1T || 0) + Number(remVisita1T || 0) + promedios.remLocal.avg + promedios.remVisita.avg, 1)}</td>
+              </tr>
+              <tr>
+                <td className="tabla-metrica">Corners</td>
+                <td className="tabla-num">{cornLocal1T || "—"}</td>
+                <td className="tabla-num">{cornVisita1T || "—"}</td>
+                <td className="tabla-num tabla-ft">{fmt(Number(cornLocal1T || 0) + promedios.cornLocal.avg, 1)}</td>
+                <td className="tabla-num tabla-ft">{fmt(Number(cornVisita1T || 0) + promedios.cornVisita.avg, 1)}</td>
+                <td className="tabla-num tabla-total">{fmt(Number(cornLocal1T || 0) + Number(cornVisita1T || 0) + promedios.cornLocal.avg + promedios.cornVisita.avg, 1)}</td>
+              </tr>
+            </tbody></table></div>
+          </section>
+        </>
       )}
     </section>
   )

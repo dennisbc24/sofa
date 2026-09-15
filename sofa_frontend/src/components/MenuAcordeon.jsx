@@ -5,6 +5,7 @@ const SECCIONES = [
     id: "analisis",
     titulo: "Análisis",
     items: [
+      { id: "proyeccion", etiqueta: "Proyección 2T (Betis vs Madrid)" },
       { id: "analisis1", etiqueta: "Corners y goles" },
       { id: "analisis2", etiqueta: "Corners y diferencia" },
       { id: "analisis3", etiqueta: "Marcador 1T" },
@@ -12,7 +13,6 @@ const SECCIONES = [
       { id: "roja1t", etiqueta: "Roja 1T" },
       { id: "golesEquipo", etiqueta: "Goles por equipo" },
       { id: "analisisEquipo1T", etiqueta: "Equipo × Goles 1T" },
-      { id: "proyeccion", etiqueta: "Proyección 2T (Betis vs Madrid)" },
     ],
   },
   {
