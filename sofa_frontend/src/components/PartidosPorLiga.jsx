@@ -1,11 +1,5 @@
 import useFetch from "../hooks/useFetch.jsx"
-
-const formatearFechaHora = (fecha) => {
-  if (!fecha) return "—"
-  const date = new Date(fecha)
-  if (Number.isNaN(date.getTime())) return "—"
-  return date.toLocaleString("es")
-}
+import { formatearFecha, formatearFechaHora } from "../utils.js"
 
 export const PartidosPorLiga = ({ liga }) => {
   const { data: partidos, loading, error } = useFetch(
@@ -23,8 +17,8 @@ export const PartidosPorLiga = ({ liga }) => {
         <thead>
           <tr>
             <th>Jornada</th>
+            <th>Fecha</th>
             <th className="tabla-equipos">Partido</th>
-            <th>Resultado</th>
             <th>Agregado</th>
           </tr>
         </thead>
@@ -32,6 +26,7 @@ export const PartidosPorLiga = ({ liga }) => {
           {partidos.map((p) => (
             <tr key={p.id}>
               <td>{p.fecha_jornada ?? "—"}</td>
+              <td>{formatearFecha(p.fecha_partido)}</td>
               <td className="tabla-equipos">
                 <span className="tabla-equipo">{p.equipo_local}</span>
                 <span className="tabla-goles">

@@ -511,3 +511,151 @@
 .card-clara .result-value {
   color: #0f172a;
 }
+
+/* ============ Análisis predictivo (1X2) ============ */
+.prob-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.prob-item {
+  text-align: center;
+  padding: 14px 8px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  background: rgba(var(--accent-rgb), 0.06);
+}
+
+.prob-item-fav {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.18);
+}
+
+.prob-etiqueta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.prob-valor {
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin: 4px 0 8px;
+}
+
+.prob-barra {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.prob-barra span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+.dos-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.ventaja-local {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.lista-recientes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reciente-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.86rem;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.reciente-fecha {
+  color: var(--text-muted);
+  min-width: 74px;
+}
+
+.reciente-rival {
+  flex: 1;
+}
+
+.resultado-chip {
+  display: inline-block;
+  min-width: 22px;
+  text-align: center;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.resultado-v {
+  background: rgba(var(--accent-rgb), 0.18);
+  color: var(--accent);
+}
+
+.resultado-e {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+.resultado-d {
+  background: rgba(255, 84, 112, 0.16);
+  color: var(--danger);
+}
+
+.explicacion {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.explicacion .advertencia {
+  color: var(--danger);
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+}
+
+/* ---- Chip del modelo activo (predicción beta) ---- */
+.modelo-chip {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 1px 8px;
+  border-radius: 6px;
+  background: rgba(var(--accent-rgb), 0.18);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}

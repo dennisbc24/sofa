@@ -16,6 +16,11 @@ const SECCIONES = [
     ],
   },
   {
+    id: "predictivo",
+    titulo: "Predicción",
+    items: [{ id: "predictivo", etiqueta: "Análisis pre-partido (1X2)" }],
+  },
+  {
     id: "partidos",
     titulo: "Partidos",
     items: [

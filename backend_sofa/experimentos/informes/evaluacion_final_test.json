@@ -1,0 +1,358 @@
+{
+  "generado": "2026-09-28T13:50:29.526Z",
+  "evaluacion": "ÚNICA evaluación final sobre TEST. Ningún cambio posterior a este informe.",
+  "nota": "Modelos finales: V1 entrenado en TRAIN+VAL (1523); Platt λ=0.1 fijo a priori, ajustado solo con innerCal (75/25 día-estricto de TRAIN+VAL, fuera de muestra de innerFit). TEST solo evaluación. Sin reglas manuales ni umbrales. prediccion_poisson.json no modificado.",
+  "muestra": {
+    "train": 1159,
+    "val": 364,
+    "tv": 1523,
+    "test": 378,
+    "fechas": {
+      "tv": [
+        "2019-06-01",
+        "2026-06-18"
+      ],
+      "test": [
+        "2026-06-19",
+        "2026-09-27"
+      ],
+      "innerFit": [
+        "2019-06-01",
+        "2026-05-02"
+      ],
+      "innerCal": [
+        "2026-05-03",
+        "2026-06-18"
+      ]
+    }
+  },
+  "platt": {
+    "identidad": false,
+    "n": 364,
+    "lambda": 0.1,
+    "iter": 2000,
+    "W": [
+      [
+        0.8014,
+        0.0907,
+        0.1197
+      ],
+      [
+        0.0939,
+        0.8644,
+        0.0106
+      ],
+      [
+        0.1045,
+        0.0446,
+        0.8694
+      ]
+    ],
+    "b": [
+      0.0739,
+      -0.0417,
+      -0.0319
+    ],
+    "nllAntes": 1.0751,
+    "nllDespues": 1.0361,
+    "nInnerFit": 1159,
+    "nInnerCal": 364,
+    "fechasInnerCal": [
+      "2026-05-03",
+      "2026-06-18"
+    ],
+    "precedeATest": true
+  },
+  "sanidades": {
+    "nTestEvaluado378": true,
+    "testFueraDeEntrenamiento": true,
+    "testFueraDeCalibracion": true,
+    "parametrosAprendidosSinTest": true,
+    "probsSuman100Exacto": true,
+    "ceroNaN": true,
+    "ceroNegativos": true,
+    "fechasCorrectas": true,
+    "sinLeakageTemporal": true,
+    "sinModificacionPosterior": true,
+    "brierPorClaseCoherente": true
+  },
+  "modelos": {
+    "A": {
+      "desc": "V1 sin calibrar",
+      "metricas": {
+        "n": 378,
+        "accuracy": 0.5503,
+        "logLoss": 0.9719,
+        "brier": 0.578,
+        "probRealMedia": 0.4252,
+        "ece": 0.0673,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 238,
+            "probPredicha": 0.1376,
+            "frecuenciaReal": 0.1765
+          },
+          {
+            "rango": "20-40%",
+            "n": 565,
+            "probPredicha": 0.2801,
+            "frecuenciaReal": 0.2619
+          },
+          {
+            "rango": "40-60%",
+            "n": 218,
+            "probPredicha": 0.4888,
+            "frecuenciaReal": 0.5046
+          },
+          {
+            "rango": "60-80%",
+            "n": 95,
+            "probPredicha": 0.6816,
+            "frecuenciaReal": 0.6737
+          },
+          {
+            "rango": "80-100%",
+            "n": 18,
+            "probPredicha": 0.8718,
+            "frecuenciaReal": 0.7778
+          }
+        ]
+      },
+      "prob": {
+        "home": 0.4668677248677255,
+        "draw": 0.24557671957671962,
+        "away": 0.2875555555555554
+      },
+      "pred": {
+        "home": 259,
+        "draw": 14,
+        "away": 105
+      },
+      "confianzaMedia": 0.5413,
+      "confusion": {
+        "home": {
+          "home": 142,
+          "draw": 54,
+          "away": 63
+        },
+        "draw": {
+          "home": 5,
+          "draw": 4,
+          "away": 5
+        },
+        "away": {
+          "home": 24,
+          "draw": 19,
+          "away": 62
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.8304093567251462,
+          "precision": 0.5482625482625483,
+          "f1": 0.6604651162790698,
+          "realN": 171,
+          "predN": 259
+        },
+        "draw": {
+          "recall": 0.05194805194805195,
+          "precision": 0.2857142857142857,
+          "f1": 0.08791208791208792,
+          "realN": 77,
+          "predN": 14
+        },
+        "away": {
+          "recall": 0.47692307692307695,
+          "precision": 0.5904761904761905,
+          "f1": 0.5276595744680852,
+          "realN": 130,
+          "predN": 105
+        }
+      },
+      "llPorResultado": {
+        "home": 0.6765,
+        "draw": 1.4021,
+        "away": 1.1057
+      },
+      "brierPorClase": {
+        "home": 0.218,
+        "draw": 0.1627,
+        "away": 0.1974
+      },
+      "validacionRef": {
+        "accuracy": 0.4659,
+        "logLoss": 1.11,
+        "brier": 0.6582,
+        "ece": 0.2288,
+        "cnt": {
+          "home": 484,
+          "draw": 63,
+          "away": 215
+        },
+        "prom": {
+          "home": 0.461,
+          "draw": 0.254,
+          "away": 0.285
+        }
+      },
+      "valVsTest": {
+        "accuracy": 0.0844,
+        "logLoss": -0.1381,
+        "brier": -0.0802,
+        "ece": -0.1615
+      }
+    },
+    "B": {
+      "desc": "V1 + Platt",
+      "metricas": {
+        "n": 378,
+        "accuracy": 0.5344,
+        "logLoss": 0.9787,
+        "brier": 0.583,
+        "probRealMedia": 0.4044,
+        "ece": 0.0913,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 139,
+            "probPredicha": 0.1472,
+            "frecuenciaReal": 0.1295
+          },
+          {
+            "rango": "20-40%",
+            "n": 681,
+            "probPredicha": 0.2857,
+            "frecuenciaReal": 0.2643
+          },
+          {
+            "rango": "40-60%",
+            "n": 256,
+            "probPredicha": 0.4825,
+            "frecuenciaReal": 0.5391
+          },
+          {
+            "rango": "60-80%",
+            "n": 53,
+            "probPredicha": 0.6649,
+            "frecuenciaReal": 0.717
+          },
+          {
+            "rango": "80-100%",
+            "n": 5,
+            "probPredicha": 0.8484,
+            "frecuenciaReal": 0.8
+          }
+        ]
+      },
+      "prob": {
+        "home": 0.44685185185185156,
+        "draw": 0.2697301587301586,
+        "away": 0.28341798941798957
+      },
+      "pred": {
+        "home": 274,
+        "draw": 16,
+        "away": 88
+      },
+      "confianzaMedia": 0.4947,
+      "confusion": {
+        "home": {
+          "home": 146,
+          "draw": 53,
+          "away": 75
+        },
+        "draw": {
+          "home": 5,
+          "draw": 6,
+          "away": 5
+        },
+        "away": {
+          "home": 20,
+          "draw": 18,
+          "away": 50
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.8538011695906432,
+          "precision": 0.5328467153284672,
+          "f1": 0.6561797752808989,
+          "realN": 171,
+          "predN": 274
+        },
+        "draw": {
+          "recall": 0.07792207792207792,
+          "precision": 0.375,
+          "f1": 0.12903225806451613,
+          "realN": 77,
+          "predN": 16
+        },
+        "away": {
+          "recall": 0.38461538461538464,
+          "precision": 0.5681818181818182,
+          "f1": 0.45871559633027525,
+          "realN": 130,
+          "predN": 88
+        }
+      },
+      "llPorResultado": {
+        "home": 0.7275,
+        "draw": 1.2888,
+        "away": 1.1254
+      },
+      "brierPorClase": {
+        "home": 0.2191,
+        "draw": 0.1638,
+        "away": 0.2002
+      },
+      "validacionRef": {
+        "accuracy": 0.4633,
+        "logLoss": 1.063,
+        "brier": 0.6389,
+        "ece": 0.0988,
+        "cnt": {
+          "home": 529,
+          "draw": 68,
+          "away": 165
+        },
+        "prom": {
+          "home": 0.445,
+          "draw": 0.273,
+          "away": 0.282
+        }
+      },
+      "valVsTest": {
+        "accuracy": 0.0711,
+        "logLoss": -0.0843,
+        "brier": -0.0559,
+        "ece": -0.0075
+      }
+    }
+  },
+  "deltaTestBvsA": {
+    "accuracy": -0.0159,
+    "logLoss": 0.0068,
+    "brier": 0.005,
+    "ece": 0.024
+  },
+  "deltaDistribucionBvsA": {
+    "pH": -0.02,
+    "pE": 0.0242,
+    "pA": -0.0041
+  },
+  "resumen": {
+    "plattMejoraLLenTest": false,
+    "plattMejoraBrierEnTest": false,
+    "plattMejoraECEEnTest": false,
+    "accuracySube": false,
+    "beneficioLL": {
+      "val": -0.047,
+      "test": 0.0068
+    },
+    "testIntactoPreviamente": true,
+    "testSoloEvaluacion": "TEST fue utilizado únicamente para evaluación final y no para entrenamiento, calibración ni selección.",
+    "sinCambiosPosteriores": true,
+    "candidatoSinCambios": "B (V1 + Platt) — seleccionado antes de ver TEST; no se modifica tras observarlo."
+  }
+}

@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react"
 import useFetch from "../hooks/useFetch.jsx"
 import { Desplegable } from "./Desplegable.jsx"
+import { formatearFecha } from "../utils.js"
 
 const formatearPartido = (p) =>
-  `${p.equipo_local ?? "?"} vs ${p.equipo_visitante ?? "?"}${p.fecha_jornada ? ` (J${p.fecha_jornada})` : ""}`
+  `${formatearFecha(p.fecha_partido)} · ${p.equipo_local ?? "?"} vs ${p.equipo_visitante ?? "?"}${p.fecha_jornada ? ` (J${p.fecha_jornada})` : ""}`
 
 export const StatsPartido = () => {
   const [liga, setLiga] = useState(null)
@@ -117,6 +118,10 @@ export const StatsPartido = () => {
           <div className="result-row">
             <span className="result-label">Jornada</span>
             <span className="result-value">{partidoSeleccionado.fecha_jornada ?? "—"}</span>
+          </div>
+          <div className="result-row">
+            <span className="result-label">Fecha</span>
+            <span className="result-value">{formatearFecha(partidoSeleccionado.fecha_partido)}</span>
           </div>
           {(partidoSeleccionado.goles_local_1T !== undefined ||
             partidoSeleccionado.goles_visitante_1T !== undefined) && (

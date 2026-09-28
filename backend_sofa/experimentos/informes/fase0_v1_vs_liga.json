@@ -1,0 +1,789 @@
+{
+  "generado": "2026-09-28T12:41:34.038Z",
+  "nota": "TEST no evaluado. Selección solo con train+val (rolling).",
+  "ventanas": [
+    {
+      "nombre": "W1",
+      "fit": 761,
+      "eval": 190,
+      "desde": "2026-03-09",
+      "hasta": "2026-04-10"
+    },
+    {
+      "nombre": "W2",
+      "fit": 951,
+      "eval": 208,
+      "desde": "2026-04-11",
+      "hasta": "2026-05-02"
+    },
+    {
+      "nombre": "W3",
+      "fit": 1159,
+      "eval": 174,
+      "desde": "2026-05-03",
+      "hasta": "2026-05-19"
+    },
+    {
+      "nombre": "W4",
+      "fit": 1333,
+      "eval": 190,
+      "desde": "2026-05-20",
+      "hasta": "2026-06-18"
+    }
+  ],
+  "sanidadV1Oficial": {
+    "metricas": {
+      "n": 364,
+      "accuracy": 0.4835,
+      "logLoss": 1.0751,
+      "brier": 0.64,
+      "probRealMedia": 0.4154,
+      "ece": 0.2137,
+      "calibration": [
+        {
+          "rango": "0-20%",
+          "n": 315,
+          "probPredicha": 0.1182,
+          "frecuenciaReal": 0.1968
+        },
+        {
+          "rango": "20-40%",
+          "n": 447,
+          "probPredicha": 0.2838,
+          "frecuenciaReal": 0.3154
+        },
+        {
+          "rango": "40-60%",
+          "n": 176,
+          "probPredicha": 0.4856,
+          "frecuenciaReal": 0.4261
+        },
+        {
+          "rango": "60-80%",
+          "n": 107,
+          "probPredicha": 0.6843,
+          "frecuenciaReal": 0.486
+        },
+        {
+          "rango": "80-100%",
+          "n": 47,
+          "probPredicha": 0.8768,
+          "frecuenciaReal": 0.7234
+        }
+      ]
+    },
+    "esperado": {
+      "n": 364,
+      "accuracy": 0.4835,
+      "logLoss": 1.0751,
+      "brier": 0.64,
+      "probRealMedia": 0.4154,
+      "ece": 0.2137,
+      "calibration": [
+        {
+          "rango": "0-20%",
+          "n": 315,
+          "probPredicha": 0.1182,
+          "frecuenciaReal": 0.1968
+        },
+        {
+          "rango": "20-40%",
+          "n": 447,
+          "probPredicha": 0.2838,
+          "frecuenciaReal": 0.3154
+        },
+        {
+          "rango": "40-60%",
+          "n": 176,
+          "probPredicha": 0.4856,
+          "frecuenciaReal": 0.4261
+        },
+        {
+          "rango": "60-80%",
+          "n": 107,
+          "probPredicha": 0.6843,
+          "frecuenciaReal": 0.486
+        },
+        {
+          "rango": "80-100%",
+          "n": 47,
+          "probPredicha": 0.8768,
+          "frecuenciaReal": 0.7234
+        }
+      ]
+    },
+    "ok": true
+  },
+  "variantes": {
+    "GLOBAL": {
+      "desc": "μ global siempre",
+      "estrategia": "GLOBAL",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4643,
+        "logLoss": 1.0746,
+        "brier": 0.6382,
+        "probRealMedia": 0.4143,
+        "ece": 0.2181,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 294,
+            "probPredicha": 0.1162,
+            "frecuenciaReal": 0.1973
+          },
+          {
+            "rango": "20-40%",
+            "n": 462,
+            "probPredicha": 0.2796,
+            "frecuenciaReal": 0.3139
+          },
+          {
+            "rango": "40-60%",
+            "n": 197,
+            "probPredicha": 0.4888,
+            "frecuenciaReal": 0.3959
+          },
+          {
+            "rango": "60-80%",
+            "n": 93,
+            "probPredicha": 0.6895,
+            "frecuenciaReal": 0.5484
+          },
+          {
+            "rango": "80-100%",
+            "n": 46,
+            "probPredicha": 0.8755,
+            "frecuenciaReal": 0.6957
+          }
+        ]
+      },
+      "pooled": {
+        "acc": 0.4646,
+        "ll": 1.1096,
+        "brier": 0.6579,
+        "ece": 0.2222,
+        "pH": 0.4565538057742782,
+        "pE": 0.2530656167979002,
+        "pA": 0.29038057742782136,
+        "nH": 484,
+        "nE": 56,
+        "nA": 222
+      },
+      "pooledConfusion": {
+        "home": {
+          "home": 256,
+          "draw": 113,
+          "away": 115
+        },
+        "draw": {
+          "home": 24,
+          "draw": 17,
+          "away": 15
+        },
+        "away": {
+          "home": 71,
+          "draw": 70,
+          "away": 81
+        }
+      },
+      "pooledPorClase": {
+        "home": {
+          "recall": 0.7293447293447294,
+          "precision": 0.5289256198347108,
+          "f1": 0.6131736526946109,
+          "realN": 351,
+          "predN": 484
+        },
+        "draw": {
+          "recall": 0.085,
+          "precision": 0.30357142857142855,
+          "f1": 0.1328125,
+          "realN": 200,
+          "predN": 56
+        },
+        "away": {
+          "recall": 0.38388625592417064,
+          "precision": 0.36486486486486486,
+          "f1": 0.3741339491916859,
+          "realN": 211,
+          "predN": 222
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4643,
+          "logLoss": 1.0746,
+          "brier": 0.6382,
+          "ece": 0.2181
+        },
+        "W1": {
+          "accuracy": 0.4105,
+          "logLoss": 1.1639,
+          "brier": 0.7003,
+          "ece": 0.2737
+        },
+        "W2": {
+          "accuracy": 0.4856,
+          "logLoss": 1.1595,
+          "brier": 0.672,
+          "ece": 0.2772
+        },
+        "W3": {
+          "accuracy": 0.4598,
+          "logLoss": 1.0855,
+          "brier": 0.6511,
+          "ece": 0.1891
+        },
+        "W4": {
+          "accuracy": 0.5,
+          "logLoss": 1.0226,
+          "brier": 0.6064,
+          "ece": 0.1858
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0004,
+        "brier": -0.0003,
+        "ece": -0.0066,
+        "accuracy": -0.0013
+      }
+    },
+    "SPEC10": {
+      "desc": "μ de liga si n>=10",
+      "estrategia": "SPEC10",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4753,
+        "logLoss": 1.156,
+        "brier": 0.6419,
+        "probRealMedia": 0.4164,
+        "ece": 0.2346,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 324,
+            "probPredicha": 0.1182,
+            "frecuenciaReal": 0.1944
+          },
+          {
+            "rango": "20-40%",
+            "n": 438,
+            "probPredicha": 0.2831,
+            "frecuenciaReal": 0.3242
+          },
+          {
+            "rango": "40-60%",
+            "n": 173,
+            "probPredicha": 0.4899,
+            "frecuenciaReal": 0.4104
+          },
+          {
+            "rango": "60-80%",
+            "n": 109,
+            "probPredicha": 0.6859,
+            "frecuenciaReal": 0.4954
+          },
+          {
+            "rango": "80-100%",
+            "n": 48,
+            "probPredicha": 0.8786,
+            "frecuenciaReal": 0.7083
+          }
+        ]
+      },
+      "pooled": {
+        "acc": 0.4501,
+        "ll": 1.1182,
+        "brier": 0.6635,
+        "ece": 0.2533,
+        "pH": 0.4558018372703415,
+        "pE": 0.2550157480314962,
+        "pA": 0.2891824146981624,
+        "nH": 477,
+        "nE": 66,
+        "nA": 219
+      },
+      "pooledConfusion": {
+        "home": {
+          "home": 248,
+          "draw": 115,
+          "away": 114
+        },
+        "draw": {
+          "home": 34,
+          "draw": 15,
+          "away": 17
+        },
+        "away": {
+          "home": 69,
+          "draw": 70,
+          "away": 80
+        }
+      },
+      "pooledPorClase": {
+        "home": {
+          "recall": 0.7065527065527065,
+          "precision": 0.519916142557652,
+          "f1": 0.5990338164251208,
+          "realN": 351,
+          "predN": 477
+        },
+        "draw": {
+          "recall": 0.075,
+          "precision": 0.22727272727272727,
+          "f1": 0.11278195488721805,
+          "realN": 200,
+          "predN": 66
+        },
+        "away": {
+          "recall": 0.3791469194312796,
+          "precision": 0.365296803652968,
+          "f1": 0.372093023255814,
+          "realN": 211,
+          "predN": 219
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4753,
+          "logLoss": 1.156,
+          "brier": 0.6419,
+          "ece": 0.2346
+        },
+        "W1": {
+          "accuracy": 0.4105,
+          "logLoss": 1.1687,
+          "brier": 0.7023,
+          "ece": 0.3144
+        },
+        "W2": {
+          "accuracy": 0.4375,
+          "logLoss": 1.1799,
+          "brier": 0.6853,
+          "ece": 0.2875
+        },
+        "W3": {
+          "accuracy": 0.4655,
+          "logLoss": 1.0831,
+          "brier": 0.6503,
+          "ece": 0.2094
+        },
+        "W4": {
+          "accuracy": 0.4895,
+          "logLoss": 1.0324,
+          "brier": 0.6128,
+          "ece": 0.2117
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0082,
+        "brier": 0.0053,
+        "ece": 0.0245,
+        "accuracy": -0.0158
+      }
+    },
+    "V1 (SPEC30)": {
+      "desc": "μ de liga si n>=30 (= modelo actual)",
+      "estrategia": "SPEC30",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4835,
+        "logLoss": 1.0751,
+        "brier": 0.64,
+        "probRealMedia": 0.4154,
+        "ece": 0.2137,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 315,
+            "probPredicha": 0.1182,
+            "frecuenciaReal": 0.1968
+          },
+          {
+            "rango": "20-40%",
+            "n": 447,
+            "probPredicha": 0.2838,
+            "frecuenciaReal": 0.3154
+          },
+          {
+            "rango": "40-60%",
+            "n": 176,
+            "probPredicha": 0.4856,
+            "frecuenciaReal": 0.4261
+          },
+          {
+            "rango": "60-80%",
+            "n": 107,
+            "probPredicha": 0.6843,
+            "frecuenciaReal": 0.486
+          },
+          {
+            "rango": "80-100%",
+            "n": 47,
+            "probPredicha": 0.8768,
+            "frecuenciaReal": 0.7234
+          }
+        ]
+      },
+      "pooled": {
+        "acc": 0.4659,
+        "ll": 1.11,
+        "brier": 0.6582,
+        "ece": 0.2288,
+        "pH": 0.4612795275590556,
+        "pE": 0.254198162729659,
+        "pA": 0.28452230971128595,
+        "nH": 484,
+        "nE": 63,
+        "nA": 215
+      },
+      "pooledConfusion": {
+        "home": {
+          "home": 257,
+          "draw": 113,
+          "away": 114
+        },
+        "draw": {
+          "home": 30,
+          "draw": 17,
+          "away": 16
+        },
+        "away": {
+          "home": 64,
+          "draw": 70,
+          "away": 81
+        }
+      },
+      "pooledPorClase": {
+        "home": {
+          "recall": 0.7321937321937322,
+          "precision": 0.53099173553719,
+          "f1": 0.615568862275449,
+          "realN": 351,
+          "predN": 484
+        },
+        "draw": {
+          "recall": 0.085,
+          "precision": 0.2698412698412698,
+          "f1": 0.12927756653992395,
+          "realN": 200,
+          "predN": 63
+        },
+        "away": {
+          "recall": 0.38388625592417064,
+          "precision": 0.3767441860465116,
+          "f1": 0.38028169014084506,
+          "realN": 211,
+          "predN": 215
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4835,
+          "logLoss": 1.0751,
+          "brier": 0.64,
+          "ece": 0.2137
+        },
+        "W1": {
+          "accuracy": 0.4105,
+          "logLoss": 1.1687,
+          "brier": 0.7023,
+          "ece": 0.3144
+        },
+        "W2": {
+          "accuracy": 0.4856,
+          "logLoss": 1.1527,
+          "brier": 0.6682,
+          "ece": 0.2592
+        },
+        "W3": {
+          "accuracy": 0.477,
+          "logLoss": 1.0842,
+          "brier": 0.6513,
+          "ece": 0.1775
+        },
+        "W4": {
+          "accuracy": 0.4895,
+          "logLoss": 1.0283,
+          "brier": 0.6095,
+          "ece": 0.2048
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0,
+        "brier": 0,
+        "ece": 0,
+        "accuracy": 0
+      }
+    },
+    "BLEND30": {
+      "desc": "μ=(n·μ_liga+30·μ_g)/(n+30)",
+      "estrategia": "BLEND30",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.478,
+        "logLoss": 1.0733,
+        "brier": 0.6383,
+        "probRealMedia": 0.4156,
+        "ece": 0.224,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 303,
+            "probPredicha": 0.1166,
+            "frecuenciaReal": 0.2046
+          },
+          {
+            "rango": "20-40%",
+            "n": 461,
+            "probPredicha": 0.2818,
+            "frecuenciaReal": 0.3124
+          },
+          {
+            "rango": "40-60%",
+            "n": 180,
+            "probPredicha": 0.4912,
+            "frecuenciaReal": 0.4222
+          },
+          {
+            "rango": "60-80%",
+            "n": 102,
+            "probPredicha": 0.6863,
+            "frecuenciaReal": 0.4706
+          },
+          {
+            "rango": "80-100%",
+            "n": 46,
+            "probPredicha": 0.8772,
+            "frecuenciaReal": 0.7391
+          }
+        ]
+      },
+      "pooled": {
+        "acc": 0.4659,
+        "ll": 1.1092,
+        "brier": 0.6581,
+        "ece": 0.2354,
+        "pH": 0.4584251968503942,
+        "pE": 0.25403412073490816,
+        "pA": 0.28754068241469805,
+        "nH": 487,
+        "nE": 56,
+        "nA": 219
+      },
+      "pooledConfusion": {
+        "home": {
+          "home": 258,
+          "draw": 114,
+          "away": 115
+        },
+        "draw": {
+          "home": 25,
+          "draw": 16,
+          "away": 15
+        },
+        "away": {
+          "home": 68,
+          "draw": 70,
+          "away": 81
+        }
+      },
+      "pooledPorClase": {
+        "home": {
+          "recall": 0.7350427350427351,
+          "precision": 0.5297741273100616,
+          "f1": 0.6157517899761337,
+          "realN": 351,
+          "predN": 487
+        },
+        "draw": {
+          "recall": 0.08,
+          "precision": 0.2857142857142857,
+          "f1": 0.125,
+          "realN": 200,
+          "predN": 56
+        },
+        "away": {
+          "recall": 0.38388625592417064,
+          "precision": 0.3698630136986301,
+          "f1": 0.37674418604651166,
+          "realN": 211,
+          "predN": 219
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.478,
+          "logLoss": 1.0733,
+          "brier": 0.6383,
+          "ece": 0.224
+        },
+        "W1": {
+          "accuracy": 0.4105,
+          "logLoss": 1.1665,
+          "brier": 0.7017,
+          "ece": 0.3046
+        },
+        "W2": {
+          "accuracy": 0.4856,
+          "logLoss": 1.1565,
+          "brier": 0.6711,
+          "ece": 0.2507
+        },
+        "W3": {
+          "accuracy": 0.4713,
+          "logLoss": 1.0806,
+          "brier": 0.6487,
+          "ece": 0.1963
+        },
+        "W4": {
+          "accuracy": 0.4947,
+          "logLoss": 1.0263,
+          "brier": 0.6089,
+          "ece": 0.2205
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0008,
+        "brier": -0.0001,
+        "ece": 0.0066,
+        "accuracy": 0
+      }
+    },
+    "FAMILY": {
+      "desc": "temporada n>=30, si no familia n>=30, si no global",
+      "estrategia": "FAMILY",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4835,
+        "logLoss": 1.0749,
+        "brier": 0.64,
+        "probRealMedia": 0.4158,
+        "ece": 0.2195,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 316,
+            "probPredicha": 0.118,
+            "frecuenciaReal": 0.1962
+          },
+          {
+            "rango": "20-40%",
+            "n": 447,
+            "probPredicha": 0.2836,
+            "frecuenciaReal": 0.3177
+          },
+          {
+            "rango": "40-60%",
+            "n": 175,
+            "probPredicha": 0.488,
+            "frecuenciaReal": 0.4229
+          },
+          {
+            "rango": "60-80%",
+            "n": 107,
+            "probPredicha": 0.6849,
+            "frecuenciaReal": 0.486
+          },
+          {
+            "rango": "80-100%",
+            "n": 47,
+            "probPredicha": 0.878,
+            "frecuenciaReal": 0.7234
+          }
+        ]
+      },
+      "pooled": {
+        "acc": 0.4659,
+        "ll": 1.1094,
+        "brier": 0.6581,
+        "ece": 0.2262,
+        "pH": 0.46179133858267785,
+        "pE": 0.25370341207349106,
+        "pA": 0.2845052493438318,
+        "nH": 484,
+        "nE": 63,
+        "nA": 215
+      },
+      "pooledConfusion": {
+        "home": {
+          "home": 257,
+          "draw": 113,
+          "away": 114
+        },
+        "draw": {
+          "home": 30,
+          "draw": 17,
+          "away": 16
+        },
+        "away": {
+          "home": 64,
+          "draw": 70,
+          "away": 81
+        }
+      },
+      "pooledPorClase": {
+        "home": {
+          "recall": 0.7321937321937322,
+          "precision": 0.53099173553719,
+          "f1": 0.615568862275449,
+          "realN": 351,
+          "predN": 484
+        },
+        "draw": {
+          "recall": 0.085,
+          "precision": 0.2698412698412698,
+          "f1": 0.12927756653992395,
+          "realN": 200,
+          "predN": 63
+        },
+        "away": {
+          "recall": 0.38388625592417064,
+          "precision": 0.3767441860465116,
+          "f1": 0.38028169014084506,
+          "realN": 211,
+          "predN": 215
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4835,
+          "logLoss": 1.0749,
+          "brier": 0.64,
+          "ece": 0.2195
+        },
+        "W1": {
+          "accuracy": 0.4105,
+          "logLoss": 1.1687,
+          "brier": 0.7023,
+          "ece": 0.3144
+        },
+        "W2": {
+          "accuracy": 0.4856,
+          "logLoss": 1.1508,
+          "brier": 0.6677,
+          "ece": 0.2565
+        },
+        "W3": {
+          "accuracy": 0.477,
+          "logLoss": 1.0837,
+          "brier": 0.6513,
+          "ece": 0.1897
+        },
+        "W4": {
+          "accuracy": 0.4895,
+          "logLoss": 1.0283,
+          "brier": 0.6095,
+          "ece": 0.2048
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0006,
+        "brier": -0.0001,
+        "ece": -0.0026,
+        "accuracy": 0
+      }
+    }
+  }
+}

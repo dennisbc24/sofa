@@ -1,0 +1,1824 @@
+{
+  "generado": "2026-09-28T13:20:09.830Z",
+  "nota": "TEST no evaluado. K Elo=32 (seleccionado en fase_elo sobre VAL). Features temporales día-estricto; xG/remates con limpieza de NULL y ceros.",
+  "sanidad": {
+    "v1OficialIgualFase1": true,
+    "v2OficialIgualFaseElo": true
+  },
+  "ventanas": [
+    {
+      "nombre": "W1",
+      "fit": 761,
+      "eval": 190,
+      "desde": "2026-03-09",
+      "hasta": "2026-04-10"
+    },
+    {
+      "nombre": "W2",
+      "fit": 951,
+      "eval": 208,
+      "desde": "2026-04-11",
+      "hasta": "2026-05-02"
+    },
+    {
+      "nombre": "W3",
+      "fit": 1159,
+      "eval": 174,
+      "desde": "2026-05-03",
+      "hasta": "2026-05-19"
+    },
+    {
+      "nombre": "W4",
+      "fit": 1333,
+      "eval": 190,
+      "desde": "2026-05-20",
+      "hasta": "2026-06-18"
+    }
+  ],
+  "ganador": {
+    "id": "V2",
+    "desc": "+ Elo (K=32)",
+    "deltaLL": -0.0055
+  },
+  "cortesBuckets": {
+    "q1": 20.4129,
+    "q2": 52.6581
+  },
+  "consistenciaLiga": {
+    "V2": {
+      "mejora": 5,
+      "empeora": 4
+    },
+    "V5Sraw": {
+      "mejora": 6,
+      "empeora": 3
+    },
+    "V4raw": {
+      "mejora": 4,
+      "empeora": 5
+    },
+    "V6": {
+      "mejora": 4,
+      "empeora": 5
+    },
+    "V5T": {
+      "mejora": 2,
+      "empeora": 7
+    },
+    "V5S": {
+      "mejora": 5,
+      "empeora": 4
+    },
+    "V4": {
+      "mejora": 4,
+      "empeora": 5
+    }
+  },
+  "modelos": {
+    "V2": {
+      "desc": "+ Elo (K=32)",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4423,
+        "logLoss": 1.0686,
+        "brier": 0.6415,
+        "probRealMedia": 0.4033,
+        "ece": 0.2041,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 274,
+            "probPredicha": 0.1248,
+            "frecuenciaReal": 0.1971
+          },
+          {
+            "rango": "20-40%",
+            "n": 504,
+            "probPredicha": 0.287,
+            "frecuenciaReal": 0.3214
+          },
+          {
+            "rango": "40-60%",
+            "n": 183,
+            "probPredicha": 0.4917,
+            "frecuenciaReal": 0.4153
+          },
+          {
+            "rango": "60-80%",
+            "n": 102,
+            "probPredicha": 0.6863,
+            "frecuenciaReal": 0.5
+          },
+          {
+            "rango": "80-100%",
+            "n": 29,
+            "probPredicha": 0.8671,
+            "frecuenciaReal": 0.7241
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4423,
+        "logLoss": 1.1045,
+        "brier": 0.6587,
+        "ece": 0.2112,
+        "prob": {
+          "home": 0.4555931758530183,
+          "draw": 0.26479527559055127,
+          "away": 0.2796115485564309
+        },
+        "pred": {
+          "home": 488,
+          "draw": 68,
+          "away": 206
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 248,
+          "draw": 119,
+          "away": 121
+        },
+        "draw": {
+          "home": 31,
+          "draw": 18,
+          "away": 19
+        },
+        "away": {
+          "home": 72,
+          "draw": 63,
+          "away": 71
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7065527065527065,
+          "precision": 0.5081967213114754,
+          "f1": 0.5911799761620977,
+          "realN": 351,
+          "predN": 488
+        },
+        "draw": {
+          "recall": 0.09,
+          "precision": 0.2647058823529412,
+          "f1": 0.13432835820895522,
+          "realN": 200,
+          "predN": 68
+        },
+        "away": {
+          "recall": 0.33649289099526064,
+          "precision": 0.3446601941747573,
+          "f1": 0.3405275779376499,
+          "realN": 211,
+          "predN": 206
+        }
+      },
+      "llEmpates": 1.3758,
+      "llVisitantes": 1.3135,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4423,
+          "logLoss": 1.0686,
+          "brier": 0.6415,
+          "ece": 0.2041
+        },
+        "W1": {
+          "accuracy": 0.3947,
+          "logLoss": 1.1669,
+          "brier": 0.7052,
+          "ece": 0.2795
+        },
+        "W2": {
+          "accuracy": 0.4663,
+          "logLoss": 1.1437,
+          "brier": 0.6677,
+          "ece": 0.2125
+        },
+        "W3": {
+          "accuracy": 0.4368,
+          "logLoss": 1.0676,
+          "brier": 0.6454,
+          "ece": 0.1384
+        },
+        "W4": {
+          "accuracy": 0.4684,
+          "logLoss": 1.0328,
+          "brier": 0.6147,
+          "ece": 0.2074
+        }
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "betaE": -0.9262,
+          "cov": {}
+        },
+        "W1": {
+          "betaE": -1.3012,
+          "cov": {}
+        },
+        "W2": {
+          "betaE": -1.0569,
+          "cov": {}
+        },
+        "W3": {
+          "betaE": -0.9262,
+          "cov": {}
+        },
+        "W4": {
+          "betaE": -0.9818,
+          "cov": {}
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0055,
+        "brier": 0.0005,
+        "ece": -0.0176,
+        "accuracy": -0.0236
+      }
+    },
+    "V1": {
+      "desc": "base V1 (SPEC30)",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4835,
+        "logLoss": 1.0751,
+        "brier": 0.64,
+        "probRealMedia": 0.4154,
+        "ece": 0.2137,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 315,
+            "probPredicha": 0.1182,
+            "frecuenciaReal": 0.1968
+          },
+          {
+            "rango": "20-40%",
+            "n": 447,
+            "probPredicha": 0.2838,
+            "frecuenciaReal": 0.3154
+          },
+          {
+            "rango": "40-60%",
+            "n": 176,
+            "probPredicha": 0.4856,
+            "frecuenciaReal": 0.4261
+          },
+          {
+            "rango": "60-80%",
+            "n": 107,
+            "probPredicha": 0.6843,
+            "frecuenciaReal": 0.486
+          },
+          {
+            "rango": "80-100%",
+            "n": 47,
+            "probPredicha": 0.8768,
+            "frecuenciaReal": 0.7234
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4659,
+        "logLoss": 1.11,
+        "brier": 0.6582,
+        "ece": 0.2288,
+        "prob": {
+          "home": 0.4612795275590556,
+          "draw": 0.254198162729659,
+          "away": 0.28452230971128595
+        },
+        "pred": {
+          "home": 484,
+          "draw": 63,
+          "away": 215
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 257,
+          "draw": 113,
+          "away": 114
+        },
+        "draw": {
+          "home": 30,
+          "draw": 17,
+          "away": 16
+        },
+        "away": {
+          "home": 64,
+          "draw": 70,
+          "away": 81
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7321937321937322,
+          "precision": 0.53099173553719,
+          "f1": 0.615568862275449,
+          "realN": 351,
+          "predN": 484
+        },
+        "draw": {
+          "recall": 0.085,
+          "precision": 0.2698412698412698,
+          "f1": 0.12927756653992395,
+          "realN": 200,
+          "predN": 63
+        },
+        "away": {
+          "recall": 0.38388625592417064,
+          "precision": 0.3767441860465116,
+          "f1": 0.38028169014084506,
+          "realN": 211,
+          "predN": 215
+        }
+      },
+      "llEmpates": 1.4266,
+      "llVisitantes": 1.3079,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4835,
+          "logLoss": 1.0751,
+          "brier": 0.64,
+          "ece": 0.2137
+        },
+        "W1": {
+          "accuracy": 0.4105,
+          "logLoss": 1.1687,
+          "brier": 0.7023,
+          "ece": 0.3144
+        },
+        "W2": {
+          "accuracy": 0.4856,
+          "logLoss": 1.1527,
+          "brier": 0.6682,
+          "ece": 0.2592
+        },
+        "W3": {
+          "accuracy": 0.477,
+          "logLoss": 1.0842,
+          "brier": 0.6513,
+          "ece": 0.1775
+        },
+        "W4": {
+          "accuracy": 0.4895,
+          "logLoss": 1.0283,
+          "brier": 0.6095,
+          "ece": 0.2048
+        }
+      },
+      "coeficientes": {},
+      "deltaVsV1": {
+        "logLoss": 0,
+        "brier": 0,
+        "ece": 0,
+        "accuracy": 0
+      }
+    },
+    "V5Sraw": {
+      "desc": "+ tiro al arco crudo",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4808,
+        "logLoss": 1.071,
+        "brier": 0.641,
+        "probRealMedia": 0.4137,
+        "ece": 0.2046,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 301,
+            "probPredicha": 0.1155,
+            "frecuenciaReal": 0.196
+          },
+          {
+            "rango": "20-40%",
+            "n": 463,
+            "probPredicha": 0.2829,
+            "frecuenciaReal": 0.311
+          },
+          {
+            "rango": "40-60%",
+            "n": 183,
+            "probPredicha": 0.4907,
+            "frecuenciaReal": 0.4208
+          },
+          {
+            "rango": "60-80%",
+            "n": 102,
+            "probPredicha": 0.6919,
+            "frecuenciaReal": 0.5392
+          },
+          {
+            "rango": "80-100%",
+            "n": 43,
+            "probPredicha": 0.8809,
+            "frecuenciaReal": 0.6744
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4646,
+        "logLoss": 1.1102,
+        "brier": 0.6584,
+        "ece": 0.2234,
+        "prob": {
+          "home": 0.46116141732283467,
+          "draw": 0.25583202099737534,
+          "away": 0.28300656167978955
+        },
+        "pred": {
+          "home": 493,
+          "draw": 59,
+          "away": 210
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 259,
+          "draw": 119,
+          "away": 115
+        },
+        "draw": {
+          "home": 26,
+          "draw": 16,
+          "away": 17
+        },
+        "away": {
+          "home": 66,
+          "draw": 65,
+          "away": 79
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7378917378917379,
+          "precision": 0.5253549695740365,
+          "f1": 0.6137440758293838,
+          "realN": 351,
+          "predN": 493
+        },
+        "draw": {
+          "recall": 0.08,
+          "precision": 0.2711864406779661,
+          "f1": 0.12355212355212356,
+          "realN": 200,
+          "predN": 59
+        },
+        "away": {
+          "recall": 0.3744075829383886,
+          "precision": 0.3761904761904762,
+          "f1": 0.3752969121140143,
+          "realN": 211,
+          "predN": 210
+        }
+      },
+      "llEmpates": 1.4215,
+      "llVisitantes": 1.3165,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4808,
+          "logLoss": 1.071,
+          "brier": 0.641,
+          "ece": 0.2046
+        },
+        "W1": {
+          "accuracy": 0.4211,
+          "logLoss": 1.1603,
+          "brier": 0.6957,
+          "ece": 0.2535
+        },
+        "W2": {
+          "accuracy": 0.4663,
+          "logLoss": 1.1579,
+          "brier": 0.6736,
+          "ece": 0.2706
+        },
+        "W3": {
+          "accuracy": 0.4713,
+          "logLoss": 1.0879,
+          "brier": 0.6529,
+          "ece": 0.186
+        },
+        "W4": {
+          "accuracy": 0.5,
+          "logLoss": 1.0284,
+          "brier": 0.6096,
+          "ece": 0.1995
+        }
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": 0.0035,
+              "ba": -0.0495
+            }
+          }
+        },
+        "W1": {
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0054,
+              "ba": -0.055
+            }
+          }
+        },
+        "W2": {
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0033,
+              "ba": -0.0655
+            }
+          }
+        },
+        "W3": {
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": 0.0035,
+              "ba": -0.0495
+            }
+          }
+        },
+        "W4": {
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": 0.0078,
+              "ba": -0.0384
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0002,
+        "brier": 0.0002,
+        "ece": -0.0054,
+        "accuracy": -0.0013
+      }
+    },
+    "V4raw": {
+      "desc": "+ xG/xGA crudo",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4835,
+        "logLoss": 1.0716,
+        "brier": 0.6414,
+        "probRealMedia": 0.4121,
+        "ece": 0.1996,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 300,
+            "probPredicha": 0.117,
+            "frecuenciaReal": 0.2
+          },
+          {
+            "rango": "20-40%",
+            "n": 466,
+            "probPredicha": 0.2845,
+            "frecuenciaReal": 0.309
+          },
+          {
+            "rango": "40-60%",
+            "n": 180,
+            "probPredicha": 0.4881,
+            "frecuenciaReal": 0.4278
+          },
+          {
+            "rango": "60-80%",
+            "n": 107,
+            "probPredicha": 0.692,
+            "frecuenciaReal": 0.5047
+          },
+          {
+            "rango": "80-100%",
+            "n": 39,
+            "probPredicha": 0.8828,
+            "frecuenciaReal": 0.7436
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1117,
+        "brier": 0.659,
+        "ece": 0.2174,
+        "prob": {
+          "home": 0.4568779527559058,
+          "draw": 0.260792650918635,
+          "away": 0.28232939632545906
+        },
+        "pred": {
+          "home": 491,
+          "draw": 63,
+          "away": 208
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 257,
+          "draw": 117,
+          "away": 117
+        },
+        "draw": {
+          "home": 28,
+          "draw": 18,
+          "away": 17
+        },
+        "away": {
+          "home": 66,
+          "draw": 65,
+          "away": 77
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7321937321937322,
+          "precision": 0.5234215885947047,
+          "f1": 0.6104513064133016,
+          "realN": 351,
+          "predN": 491
+        },
+        "draw": {
+          "recall": 0.09,
+          "precision": 0.2857142857142857,
+          "f1": 0.13688212927756654,
+          "realN": 200,
+          "predN": 63
+        },
+        "away": {
+          "recall": 0.36492890995260663,
+          "precision": 0.3701923076923077,
+          "f1": 0.36754176610978523,
+          "realN": 211,
+          "predN": 208
+        }
+      },
+      "llEmpates": 1.4017,
+      "llVisitantes": 1.317,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4835,
+          "logLoss": 1.0716,
+          "brier": 0.6414,
+          "ece": 0.1996
+        },
+        "W1": {
+          "accuracy": 0.4158,
+          "logLoss": 1.1598,
+          "brier": 0.6961,
+          "ece": 0.2683
+        },
+        "W2": {
+          "accuracy": 0.4615,
+          "logLoss": 1.1658,
+          "brier": 0.6746,
+          "ece": 0.282
+        },
+        "W3": {
+          "accuracy": 0.477,
+          "logLoss": 1.0845,
+          "brier": 0.652,
+          "ece": 0.172
+        },
+        "W4": {
+          "accuracy": 0.4947,
+          "logLoss": 1.0294,
+          "brier": 0.6114,
+          "ece": 0.1857
+        }
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.059,
+              "ba": -0.082
+            }
+          }
+        },
+        "W1": {
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.07,
+              "ba": -0.143
+            }
+          }
+        },
+        "W2": {
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.0477,
+              "ba": -0.134
+            }
+          }
+        },
+        "W3": {
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.059,
+              "ba": -0.082
+            }
+          }
+        },
+        "W4": {
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.0645,
+              "ba": -0.0753
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0017,
+        "brier": 0.0008,
+        "ece": -0.0114,
+        "accuracy": -0.004
+      }
+    },
+    "V6": {
+      "desc": "V2 + xG norm",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4478,
+        "logLoss": 1.071,
+        "brier": 0.6449,
+        "probRealMedia": 0.4016,
+        "ece": 0.1984,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 272,
+            "probPredicha": 0.1237,
+            "frecuenciaReal": 0.1985
+          },
+          {
+            "rango": "20-40%",
+            "n": 494,
+            "probPredicha": 0.2839,
+            "frecuenciaReal": 0.3158
+          },
+          {
+            "rango": "40-60%",
+            "n": 198,
+            "probPredicha": 0.4889,
+            "frecuenciaReal": 0.4242
+          },
+          {
+            "rango": "60-80%",
+            "n": 99,
+            "probPredicha": 0.6895,
+            "frecuenciaReal": 0.4848
+          },
+          {
+            "rango": "80-100%",
+            "n": 29,
+            "probPredicha": 0.8631,
+            "frecuenciaReal": 0.7586
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4423,
+        "logLoss": 1.1125,
+        "brier": 0.663,
+        "ece": 0.2212,
+        "prob": {
+          "home": 0.4561482939632552,
+          "draw": 0.26468897637795297,
+          "away": 0.27916272965879274
+        },
+        "pred": {
+          "home": 487,
+          "draw": 67,
+          "away": 208
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 249,
+          "draw": 116,
+          "away": 122
+        },
+        "draw": {
+          "home": 28,
+          "draw": 19,
+          "away": 20
+        },
+        "away": {
+          "home": 74,
+          "draw": 65,
+          "away": 69
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7094017094017094,
+          "precision": 0.5112936344969199,
+          "f1": 0.594272076372315,
+          "realN": 351,
+          "predN": 487
+        },
+        "draw": {
+          "recall": 0.095,
+          "precision": 0.2835820895522388,
+          "f1": 0.14232209737827714,
+          "realN": 200,
+          "predN": 67
+        },
+        "away": {
+          "recall": 0.32701421800947866,
+          "precision": 0.3317307692307692,
+          "f1": 0.32935560859188545,
+          "realN": 211,
+          "predN": 208
+        }
+      },
+      "llEmpates": 1.3849,
+      "llVisitantes": 1.3296,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4478,
+          "logLoss": 1.071,
+          "brier": 0.6449,
+          "ece": 0.1984
+        },
+        "W1": {
+          "accuracy": 0.4053,
+          "logLoss": 1.177,
+          "brier": 0.7087,
+          "ece": 0.2867
+        },
+        "W2": {
+          "accuracy": 0.4423,
+          "logLoss": 1.1558,
+          "brier": 0.6743,
+          "ece": 0.2383
+        },
+        "W3": {
+          "accuracy": 0.4483,
+          "logLoss": 1.0718,
+          "brier": 0.648,
+          "ece": 0.1638
+        },
+        "W4": {
+          "accuracy": 0.4737,
+          "logLoss": 1.0381,
+          "brier": 0.6188,
+          "ece": 0.19
+        }
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "betaE": -0.8237,
+          "cov": {
+            "xg": {
+              "bf": -0.135,
+              "ba": -0.1551
+            }
+          }
+        },
+        "W1": {
+          "betaE": -1.1119,
+          "cov": {
+            "xg": {
+              "bf": -0.1796,
+              "ba": -0.2381
+            }
+          }
+        },
+        "W2": {
+          "betaE": -0.9144,
+          "cov": {
+            "xg": {
+              "bf": -0.1322,
+              "ba": -0.2185
+            }
+          }
+        },
+        "W3": {
+          "betaE": -0.8237,
+          "cov": {
+            "xg": {
+              "bf": -0.135,
+              "ba": -0.1551
+            }
+          }
+        },
+        "W4": {
+          "betaE": -0.8947,
+          "cov": {
+            "xg": {
+              "bf": -0.1299,
+              "ba": -0.1526
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0025,
+        "brier": 0.0048,
+        "ece": -0.0076,
+        "accuracy": -0.0236
+      }
+    },
+    "V5T": {
+      "desc": "+ remates totales norm",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4863,
+        "logLoss": 1.0753,
+        "brier": 0.6405,
+        "probRealMedia": 0.4149,
+        "ece": 0.2101,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 312,
+            "probPredicha": 0.1176,
+            "frecuenciaReal": 0.1987
+          },
+          {
+            "rango": "20-40%",
+            "n": 449,
+            "probPredicha": 0.283,
+            "frecuenciaReal": 0.3118
+          },
+          {
+            "rango": "40-60%",
+            "n": 178,
+            "probPredicha": 0.4859,
+            "frecuenciaReal": 0.427
+          },
+          {
+            "rango": "60-80%",
+            "n": 105,
+            "probPredicha": 0.6839,
+            "frecuenciaReal": 0.4952
+          },
+          {
+            "rango": "80-100%",
+            "n": 48,
+            "probPredicha": 0.874,
+            "frecuenciaReal": 0.7083
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4672,
+        "logLoss": 1.1128,
+        "brier": 0.6593,
+        "ece": 0.2286,
+        "prob": {
+          "home": 0.4622506561679787,
+          "draw": 0.25411679790026254,
+          "away": 0.2836325459317586
+        },
+        "pred": {
+          "home": 488,
+          "draw": 63,
+          "away": 211
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 258,
+          "draw": 116,
+          "away": 114
+        },
+        "draw": {
+          "home": 28,
+          "draw": 18,
+          "away": 17
+        },
+        "away": {
+          "home": 65,
+          "draw": 66,
+          "away": 80
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7350427350427351,
+          "precision": 0.5286885245901639,
+          "f1": 0.6150178784266984,
+          "realN": 351,
+          "predN": 488
+        },
+        "draw": {
+          "recall": 0.09,
+          "precision": 0.2857142857142857,
+          "f1": 0.13688212927756654,
+          "realN": 200,
+          "predN": 63
+        },
+        "away": {
+          "recall": 0.3791469194312796,
+          "precision": 0.3791469194312796,
+          "f1": 0.3791469194312796,
+          "realN": 211,
+          "predN": 211
+        }
+      },
+      "llEmpates": 1.4275,
+      "llVisitantes": 1.3182,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4863,
+          "logLoss": 1.0753,
+          "brier": 0.6405,
+          "ece": 0.2101
+        },
+        "W1": {
+          "accuracy": 0.4158,
+          "logLoss": 1.1689,
+          "brier": 0.7019,
+          "ece": 0.3044
+        },
+        "W2": {
+          "accuracy": 0.4808,
+          "logLoss": 1.1617,
+          "brier": 0.6719,
+          "ece": 0.2541
+        },
+        "W3": {
+          "accuracy": 0.4713,
+          "logLoss": 1.0864,
+          "brier": 0.6529,
+          "ece": 0.1732
+        },
+        "W4": {
+          "accuracy": 0.5,
+          "logLoss": 1.0271,
+          "brier": 0.609,
+          "ece": 0.1985
+        }
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "betaE": null,
+          "cov": {
+            "ts": {
+              "bf": -0.0309,
+              "ba": -0.0745
+            }
+          }
+        },
+        "W1": {
+          "betaE": null,
+          "cov": {
+            "ts": {
+              "bf": -0.0712,
+              "ba": -0.1439
+            }
+          }
+        },
+        "W2": {
+          "betaE": null,
+          "cov": {
+            "ts": {
+              "bf": -0.0349,
+              "ba": -0.1612
+            }
+          }
+        },
+        "W3": {
+          "betaE": null,
+          "cov": {
+            "ts": {
+              "bf": -0.0309,
+              "ba": -0.0745
+            }
+          }
+        },
+        "W4": {
+          "betaE": null,
+          "cov": {
+            "ts": {
+              "bf": -0.0109,
+              "ba": -0.0446
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0028,
+        "brier": 0.0011,
+        "ece": -0.0002,
+        "accuracy": 0.0013
+      }
+    },
+    "V5S": {
+      "desc": "+ tiro al arco norm",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4725,
+        "logLoss": 1.0742,
+        "brier": 0.6418,
+        "probRealMedia": 0.4126,
+        "ece": 0.2062,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 300,
+            "probPredicha": 0.1165,
+            "frecuenciaReal": 0.22
+          },
+          {
+            "rango": "20-40%",
+            "n": 462,
+            "probPredicha": 0.2825,
+            "frecuenciaReal": 0.2965
+          },
+          {
+            "rango": "40-60%",
+            "n": 185,
+            "probPredicha": 0.4888,
+            "frecuenciaReal": 0.4108
+          },
+          {
+            "rango": "60-80%",
+            "n": 102,
+            "probPredicha": 0.6894,
+            "frecuenciaReal": 0.5686
+          },
+          {
+            "rango": "80-100%",
+            "n": 43,
+            "probPredicha": 0.879,
+            "frecuenciaReal": 0.6279
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1148,
+        "brier": 0.6598,
+        "ece": 0.2293,
+        "prob": {
+          "home": 0.46302230971128594,
+          "draw": 0.2557755905511812,
+          "away": 0.2812020997375331
+        },
+        "pred": {
+          "home": 496,
+          "draw": 60,
+          "away": 206
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 260,
+          "draw": 118,
+          "away": 118
+        },
+        "draw": {
+          "home": 27,
+          "draw": 16,
+          "away": 17
+        },
+        "away": {
+          "home": 64,
+          "draw": 66,
+          "away": 76
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7407407407407407,
+          "precision": 0.5241935483870968,
+          "f1": 0.6139315230224321,
+          "realN": 351,
+          "predN": 496
+        },
+        "draw": {
+          "recall": 0.08,
+          "precision": 0.26666666666666666,
+          "f1": 0.12307692307692307,
+          "realN": 200,
+          "predN": 60
+        },
+        "away": {
+          "recall": 0.36018957345971564,
+          "precision": 0.36893203883495146,
+          "f1": 0.3645083932853717,
+          "realN": 211,
+          "predN": 206
+        }
+      },
+      "llEmpates": 1.4294,
+      "llVisitantes": 1.336,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4725,
+          "logLoss": 1.0742,
+          "brier": 0.6418,
+          "ece": 0.2062
+        },
+        "W1": {
+          "accuracy": 0.4263,
+          "logLoss": 1.1739,
+          "brier": 0.7012,
+          "ece": 0.284
+        },
+        "W2": {
+          "accuracy": 0.4567,
+          "logLoss": 1.164,
+          "brier": 0.6755,
+          "ece": 0.2663
+        },
+        "W3": {
+          "accuracy": 0.454,
+          "logLoss": 1.0901,
+          "brier": 0.6543,
+          "ece": 0.1894
+        },
+        "W4": {
+          "accuracy": 0.5105,
+          "logLoss": 1.0242,
+          "brier": 0.6063,
+          "ece": 0.1705
+        }
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0791,
+              "ba": -0.2955
+            }
+          }
+        },
+        "W1": {
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0794,
+              "ba": -0.3936
+            }
+          }
+        },
+        "W2": {
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0636,
+              "ba": -0.3715
+            }
+          }
+        },
+        "W3": {
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0791,
+              "ba": -0.2955
+            }
+          }
+        },
+        "W4": {
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0698,
+              "ba": -0.2774
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0048,
+        "brier": 0.0016,
+        "ece": 0.0005,
+        "accuracy": -0.004
+      }
+    },
+    "V4": {
+      "desc": "+ xG/xGA norm liga",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4753,
+        "logLoss": 1.0771,
+        "brier": 0.6447,
+        "probRealMedia": 0.4114,
+        "ece": 0.2205,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 303,
+            "probPredicha": 0.117,
+            "frecuenciaReal": 0.2013
+          },
+          {
+            "rango": "20-40%",
+            "n": 458,
+            "probPredicha": 0.2826,
+            "frecuenciaReal": 0.3144
+          },
+          {
+            "rango": "40-60%",
+            "n": 186,
+            "probPredicha": 0.4893,
+            "frecuenciaReal": 0.4032
+          },
+          {
+            "rango": "60-80%",
+            "n": 105,
+            "probPredicha": 0.6944,
+            "frecuenciaReal": 0.5333
+          },
+          {
+            "rango": "80-100%",
+            "n": 40,
+            "probPredicha": 0.8802,
+            "frecuenciaReal": 0.7
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.119,
+        "brier": 0.6629,
+        "ece": 0.2332,
+        "prob": {
+          "home": 0.4614829396325461,
+          "draw": 0.2556706036745407,
+          "away": 0.2828464566929129
+        },
+        "pred": {
+          "home": 485,
+          "draw": 65,
+          "away": 212
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 254,
+          "draw": 115,
+          "away": 116
+        },
+        "draw": {
+          "home": 28,
+          "draw": 20,
+          "away": 17
+        },
+        "away": {
+          "home": 69,
+          "draw": 65,
+          "away": 78
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7236467236467237,
+          "precision": 0.5237113402061856,
+          "f1": 0.6076555023923444,
+          "realN": 351,
+          "predN": 485
+        },
+        "draw": {
+          "recall": 0.1,
+          "precision": 0.3076923076923077,
+          "f1": 0.15094339622641512,
+          "realN": 200,
+          "predN": 65
+        },
+        "away": {
+          "recall": 0.3696682464454976,
+          "precision": 0.36792452830188677,
+          "f1": 0.3687943262411348,
+          "realN": 211,
+          "predN": 212
+        }
+      },
+      "llEmpates": 1.4324,
+      "llVisitantes": 1.3272,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4753,
+          "logLoss": 1.0771,
+          "brier": 0.6447,
+          "ece": 0.2205
+        },
+        "W1": {
+          "accuracy": 0.4211,
+          "logLoss": 1.1834,
+          "brier": 0.7069,
+          "ece": 0.2878
+        },
+        "W2": {
+          "accuracy": 0.4615,
+          "logLoss": 1.1639,
+          "brier": 0.6741,
+          "ece": 0.2603
+        },
+        "W3": {
+          "accuracy": 0.4828,
+          "logLoss": 1.0881,
+          "brier": 0.6545,
+          "ece": 0.1915
+        },
+        "W4": {
+          "accuracy": 0.4842,
+          "logLoss": 1.0336,
+          "brier": 0.6145,
+          "ece": 0.186
+        }
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.1662,
+              "ba": -0.1769
+            }
+          }
+        },
+        "W1": {
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.2233,
+              "ba": -0.2667
+            }
+          }
+        },
+        "W2": {
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.1672,
+              "ba": -0.2441
+            }
+          }
+        },
+        "W3": {
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.1662,
+              "ba": -0.1769
+            }
+          }
+        },
+        "W4": {
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.16,
+              "ba": -0.176
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.009,
+        "brier": 0.0047,
+        "ece": 0.0044,
+        "accuracy": -0.004
+      }
+    }
+  },
+  "porLiga": [
+    {
+      "liga": "Serie A 2025 2026",
+      "n": 101,
+      "llV1": 1.0526,
+      "deltas": {
+        "V2": -0.0182,
+        "V5Sraw": 0.0056,
+        "V4raw": 0.0004,
+        "V6": -0.0226,
+        "V5T": 0.0027,
+        "V5S": 0.0088,
+        "V4": -0.0047
+      }
+    },
+    {
+      "liga": "Liga Peruana Apertura 2026",
+      "n": 97,
+      "llV1": 1.0347,
+      "deltas": {
+        "V2": 0.0029,
+        "V5Sraw": 0.012,
+        "V4raw": 0.0156,
+        "V6": 0.0323,
+        "V5T": 0.004,
+        "V5S": 0.014,
+        "V4": 0.0325
+      }
+    },
+    {
+      "liga": "Copa Sudamericana 2026",
+      "n": 95,
+      "llV1": 1.2115,
+      "deltas": {
+        "V2": -0.0084,
+        "V5Sraw": 0.0163,
+        "V4raw": 0.0146,
+        "V6": 0.0221,
+        "V5T": 0.0088,
+        "V5S": 0.0255,
+        "V4": 0.0335
+      }
+    },
+    {
+      "liga": "Copa Libertadores 2026",
+      "n": 94,
+      "llV1": 1.1802,
+      "deltas": {
+        "V2": -0.0181,
+        "V5Sraw": -0.0049,
+        "V4raw": -0.0122,
+        "V6": -0.0176,
+        "V5T": 0.0069,
+        "V5S": -0.0086,
+        "V4": -0.0019
+      }
+    },
+    {
+      "liga": "Premier League 2025 2026",
+      "n": 89,
+      "llV1": 1.2559,
+      "deltas": {
+        "V2": -0.0262,
+        "V5Sraw": -0.0125,
+        "V4raw": -0.0077,
+        "V6": -0.0239,
+        "V5T": -0.0003,
+        "V5S": 0.0206,
+        "V4": -0.0017
+      }
+    },
+    {
+      "liga": "International Friendly Games",
+      "n": 73,
+      "llV1": 1.0225,
+      "deltas": {
+        "V2": 0.0254,
+        "V5Sraw": -0.0145,
+        "V4raw": -0.012,
+        "V6": 0.009,
+        "V5T": -0.0043,
+        "V5S": -0.0161,
+        "V4": -0.0154
+      }
+    },
+    {
+      "liga": "La Liga 2025 2026",
+      "n": 50,
+      "llV1": 0.9801,
+      "deltas": {
+        "V2": 0.0044,
+        "V5Sraw": -0.0013,
+        "V4raw": 0.0011,
+        "V6": 0.0044,
+        "V5T": 0.0001,
+        "V5S": -0.0028,
+        "V4": 0.0036
+      }
+    },
+    {
+      "liga": "Bundesliga 2025 2026",
+      "n": 45,
+      "llV1": 1.0672,
+      "deltas": {
+        "V2": -0.0267,
+        "V5Sraw": -0.0066,
+        "V4raw": 0.008,
+        "V6": -0.0169,
+        "V5T": 0.0057,
+        "V5S": -0.0028,
+        "V4": 0.0089
+      }
+    },
+    {
+      "liga": "Bundesliga 2025 2026",
+      "n": 35,
+      "llV1": 1.0193,
+      "deltas": {
+        "V2": 0.0224,
+        "V5Sraw": -0.0002,
+        "V4raw": -0.0056,
+        "V6": 0.0195,
+        "V5T": 0.0003,
+        "V5S": -0.0102,
+        "V4": 0.0008
+      }
+    }
+  ],
+  "buckets": {
+    "PEQUEÑA": {
+      "V2": {
+        "n": 255,
+        "accuracy": 0.3725,
+        "logLoss": 1.1603,
+        "brier": 0.6963,
+        "pFavorito": 0.385,
+        "realFavGana": 0.298
+      },
+      "V1": {
+        "n": 255,
+        "accuracy": 0.4118,
+        "logLoss": 1.1612,
+        "brier": 0.6952,
+        "pFavorito": 0.396,
+        "realFavGana": 0.298
+      },
+      "V5Sraw": {
+        "n": 255,
+        "accuracy": 0.4,
+        "logLoss": 1.1609,
+        "brier": 0.6954,
+        "pFavorito": 0.3891,
+        "realFavGana": 0.298
+      },
+      "V4raw": {
+        "n": 255,
+        "accuracy": 0.3922,
+        "logLoss": 1.1656,
+        "brier": 0.6969,
+        "pFavorito": 0.3892,
+        "realFavGana": 0.298
+      },
+      "V6": {
+        "n": 255,
+        "accuracy": 0.3765,
+        "logLoss": 1.1698,
+        "brier": 0.7018,
+        "pFavorito": 0.3865,
+        "realFavGana": 0.298
+      },
+      "V5T": {
+        "n": 255,
+        "accuracy": 0.4157,
+        "logLoss": 1.1642,
+        "brier": 0.6966,
+        "pFavorito": 0.3964,
+        "realFavGana": 0.298
+      },
+      "V5S": {
+        "n": 255,
+        "accuracy": 0.3804,
+        "logLoss": 1.1692,
+        "brier": 0.6987,
+        "pFavorito": 0.3923,
+        "realFavGana": 0.298
+      },
+      "V4": {
+        "n": 255,
+        "accuracy": 0.4,
+        "logLoss": 1.1729,
+        "brier": 0.7017,
+        "pFavorito": 0.396,
+        "realFavGana": 0.298
+      }
+    },
+    "MEDIA": {
+      "V2": {
+        "n": 254,
+        "accuracy": 0.4291,
+        "logLoss": 1.1393,
+        "brier": 0.6802,
+        "pFavorito": 0.4419,
+        "realFavGana": 0.4646
+      },
+      "V1": {
+        "n": 254,
+        "accuracy": 0.437,
+        "logLoss": 1.1383,
+        "brier": 0.675,
+        "pFavorito": 0.4753,
+        "realFavGana": 0.4646
+      },
+      "V5Sraw": {
+        "n": 254,
+        "accuracy": 0.4488,
+        "logLoss": 1.1385,
+        "brier": 0.6743,
+        "pFavorito": 0.4743,
+        "realFavGana": 0.4646
+      },
+      "V4raw": {
+        "n": 254,
+        "accuracy": 0.4488,
+        "logLoss": 1.1435,
+        "brier": 0.6779,
+        "pFavorito": 0.4684,
+        "realFavGana": 0.4646
+      },
+      "V6": {
+        "n": 254,
+        "accuracy": 0.4331,
+        "logLoss": 1.1525,
+        "brier": 0.6875,
+        "pFavorito": 0.4384,
+        "realFavGana": 0.4646
+      },
+      "V5T": {
+        "n": 254,
+        "accuracy": 0.4449,
+        "logLoss": 1.144,
+        "brier": 0.6774,
+        "pFavorito": 0.475,
+        "realFavGana": 0.4646
+      },
+      "V5S": {
+        "n": 254,
+        "accuracy": 0.4606,
+        "logLoss": 1.1411,
+        "brier": 0.6748,
+        "pFavorito": 0.4707,
+        "realFavGana": 0.4646
+      },
+      "V4": {
+        "n": 254,
+        "accuracy": 0.4488,
+        "logLoss": 1.1526,
+        "brier": 0.6832,
+        "pFavorito": 0.4661,
+        "realFavGana": 0.4646
+      }
+    },
+    "GRANDE": {
+      "V2": {
+        "n": 253,
+        "accuracy": 0.5257,
+        "logLoss": 1.0132,
+        "brier": 0.5993,
+        "pFavorito": 0.5371,
+        "realFavGana": 0.5534
+      },
+      "V1": {
+        "n": 253,
+        "accuracy": 0.5494,
+        "logLoss": 1.03,
+        "brier": 0.604,
+        "pFavorito": 0.6192,
+        "realFavGana": 0.5534
+      },
+      "V5Sraw": {
+        "n": 253,
+        "accuracy": 0.5455,
+        "logLoss": 1.0307,
+        "brier": 0.6052,
+        "pFavorito": 0.6155,
+        "realFavGana": 0.5534
+      },
+      "V4raw": {
+        "n": 253,
+        "accuracy": 0.5455,
+        "logLoss": 1.0255,
+        "brier": 0.6019,
+        "pFavorito": 0.6095,
+        "realFavGana": 0.5534
+      },
+      "V6": {
+        "n": 253,
+        "accuracy": 0.5178,
+        "logLoss": 1.0147,
+        "brier": 0.5995,
+        "pFavorito": 0.539,
+        "realFavGana": 0.5534
+      },
+      "V5T": {
+        "n": 253,
+        "accuracy": 0.5415,
+        "logLoss": 1.0295,
+        "brier": 0.6036,
+        "pFavorito": 0.6181,
+        "realFavGana": 0.5534
+      },
+      "V5S": {
+        "n": 253,
+        "accuracy": 0.5455,
+        "logLoss": 1.0335,
+        "brier": 0.6055,
+        "pFavorito": 0.6066,
+        "realFavGana": 0.5534
+      },
+      "V4": {
+        "n": 253,
+        "accuracy": 0.5375,
+        "logLoss": 1.0309,
+        "brier": 0.6035,
+        "pFavorito": 0.6093,
+        "realFavGana": 0.5534
+      }
+    }
+  }
+}

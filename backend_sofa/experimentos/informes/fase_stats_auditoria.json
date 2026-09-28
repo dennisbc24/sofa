@@ -1,0 +1,327 @@
+{
+  "generado": "2026-09-28T13:06:49.472Z",
+  "nota": "SOLO train+val. NULL y 0 no se usan como valor real.",
+  "ladosTotales": 3046,
+  "validos": {
+    "xg": 2970,
+    "ts": 3035,
+    "st": 3032
+  },
+  "cerosXgConGoles": 0,
+  "razones": {
+    "L:xg_null": 36,
+    "V:xg_null": 36,
+    "V:xg_cero": 4,
+    "V:ts_cero": 3,
+    "V:st_cero_sin_remates": 3,
+    "L:st_cero_con_goles": 1,
+    "V:st_cero_con_goles": 2,
+    "L:ts_null": 4,
+    "L:st_null": 4,
+    "V:ts_null": 4,
+    "V:st_null": 4
+  },
+  "porLiga": [
+    {
+      "liga": "Serie A 2025 2026",
+      "n": 190,
+      "xgPct": 99.7,
+      "tsPct": 99.7,
+      "stPct": 99.7,
+      "xgAmbosPct": 99.5
+    },
+    {
+      "liga": "UEFA Nations League 24/25",
+      "n": 176,
+      "xgPct": 100,
+      "tsPct": 100,
+      "stPct": 100,
+      "xgAmbosPct": 100
+    },
+    {
+      "liga": "Liga Peruana Apertura 2026",
+      "n": 149,
+      "xgPct": 94.6,
+      "tsPct": 100,
+      "stPct": 100,
+      "xgAmbosPct": 94.6
+    },
+    {
+      "liga": "La Liga 2025 2026",
+      "n": 139,
+      "xgPct": 100,
+      "tsPct": 100,
+      "stPct": 100,
+      "xgAmbosPct": 100
+    },
+    {
+      "liga": "UEFA Champions League 2025 2026",
+      "n": 131,
+      "xgPct": 100,
+      "tsPct": 100,
+      "stPct": 99.6,
+      "xgAmbosPct": 100
+    },
+    {
+      "liga": "International Friendly Games",
+      "n": 108,
+      "xgPct": 78.2,
+      "tsPct": 97.2,
+      "stPct": 97.2,
+      "xgAmbosPct": 77.8
+    },
+    {
+      "liga": "Copa Sudamericana 2026",
+      "n": 95,
+      "xgPct": 100,
+      "tsPct": 100,
+      "stPct": 99.5,
+      "xgAmbosPct": 100
+    },
+    {
+      "liga": "Copa Libertadores 2026",
+      "n": 94,
+      "xgPct": 99.5,
+      "tsPct": 99.5,
+      "stPct": 99.5,
+      "xgAmbosPct": 98.9
+    },
+    {
+      "liga": "Premier League 2025 2026",
+      "n": 90,
+      "xgPct": 100,
+      "tsPct": 100,
+      "stPct": 100,
+      "xgAmbosPct": 100
+    },
+    {
+      "liga": "Bundesliga 2025 2026",
+      "n": 89,
+      "xgPct": 100,
+      "tsPct": 100,
+      "stPct": 100,
+      "xgAmbosPct": 100
+    },
+    {
+      "liga": "FIFA Club World Cup",
+      "n": 60,
+      "xgPct": 100,
+      "tsPct": 100,
+      "stPct": 100,
+      "xgAmbosPct": 100
+    },
+    {
+      "liga": "FIFA World Cup 2022",
+      "n": 59,
+      "xgPct": 99.2,
+      "tsPct": 99.2,
+      "stPct": 98.3,
+      "xgAmbosPct": 98.3
+    },
+    {
+      "liga": "Bundesliga 2025 2026",
+      "n": 45,
+      "xgPct": 100,
+      "tsPct": 100,
+      "stPct": 100,
+      "xgAmbosPct": 100
+    },
+    {
+      "liga": "Copa Sudamericana 2025",
+      "n": 39,
+      "xgPct": 100,
+      "tsPct": 100,
+      "stPct": 100,
+      "xgAmbosPct": 100
+    },
+    {
+      "liga": "La Liga Dos 2025",
+      "n": 26,
+      "xgPct": 100,
+      "tsPct": 100,
+      "stPct": 100,
+      "xgAmbosPct": 100
+    },
+    {
+      "liga": "FIFA World Cup 2026",
+      "n": 26,
+      "xgPct": 96.2,
+      "tsPct": 96.2,
+      "stPct": 96.2,
+      "xgAmbosPct": 96.2
+    },
+    {
+      "liga": "Final de Champions",
+      "n": 7,
+      "xgPct": 42.9,
+      "tsPct": 100,
+      "stPct": 100,
+      "xgAmbosPct": 42.9
+    }
+  ],
+  "ligasAviso": [
+    "International Friendly Games (78.2%)"
+  ],
+  "calidadXg": [
+    {
+      "liga": "Serie A 2025 2026",
+      "n": 190,
+      "xgCrudo": 1.268526315789473,
+      "golesCrudo": 1.2526315789473683,
+      "xgLimpio": 1.271873350923482,
+      "golesLimpio": 1.2559366754617414,
+      "nCrudo": 380,
+      "nLimpio": 379
+    },
+    {
+      "liga": "UEFA Nations League 24/25",
+      "n": 176,
+      "xgCrudo": 1.4010511363636367,
+      "golesCrudo": 1.3238636363636365,
+      "xgLimpio": 1.4010511363636367,
+      "golesLimpio": 1.3238636363636365,
+      "nCrudo": 352,
+      "nLimpio": 352
+    },
+    {
+      "liga": "Liga Peruana Apertura 2026",
+      "n": 149,
+      "xgCrudo": 1.3549999999999995,
+      "golesCrudo": 1.2943262411347518,
+      "xgLimpio": 1.3549999999999995,
+      "golesLimpio": 1.2943262411347518,
+      "nCrudo": 282,
+      "nLimpio": 282
+    },
+    {
+      "liga": "La Liga 2025 2026",
+      "n": 139,
+      "xgCrudo": 1.3081294964028791,
+      "golesCrudo": 1.3237410071942446,
+      "xgLimpio": 1.3081294964028791,
+      "golesLimpio": 1.3237410071942446,
+      "nCrudo": 278,
+      "nLimpio": 278
+    },
+    {
+      "liga": "UEFA Champions League 2025 2026",
+      "n": 131,
+      "xgCrudo": 1.6124427480916024,
+      "golesCrudo": 1.6908396946564885,
+      "xgLimpio": 1.6124427480916024,
+      "golesLimpio": 1.6908396946564885,
+      "nCrudo": 262,
+      "nLimpio": 262
+    },
+    {
+      "liga": "International Friendly Games",
+      "n": 108,
+      "xgCrudo": 1.2942941176470586,
+      "golesCrudo": 1.3647058823529412,
+      "xgLimpio": 1.3019526627218934,
+      "golesLimpio": 1.3727810650887573,
+      "nCrudo": 170,
+      "nLimpio": 169
+    },
+    {
+      "liga": "Copa Sudamericana 2026",
+      "n": 95,
+      "xgCrudo": 1.263421052631579,
+      "golesCrudo": 1.1526315789473685,
+      "xgLimpio": 1.263421052631579,
+      "golesLimpio": 1.1526315789473685,
+      "nCrudo": 190,
+      "nLimpio": 190
+    },
+    {
+      "liga": "Copa Libertadores 2026",
+      "n": 94,
+      "xgCrudo": 1.1993085106382981,
+      "golesCrudo": 1.1702127659574468,
+      "xgLimpio": 1.2057219251336901,
+      "golesLimpio": 1.1764705882352942,
+      "nCrudo": 188,
+      "nLimpio": 187
+    },
+    {
+      "liga": "Premier League 2025 2026",
+      "n": 90,
+      "xgCrudo": 1.4272777777777776,
+      "golesCrudo": 1.3444444444444446,
+      "xgLimpio": 1.4272777777777776,
+      "golesLimpio": 1.3444444444444446,
+      "nCrudo": 180,
+      "nLimpio": 180
+    },
+    {
+      "liga": "Bundesliga 2025 2026",
+      "n": 89,
+      "xgCrudo": 1.6272471910112367,
+      "golesCrudo": 1.6123595505617978,
+      "xgLimpio": 1.6272471910112367,
+      "golesLimpio": 1.6123595505617978,
+      "nCrudo": 178,
+      "nLimpio": 178
+    },
+    {
+      "liga": "FIFA Club World Cup",
+      "n": 60,
+      "xgCrudo": 1.4617499999999994,
+      "golesCrudo": 1.5166666666666666,
+      "xgLimpio": 1.4617499999999994,
+      "golesLimpio": 1.5166666666666666,
+      "nCrudo": 120,
+      "nLimpio": 120
+    },
+    {
+      "liga": "FIFA World Cup 2022",
+      "n": 59,
+      "xgCrudo": 1.3310169491525423,
+      "golesCrudo": 1.3389830508474576,
+      "xgLimpio": 1.3423931623931624,
+      "golesLimpio": 1.3504273504273505,
+      "nCrudo": 118,
+      "nLimpio": 117
+    },
+    {
+      "liga": "Bundesliga 2025 2026",
+      "n": 45,
+      "xgCrudo": 1.773555555555556,
+      "golesCrudo": 1.7222222222222223,
+      "xgLimpio": 1.773555555555556,
+      "golesLimpio": 1.7222222222222223,
+      "nCrudo": 90,
+      "nLimpio": 90
+    },
+    {
+      "liga": "Copa Sudamericana 2025",
+      "n": 39,
+      "xgCrudo": 1.1976923076923076,
+      "golesCrudo": 1.1153846153846154,
+      "xgLimpio": 1.1976923076923076,
+      "golesLimpio": 1.1153846153846154,
+      "nCrudo": 78,
+      "nLimpio": 78
+    },
+    {
+      "liga": "La Liga Dos 2025",
+      "n": 26,
+      "xgCrudo": 1.6194230769230773,
+      "golesCrudo": 1.5576923076923077,
+      "xgLimpio": 1.6194230769230773,
+      "golesLimpio": 1.5576923076923077,
+      "nCrudo": 52,
+      "nLimpio": 52
+    },
+    {
+      "liga": "FIFA World Cup 2026",
+      "n": 26,
+      "xgCrudo": 1.3178,
+      "golesCrudo": 1.56,
+      "xgLimpio": 1.3178,
+      "golesLimpio": 1.56,
+      "nCrudo": 50,
+      "nLimpio": 50
+    }
+  ]
+}
