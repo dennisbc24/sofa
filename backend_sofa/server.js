@@ -11,7 +11,9 @@ const app = express();
 app.set("query parser", "extended");
 
 app.use(cors());
-app.use(express.json());
+// Límite subido a 15mb para el cargador por lotes de estadísticas
+// (el default de express.json es 100kb; nginx en prod permite 20M).
+app.use(express.json({ limit: "15mb" }));
 
 app.use(express.static(path.join(__dirname, "dist")));
 

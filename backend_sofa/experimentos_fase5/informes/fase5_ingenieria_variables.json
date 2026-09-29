@@ -1,0 +1,4525 @@
+{
+  "generado": "2026-09-29T13:05:24.688Z",
+  "fase": "Fase 5 (nueva) — Ingeniería de variables prepartido",
+  "reglas": [
+    "SOLO TRAIN+VAL (fecha_partido <= 2026-06-18). Aserción anti-fuga ejecutada: 0 partidos posteriores al corte.",
+    "TEST intacto: ninguna query, métrica ni decisión usa 2026-06-19..2026-09-27.",
+    "Cero entrenamiento: sin Poisson, sin gradiente, sin selección de modelos. Sólo descriptivos, correlaciones y consistencia.",
+    "Producción/V1_BETA/prediccion_poisson.json no se tocan (verificación de hashes al final)."
+  ],
+  "muestra": {
+    "partidos_train_val": 1523,
+    "lados_totales": 3046,
+    "fecha_min": "2019-06-01",
+    "fecha_max": "2026-06-18",
+    "stats_con_datos": 52,
+    "periodos": [
+      "ALL",
+      "1ST",
+      "2ND"
+    ],
+    "et_prorroga_excluida": "ET1/ET2 (21 partidos) no se usan: no existen prepartido y contaminan ALL",
+    "fuente_goles_1T_TV": "1523 partidos TV con goles 1T",
+    "stats_ausentes_en_TV": [
+      "Average rating (sus 291 partidos son todos posteriores al corte: no existe en TRAIN+VAL, no es candidata)"
+    ]
+  },
+  "clasificacion": {
+    "ocasiones": [
+      "Big chances",
+      "Big chances scored",
+      "Big chances missed",
+      "Hit woodwork"
+    ],
+    "calidad": [
+      "Expected goals",
+      "Expected goals on target",
+      "Average rating"
+    ],
+    "remates": [
+      "Total shots",
+      "Shots on target",
+      "Shots off target",
+      "Shots inside box",
+      "Shots outside box"
+    ],
+    "progresion": [
+      "Final third entries",
+      "Final third phase",
+      "Touches in penalty area",
+      "Through balls",
+      "Dribbles",
+      "Dispossessed"
+    ],
+    "posesion": [
+      "Ball possession"
+    ],
+    "pases": [
+      "Passes",
+      "Accurate passes",
+      "Long balls",
+      "Crosses"
+    ],
+    "defensa": [
+      "Clearances",
+      "Interceptions",
+      "Tackles",
+      "Tackles won",
+      "Total tackles",
+      "Recoveries",
+      "Blocked shots",
+      "Errors lead to a shot",
+      "Errors lead to a goal"
+    ],
+    "porteria": [
+      "Goalkeeper saves",
+      "Total saves",
+      "Big saves",
+      "High claims",
+      "Goals prevented",
+      "Punches",
+      "Penalty saves"
+    ],
+    "disciplina": [
+      "Yellow cards",
+      "Red cards",
+      "Fouls",
+      "Fouled in final third",
+      "Offsides"
+    ],
+    "duelos": [
+      "Duels",
+      "Aerial duels",
+      "Ground duels",
+      "Distance covered",
+      "Number of sprints"
+    ],
+    "balon_parado": [
+      "Corner kicks",
+      "Free kicks",
+      "Goal kicks",
+      "Throw-ins"
+    ]
+  },
+  "inventario_53": {
+    "Accurate passes": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 357.295,
+        "mediana": 346,
+        "desv_estandar": 129.295
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 185.916,
+        "mediana": 179,
+        "desv_estandar": 71.898
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 171.379,
+        "mediana": 166,
+        "desv_estandar": 69.88
+      }
+    },
+    "Aerial duels": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 1,
+        "ceros_pct": 0,
+        "media": 13.012,
+        "mediana": 12,
+        "desv_estandar": 5.954
+      },
+      "1ST": {
+        "obs_lados": 3034,
+        "cobertura_partidos": 1517,
+        "cobertura_partidos_pct": 99.6,
+        "cobertura_lados_pct": 99.6,
+        "nulos": 12,
+        "nulos_pct": 0.4,
+        "ceros": 25,
+        "ceros_pct": 0.8,
+        "media": 6.241,
+        "mediana": 6,
+        "desv_estandar": 3.461
+      },
+      "2ND": {
+        "obs_lados": 3034,
+        "cobertura_partidos": 1517,
+        "cobertura_partidos_pct": 99.6,
+        "cobertura_lados_pct": 99.6,
+        "nulos": 12,
+        "nulos_pct": 0.4,
+        "ceros": 25,
+        "ceros_pct": 0.8,
+        "media": 6.783,
+        "mediana": 6,
+        "desv_estandar": 3.708
+      }
+    },
+    "Ball possession": {
+      "ALL": {
+        "obs_lados": 3038,
+        "cobertura_partidos": 1519,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 8,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 50,
+        "mediana": 50,
+        "desv_estandar": 12.209
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 50,
+        "mediana": 50,
+        "desv_estandar": 13.091
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 50,
+        "mediana": 50,
+        "desv_estandar": 13.789
+      }
+    },
+    "Big chances": {
+      "ALL": {
+        "obs_lados": 2962,
+        "cobertura_partidos": 1481,
+        "cobertura_partidos_pct": 97.2,
+        "cobertura_lados_pct": 97.2,
+        "nulos": 84,
+        "nulos_pct": 2.8,
+        "ceros": 382,
+        "ceros_pct": 12.9,
+        "media": 2.319,
+        "mediana": 2,
+        "desv_estandar": 1.858
+      },
+      "1ST": {
+        "obs_lados": 2962,
+        "cobertura_partidos": 1481,
+        "cobertura_partidos_pct": 97.2,
+        "cobertura_lados_pct": 97.2,
+        "nulos": 84,
+        "nulos_pct": 2.8,
+        "ceros": 1156,
+        "ceros_pct": 39,
+        "media": 1.037,
+        "mediana": 1,
+        "desv_estandar": 1.145
+      },
+      "2ND": {
+        "obs_lados": 2962,
+        "cobertura_partidos": 1481,
+        "cobertura_partidos_pct": 97.2,
+        "cobertura_lados_pct": 97.2,
+        "nulos": 84,
+        "nulos_pct": 2.8,
+        "ceros": 884,
+        "ceros_pct": 29.8,
+        "media": 1.305,
+        "mediana": 1,
+        "desv_estandar": 1.275
+      }
+    },
+    "Big chances missed": {
+      "ALL": {
+        "obs_lados": 2746,
+        "cobertura_partidos": 1373,
+        "cobertura_partidos_pct": 90.2,
+        "cobertura_lados_pct": 90.2,
+        "nulos": 300,
+        "nulos_pct": 9.8,
+        "ceros": 622,
+        "ceros_pct": 22.7,
+        "media": 1.543,
+        "mediana": 1,
+        "desv_estandar": 1.396
+      },
+      "1ST": {
+        "obs_lados": 2746,
+        "cobertura_partidos": 1373,
+        "cobertura_partidos_pct": 90.2,
+        "cobertura_lados_pct": 90.2,
+        "nulos": 300,
+        "nulos_pct": 9.8,
+        "ceros": 1412,
+        "ceros_pct": 51.4,
+        "media": 0.695,
+        "mediana": 0,
+        "desv_estandar": 0.881
+      },
+      "2ND": {
+        "obs_lados": 2746,
+        "cobertura_partidos": 1373,
+        "cobertura_partidos_pct": 90.2,
+        "cobertura_lados_pct": 90.2,
+        "nulos": 300,
+        "nulos_pct": 9.8,
+        "ceros": 1189,
+        "ceros_pct": 43.3,
+        "media": 0.865,
+        "mediana": 1,
+        "desv_estandar": 0.994
+      }
+    },
+    "Big chances scored": {
+      "ALL": {
+        "obs_lados": 2448,
+        "cobertura_partidos": 1224,
+        "cobertura_partidos_pct": 80.4,
+        "cobertura_lados_pct": 80.4,
+        "nulos": 598,
+        "nulos_pct": 19.6,
+        "ceros": 741,
+        "ceros_pct": 30.3,
+        "media": 1.084,
+        "mediana": 1,
+        "desv_estandar": 0.987
+      },
+      "1ST": {
+        "obs_lados": 2448,
+        "cobertura_partidos": 1224,
+        "cobertura_partidos_pct": 80.4,
+        "cobertura_lados_pct": 80.4,
+        "nulos": 598,
+        "nulos_pct": 19.6,
+        "ceros": 1519,
+        "ceros_pct": 62.1,
+        "media": 0.474,
+        "mediana": 0,
+        "desv_estandar": 0.684
+      },
+      "2ND": {
+        "obs_lados": 2448,
+        "cobertura_partidos": 1224,
+        "cobertura_partidos_pct": 80.4,
+        "cobertura_lados_pct": 80.4,
+        "nulos": 598,
+        "nulos_pct": 19.6,
+        "ceros": 1259,
+        "ceros_pct": 51.4,
+        "media": 0.616,
+        "mediana": 0,
+        "desv_estandar": 0.739
+      }
+    },
+    "Big saves": {
+      "ALL": {
+        "obs_lados": 2174,
+        "cobertura_partidos": 1087,
+        "cobertura_partidos_pct": 71.4,
+        "cobertura_lados_pct": 71.4,
+        "nulos": 872,
+        "nulos_pct": 28.6,
+        "ceros": 796,
+        "ceros_pct": 36.6,
+        "media": 0.898,
+        "mediana": 1,
+        "desv_estandar": 0.9
+      },
+      "1ST": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      },
+      "2ND": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      }
+    },
+    "Blocked shots": {
+      "ALL": {
+        "obs_lados": 3030,
+        "cobertura_partidos": 1515,
+        "cobertura_partidos_pct": 99.5,
+        "cobertura_lados_pct": 99.5,
+        "nulos": 16,
+        "nulos_pct": 0.5,
+        "ceros": 233,
+        "ceros_pct": 7.7,
+        "media": 3.259,
+        "mediana": 3,
+        "desv_estandar": 2.325
+      },
+      "1ST": {
+        "obs_lados": 3028,
+        "cobertura_partidos": 1514,
+        "cobertura_partidos_pct": 99.4,
+        "cobertura_lados_pct": 99.4,
+        "nulos": 18,
+        "nulos_pct": 0.6,
+        "ceros": 828,
+        "ceros_pct": 27.3,
+        "media": 1.504,
+        "mediana": 1,
+        "desv_estandar": 1.465
+      },
+      "2ND": {
+        "obs_lados": 3028,
+        "cobertura_partidos": 1514,
+        "cobertura_partidos_pct": 99.4,
+        "cobertura_lados_pct": 99.4,
+        "nulos": 18,
+        "nulos_pct": 0.6,
+        "ceros": 650,
+        "ceros_pct": 21.5,
+        "media": 1.772,
+        "mediana": 1,
+        "desv_estandar": 1.581
+      }
+    },
+    "Clearances": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 1,
+        "ceros_pct": 0,
+        "media": 22.711,
+        "mediana": 22,
+        "desv_estandar": 10.308
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 7,
+        "ceros_pct": 0.2,
+        "media": 10.736,
+        "mediana": 10,
+        "desv_estandar": 5.595
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 7,
+        "ceros_pct": 0.2,
+        "media": 11.975,
+        "mediana": 11,
+        "desv_estandar": 6.739
+      }
+    },
+    "Corner kicks": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 92,
+        "ceros_pct": 3,
+        "media": 4.584,
+        "mediana": 4,
+        "desv_estandar": 2.868
+      },
+      "1ST": {
+        "obs_lados": 3034,
+        "cobertura_partidos": 1517,
+        "cobertura_partidos_pct": 99.6,
+        "cobertura_lados_pct": 99.6,
+        "nulos": 12,
+        "nulos_pct": 0.4,
+        "ceros": 504,
+        "ceros_pct": 16.6,
+        "media": 2.182,
+        "mediana": 2,
+        "desv_estandar": 1.772
+      },
+      "2ND": {
+        "obs_lados": 3034,
+        "cobertura_partidos": 1517,
+        "cobertura_partidos_pct": 99.6,
+        "cobertura_lados_pct": 99.6,
+        "nulos": 12,
+        "nulos_pct": 0.4,
+        "ceros": 461,
+        "ceros_pct": 15.2,
+        "media": 2.403,
+        "mediana": 2,
+        "desv_estandar": 1.946
+      }
+    },
+    "Crosses": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 133,
+        "ceros_pct": 4.4,
+        "media": 4.121,
+        "mediana": 4,
+        "desv_estandar": 2.783
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 591,
+        "ceros_pct": 19.5,
+        "media": 1.916,
+        "mediana": 2,
+        "desv_estandar": 1.658
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 492,
+        "ceros_pct": 16.2,
+        "media": 2.233,
+        "mediana": 2,
+        "desv_estandar": 1.904
+      }
+    },
+    "Dispossessed": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 1,
+        "ceros_pct": 0,
+        "media": 7.839,
+        "mediana": 8,
+        "desv_estandar": 3.429
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 75,
+        "ceros_pct": 2.5,
+        "media": 3.896,
+        "mediana": 4,
+        "desv_estandar": 2.226
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 64,
+        "ceros_pct": 2.1,
+        "media": 3.963,
+        "mediana": 4,
+        "desv_estandar": 2.261
+      }
+    },
+    "Distance covered": {
+      "ALL": {
+        "obs_lados": 1846,
+        "cobertura_partidos": 923,
+        "cobertura_partidos_pct": 60.6,
+        "cobertura_lados_pct": 60.6,
+        "nulos": 1200,
+        "nulos_pct": 39.4,
+        "ceros": 3,
+        "ceros_pct": 0.2,
+        "media": 106.857,
+        "mediana": 107.78,
+        "desv_estandar": 9.453
+      },
+      "1ST": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      },
+      "2ND": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      }
+    },
+    "Dribbles": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 15,
+        "ceros_pct": 0.5,
+        "media": 6.978,
+        "mediana": 7,
+        "desv_estandar": 3.526
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 178,
+        "ceros_pct": 5.9,
+        "media": 3.222,
+        "mediana": 3,
+        "desv_estandar": 2.173
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 111,
+        "ceros_pct": 3.7,
+        "media": 3.771,
+        "mediana": 3,
+        "desv_estandar": 2.33
+      }
+    },
+    "Duels": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 50,
+        "mediana": 50,
+        "desv_estandar": 5.745
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 50,
+        "mediana": 50,
+        "desv_estandar": 7.938
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 50,
+        "mediana": 50,
+        "desv_estandar": 7.835
+      }
+    },
+    "Errors lead to a goal": {
+      "ALL": {
+        "obs_lados": 960,
+        "cobertura_partidos": 480,
+        "cobertura_partidos_pct": 31.5,
+        "cobertura_lados_pct": 31.5,
+        "nulos": 2086,
+        "nulos_pct": 68.5,
+        "ceros": 442,
+        "ceros_pct": 46,
+        "media": 0.609,
+        "mediana": 1,
+        "desv_estandar": 0.625
+      },
+      "1ST": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      },
+      "2ND": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      }
+    },
+    "Errors lead to a shot": {
+      "ALL": {
+        "obs_lados": 1794,
+        "cobertura_partidos": 897,
+        "cobertura_partidos_pct": 58.9,
+        "cobertura_lados_pct": 58.9,
+        "nulos": 1252,
+        "nulos_pct": 41.1,
+        "ceros": 653,
+        "ceros_pct": 36.4,
+        "media": 0.856,
+        "mediana": 1,
+        "desv_estandar": 0.832
+      },
+      "1ST": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      },
+      "2ND": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      }
+    },
+    "Expected goals": {
+      "ALL": {
+        "obs_lados": 2974,
+        "cobertura_partidos": 1487,
+        "cobertura_partidos_pct": 97.6,
+        "cobertura_lados_pct": 97.6,
+        "nulos": 72,
+        "nulos_pct": 2.4,
+        "ceros": 4,
+        "ceros_pct": 0.1,
+        "media": 1.385,
+        "mediana": 1.21,
+        "desv_estandar": 0.91
+      },
+      "1ST": {
+        "obs_lados": 1998,
+        "cobertura_partidos": 999,
+        "cobertura_partidos_pct": 65.6,
+        "cobertura_lados_pct": 65.6,
+        "nulos": 1048,
+        "nulos_pct": 34.4,
+        "ceros": 28,
+        "ceros_pct": 1.4,
+        "media": 0.62,
+        "mediana": 0.47,
+        "desv_estandar": 0.535
+      },
+      "2ND": {
+        "obs_lados": 1998,
+        "cobertura_partidos": 999,
+        "cobertura_partidos_pct": 65.6,
+        "cobertura_lados_pct": 65.6,
+        "nulos": 1048,
+        "nulos_pct": 34.4,
+        "ceros": 16,
+        "ceros_pct": 0.8,
+        "media": 0.764,
+        "mediana": 0.62,
+        "desv_estandar": 0.607
+      }
+    },
+    "Expected goals on target": {
+      "ALL": {
+        "obs_lados": 1248,
+        "cobertura_partidos": 624,
+        "cobertura_partidos_pct": 41,
+        "cobertura_lados_pct": 41,
+        "nulos": 1798,
+        "nulos_pct": 59,
+        "ceros": 28,
+        "ceros_pct": 2.2,
+        "media": 1.477,
+        "mediana": 1.31,
+        "desv_estandar": 1.079
+      },
+      "1ST": {
+        "obs_lados": 1248,
+        "cobertura_partidos": 624,
+        "cobertura_partidos_pct": 41,
+        "cobertura_lados_pct": 41,
+        "nulos": 1798,
+        "nulos_pct": 59,
+        "ceros": 190,
+        "ceros_pct": 15.2,
+        "media": 0.648,
+        "mediana": 0.48,
+        "desv_estandar": 0.66
+      },
+      "2ND": {
+        "obs_lados": 1248,
+        "cobertura_partidos": 624,
+        "cobertura_partidos_pct": 41,
+        "cobertura_lados_pct": 41,
+        "nulos": 1798,
+        "nulos_pct": 59,
+        "ceros": 139,
+        "ceros_pct": 11.1,
+        "media": 0.828,
+        "mediana": 0.7,
+        "desv_estandar": 0.769
+      }
+    },
+    "Final third entries": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 53.144,
+        "mediana": 52,
+        "desv_estandar": 15.25
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 25.969,
+        "mediana": 25,
+        "desv_estandar": 9.045
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 27.174,
+        "mediana": 26,
+        "desv_estandar": 9.072
+      }
+    },
+    "Final third phase": {
+      "ALL": {
+        "obs_lados": 3026,
+        "cobertura_partidos": 1513,
+        "cobertura_partidos_pct": 99.3,
+        "cobertura_lados_pct": 99.3,
+        "nulos": 20,
+        "nulos_pct": 0.7,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 82.674,
+        "mediana": 72,
+        "desv_estandar": 47.384
+      },
+      "1ST": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      },
+      "2ND": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      }
+    },
+    "Fouled in final third": {
+      "ALL": {
+        "obs_lados": 2992,
+        "cobertura_partidos": 1496,
+        "cobertura_partidos_pct": 98.2,
+        "cobertura_lados_pct": 98.2,
+        "nulos": 54,
+        "nulos_pct": 1.8,
+        "ceros": 390,
+        "ceros_pct": 13,
+        "media": 2.046,
+        "mediana": 2,
+        "desv_estandar": 1.514
+      },
+      "1ST": {
+        "obs_lados": 2992,
+        "cobertura_partidos": 1496,
+        "cobertura_partidos_pct": 98.2,
+        "cobertura_lados_pct": 98.2,
+        "nulos": 54,
+        "nulos_pct": 1.8,
+        "ceros": 1179,
+        "ceros_pct": 39.4,
+        "media": 0.938,
+        "mediana": 1,
+        "desv_estandar": 0.989
+      },
+      "2ND": {
+        "obs_lados": 2992,
+        "cobertura_partidos": 1496,
+        "cobertura_partidos_pct": 98.2,
+        "cobertura_lados_pct": 98.2,
+        "nulos": 54,
+        "nulos_pct": 1.8,
+        "ceros": 969,
+        "ceros_pct": 32.4,
+        "media": 1.122,
+        "mediana": 1,
+        "desv_estandar": 1.077
+      }
+    },
+    "Fouls": {
+      "ALL": {
+        "obs_lados": 2986,
+        "cobertura_partidos": 1493,
+        "cobertura_partidos_pct": 98,
+        "cobertura_lados_pct": 98,
+        "nulos": 60,
+        "nulos_pct": 2,
+        "ceros": 4,
+        "ceros_pct": 0.1,
+        "media": 11.539,
+        "mediana": 11,
+        "desv_estandar": 3.967
+      },
+      "1ST": {
+        "obs_lados": 2290,
+        "cobertura_partidos": 1145,
+        "cobertura_partidos_pct": 75.2,
+        "cobertura_lados_pct": 75.2,
+        "nulos": 756,
+        "nulos_pct": 24.8,
+        "ceros": 16,
+        "ceros_pct": 0.7,
+        "media": 5.403,
+        "mediana": 5,
+        "desv_estandar": 2.405
+      },
+      "2ND": {
+        "obs_lados": 2290,
+        "cobertura_partidos": 1145,
+        "cobertura_partidos_pct": 75.2,
+        "cobertura_lados_pct": 75.2,
+        "nulos": 756,
+        "nulos_pct": 24.8,
+        "ceros": 13,
+        "ceros_pct": 0.6,
+        "media": 5.969,
+        "mediana": 6,
+        "desv_estandar": 2.615
+      }
+    },
+    "Free kicks": {
+      "ALL": {
+        "obs_lados": 3038,
+        "cobertura_partidos": 1519,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 8,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 11.412,
+        "mediana": 11,
+        "desv_estandar": 3.945
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 13,
+        "ceros_pct": 0.4,
+        "media": 5.447,
+        "mediana": 5,
+        "desv_estandar": 2.429
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 13,
+        "ceros_pct": 0.4,
+        "media": 5.967,
+        "mediana": 6,
+        "desv_estandar": 2.63
+      }
+    },
+    "Goal kicks": {
+      "ALL": {
+        "obs_lados": 3038,
+        "cobertura_partidos": 1519,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 8,
+        "nulos_pct": 0.3,
+        "ceros": 8,
+        "ceros_pct": 0.3,
+        "media": 7.716,
+        "mediana": 7,
+        "desv_estandar": 3.575
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 114,
+        "ceros_pct": 3.8,
+        "media": 3.708,
+        "mediana": 4,
+        "desv_estandar": 2.155
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 103,
+        "ceros_pct": 3.4,
+        "media": 4.01,
+        "mediana": 4,
+        "desv_estandar": 2.334
+      }
+    },
+    "Goalkeeper saves": {
+      "ALL": {
+        "obs_lados": 3032,
+        "cobertura_partidos": 1516,
+        "cobertura_partidos_pct": 99.5,
+        "cobertura_lados_pct": 99.5,
+        "nulos": 14,
+        "nulos_pct": 0.5,
+        "ceros": 213,
+        "ceros_pct": 7,
+        "media": 2.988,
+        "mediana": 3,
+        "desv_estandar": 2.041
+      },
+      "1ST": {
+        "obs_lados": 3030,
+        "cobertura_partidos": 1515,
+        "cobertura_partidos_pct": 99.5,
+        "cobertura_lados_pct": 99.5,
+        "nulos": 16,
+        "nulos_pct": 0.5,
+        "ceros": 843,
+        "ceros_pct": 27.8,
+        "media": 1.369,
+        "mediana": 1,
+        "desv_estandar": 1.277
+      },
+      "2ND": {
+        "obs_lados": 3030,
+        "cobertura_partidos": 1515,
+        "cobertura_partidos_pct": 99.5,
+        "cobertura_lados_pct": 99.5,
+        "nulos": 16,
+        "nulos_pct": 0.5,
+        "ceros": 702,
+        "ceros_pct": 23.2,
+        "media": 1.628,
+        "mediana": 1,
+        "desv_estandar": 1.404
+      }
+    },
+    "Goals prevented": {
+      "ALL": {
+        "obs_lados": 1998,
+        "cobertura_partidos": 999,
+        "cobertura_partidos_pct": 65.6,
+        "cobertura_lados_pct": 65.6,
+        "nulos": 1048,
+        "nulos_pct": 34.4,
+        "ceros": 47,
+        "ceros_pct": 2.4,
+        "media": 0.021,
+        "mediana": 0.047,
+        "desv_estandar": 0.782
+      },
+      "1ST": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      },
+      "2ND": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      }
+    },
+    "Ground duels": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 33.075,
+        "mediana": 33,
+        "desv_estandar": 7.407
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 15.8,
+        "mediana": 16,
+        "desv_estandar": 4.609
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 17.27,
+        "mediana": 17,
+        "desv_estandar": 4.842
+      }
+    },
+    "High claims": {
+      "ALL": {
+        "obs_lados": 2092,
+        "cobertura_partidos": 1046,
+        "cobertura_partidos_pct": 68.7,
+        "cobertura_lados_pct": 68.7,
+        "nulos": 954,
+        "nulos_pct": 31.3,
+        "ceros": 751,
+        "ceros_pct": 35.9,
+        "media": 0.93,
+        "mediana": 1,
+        "desv_estandar": 0.935
+      },
+      "1ST": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      },
+      "2ND": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      }
+    },
+    "Hit woodwork": {
+      "ALL": {
+        "obs_lados": 2310,
+        "cobertura_partidos": 1155,
+        "cobertura_partidos_pct": 75.8,
+        "cobertura_lados_pct": 75.8,
+        "nulos": 736,
+        "nulos_pct": 24.2,
+        "ceros": 1420,
+        "ceros_pct": 61.5,
+        "media": 0.475,
+        "mediana": 0,
+        "desv_estandar": 0.676
+      },
+      "1ST": {
+        "obs_lados": 2310,
+        "cobertura_partidos": 1155,
+        "cobertura_partidos_pct": 75.8,
+        "cobertura_lados_pct": 75.8,
+        "nulos": 736,
+        "nulos_pct": 24.2,
+        "ceros": 1875,
+        "ceros_pct": 81.2,
+        "media": 0.21,
+        "mediana": 0,
+        "desv_estandar": 0.461
+      },
+      "2ND": {
+        "obs_lados": 2310,
+        "cobertura_partidos": 1155,
+        "cobertura_partidos_pct": 75.8,
+        "cobertura_lados_pct": 75.8,
+        "nulos": 736,
+        "nulos_pct": 24.2,
+        "ceros": 1768,
+        "ceros_pct": 76.5,
+        "media": 0.265,
+        "mediana": 0,
+        "desv_estandar": 0.51
+      }
+    },
+    "Interceptions": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 8.268,
+        "mediana": 8,
+        "desv_estandar": 3.472
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 60,
+        "ceros_pct": 2,
+        "media": 4.181,
+        "mediana": 4,
+        "desv_estandar": 2.246
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 66,
+        "ceros_pct": 2.2,
+        "media": 4.098,
+        "mediana": 4,
+        "desv_estandar": 2.282
+      }
+    },
+    "Long balls": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 23.105,
+        "mediana": 22,
+        "desv_estandar": 7.105
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 11.687,
+        "mediana": 11,
+        "desv_estandar": 4.506
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 11.418,
+        "mediana": 11,
+        "desv_estandar": 4.205
+      }
+    },
+    "Number of sprints": {
+      "ALL": {
+        "obs_lados": 1846,
+        "cobertura_partidos": 923,
+        "cobertura_partidos_pct": 60.6,
+        "cobertura_lados_pct": 60.6,
+        "nulos": 1200,
+        "nulos_pct": 39.4,
+        "ceros": 3,
+        "ceros_pct": 0.2,
+        "media": 148.601,
+        "mediana": 150,
+        "desv_estandar": 38.502
+      },
+      "1ST": {
+        "obs_lados": 260,
+        "cobertura_partidos": 130,
+        "cobertura_partidos_pct": 8.5,
+        "cobertura_lados_pct": 8.5,
+        "nulos": 2786,
+        "nulos_pct": 91.5,
+        "ceros": 260,
+        "ceros_pct": 100,
+        "media": 0,
+        "mediana": 0,
+        "desv_estandar": 0
+      },
+      "2ND": {
+        "obs_lados": 260,
+        "cobertura_partidos": 130,
+        "cobertura_partidos_pct": 8.5,
+        "cobertura_lados_pct": 8.5,
+        "nulos": 2786,
+        "nulos_pct": 91.5,
+        "ceros": 260,
+        "ceros_pct": 100,
+        "media": 0,
+        "mediana": 0,
+        "desv_estandar": 0
+      }
+    },
+    "Offsides": {
+      "ALL": {
+        "obs_lados": 2868,
+        "cobertura_partidos": 1434,
+        "cobertura_partidos_pct": 94.2,
+        "cobertura_lados_pct": 94.2,
+        "nulos": 178,
+        "nulos_pct": 5.8,
+        "ceros": 537,
+        "ceros_pct": 18.7,
+        "media": 1.762,
+        "mediana": 1,
+        "desv_estandar": 1.493
+      },
+      "1ST": {
+        "obs_lados": 2866,
+        "cobertura_partidos": 1433,
+        "cobertura_partidos_pct": 94.1,
+        "cobertura_lados_pct": 94.1,
+        "nulos": 180,
+        "nulos_pct": 5.9,
+        "ceros": 1270,
+        "ceros_pct": 44.3,
+        "media": 0.858,
+        "mediana": 1,
+        "desv_estandar": 0.985
+      },
+      "2ND": {
+        "obs_lados": 2866,
+        "cobertura_partidos": 1433,
+        "cobertura_partidos_pct": 94.1,
+        "cobertura_lados_pct": 94.1,
+        "nulos": 180,
+        "nulos_pct": 5.9,
+        "ceros": 1181,
+        "ceros_pct": 41.2,
+        "media": 0.912,
+        "mediana": 1,
+        "desv_estandar": 1.007
+      }
+    },
+    "Passes": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 430.536,
+        "mediana": 419,
+        "desv_estandar": 126.896
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 222.518,
+        "mediana": 216,
+        "desv_estandar": 70.88
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 208.017,
+        "mediana": 203,
+        "desv_estandar": 68.898
+      }
+    },
+    "Penalty saves": {
+      "ALL": {
+        "obs_lados": 154,
+        "cobertura_partidos": 77,
+        "cobertura_partidos_pct": 5.1,
+        "cobertura_lados_pct": 5.1,
+        "nulos": 2892,
+        "nulos_pct": 94.9,
+        "ceros": 77,
+        "ceros_pct": 50,
+        "media": 0.5,
+        "mediana": 0.5,
+        "desv_estandar": 0.502
+      },
+      "1ST": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      },
+      "2ND": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      }
+    },
+    "Punches": {
+      "ALL": {
+        "obs_lados": 1698,
+        "cobertura_partidos": 849,
+        "cobertura_partidos_pct": 55.7,
+        "cobertura_lados_pct": 55.7,
+        "nulos": 1348,
+        "nulos_pct": 44.3,
+        "ceros": 697,
+        "ceros_pct": 41,
+        "media": 0.779,
+        "mediana": 1,
+        "desv_estandar": 0.811
+      },
+      "1ST": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      },
+      "2ND": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      }
+    },
+    "Recoveries": {
+      "ALL": {
+        "obs_lados": 3028,
+        "cobertura_partidos": 1514,
+        "cobertura_partidos_pct": 99.4,
+        "cobertura_lados_pct": 99.4,
+        "nulos": 18,
+        "nulos_pct": 0.6,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 46.534,
+        "mediana": 46,
+        "desv_estandar": 7.907
+      },
+      "1ST": {
+        "obs_lados": 3028,
+        "cobertura_partidos": 1514,
+        "cobertura_partidos_pct": 99.4,
+        "cobertura_lados_pct": 99.4,
+        "nulos": 18,
+        "nulos_pct": 0.6,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 22.936,
+        "mediana": 23,
+        "desv_estandar": 4.85
+      },
+      "2ND": {
+        "obs_lados": 3028,
+        "cobertura_partidos": 1514,
+        "cobertura_partidos_pct": 99.4,
+        "cobertura_lados_pct": 99.4,
+        "nulos": 18,
+        "nulos_pct": 0.6,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 23.598,
+        "mediana": 23,
+        "desv_estandar": 5.136
+      }
+    },
+    "Red cards": {
+      "ALL": {
+        "obs_lados": 576,
+        "cobertura_partidos": 288,
+        "cobertura_partidos_pct": 18.9,
+        "cobertura_lados_pct": 18.9,
+        "nulos": 2470,
+        "nulos_pct": 81.1,
+        "ceros": 259,
+        "ceros_pct": 45,
+        "media": 0.599,
+        "mediana": 1,
+        "desv_estandar": 0.584
+      },
+      "1ST": {
+        "obs_lados": 574,
+        "cobertura_partidos": 287,
+        "cobertura_partidos_pct": 18.8,
+        "cobertura_lados_pct": 18.8,
+        "nulos": 2472,
+        "nulos_pct": 81.2,
+        "ceros": 475,
+        "ceros_pct": 82.8,
+        "media": 0.174,
+        "mediana": 0,
+        "desv_estandar": 0.384
+      },
+      "2ND": {
+        "obs_lados": 574,
+        "cobertura_partidos": 287,
+        "cobertura_partidos_pct": 18.8,
+        "cobertura_lados_pct": 18.8,
+        "nulos": 2472,
+        "nulos_pct": 81.2,
+        "ceros": 348,
+        "ceros_pct": 60.6,
+        "media": 0.427,
+        "mediana": 0,
+        "desv_estandar": 0.561
+      }
+    },
+    "Shots inside box": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 24,
+        "ceros_pct": 0.8,
+        "media": 7.908,
+        "mediana": 7,
+        "desv_estandar": 4.273
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 203,
+        "ceros_pct": 6.7,
+        "media": 3.574,
+        "mediana": 3,
+        "desv_estandar": 2.486
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 130,
+        "ceros_pct": 4.3,
+        "media": 4.339,
+        "mediana": 4,
+        "desv_estandar": 2.788
+      }
+    },
+    "Shots off target": {
+      "ALL": {
+        "obs_lados": 3038,
+        "cobertura_partidos": 1519,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 8,
+        "nulos_pct": 0.3,
+        "ceros": 51,
+        "ceros_pct": 1.7,
+        "media": 4.994,
+        "mediana": 5,
+        "desv_estandar": 2.76
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 338,
+        "ceros_pct": 11.1,
+        "media": 2.343,
+        "mediana": 2,
+        "desv_estandar": 1.668
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 286,
+        "ceros_pct": 9.4,
+        "media": 2.666,
+        "mediana": 2,
+        "desv_estandar": 1.892
+      }
+    },
+    "Shots on target": {
+      "ALL": {
+        "obs_lados": 3038,
+        "cobertura_partidos": 1519,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 8,
+        "nulos_pct": 0.3,
+        "ceros": 79,
+        "ceros_pct": 2.6,
+        "media": 4.377,
+        "mediana": 4,
+        "desv_estandar": 2.628
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 514,
+        "ceros_pct": 16.9,
+        "media": 1.968,
+        "mediana": 2,
+        "desv_estandar": 1.57
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 379,
+        "ceros_pct": 12.5,
+        "media": 2.416,
+        "mediana": 2,
+        "desv_estandar": 1.799
+      }
+    },
+    "Shots outside box": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 62,
+        "ceros_pct": 2,
+        "media": 4.712,
+        "mediana": 4,
+        "desv_estandar": 2.765
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 439,
+        "ceros_pct": 14.5,
+        "media": 2.225,
+        "mediana": 2,
+        "desv_estandar": 1.71
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 327,
+        "ceros_pct": 10.8,
+        "media": 2.493,
+        "mediana": 2,
+        "desv_estandar": 1.843
+      }
+    },
+    "Tackles": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 15.367,
+        "mediana": 15,
+        "desv_estandar": 5.158
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 4,
+        "ceros_pct": 0.1,
+        "media": 7.48,
+        "mediana": 7,
+        "desv_estandar": 3.244
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 2,
+        "ceros_pct": 0.1,
+        "media": 7.889,
+        "mediana": 8,
+        "desv_estandar": 3.376
+      }
+    },
+    "Tackles won": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 2,
+        "ceros_pct": 0.1,
+        "media": 9.327,
+        "mediana": 9,
+        "desv_estandar": 3.531
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 36,
+        "ceros_pct": 1.2,
+        "media": 4.529,
+        "mediana": 4,
+        "desv_estandar": 2.288
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 28,
+        "ceros_pct": 0.9,
+        "media": 4.81,
+        "mediana": 5,
+        "desv_estandar": 2.385
+      }
+    },
+    "Through balls": {
+      "ALL": {
+        "obs_lados": 1866,
+        "cobertura_partidos": 933,
+        "cobertura_partidos_pct": 61.3,
+        "cobertura_lados_pct": 61.3,
+        "nulos": 1180,
+        "nulos_pct": 38.7,
+        "ceros": 702,
+        "ceros_pct": 37.6,
+        "media": 0.924,
+        "mediana": 1,
+        "desv_estandar": 0.977
+      },
+      "1ST": {
+        "obs_lados": 1866,
+        "cobertura_partidos": 933,
+        "cobertura_partidos_pct": 61.3,
+        "cobertura_lados_pct": 61.3,
+        "nulos": 1180,
+        "nulos_pct": 38.7,
+        "ceros": 1217,
+        "ceros_pct": 65.2,
+        "media": 0.435,
+        "mediana": 0,
+        "desv_estandar": 0.682
+      },
+      "2ND": {
+        "obs_lados": 1866,
+        "cobertura_partidos": 933,
+        "cobertura_partidos_pct": 61.3,
+        "cobertura_lados_pct": 61.3,
+        "nulos": 1180,
+        "nulos_pct": 38.7,
+        "ceros": 1139,
+        "ceros_pct": 61,
+        "media": 0.495,
+        "mediana": 0,
+        "desv_estandar": 0.716
+      }
+    },
+    "Throw-ins": {
+      "ALL": {
+        "obs_lados": 3038,
+        "cobertura_partidos": 1519,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 8,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 18.017,
+        "mediana": 17,
+        "desv_estandar": 5.725
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 9.064,
+        "mediana": 9,
+        "desv_estandar": 3.567
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 3,
+        "ceros_pct": 0.1,
+        "media": 8.955,
+        "mediana": 9,
+        "desv_estandar": 3.713
+      }
+    },
+    "Total saves": {
+      "ALL": {
+        "obs_lados": 3032,
+        "cobertura_partidos": 1516,
+        "cobertura_partidos_pct": 99.5,
+        "cobertura_lados_pct": 99.5,
+        "nulos": 14,
+        "nulos_pct": 0.5,
+        "ceros": 213,
+        "ceros_pct": 7,
+        "media": 2.988,
+        "mediana": 3,
+        "desv_estandar": 2.041
+      },
+      "1ST": {
+        "obs_lados": 3030,
+        "cobertura_partidos": 1515,
+        "cobertura_partidos_pct": 99.5,
+        "cobertura_lados_pct": 99.5,
+        "nulos": 16,
+        "nulos_pct": 0.5,
+        "ceros": 843,
+        "ceros_pct": 27.8,
+        "media": 1.369,
+        "mediana": 1,
+        "desv_estandar": 1.277
+      },
+      "2ND": {
+        "obs_lados": 3030,
+        "cobertura_partidos": 1515,
+        "cobertura_partidos_pct": 99.5,
+        "cobertura_lados_pct": 99.5,
+        "nulos": 16,
+        "nulos_pct": 0.5,
+        "ceros": 702,
+        "ceros_pct": 23.2,
+        "media": 1.628,
+        "mediana": 1,
+        "desv_estandar": 1.404
+      }
+    },
+    "Total shots": {
+      "ALL": {
+        "obs_lados": 3038,
+        "cobertura_partidos": 1519,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 8,
+        "nulos_pct": 0.3,
+        "ceros": 3,
+        "ceros_pct": 0.1,
+        "media": 12.616,
+        "mediana": 12,
+        "desv_estandar": 5.731
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 46,
+        "ceros_pct": 1.5,
+        "media": 5.792,
+        "mediana": 5,
+        "desv_estandar": 3.27
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 23,
+        "ceros_pct": 0.8,
+        "media": 6.825,
+        "mediana": 6,
+        "desv_estandar": 3.71
+      }
+    },
+    "Total tackles": {
+      "ALL": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": 15.367,
+        "mediana": 15,
+        "desv_estandar": 5.158
+      },
+      "1ST": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 4,
+        "ceros_pct": 0.1,
+        "media": 7.48,
+        "mediana": 7,
+        "desv_estandar": 3.244
+      },
+      "2ND": {
+        "obs_lados": 3036,
+        "cobertura_partidos": 1518,
+        "cobertura_partidos_pct": 99.7,
+        "cobertura_lados_pct": 99.7,
+        "nulos": 10,
+        "nulos_pct": 0.3,
+        "ceros": 2,
+        "ceros_pct": 0.1,
+        "media": 7.889,
+        "mediana": 8,
+        "desv_estandar": 3.376
+      }
+    },
+    "Touches in penalty area": {
+      "ALL": {
+        "obs_lados": 3026,
+        "cobertura_partidos": 1513,
+        "cobertura_partidos_pct": 99.3,
+        "cobertura_lados_pct": 99.3,
+        "nulos": 20,
+        "nulos_pct": 0.7,
+        "ceros": 2,
+        "ceros_pct": 0.1,
+        "media": 22.029,
+        "mediana": 20,
+        "desv_estandar": 11.715
+      },
+      "1ST": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      },
+      "2ND": {
+        "obs_lados": 0,
+        "cobertura_partidos": 0,
+        "cobertura_partidos_pct": 0,
+        "cobertura_lados_pct": 0,
+        "nulos": 3046,
+        "nulos_pct": 100,
+        "ceros": 0,
+        "ceros_pct": 0,
+        "media": null,
+        "mediana": null,
+        "desv_estandar": null
+      }
+    },
+    "Yellow cards": {
+      "ALL": {
+        "obs_lados": 2928,
+        "cobertura_partidos": 1464,
+        "cobertura_partidos_pct": 96.1,
+        "cobertura_lados_pct": 96.1,
+        "nulos": 118,
+        "nulos_pct": 3.9,
+        "ceros": 342,
+        "ceros_pct": 11.7,
+        "media": 2.048,
+        "mediana": 2,
+        "desv_estandar": 1.382
+      },
+      "1ST": {
+        "obs_lados": 2920,
+        "cobertura_partidos": 1460,
+        "cobertura_partidos_pct": 95.9,
+        "cobertura_lados_pct": 95.9,
+        "nulos": 126,
+        "nulos_pct": 4.1,
+        "ceros": 1476,
+        "ceros_pct": 50.5,
+        "media": 0.683,
+        "mediana": 0,
+        "desv_estandar": 0.815
+      },
+      "2ND": {
+        "obs_lados": 2926,
+        "cobertura_partidos": 1463,
+        "cobertura_partidos_pct": 96.1,
+        "cobertura_lados_pct": 96.1,
+        "nulos": 120,
+        "nulos_pct": 3.9,
+        "ceros": 744,
+        "ceros_pct": 25.4,
+        "media": 1.372,
+        "mediana": 1,
+        "desv_estandar": 1.178
+      }
+    }
+  },
+  "consistencia_ALL_vs_1T2T": {
+    "Accurate passes": {
+      "lados_comparados": 3036,
+      "diferencias": 0,
+      "pct": 0
+    },
+    "Aerial duels": {
+      "lados_comparados": 3032,
+      "diferencias": 12,
+      "pct": 0.4
+    },
+    "Ball possession": {
+      "lados_comparados": 3036,
+      "diferencias": 3036,
+      "pct": 100
+    },
+    "Big chances": {
+      "lados_comparados": 2962,
+      "diferencias": 66,
+      "pct": 2.2
+    },
+    "Big chances missed": {
+      "lados_comparados": 2746,
+      "diferencias": 46,
+      "pct": 1.7
+    },
+    "Big chances scored": {
+      "lados_comparados": 2448,
+      "diferencias": 17,
+      "pct": 0.7
+    },
+    "Big saves": {
+      "lados_comparados": 0,
+      "diferencias": 0,
+      "pct": null
+    },
+    "Blocked shots": {
+      "lados_comparados": 3028,
+      "diferencias": 47,
+      "pct": 1.6
+    },
+    "Clearances": {
+      "lados_comparados": 3036,
+      "diferencias": 1,
+      "pct": 0
+    },
+    "Corner kicks": {
+      "lados_comparados": 3034,
+      "diferencias": 2,
+      "pct": 0.1
+    },
+    "Crosses": {
+      "lados_comparados": 3036,
+      "diferencias": 84,
+      "pct": 2.8
+    },
+    "Dispossessed": {
+      "lados_comparados": 3036,
+      "diferencias": 62,
+      "pct": 2
+    },
+    "Distance covered": {
+      "lados_comparados": 0,
+      "diferencias": 0,
+      "pct": null
+    },
+    "Dribbles": {
+      "lados_comparados": 3036,
+      "diferencias": 45,
+      "pct": 1.5
+    },
+    "Duels": {
+      "lados_comparados": 3036,
+      "diferencias": 3036,
+      "pct": 100
+    },
+    "Errors lead to a goal": {
+      "lados_comparados": 0,
+      "diferencias": 0,
+      "pct": null
+    },
+    "Errors lead to a shot": {
+      "lados_comparados": 0,
+      "diferencias": 0,
+      "pct": null
+    },
+    "Expected goals": {
+      "lados_comparados": 1998,
+      "diferencias": 31,
+      "pct": 1.6
+    },
+    "Expected goals on target": {
+      "lados_comparados": 1248,
+      "diferencias": 0,
+      "pct": 0
+    },
+    "Final third entries": {
+      "lados_comparados": 3036,
+      "diferencias": 0,
+      "pct": 0
+    },
+    "Final third phase": {
+      "lados_comparados": 0,
+      "diferencias": 0,
+      "pct": null
+    },
+    "Fouled in final third": {
+      "lados_comparados": 2992,
+      "diferencias": 40,
+      "pct": 1.3
+    },
+    "Fouls": {
+      "lados_comparados": 2290,
+      "diferencias": 0,
+      "pct": 0
+    },
+    "Free kicks": {
+      "lados_comparados": 3036,
+      "diferencias": 6,
+      "pct": 0.2
+    },
+    "Goal kicks": {
+      "lados_comparados": 3036,
+      "diferencias": 2,
+      "pct": 0.1
+    },
+    "Goalkeeper saves": {
+      "lados_comparados": 3030,
+      "diferencias": 30,
+      "pct": 1
+    },
+    "Goals prevented": {
+      "lados_comparados": 0,
+      "diferencias": 0,
+      "pct": null
+    },
+    "Ground duels": {
+      "lados_comparados": 3036,
+      "diferencias": 12,
+      "pct": 0.4
+    },
+    "High claims": {
+      "lados_comparados": 0,
+      "diferencias": 0,
+      "pct": null
+    },
+    "Hit woodwork": {
+      "lados_comparados": 2310,
+      "diferencias": 1,
+      "pct": 0
+    },
+    "Interceptions": {
+      "lados_comparados": 3036,
+      "diferencias": 29,
+      "pct": 1
+    },
+    "Long balls": {
+      "lados_comparados": 3036,
+      "diferencias": 0,
+      "pct": 0
+    },
+    "Number of sprints": {
+      "lados_comparados": 260,
+      "diferencias": 260,
+      "pct": 100
+    },
+    "Offsides": {
+      "lados_comparados": 2866,
+      "diferencias": 21,
+      "pct": 0.7
+    },
+    "Passes": {
+      "lados_comparados": 3036,
+      "diferencias": 0,
+      "pct": 0
+    },
+    "Penalty saves": {
+      "lados_comparados": 0,
+      "diferencias": 0,
+      "pct": null
+    },
+    "Punches": {
+      "lados_comparados": 0,
+      "diferencias": 0,
+      "pct": null
+    },
+    "Recoveries": {
+      "lados_comparados": 3028,
+      "diferencias": 0,
+      "pct": 0
+    },
+    "Red cards": {
+      "lados_comparados": 574,
+      "diferencias": 0,
+      "pct": 0
+    },
+    "Shots inside box": {
+      "lados_comparados": 3036,
+      "diferencias": 15,
+      "pct": 0.5
+    },
+    "Shots off target": {
+      "lados_comparados": 3036,
+      "diferencias": 41,
+      "pct": 1.4
+    },
+    "Shots on target": {
+      "lados_comparados": 3036,
+      "diferencias": 25,
+      "pct": 0.8
+    },
+    "Shots outside box": {
+      "lados_comparados": 3036,
+      "diferencias": 16,
+      "pct": 0.5
+    },
+    "Tackles": {
+      "lados_comparados": 3036,
+      "diferencias": 6,
+      "pct": 0.2
+    },
+    "Tackles won": {
+      "lados_comparados": 3036,
+      "diferencias": 35,
+      "pct": 1.2
+    },
+    "Through balls": {
+      "lados_comparados": 1866,
+      "diferencias": 10,
+      "pct": 0.5
+    },
+    "Throw-ins": {
+      "lados_comparados": 3036,
+      "diferencias": 0,
+      "pct": 0
+    },
+    "Total saves": {
+      "lados_comparados": 3030,
+      "diferencias": 30,
+      "pct": 1
+    },
+    "Total shots": {
+      "lados_comparados": 3036,
+      "diferencias": 2,
+      "pct": 0.1
+    },
+    "Total tackles": {
+      "lados_comparados": 3036,
+      "diferencias": 6,
+      "pct": 0.2
+    },
+    "Touches in penalty area": {
+      "lados_comparados": 0,
+      "diferencias": 0,
+      "pct": null
+    },
+    "Yellow cards": {
+      "lados_comparados": 2920,
+      "diferencias": 15,
+      "pct": 0.5
+    }
+  },
+  "xg_ceros_sospechosos": {
+    "ALL": 1,
+    "1ST": 1,
+    "2ND": 1,
+    "n": 3485
+  },
+  "persistencia_ICC": {
+    "Accurate passes": 0.438,
+    "Aerial duels": 0.206,
+    "Ball possession": 0.257,
+    "Big chances": 0.125,
+    "Big chances missed": 0.077,
+    "Big chances scored": 0.095,
+    "Big saves": 0.03,
+    "Blocked shots": 0.057,
+    "Clearances": 0.198,
+    "Corner kicks": 0.076,
+    "Crosses": 0.081,
+    "Dispossessed": 0.069,
+    "Distance covered": 0.279,
+    "Dribbles": 0.173,
+    "Duels": 0.063,
+    "Errors lead to a goal": 0,
+    "Errors lead to a shot": 0.011,
+    "Expected goals": 0.143,
+    "Expected goals on target": 0.128,
+    "Final third entries": 0.137,
+    "Final third phase": 0.319,
+    "Fouled in final third": 0.063,
+    "Fouls": 0.13,
+    "Free kicks": 0.129,
+    "Goal kicks": 0.127,
+    "Goalkeeper saves": 0.083,
+    "Goals prevented": 0,
+    "Ground duels": 0.113,
+    "High claims": 0.062,
+    "Hit woodwork": 0.055,
+    "Interceptions": 0.064,
+    "Long balls": 0.128,
+    "Number of sprints": 0.228,
+    "Offsides": 0.015,
+    "Passes": 0.416,
+    "Penalty saves": null,
+    "Punches": 0.087,
+    "Recoveries": 0.108,
+    "Red cards": 0,
+    "Shots inside box": 0.145,
+    "Shots off target": 0.058,
+    "Shots on target": 0.135,
+    "Shots outside box": 0.1,
+    "Tackles": 0.081,
+    "Tackles won": 0.07,
+    "Through balls": 0.122,
+    "Throw-ins": 0.101,
+    "Total saves": 0.083,
+    "Total shots": 0.122,
+    "Total tackles": 0.081,
+    "Touches in penalty area": 0.279,
+    "Yellow cards": 0.066
+  },
+  "normalizacion_liga_eta2": {
+    "Accurate passes": 0.091,
+    "Aerial duels": 0.111,
+    "Ball possession": 0,
+    "Big chances": 0.025,
+    "Big chances missed": 0.017,
+    "Big chances scored": 0.013,
+    "Big saves": 0.005,
+    "Blocked shots": 0.016,
+    "Clearances": 0.086,
+    "Corner kicks": 0.009,
+    "Crosses": 0.027,
+    "Dispossessed": 0.025,
+    "Distance covered": 0.298,
+    "Dribbles": 0.047,
+    "Duels": 0,
+    "Errors lead to a goal": 0.01,
+    "Errors lead to a shot": 0.015,
+    "Expected goals": 0.026,
+    "Expected goals on target": 0.045,
+    "Final third entries": 0.026,
+    "Final third phase": 0.043,
+    "Fouled in final third": 0.012,
+    "Fouls": 0.038,
+    "Free kicks": 0.036,
+    "Goal kicks": 0.043,
+    "Goalkeeper saves": 0.016,
+    "Goals prevented": 0.008,
+    "Ground duels": 0.05,
+    "High claims": 0.007,
+    "Hit woodwork": 0.074,
+    "Interceptions": 0.014,
+    "Long balls": 0.042,
+    "Number of sprints": 0.33,
+    "Offsides": 0.011,
+    "Passes": 0.09,
+    "Penalty saves": 0,
+    "Punches": 0.005,
+    "Recoveries": 0.109,
+    "Red cards": 0.012,
+    "Shots inside box": 0.03,
+    "Shots off target": 0.019,
+    "Shots on target": 0.022,
+    "Shots outside box": 0.04,
+    "Tackles": 0.033,
+    "Tackles won": 0.017,
+    "Through balls": 0.02,
+    "Throw-ins": 0.072,
+    "Total saves": 0.016,
+    "Total shots": 0.014,
+    "Total tackles": 0.033,
+    "Touches in penalty area": 0.065,
+    "Yellow cards": 0.04
+  },
+  "fichas_prioritarias": {
+    "Big chances": {
+      "categoria": "ocasiones",
+      "por_periodo": {
+        "ALL": {
+          "cobertura_partidos_pct": 97.2,
+          "nulos_pct": 2.8,
+          "ceros_pct": 12.9,
+          "media": 2.319,
+          "mediana": 2,
+          "desv": 1.858,
+          "riesgo_cero_artificial": "ALTO",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "1ST": {
+          "cobertura_partidos_pct": 97.2,
+          "nulos_pct": 2.8,
+          "ceros_pct": 39,
+          "media": 1.037,
+          "mediana": 1,
+          "desv": 1.145,
+          "riesgo_cero_artificial": "ALTO",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "2ND": {
+          "cobertura_partidos_pct": 97.2,
+          "nulos_pct": 2.8,
+          "ceros_pct": 29.8,
+          "media": 1.305,
+          "mediana": 1,
+          "desv": 1.275,
+          "riesgo_cero_artificial": "ALTO",
+          "sospechosos_xg_cero_con_remates": null
+        }
+      },
+      "version_ofensiva_defensiva": "SÍ — media propia (ofensiva) y media del rival (defensiva); para % (posesión/duelos%) la versión recibida es el complemento. features.js ya genera los lados _r para 7 stats.",
+      "leakage": "La stat cruda es DEL partido (post-partido). Como feature prepartido SÓLO se usa el agregado de partidos con fecha < D estricto (day-strict, como construirFeatures). Riesgo residual: ALL incluye prórroga en 21 partidos → preferir 1T+2T (features.js ya evita ALL).",
+      "previa_dia_estricto": "SÍ — calculable sólo con partidos anteriores a la fecha (se verificó con ventanas day-strict sobre TRAIN+VAL).",
+      "ma_5_10_20": {
+        "icc": 0.125,
+        "sentido": "BAJO — ruido partido a partido: MA largas aplanan sin señal; priorizar 5 o descartar"
+      },
+      "normalizar_por_liga": {
+        "eta2": 0.025,
+        "recomendacion": "NO imprescindible — efecto liga pequeño"
+      },
+      "evidencia_train_val": {
+        "n_partidos": 927,
+        "corr_delta_vs_diferencia_goles": 0.24,
+        "corr_absdelta_vs_empate": -0.007
+      }
+    },
+    "Big chances scored": {
+      "categoria": "ocasiones",
+      "por_periodo": {
+        "ALL": {
+          "cobertura_partidos_pct": 80.4,
+          "nulos_pct": 19.6,
+          "ceros_pct": 30.3,
+          "media": 1.084,
+          "mediana": 1,
+          "desv": 0.987,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "1ST": {
+          "cobertura_partidos_pct": 80.4,
+          "nulos_pct": 19.6,
+          "ceros_pct": 62.1,
+          "media": 0.474,
+          "mediana": 0,
+          "desv": 0.684,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "2ND": {
+          "cobertura_partidos_pct": 80.4,
+          "nulos_pct": 19.6,
+          "ceros_pct": 51.4,
+          "media": 0.616,
+          "mediana": 0,
+          "desv": 0.739,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        }
+      },
+      "version_ofensiva_defensiva": "SÍ — media propia (ofensiva) y media del rival (defensiva); para % (posesión/duelos%) la versión recibida es el complemento. features.js ya genera los lados _r para 7 stats.",
+      "leakage": "La stat cruda es DEL partido (post-partido). Como feature prepartido SÓLO se usa el agregado de partidos con fecha < D estricto (day-strict, como construirFeatures). Riesgo residual: ALL incluye prórroga en 21 partidos → preferir 1T+2T (features.js ya evita ALL).",
+      "previa_dia_estricto": "SÍ — calculable sólo con partidos anteriores a la fecha (se verificó con ventanas day-strict sobre TRAIN+VAL).",
+      "ma_5_10_20": {
+        "icc": 0.095,
+        "sentido": "BAJO — ruido partido a partido: MA largas aplanan sin señal; priorizar 5 o descartar"
+      },
+      "normalizar_por_liga": {
+        "eta2": 0.013,
+        "recomendacion": "NO imprescindible — efecto liga pequeño"
+      },
+      "evidencia_train_val": {
+        "n_partidos": 793,
+        "corr_delta_vs_diferencia_goles": 0.254,
+        "corr_absdelta_vs_empate": -0.045
+      }
+    },
+    "Big chances missed": {
+      "categoria": "ocasiones",
+      "por_periodo": {
+        "ALL": {
+          "cobertura_partidos_pct": 90.2,
+          "nulos_pct": 9.8,
+          "ceros_pct": 22.7,
+          "media": 1.543,
+          "mediana": 1,
+          "desv": 1.396,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "1ST": {
+          "cobertura_partidos_pct": 90.2,
+          "nulos_pct": 9.8,
+          "ceros_pct": 51.4,
+          "media": 0.695,
+          "mediana": 0,
+          "desv": 0.881,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "2ND": {
+          "cobertura_partidos_pct": 90.2,
+          "nulos_pct": 9.8,
+          "ceros_pct": 43.3,
+          "media": 0.865,
+          "mediana": 1,
+          "desv": 0.994,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        }
+      },
+      "version_ofensiva_defensiva": "SÍ — media propia (ofensiva) y media del rival (defensiva); para % (posesión/duelos%) la versión recibida es el complemento. features.js ya genera los lados _r para 7 stats.",
+      "leakage": "La stat cruda es DEL partido (post-partido). Como feature prepartido SÓLO se usa el agregado de partidos con fecha < D estricto (day-strict, como construirFeatures). Riesgo residual: ALL incluye prórroga en 21 partidos → preferir 1T+2T (features.js ya evita ALL).",
+      "previa_dia_estricto": "SÍ — calculable sólo con partidos anteriores a la fecha (se verificó con ventanas day-strict sobre TRAIN+VAL).",
+      "ma_5_10_20": {
+        "icc": 0.077,
+        "sentido": "BAJO — ruido partido a partido: MA largas aplanan sin señal; priorizar 5 o descartar"
+      },
+      "normalizar_por_liga": {
+        "eta2": 0.017,
+        "recomendacion": "NO imprescindible — efecto liga pequeño"
+      },
+      "evidencia_train_val": {
+        "n_partidos": 886,
+        "corr_delta_vs_diferencia_goles": 0.187,
+        "corr_absdelta_vs_empate": -0.022
+      }
+    },
+    "Touches in penalty area": {
+      "categoria": "progresion",
+      "por_periodo": {
+        "ALL": {
+          "cobertura_partidos_pct": 99.3,
+          "nulos_pct": 0.7,
+          "ceros_pct": 0.1,
+          "media": 22.029,
+          "mediana": 20,
+          "desv": 11.715,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "1ST": {
+          "cobertura_partidos_pct": 0,
+          "nulos_pct": 100,
+          "ceros_pct": 0,
+          "media": null,
+          "mediana": null,
+          "desv": null,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null,
+          "nota": "SIN FILAS en este periodo (la stat sólo existe en ALL) — no sirve como predictor 1T/2T"
+        },
+        "2ND": {
+          "cobertura_partidos_pct": 0,
+          "nulos_pct": 100,
+          "ceros_pct": 0,
+          "media": null,
+          "mediana": null,
+          "desv": null,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null,
+          "nota": "SIN FILAS en este periodo (la stat sólo existe en ALL) — no sirve como predictor 1T/2T"
+        }
+      },
+      "version_ofensiva_defensiva": "SÍ — media propia (ofensiva) y media del rival (defensiva); para % (posesión/duelos%) la versión recibida es el complemento. features.js ya genera los lados _r para 7 stats.",
+      "leakage": "La stat cruda es DEL partido (post-partido). Como feature prepartido SÓLO se usa el agregado de partidos con fecha < D estricto (day-strict, como construirFeatures). Riesgo residual: ALL incluye prórroga en 21 partidos → preferir 1T+2T (features.js ya evita ALL).",
+      "previa_dia_estricto": "SÍ — calculable sólo con partidos anteriores a la fecha (se verificó con ventanas day-strict sobre TRAIN+VAL).",
+      "ma_5_10_20": {
+        "icc": 0.279,
+        "sentido": "MEDIO — MA 5/10 razonable; MA 20 sólo si se quiere estilo de fondo"
+      },
+      "normalizar_por_liga": {
+        "eta2": 0.065,
+        "recomendacion": "SÍ — la liga explica ≥5% de la varianza: normalizar log(media/refLiga) como stats_features"
+      },
+      "evidencia_train_val": {
+        "n_partidos": 956,
+        "corr_delta_vs_diferencia_goles": 0.376,
+        "corr_absdelta_vs_empate": -0.063
+      }
+    },
+    "Final third entries": {
+      "categoria": "progresion",
+      "por_periodo": {
+        "ALL": {
+          "cobertura_partidos_pct": 99.7,
+          "nulos_pct": 0.3,
+          "ceros_pct": 0,
+          "media": 53.144,
+          "mediana": 52,
+          "desv": 15.25,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "1ST": {
+          "cobertura_partidos_pct": 99.7,
+          "nulos_pct": 0.3,
+          "ceros_pct": 0,
+          "media": 25.969,
+          "mediana": 25,
+          "desv": 9.045,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "2ND": {
+          "cobertura_partidos_pct": 99.7,
+          "nulos_pct": 0.3,
+          "ceros_pct": 0,
+          "media": 27.174,
+          "mediana": 26,
+          "desv": 9.072,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        }
+      },
+      "version_ofensiva_defensiva": "SÍ — media propia (ofensiva) y media del rival (defensiva); para % (posesión/duelos%) la versión recibida es el complemento. features.js ya genera los lados _r para 7 stats.",
+      "leakage": "La stat cruda es DEL partido (post-partido). Como feature prepartido SÓLO se usa el agregado de partidos con fecha < D estricto (day-strict, como construirFeatures). Riesgo residual: ALL incluye prórroga en 21 partidos → preferir 1T+2T (features.js ya evita ALL).",
+      "previa_dia_estricto": "SÍ — calculable sólo con partidos anteriores a la fecha (se verificó con ventanas day-strict sobre TRAIN+VAL).",
+      "ma_5_10_20": {
+        "icc": 0.137,
+        "sentido": "BAJO — ruido partido a partido: MA largas aplanan sin señal; priorizar 5 o descartar"
+      },
+      "normalizar_por_liga": {
+        "eta2": 0.026,
+        "recomendacion": "NO imprescindible — efecto liga pequeño"
+      },
+      "evidencia_train_val": {
+        "n_partidos": 957,
+        "corr_delta_vs_diferencia_goles": 0.249,
+        "corr_absdelta_vs_empate": -0.047
+      }
+    },
+    "Shots inside box": {
+      "categoria": "remates",
+      "por_periodo": {
+        "ALL": {
+          "cobertura_partidos_pct": 99.7,
+          "nulos_pct": 0.3,
+          "ceros_pct": 0.8,
+          "media": 7.908,
+          "mediana": 7,
+          "desv": 4.273,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "1ST": {
+          "cobertura_partidos_pct": 99.7,
+          "nulos_pct": 0.3,
+          "ceros_pct": 6.7,
+          "media": 3.574,
+          "mediana": 3,
+          "desv": 2.486,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "2ND": {
+          "cobertura_partidos_pct": 99.7,
+          "nulos_pct": 0.3,
+          "ceros_pct": 4.3,
+          "media": 4.339,
+          "mediana": 4,
+          "desv": 2.788,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        }
+      },
+      "version_ofensiva_defensiva": "SÍ — media propia (ofensiva) y media del rival (defensiva); para % (posesión/duelos%) la versión recibida es el complemento. features.js ya genera los lados _r para 7 stats.",
+      "leakage": "La stat cruda es DEL partido (post-partido). Como feature prepartido SÓLO se usa el agregado de partidos con fecha < D estricto (day-strict, como construirFeatures). Riesgo residual: ALL incluye prórroga en 21 partidos → preferir 1T+2T (features.js ya evita ALL).",
+      "previa_dia_estricto": "SÍ — calculable sólo con partidos anteriores a la fecha (se verificó con ventanas day-strict sobre TRAIN+VAL).",
+      "ma_5_10_20": {
+        "icc": 0.145,
+        "sentido": "BAJO — ruido partido a partido: MA largas aplanan sin señal; priorizar 5 o descartar"
+      },
+      "normalizar_por_liga": {
+        "eta2": 0.03,
+        "recomendacion": "NO imprescindible — efecto liga pequeño"
+      },
+      "evidencia_train_val": {
+        "n_partidos": 957,
+        "corr_delta_vs_diferencia_goles": 0.336,
+        "corr_absdelta_vs_empate": -0.055
+      }
+    },
+    "Hit woodwork": {
+      "categoria": "ocasiones",
+      "por_periodo": {
+        "ALL": {
+          "cobertura_partidos_pct": 75.8,
+          "nulos_pct": 24.2,
+          "ceros_pct": 61.5,
+          "media": 0.475,
+          "mediana": 0,
+          "desv": 0.676,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "1ST": {
+          "cobertura_partidos_pct": 75.8,
+          "nulos_pct": 24.2,
+          "ceros_pct": 81.2,
+          "media": 0.21,
+          "mediana": 0,
+          "desv": 0.461,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "2ND": {
+          "cobertura_partidos_pct": 75.8,
+          "nulos_pct": 24.2,
+          "ceros_pct": 76.5,
+          "media": 0.265,
+          "mediana": 0,
+          "desv": 0.51,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        }
+      },
+      "version_ofensiva_defensiva": "SÍ — media propia (ofensiva) y media del rival (defensiva); para % (posesión/duelos%) la versión recibida es el complemento. features.js ya genera los lados _r para 7 stats.",
+      "leakage": "La stat cruda es DEL partido (post-partido). Como feature prepartido SÓLO se usa el agregado de partidos con fecha < D estricto (day-strict, como construirFeatures). Riesgo residual: ALL incluye prórroga en 21 partidos → preferir 1T+2T (features.js ya evita ALL).",
+      "previa_dia_estricto": "SÍ — calculable sólo con partidos anteriores a la fecha (se verificó con ventanas day-strict sobre TRAIN+VAL).",
+      "ma_5_10_20": {
+        "icc": 0.055,
+        "sentido": "BAJO — ruido partido a partido: MA largas aplanan sin señal; priorizar 5 o descartar"
+      },
+      "normalizar_por_liga": {
+        "eta2": 0.074,
+        "recomendacion": "SÍ — la liga explica ≥5% de la varianza: normalizar log(media/refLiga) como stats_features"
+      },
+      "evidencia_train_val": {
+        "n_partidos": 758,
+        "corr_delta_vs_diferencia_goles": 0.126,
+        "corr_absdelta_vs_empate": 0.008
+      }
+    },
+    "Expected goals on target": {
+      "categoria": "calidad",
+      "por_periodo": {
+        "ALL": {
+          "cobertura_partidos_pct": 41,
+          "nulos_pct": 59,
+          "ceros_pct": 2.2,
+          "media": 1.477,
+          "mediana": 1.31,
+          "desv": 1.079,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "1ST": {
+          "cobertura_partidos_pct": 41,
+          "nulos_pct": 59,
+          "ceros_pct": 15.2,
+          "media": 0.648,
+          "mediana": 0.48,
+          "desv": 0.66,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "2ND": {
+          "cobertura_partidos_pct": 41,
+          "nulos_pct": 59,
+          "ceros_pct": 11.1,
+          "media": 0.828,
+          "mediana": 0.7,
+          "desv": 0.769,
+          "riesgo_cero_artificial": "BAJO",
+          "sospechosos_xg_cero_con_remates": null
+        }
+      },
+      "version_ofensiva_defensiva": "SÍ — media propia (ofensiva) y media del rival (defensiva); para % (posesión/duelos%) la versión recibida es el complemento. features.js ya genera los lados _r para 7 stats.",
+      "leakage": "La stat cruda es DEL partido (post-partido). Como feature prepartido SÓLO se usa el agregado de partidos con fecha < D estricto (day-strict, como construirFeatures). Riesgo residual: ALL incluye prórroga en 21 partidos → preferir 1T+2T (features.js ya evita ALL).",
+      "previa_dia_estricto": "SÍ — calculable sólo con partidos anteriores a la fecha (se verificó con ventanas day-strict sobre TRAIN+VAL).",
+      "ma_5_10_20": {
+        "icc": 0.128,
+        "sentido": "BAJO — ruido partido a partido: MA largas aplanan sin señal; priorizar 5 o descartar"
+      },
+      "normalizar_por_liga": {
+        "eta2": 0.045,
+        "recomendacion": "NO imprescindible — efecto liga pequeño"
+      },
+      "evidencia_train_val": {
+        "n_partidos": 458,
+        "corr_delta_vs_diferencia_goles": 0.255,
+        "corr_absdelta_vs_empate": -0.042
+      }
+    },
+    "Through balls": {
+      "categoria": "progresion",
+      "por_periodo": {
+        "ALL": {
+          "cobertura_partidos_pct": 61.3,
+          "nulos_pct": 38.7,
+          "ceros_pct": 37.6,
+          "media": 0.924,
+          "mediana": 1,
+          "desv": 0.977,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "1ST": {
+          "cobertura_partidos_pct": 61.3,
+          "nulos_pct": 38.7,
+          "ceros_pct": 65.2,
+          "media": 0.435,
+          "mediana": 0,
+          "desv": 0.682,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        },
+        "2ND": {
+          "cobertura_partidos_pct": 61.3,
+          "nulos_pct": 38.7,
+          "ceros_pct": 61,
+          "media": 0.495,
+          "mediana": 0,
+          "desv": 0.716,
+          "riesgo_cero_artificial": "MEDIO (cero-inflada: usar también 0/1≥k)",
+          "sospechosos_xg_cero_con_remates": null
+        }
+      },
+      "version_ofensiva_defensiva": "SÍ — media propia (ofensiva) y media del rival (defensiva); para % (posesión/duelos%) la versión recibida es el complemento. features.js ya genera los lados _r para 7 stats.",
+      "leakage": "La stat cruda es DEL partido (post-partido). Como feature prepartido SÓLO se usa el agregado de partidos con fecha < D estricto (day-strict, como construirFeatures). Riesgo residual: ALL incluye prórroga en 21 partidos → preferir 1T+2T (features.js ya evita ALL).",
+      "previa_dia_estricto": "SÍ — calculable sólo con partidos anteriores a la fecha (se verificó con ventanas day-strict sobre TRAIN+VAL).",
+      "ma_5_10_20": {
+        "icc": 0.122,
+        "sentido": "BAJO — ruido partido a partido: MA largas aplanan sin señal; priorizar 5 o descartar"
+      },
+      "normalizar_por_liga": {
+        "eta2": 0.02,
+        "recomendacion": "NO imprescindible — efecto liga pequeño"
+      },
+      "evidencia_train_val": {
+        "n_partidos": 647,
+        "corr_delta_vs_diferencia_goles": 0.181,
+        "corr_absdelta_vs_empate": 0.006
+      }
+    }
+  },
+  "ranking_global": [
+    {
+      "stat": "Touches in penalty area",
+      "categoria": "progresion",
+      "prioridad_usuario": true,
+      "score": 0.779,
+      "cobertura_lados_pct_ALL": 99.3,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.376,
+      "n_partidos_evidencia": 956,
+      "icc": 0.279,
+      "eta2_liga": 0.065,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.1
+    },
+    {
+      "stat": "Final third phase",
+      "categoria": "progresion",
+      "prioridad_usuario": false,
+      "score": 0.775,
+      "cobertura_lados_pct_ALL": 99.3,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.364,
+      "n_partidos_evidencia": 956,
+      "icc": 0.319,
+      "eta2_liga": 0.043,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Accurate passes",
+      "categoria": "pases",
+      "prioridad_usuario": false,
+      "score": 0.763,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.325,
+      "n_partidos_evidencia": 957,
+      "icc": 0.438,
+      "eta2_liga": 0.091,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Passes",
+      "categoria": "pases",
+      "prioridad_usuario": false,
+      "score": 0.762,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.322,
+      "n_partidos_evidencia": 957,
+      "icc": 0.416,
+      "eta2_liga": 0.09,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Total shots",
+      "categoria": "remates",
+      "prioridad_usuario": false,
+      "score": 0.759,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.99,
+      "corr_delta_vs_diferencia_goles": 0.321,
+      "n_partidos_evidencia": 957,
+      "icc": 0.122,
+      "eta2_liga": 0.014,
+      "mismatch_ALL_vs_1T2T_pct": 0.1,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.1
+    },
+    {
+      "stat": "Ball possession",
+      "categoria": "posesion",
+      "prioridad_usuario": false,
+      "score": 0.756,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.305,
+      "n_partidos_evidencia": 957,
+      "icc": 0.257,
+      "eta2_liga": 0,
+      "mismatch_ALL_vs_1T2T_pct": 100,
+      "aditiva_1Tmas2T": false,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Shots inside box",
+      "categoria": "remates",
+      "prioridad_usuario": true,
+      "score": 0.754,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.95,
+      "corr_delta_vs_diferencia_goles": 0.336,
+      "n_partidos_evidencia": 957,
+      "icc": 0.145,
+      "eta2_liga": 0.03,
+      "mismatch_ALL_vs_1T2T_pct": 0.5,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.8
+    },
+    {
+      "stat": "Clearances",
+      "categoria": "defensa",
+      "prioridad_usuario": false,
+      "score": 0.745,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.275,
+      "n_partidos_evidencia": 957,
+      "icc": 0.198,
+      "eta2_liga": 0.086,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Shots on target",
+      "categoria": "remates",
+      "prioridad_usuario": false,
+      "score": 0.738,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.92,
+      "corr_delta_vs_diferencia_goles": 0.313,
+      "n_partidos_evidencia": 957,
+      "icc": 0.135,
+      "eta2_liga": 0.022,
+      "mismatch_ALL_vs_1T2T_pct": 0.8,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 2.6
+    },
+    {
+      "stat": "Final third entries",
+      "categoria": "progresion",
+      "prioridad_usuario": true,
+      "score": 0.736,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.249,
+      "n_partidos_evidencia": 957,
+      "icc": 0.137,
+      "eta2_liga": 0.026,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Goal kicks",
+      "categoria": "balon_parado",
+      "prioridad_usuario": false,
+      "score": 0.732,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.99,
+      "corr_delta_vs_diferencia_goles": -0.246,
+      "n_partidos_evidencia": 957,
+      "icc": 0.127,
+      "eta2_liga": 0.043,
+      "mismatch_ALL_vs_1T2T_pct": 0.1,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.3
+    },
+    {
+      "stat": "Corner kicks",
+      "categoria": "balon_parado",
+      "prioridad_usuario": false,
+      "score": 0.722,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.99,
+      "corr_delta_vs_diferencia_goles": 0.216,
+      "n_partidos_evidencia": 957,
+      "icc": 0.076,
+      "eta2_liga": 0.009,
+      "mismatch_ALL_vs_1T2T_pct": 0.1,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 3
+    },
+    {
+      "stat": "Expected goals",
+      "categoria": "calidad",
+      "prioridad_usuario": false,
+      "score": 0.705,
+      "cobertura_lados_pct_ALL": 97.6,
+      "calidad": 0.84,
+      "corr_delta_vs_diferencia_goles": 0.299,
+      "n_partidos_evidencia": 952,
+      "icc": 0.143,
+      "eta2_liga": 0.026,
+      "mismatch_ALL_vs_1T2T_pct": 1.6,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.1
+    },
+    {
+      "stat": "Dribbles",
+      "categoria": "progresion",
+      "prioridad_usuario": false,
+      "score": 0.703,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.85,
+      "corr_delta_vs_diferencia_goles": 0.263,
+      "n_partidos_evidencia": 957,
+      "icc": 0.173,
+      "eta2_liga": 0.047,
+      "mismatch_ALL_vs_1T2T_pct": 1.5,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.5
+    },
+    {
+      "stat": "Duels",
+      "categoria": "duelos",
+      "prioridad_usuario": false,
+      "score": 0.702,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.151,
+      "n_partidos_evidencia": 957,
+      "icc": 0.063,
+      "eta2_liga": 0,
+      "mismatch_ALL_vs_1T2T_pct": 100,
+      "aditiva_1Tmas2T": false,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Blocked shots",
+      "categoria": "defensa",
+      "prioridad_usuario": false,
+      "score": 0.696,
+      "cobertura_lados_pct_ALL": 99.5,
+      "calidad": 0.84,
+      "corr_delta_vs_diferencia_goles": 0.25,
+      "n_partidos_evidencia": 956,
+      "icc": 0.057,
+      "eta2_liga": 0.016,
+      "mismatch_ALL_vs_1T2T_pct": 1.6,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 7.7
+    },
+    {
+      "stat": "Recoveries",
+      "categoria": "defensa",
+      "prioridad_usuario": false,
+      "score": 0.694,
+      "cobertura_lados_pct_ALL": 99.4,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.133,
+      "n_partidos_evidencia": 956,
+      "icc": 0.108,
+      "eta2_liga": 0.109,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Shots outside box",
+      "categoria": "remates",
+      "prioridad_usuario": false,
+      "score": 0.693,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.95,
+      "corr_delta_vs_diferencia_goles": 0.163,
+      "n_partidos_evidencia": 957,
+      "icc": 0.1,
+      "eta2_liga": 0.04,
+      "mismatch_ALL_vs_1T2T_pct": 0.5,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 2
+    },
+    {
+      "stat": "Shots off target",
+      "categoria": "remates",
+      "prioridad_usuario": false,
+      "score": 0.686,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.86,
+      "corr_delta_vs_diferencia_goles": 0.205,
+      "n_partidos_evidencia": 957,
+      "icc": 0.058,
+      "eta2_liga": 0.019,
+      "mismatch_ALL_vs_1T2T_pct": 1.4,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 1.7
+    },
+    {
+      "stat": "Throw-ins",
+      "categoria": "balon_parado",
+      "prioridad_usuario": false,
+      "score": 0.681,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.092,
+      "n_partidos_evidencia": 957,
+      "icc": 0.101,
+      "eta2_liga": 0.072,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Aerial duels",
+      "categoria": "duelos",
+      "prioridad_usuario": false,
+      "score": 0.68,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.96,
+      "corr_delta_vs_diferencia_goles": -0.117,
+      "n_partidos_evidencia": 957,
+      "icc": 0.206,
+      "eta2_liga": 0.111,
+      "mismatch_ALL_vs_1T2T_pct": 0.4,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Ground duels",
+      "categoria": "duelos",
+      "prioridad_usuario": false,
+      "score": 0.679,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.96,
+      "corr_delta_vs_diferencia_goles": 0.114,
+      "n_partidos_evidencia": 957,
+      "icc": 0.113,
+      "eta2_liga": 0.05,
+      "mismatch_ALL_vs_1T2T_pct": 0.4,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Fouls",
+      "categoria": "disciplina",
+      "prioridad_usuario": false,
+      "score": 0.674,
+      "cobertura_lados_pct_ALL": 98,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.09,
+      "n_partidos_evidencia": 947,
+      "icc": 0.13,
+      "eta2_liga": 0.038,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.1
+    },
+    {
+      "stat": "Goalkeeper saves",
+      "categoria": "porteria",
+      "prioridad_usuario": false,
+      "score": 0.672,
+      "cobertura_lados_pct_ALL": 99.5,
+      "calidad": 0.9,
+      "corr_delta_vs_diferencia_goles": -0.141,
+      "n_partidos_evidencia": 956,
+      "icc": 0.083,
+      "eta2_liga": 0.016,
+      "mismatch_ALL_vs_1T2T_pct": 1,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 7
+    },
+    {
+      "stat": "Total saves",
+      "categoria": "porteria",
+      "prioridad_usuario": false,
+      "score": 0.672,
+      "cobertura_lados_pct_ALL": 99.5,
+      "calidad": 0.9,
+      "corr_delta_vs_diferencia_goles": -0.141,
+      "n_partidos_evidencia": 956,
+      "icc": 0.083,
+      "eta2_liga": 0.016,
+      "mismatch_ALL_vs_1T2T_pct": 1,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 7
+    },
+    {
+      "stat": "Big chances",
+      "categoria": "ocasiones",
+      "prioridad_usuario": true,
+      "score": 0.668,
+      "cobertura_lados_pct_ALL": 97.2,
+      "calidad": 0.78,
+      "corr_delta_vs_diferencia_goles": 0.24,
+      "n_partidos_evidencia": 927,
+      "icc": 0.125,
+      "eta2_liga": 0.025,
+      "mismatch_ALL_vs_1T2T_pct": 2.2,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 12.9
+    },
+    {
+      "stat": "Fouled in final third",
+      "categoria": "disciplina",
+      "prioridad_usuario": false,
+      "score": 0.668,
+      "cobertura_lados_pct_ALL": 98.2,
+      "calidad": 0.87,
+      "corr_delta_vs_diferencia_goles": 0.164,
+      "n_partidos_evidencia": 948,
+      "icc": 0.063,
+      "eta2_liga": 0.012,
+      "mismatch_ALL_vs_1T2T_pct": 1.3,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 13
+    },
+    {
+      "stat": "Tackles",
+      "categoria": "defensa",
+      "prioridad_usuario": false,
+      "score": 0.662,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.98,
+      "corr_delta_vs_diferencia_goles": -0.051,
+      "n_partidos_evidencia": 957,
+      "icc": 0.081,
+      "eta2_liga": 0.033,
+      "mismatch_ALL_vs_1T2T_pct": 0.2,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Total tackles",
+      "categoria": "defensa",
+      "prioridad_usuario": false,
+      "score": 0.662,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.98,
+      "corr_delta_vs_diferencia_goles": -0.051,
+      "n_partidos_evidencia": 957,
+      "icc": 0.081,
+      "eta2_liga": 0.033,
+      "mismatch_ALL_vs_1T2T_pct": 0.2,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Long balls",
+      "categoria": "pases",
+      "prioridad_usuario": false,
+      "score": 0.657,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.022,
+      "n_partidos_evidencia": 957,
+      "icc": 0.128,
+      "eta2_liga": 0.042,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Free kicks",
+      "categoria": "balon_parado",
+      "prioridad_usuario": false,
+      "score": 0.648,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.98,
+      "corr_delta_vs_diferencia_goles": -0.011,
+      "n_partidos_evidencia": 957,
+      "icc": 0.129,
+      "eta2_liga": 0.036,
+      "mismatch_ALL_vs_1T2T_pct": 0.2,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Yellow cards",
+      "categoria": "disciplina",
+      "prioridad_usuario": false,
+      "score": 0.647,
+      "cobertura_lados_pct_ALL": 96.1,
+      "calidad": 0.95,
+      "corr_delta_vs_diferencia_goles": -0.071,
+      "n_partidos_evidencia": 944,
+      "icc": 0.066,
+      "eta2_liga": 0.04,
+      "mismatch_ALL_vs_1T2T_pct": 0.5,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 11.7
+    },
+    {
+      "stat": "Offsides",
+      "categoria": "disciplina",
+      "prioridad_usuario": false,
+      "score": 0.646,
+      "cobertura_lados_pct_ALL": 94.2,
+      "calidad": 0.93,
+      "corr_delta_vs_diferencia_goles": -0.104,
+      "n_partidos_evidencia": 914,
+      "icc": 0.015,
+      "eta2_liga": 0.011,
+      "mismatch_ALL_vs_1T2T_pct": 0.7,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 18.7
+    },
+    {
+      "stat": "Big chances scored",
+      "categoria": "ocasiones",
+      "prioridad_usuario": true,
+      "score": 0.643,
+      "cobertura_lados_pct_ALL": 80.4,
+      "calidad": 0.93,
+      "corr_delta_vs_diferencia_goles": 0.254,
+      "n_partidos_evidencia": 793,
+      "icc": 0.095,
+      "eta2_liga": 0.013,
+      "mismatch_ALL_vs_1T2T_pct": 0.7,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 30.3
+    },
+    {
+      "stat": "Tackles won",
+      "categoria": "defensa",
+      "prioridad_usuario": false,
+      "score": 0.637,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.88,
+      "corr_delta_vs_diferencia_goles": -0.051,
+      "n_partidos_evidencia": 957,
+      "icc": 0.07,
+      "eta2_liga": 0.017,
+      "mismatch_ALL_vs_1T2T_pct": 1.2,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.1
+    },
+    {
+      "stat": "Big chances missed",
+      "categoria": "ocasiones",
+      "prioridad_usuario": true,
+      "score": 0.634,
+      "cobertura_lados_pct_ALL": 90.2,
+      "calidad": 0.83,
+      "corr_delta_vs_diferencia_goles": 0.187,
+      "n_partidos_evidencia": 886,
+      "icc": 0.077,
+      "eta2_liga": 0.017,
+      "mismatch_ALL_vs_1T2T_pct": 1.7,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 22.7
+    },
+    {
+      "stat": "Interceptions",
+      "categoria": "defensa",
+      "prioridad_usuario": false,
+      "score": 0.631,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.9,
+      "corr_delta_vs_diferencia_goles": -0.02,
+      "n_partidos_evidencia": 957,
+      "icc": 0.064,
+      "eta2_liga": 0.014,
+      "mismatch_ALL_vs_1T2T_pct": 1,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Crosses",
+      "categoria": "pases",
+      "prioridad_usuario": false,
+      "score": 0.624,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.72,
+      "corr_delta_vs_diferencia_goles": 0.128,
+      "n_partidos_evidencia": 957,
+      "icc": 0.081,
+      "eta2_liga": 0.027,
+      "mismatch_ALL_vs_1T2T_pct": 2.8,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 4.4
+    },
+    {
+      "stat": "Dispossessed",
+      "categoria": "progresion",
+      "prioridad_usuario": false,
+      "score": 0.603,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.8,
+      "corr_delta_vs_diferencia_goles": 0.011,
+      "n_partidos_evidencia": 957,
+      "icc": 0.069,
+      "eta2_liga": 0.025,
+      "mismatch_ALL_vs_1T2T_pct": 2,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Hit woodwork",
+      "categoria": "ocasiones",
+      "prioridad_usuario": true,
+      "score": 0.597,
+      "cobertura_lados_pct_ALL": 75.8,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.126,
+      "n_partidos_evidencia": 758,
+      "icc": 0.055,
+      "eta2_liga": 0.074,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 61.5
+    },
+    {
+      "stat": "Big saves",
+      "categoria": "porteria",
+      "prioridad_usuario": false,
+      "score": 0.574,
+      "cobertura_lados_pct_ALL": 71.4,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.109,
+      "n_partidos_evidencia": 737,
+      "icc": 0.03,
+      "eta2_liga": 0.005,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 36.6
+    },
+    {
+      "stat": "High claims",
+      "categoria": "porteria",
+      "prioridad_usuario": false,
+      "score": 0.55,
+      "cobertura_lados_pct_ALL": 68.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.072,
+      "n_partidos_evidencia": 744,
+      "icc": 0.062,
+      "eta2_liga": 0.007,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 35.9
+    },
+    {
+      "stat": "Through balls",
+      "categoria": "progresion",
+      "prioridad_usuario": true,
+      "score": 0.546,
+      "cobertura_lados_pct_ALL": 61.3,
+      "calidad": 0.95,
+      "corr_delta_vs_diferencia_goles": 0.181,
+      "n_partidos_evidencia": 647,
+      "icc": 0.122,
+      "eta2_liga": 0.02,
+      "mismatch_ALL_vs_1T2T_pct": 0.5,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 37.6
+    },
+    {
+      "stat": "Punches",
+      "categoria": "porteria",
+      "prioridad_usuario": false,
+      "score": 0.527,
+      "cobertura_lados_pct_ALL": 55.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.155,
+      "n_partidos_evidencia": 605,
+      "icc": 0.087,
+      "eta2_liga": 0.005,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 41
+    },
+    {
+      "stat": "Goals prevented",
+      "categoria": "porteria",
+      "prioridad_usuario": false,
+      "score": 0.525,
+      "cobertura_lados_pct_ALL": 65.6,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.036,
+      "n_partidos_evidencia": 704,
+      "icc": 0,
+      "eta2_liga": 0.008,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 2.4
+    },
+    {
+      "stat": "Number of sprints",
+      "categoria": "duelos",
+      "prioridad_usuario": false,
+      "score": 0.504,
+      "cobertura_lados_pct_ALL": 60.6,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.033,
+      "n_partidos_evidencia": 634,
+      "icc": 0.228,
+      "eta2_liga": 0.33,
+      "mismatch_ALL_vs_1T2T_pct": 100,
+      "aditiva_1Tmas2T": false,
+      "ceros_pct_ALL": 0.2
+    },
+    {
+      "stat": "Expected goals on target",
+      "categoria": "calidad",
+      "prioridad_usuario": true,
+      "score": 0.503,
+      "cobertura_lados_pct_ALL": 41,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.255,
+      "n_partidos_evidencia": 458,
+      "icc": 0.128,
+      "eta2_liga": 0.045,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 2.2
+    },
+    {
+      "stat": "Distance covered",
+      "categoria": "duelos",
+      "prioridad_usuario": false,
+      "score": 0.494,
+      "cobertura_lados_pct_ALL": 60.6,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.004,
+      "n_partidos_evidencia": 634,
+      "icc": 0.279,
+      "eta2_liga": 0.298,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.2
+    },
+    {
+      "stat": "Errors lead to a shot",
+      "categoria": "defensa",
+      "prioridad_usuario": false,
+      "score": 0.489,
+      "cobertura_lados_pct_ALL": 58.9,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.009,
+      "n_partidos_evidencia": 585,
+      "icc": 0.011,
+      "eta2_liga": 0.015,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 36.4
+    },
+    {
+      "stat": "Errors lead to a goal",
+      "categoria": "defensa",
+      "prioridad_usuario": false,
+      "score": 0.385,
+      "cobertura_lados_pct_ALL": 31.5,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.027,
+      "n_partidos_evidencia": 277,
+      "icc": 0,
+      "eta2_liga": 0.01,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 46
+    },
+    {
+      "stat": "Red cards",
+      "categoria": "disciplina",
+      "prioridad_usuario": false,
+      "score": 0.357,
+      "cobertura_lados_pct_ALL": 18.9,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.089,
+      "n_partidos_evidencia": 120,
+      "icc": 0,
+      "eta2_liga": 0.012,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 45
+    },
+    {
+      "stat": "Penalty saves",
+      "categoria": "porteria",
+      "prioridad_usuario": false,
+      "score": 0.27,
+      "cobertura_lados_pct_ALL": 5.1,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": null,
+      "n_partidos_evidencia": 0,
+      "icc": null,
+      "eta2_liga": 0,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 50
+    }
+  ],
+  "top_15": [
+    {
+      "stat": "Touches in penalty area",
+      "categoria": "progresion",
+      "prioridad_usuario": true,
+      "score": 0.779,
+      "cobertura_lados_pct_ALL": 99.3,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.376,
+      "n_partidos_evidencia": 956,
+      "icc": 0.279,
+      "eta2_liga": 0.065,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.1
+    },
+    {
+      "stat": "Final third phase",
+      "categoria": "progresion",
+      "prioridad_usuario": false,
+      "score": 0.775,
+      "cobertura_lados_pct_ALL": 99.3,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.364,
+      "n_partidos_evidencia": 956,
+      "icc": 0.319,
+      "eta2_liga": 0.043,
+      "mismatch_ALL_vs_1T2T_pct": null,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Accurate passes",
+      "categoria": "pases",
+      "prioridad_usuario": false,
+      "score": 0.763,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.325,
+      "n_partidos_evidencia": 957,
+      "icc": 0.438,
+      "eta2_liga": 0.091,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Passes",
+      "categoria": "pases",
+      "prioridad_usuario": false,
+      "score": 0.762,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.322,
+      "n_partidos_evidencia": 957,
+      "icc": 0.416,
+      "eta2_liga": 0.09,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Total shots",
+      "categoria": "remates",
+      "prioridad_usuario": false,
+      "score": 0.759,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.99,
+      "corr_delta_vs_diferencia_goles": 0.321,
+      "n_partidos_evidencia": 957,
+      "icc": 0.122,
+      "eta2_liga": 0.014,
+      "mismatch_ALL_vs_1T2T_pct": 0.1,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.1
+    },
+    {
+      "stat": "Ball possession",
+      "categoria": "posesion",
+      "prioridad_usuario": false,
+      "score": 0.756,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.305,
+      "n_partidos_evidencia": 957,
+      "icc": 0.257,
+      "eta2_liga": 0,
+      "mismatch_ALL_vs_1T2T_pct": 100,
+      "aditiva_1Tmas2T": false,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Shots inside box",
+      "categoria": "remates",
+      "prioridad_usuario": true,
+      "score": 0.754,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.95,
+      "corr_delta_vs_diferencia_goles": 0.336,
+      "n_partidos_evidencia": 957,
+      "icc": 0.145,
+      "eta2_liga": 0.03,
+      "mismatch_ALL_vs_1T2T_pct": 0.5,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.8
+    },
+    {
+      "stat": "Clearances",
+      "categoria": "defensa",
+      "prioridad_usuario": false,
+      "score": 0.745,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": -0.275,
+      "n_partidos_evidencia": 957,
+      "icc": 0.198,
+      "eta2_liga": 0.086,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Shots on target",
+      "categoria": "remates",
+      "prioridad_usuario": false,
+      "score": 0.738,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.92,
+      "corr_delta_vs_diferencia_goles": 0.313,
+      "n_partidos_evidencia": 957,
+      "icc": 0.135,
+      "eta2_liga": 0.022,
+      "mismatch_ALL_vs_1T2T_pct": 0.8,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 2.6
+    },
+    {
+      "stat": "Final third entries",
+      "categoria": "progresion",
+      "prioridad_usuario": true,
+      "score": 0.736,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.249,
+      "n_partidos_evidencia": 957,
+      "icc": 0.137,
+      "eta2_liga": 0.026,
+      "mismatch_ALL_vs_1T2T_pct": 0,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0
+    },
+    {
+      "stat": "Goal kicks",
+      "categoria": "balon_parado",
+      "prioridad_usuario": false,
+      "score": 0.732,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.99,
+      "corr_delta_vs_diferencia_goles": -0.246,
+      "n_partidos_evidencia": 957,
+      "icc": 0.127,
+      "eta2_liga": 0.043,
+      "mismatch_ALL_vs_1T2T_pct": 0.1,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.3
+    },
+    {
+      "stat": "Corner kicks",
+      "categoria": "balon_parado",
+      "prioridad_usuario": false,
+      "score": 0.722,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.99,
+      "corr_delta_vs_diferencia_goles": 0.216,
+      "n_partidos_evidencia": 957,
+      "icc": 0.076,
+      "eta2_liga": 0.009,
+      "mismatch_ALL_vs_1T2T_pct": 0.1,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 3
+    },
+    {
+      "stat": "Expected goals",
+      "categoria": "calidad",
+      "prioridad_usuario": false,
+      "score": 0.705,
+      "cobertura_lados_pct_ALL": 97.6,
+      "calidad": 0.84,
+      "corr_delta_vs_diferencia_goles": 0.299,
+      "n_partidos_evidencia": 952,
+      "icc": 0.143,
+      "eta2_liga": 0.026,
+      "mismatch_ALL_vs_1T2T_pct": 1.6,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.1
+    },
+    {
+      "stat": "Dribbles",
+      "categoria": "progresion",
+      "prioridad_usuario": false,
+      "score": 0.703,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 0.85,
+      "corr_delta_vs_diferencia_goles": 0.263,
+      "n_partidos_evidencia": 957,
+      "icc": 0.173,
+      "eta2_liga": 0.047,
+      "mismatch_ALL_vs_1T2T_pct": 1.5,
+      "aditiva_1Tmas2T": null,
+      "ceros_pct_ALL": 0.5
+    },
+    {
+      "stat": "Duels",
+      "categoria": "duelos",
+      "prioridad_usuario": false,
+      "score": 0.702,
+      "cobertura_lados_pct_ALL": 99.7,
+      "calidad": 1,
+      "corr_delta_vs_diferencia_goles": 0.151,
+      "n_partidos_evidencia": 957,
+      "icc": 0.063,
+      "eta2_liga": 0,
+      "mismatch_ALL_vs_1T2T_pct": 100,
+      "aditiva_1Tmas2T": false,
+      "ceros_pct_ALL": 0
+    }
+  ],
+  "modelo_1x2_variables": {
+    "criterio": "Score = 0.40·cobertura + 0.35·|corr(ΔMA5, diferencia de goles)| + 0.25·calidad (consistencia ALL vs 1T+2T y ceros xG). Todo en TRAIN+VAL, sin entrenar.",
+    "top": [
+      {
+        "stat": "Touches in penalty area",
+        "categoria": "progresion",
+        "prioridad_usuario": true,
+        "score": 0.779,
+        "cobertura_lados_pct_ALL": 99.3,
+        "calidad": 1,
+        "corr_delta_vs_diferencia_goles": 0.376,
+        "n_partidos_evidencia": 956,
+        "icc": 0.279,
+        "eta2_liga": 0.065,
+        "mismatch_ALL_vs_1T2T_pct": null,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0.1
+      },
+      {
+        "stat": "Final third phase",
+        "categoria": "progresion",
+        "prioridad_usuario": false,
+        "score": 0.775,
+        "cobertura_lados_pct_ALL": 99.3,
+        "calidad": 1,
+        "corr_delta_vs_diferencia_goles": 0.364,
+        "n_partidos_evidencia": 956,
+        "icc": 0.319,
+        "eta2_liga": 0.043,
+        "mismatch_ALL_vs_1T2T_pct": null,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0
+      },
+      {
+        "stat": "Accurate passes",
+        "categoria": "pases",
+        "prioridad_usuario": false,
+        "score": 0.763,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 1,
+        "corr_delta_vs_diferencia_goles": 0.325,
+        "n_partidos_evidencia": 957,
+        "icc": 0.438,
+        "eta2_liga": 0.091,
+        "mismatch_ALL_vs_1T2T_pct": 0,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0
+      },
+      {
+        "stat": "Passes",
+        "categoria": "pases",
+        "prioridad_usuario": false,
+        "score": 0.762,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 1,
+        "corr_delta_vs_diferencia_goles": 0.322,
+        "n_partidos_evidencia": 957,
+        "icc": 0.416,
+        "eta2_liga": 0.09,
+        "mismatch_ALL_vs_1T2T_pct": 0,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0
+      },
+      {
+        "stat": "Total shots",
+        "categoria": "remates",
+        "prioridad_usuario": false,
+        "score": 0.759,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 0.99,
+        "corr_delta_vs_diferencia_goles": 0.321,
+        "n_partidos_evidencia": 957,
+        "icc": 0.122,
+        "eta2_liga": 0.014,
+        "mismatch_ALL_vs_1T2T_pct": 0.1,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0.1
+      },
+      {
+        "stat": "Ball possession",
+        "categoria": "posesion",
+        "prioridad_usuario": false,
+        "score": 0.756,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 1,
+        "corr_delta_vs_diferencia_goles": 0.305,
+        "n_partidos_evidencia": 957,
+        "icc": 0.257,
+        "eta2_liga": 0,
+        "mismatch_ALL_vs_1T2T_pct": 100,
+        "aditiva_1Tmas2T": false,
+        "ceros_pct_ALL": 0
+      },
+      {
+        "stat": "Shots inside box",
+        "categoria": "remates",
+        "prioridad_usuario": true,
+        "score": 0.754,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 0.95,
+        "corr_delta_vs_diferencia_goles": 0.336,
+        "n_partidos_evidencia": 957,
+        "icc": 0.145,
+        "eta2_liga": 0.03,
+        "mismatch_ALL_vs_1T2T_pct": 0.5,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0.8
+      },
+      {
+        "stat": "Clearances",
+        "categoria": "defensa",
+        "prioridad_usuario": false,
+        "score": 0.745,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 1,
+        "corr_delta_vs_diferencia_goles": -0.275,
+        "n_partidos_evidencia": 957,
+        "icc": 0.198,
+        "eta2_liga": 0.086,
+        "mismatch_ALL_vs_1T2T_pct": 0,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0
+      },
+      {
+        "stat": "Shots on target",
+        "categoria": "remates",
+        "prioridad_usuario": false,
+        "score": 0.738,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 0.92,
+        "corr_delta_vs_diferencia_goles": 0.313,
+        "n_partidos_evidencia": 957,
+        "icc": 0.135,
+        "eta2_liga": 0.022,
+        "mismatch_ALL_vs_1T2T_pct": 0.8,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 2.6
+      },
+      {
+        "stat": "Final third entries",
+        "categoria": "progresion",
+        "prioridad_usuario": true,
+        "score": 0.736,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 1,
+        "corr_delta_vs_diferencia_goles": 0.249,
+        "n_partidos_evidencia": 957,
+        "icc": 0.137,
+        "eta2_liga": 0.026,
+        "mismatch_ALL_vs_1T2T_pct": 0,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0
+      },
+      {
+        "stat": "Goal kicks",
+        "categoria": "balon_parado",
+        "prioridad_usuario": false,
+        "score": 0.732,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 0.99,
+        "corr_delta_vs_diferencia_goles": -0.246,
+        "n_partidos_evidencia": 957,
+        "icc": 0.127,
+        "eta2_liga": 0.043,
+        "mismatch_ALL_vs_1T2T_pct": 0.1,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0.3
+      },
+      {
+        "stat": "Corner kicks",
+        "categoria": "balon_parado",
+        "prioridad_usuario": false,
+        "score": 0.722,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 0.99,
+        "corr_delta_vs_diferencia_goles": 0.216,
+        "n_partidos_evidencia": 957,
+        "icc": 0.076,
+        "eta2_liga": 0.009,
+        "mismatch_ALL_vs_1T2T_pct": 0.1,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 3
+      },
+      {
+        "stat": "Expected goals",
+        "categoria": "calidad",
+        "prioridad_usuario": false,
+        "score": 0.705,
+        "cobertura_lados_pct_ALL": 97.6,
+        "calidad": 0.84,
+        "corr_delta_vs_diferencia_goles": 0.299,
+        "n_partidos_evidencia": 952,
+        "icc": 0.143,
+        "eta2_liga": 0.026,
+        "mismatch_ALL_vs_1T2T_pct": 1.6,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0.1
+      },
+      {
+        "stat": "Dribbles",
+        "categoria": "progresion",
+        "prioridad_usuario": false,
+        "score": 0.703,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 0.85,
+        "corr_delta_vs_diferencia_goles": 0.263,
+        "n_partidos_evidencia": 957,
+        "icc": 0.173,
+        "eta2_liga": 0.047,
+        "mismatch_ALL_vs_1T2T_pct": 1.5,
+        "aditiva_1Tmas2T": null,
+        "ceros_pct_ALL": 0.5
+      },
+      {
+        "stat": "Duels",
+        "categoria": "duelos",
+        "prioridad_usuario": false,
+        "score": 0.702,
+        "cobertura_lados_pct_ALL": 99.7,
+        "calidad": 1,
+        "corr_delta_vs_diferencia_goles": 0.151,
+        "n_partidos_evidencia": 957,
+        "icc": 0.063,
+        "eta2_liga": 0,
+        "mismatch_ALL_vs_1T2T_pct": 100,
+        "aditiva_1Tmas2T": false,
+        "ceros_pct_ALL": 0
+      }
+    ],
+    "lectura": "El CASO D previo (features de equilibrio ~cero aporte) aconseja priorizar señales de OCASIÓN/CALIDAD de tiro sobre señales de flujo (posesión/pases/duelos), que ya tienen precedente negativo."
+  },
+  "modelo_goles_2T_variables": {
+    "dependiente": "goles 2T (goles − goles 1T), disponible en 1937 partidos (TV: 1523)",
+    "predictores_prepartido_top": [
+      {
+        "predictor_rolling5_1ST": "Accurate passes",
+        "n": 957,
+        "corr_delta1ST_vs_goles2T": 0.267,
+        "cobertura_1ST_pct": 99.7
+      },
+      {
+        "predictor_rolling5_1ST": "Passes",
+        "n": 957,
+        "corr_delta1ST_vs_goles2T": 0.262,
+        "cobertura_1ST_pct": 99.7
+      },
+      {
+        "predictor_rolling5_1ST": "Ball possession",
+        "n": 957,
+        "corr_delta1ST_vs_goles2T": 0.246,
+        "cobertura_1ST_pct": 99.7
+      },
+      {
+        "predictor_rolling5_1ST": "Final third entries",
+        "n": 957,
+        "corr_delta1ST_vs_goles2T": 0.226,
+        "cobertura_1ST_pct": 99.7
+      },
+      {
+        "predictor_rolling5_1ST": "Total shots",
+        "n": 957,
+        "corr_delta1ST_vs_goles2T": 0.2,
+        "cobertura_1ST_pct": 99.7
+      },
+      {
+        "predictor_rolling5_1ST": "Expected goals",
+        "n": 704,
+        "corr_delta1ST_vs_goles2T": 0.198,
+        "cobertura_1ST_pct": 65.6
+      },
+      {
+        "predictor_rolling5_1ST": "Goal kicks",
+        "n": 957,
+        "corr_delta1ST_vs_goles2T": -0.192,
+        "cobertura_1ST_pct": 99.7
+      },
+      {
+        "predictor_rolling5_1ST": "Shots inside box",
+        "n": 957,
+        "corr_delta1ST_vs_goles2T": 0.191,
+        "cobertura_1ST_pct": 99.7
+      },
+      {
+        "predictor_rolling5_1ST": "Shots on target",
+        "n": 957,
+        "corr_delta1ST_vs_goles2T": 0.186,
+        "cobertura_1ST_pct": 99.7
+      },
+      {
+        "predictor_rolling5_1ST": "Big chances scored",
+        "n": 793,
+        "corr_delta1ST_vs_goles2T": 0.174,
+        "cobertura_1ST_pct": 80.4
+      },
+      {
+        "predictor_rolling5_1ST": "Expected goals on target",
+        "n": 458,
+        "corr_delta1ST_vs_goles2T": 0.171,
+        "cobertura_1ST_pct": 41
+      },
+      {
+        "predictor_rolling5_1ST": "Clearances",
+        "n": 957,
+        "corr_delta1ST_vs_goles2T": -0.169,
+        "cobertura_1ST_pct": 99.7
+      },
+      {
+        "predictor_rolling5_1ST": "Dribbles",
+        "n": 957,
+        "corr_delta1ST_vs_goles2T": 0.156,
+        "cobertura_1ST_pct": 99.7
+      },
+      {
+        "predictor_rolling5_1ST": "Blocked shots",
+        "n": 956,
+        "corr_delta1ST_vs_goles2T": 0.153,
+        "cobertura_1ST_pct": 99.4
+      },
+      {
+        "predictor_rolling5_1ST": "Big chances",
+        "n": 927,
+        "corr_delta1ST_vs_goles2T": 0.146,
+        "cobertura_1ST_pct": 97.2
+      }
+    ],
+    "predictores_mismo_partido_1ST_top": [
+      {
+        "predictor_1ST": "Red cards",
+        "n": 287,
+        "corr_vs_goles_2T": -0.34
+      },
+      {
+        "predictor_1ST": "Ball possession",
+        "n": 1518,
+        "corr_vs_goles_2T": 0.311
+      },
+      {
+        "predictor_1ST": "Accurate passes",
+        "n": 1518,
+        "corr_vs_goles_2T": 0.308
+      },
+      {
+        "predictor_1ST": "Passes",
+        "n": 1518,
+        "corr_vs_goles_2T": 0.306
+      },
+      {
+        "predictor_1ST": "Final third entries",
+        "n": 1518,
+        "corr_vs_goles_2T": 0.293
+      },
+      {
+        "predictor_1ST": "Total shots",
+        "n": 1518,
+        "corr_vs_goles_2T": 0.281
+      },
+      {
+        "predictor_1ST": "Shots inside box",
+        "n": 1518,
+        "corr_vs_goles_2T": 0.246
+      },
+      {
+        "predictor_1ST": "Goal kicks",
+        "n": 1518,
+        "corr_vs_goles_2T": -0.231
+      },
+      {
+        "predictor_1ST": "Clearances",
+        "n": 1518,
+        "corr_vs_goles_2T": -0.22
+      },
+      {
+        "predictor_1ST": "Shots off target",
+        "n": 1518,
+        "corr_vs_goles_2T": 0.214
+      },
+      {
+        "predictor_1ST": "Corner kicks",
+        "n": 1517,
+        "corr_vs_goles_2T": 0.211
+      },
+      {
+        "predictor_1ST": "Blocked shots",
+        "n": 1514,
+        "corr_vs_goles_2T": 0.206
+      },
+      {
+        "predictor_1ST": "Shots outside box",
+        "n": 1518,
+        "corr_vs_goles_2T": 0.204
+      },
+      {
+        "predictor_1ST": "Shots on target",
+        "n": 1518,
+        "corr_vs_goles_2T": 0.197
+      },
+      {
+        "predictor_1ST": "Expected goals",
+        "n": 999,
+        "corr_vs_goles_2T": 0.193
+      }
+    ],
+    "estado_al_descanso_local": {
+      "lidera": {
+        "n": 523,
+        "g2t": 530,
+        "goles2T_local_promedio": 1.013
+      },
+      "empata": {
+        "n": 627,
+        "g2t": 524,
+        "goles2T_local_promedio": 0.836
+      },
+      "va_perdiendo": {
+        "n": 373,
+        "g2t": 344,
+        "goles2T_local_promedio": 0.922
+      }
+    },
+    "advertencia_leakage": "Los predictores MISMO partido (1ST) sólo son válidos si el modelo 2T se ejecuta en tiempo descanso (datos del 1T conocidos). Prepartido SÓLO valen los rolling day-strict de 1ST.",
+    "r_goles1T_vs_goles2T_mismo_partido": null,
+    "r_mismo_partido_goles1T_vs_goles2T": {
+      "n": 1523,
+      "r": 0.088,
+      "lectura": "Los goles del 1T NO explican los del 2T (casi independiente): el estado al descanso induce efectos opuestos (el que va ganando baja ritmo, el que va perdiendo sube)"
+    },
+    "r_mismo_partido_goles1T_vs_golesFinal": {
+      "n": 1523,
+      "r": 0.691,
+      "lectura": "Los goles 1T sí correlacionan con el resultado final (componen el total)"
+    }
+  },
+  "verificacion": {
+    "hashes_protegidos": "22/22 SHA-256 == baseline",
+    "json_modelo": "prediccion_poisson.json intacto (F6E3405C...5BD1)",
+    "endpoints": "HTTP 200 /api/predictions/model (activeModel=V1_BETA) y /api/leagues",
+    "test": "INTACTO — ninguna query supera 2026-06-18 (asercion anti-fuga en el script; TV=1523, fecha_max=2026-06-18)",
+    "escrituras_DB": "ninguna (solo SELECT)"
+  }
+}

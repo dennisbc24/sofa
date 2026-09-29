@@ -5,6 +5,7 @@ const apiLeagues = require("./api/leagues.router");
 const apiProbabilidades = require("./api/probabilidades.router");
 const apiEquipos = require("./api/equipos.router");
 const apiPrediccion = require("./api/prediccion.router");
+const apiEstadisticas = require("./api/estadisticas.router");
 
 function routerApi(app) {
   const router = express.Router();
@@ -13,6 +14,7 @@ function routerApi(app) {
   app.use("/api/probabilidades", apiProbabilidades);
   app.use("/api/equipos", apiEquipos);
   app.use("/api/predictions", apiPrediccion);
+  app.use("/api/estadisticas", apiEstadisticas);
 }
 
 module.exports = { routerApi };

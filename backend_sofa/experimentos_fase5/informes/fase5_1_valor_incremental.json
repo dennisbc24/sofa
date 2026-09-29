@@ -1,0 +1,6079 @@
+{
+  "generado": "2026-09-29T14:17:13.267Z",
+  "fase": "5.1 — Valor incremental de variables Tier A sobre V1",
+  "reglas": [
+    "TEST NO cargado (SQL fecha <= 2026-06-18). Splits oficiales del JSON. Ventanas día-estricto idénticas a fases previas.",
+    "Mismo protocolo: pooled = W1-4; selección LL > Brier > ECE > Accuracy + estabilidad (≥3/4 ventanas).",
+    "Experimentos INDIVIDUALES; sin combinaciones masivas (quedan preparadas para fase siguiente).",
+    "Ventanas: MA5 siempre; MA10/20 sólo donde Fase 5 justificó por ICC (TP/F3P: 5/10; AP/PA: 5/10/20; F3E/SIB: sólo 5).",
+    "Normalización sólo para eta²>=0.05: Touches (.065), Accurate passes (.091), Passes (.090) — comparadas contra su versión sin normalizar.",
+    "Sin xGOT/Through balls/Hit woodwork/Big chances (cobertura insuficiente). Total shots/Shots on target/xG no se repiten (ya probados en fases previas).",
+    "Sin DDL/DML, sin reglas por liga, sin selección por correlación.",
+    "lrCovFactor por variante = 0.05·min(1, 25/escala²) con escala = p95(|x|) de la familia en el fit: el trainer está calibrado para escala ~5 (modelo_stats_exp.js:21-24) y las crudas grandes (toques ~25, passes ~500) divergen; es reparametrización de la ruta de optimización (objetivo, l2Cov y óptimo idénticos). Registrado por ventana en coeficientes."
+  ],
+  "senales_definicion": {
+    "s1": "ΔLL pooled < 0",
+    "s2": "ΔLL empate < 0",
+    "s3": "ΔBrier ≤ 0",
+    "s4": "ΔECE ≤ +0.0005",
+    "s5": "ΔBrier empate ≤ 0",
+    "s6": "≥3/4 ventanas con LL < V1",
+    "s7": "ningún recall H/E/A empeora > 0.02",
+    "candidato": "s1 && s3 && s6 && total ≥ 5",
+    "senalDebil": "s1 pero ΔBrier>0.002 o ΔECE>0.01 o <3 ventanas → no promover"
+  },
+  "sanidad": {
+    "v1OficialIgualJson": true,
+    "v1PooledIgualFase33": true,
+    "ventanasIgualesFase33": true
+  },
+  "diagnostico_piso": {
+    "definicion": "evento de piso = partido con ll>20 (p_real<2e-9; el piso numérico es 1e-15 ⇒ ll=34.54)",
+    "causa": "V1 ya predice λ_home=10.55 en Málaga CF v Almería (0-0, 2026-06-14): 'La Liga Dos 2025' NO existe en ligas (ni del fit ni del JSON oficial; la liga entra en el dataset en mayo-2026 tras su nombre/nuevo arranque) → fallback a μ global con att/def identificados en otra liga. Cualquier perturbación de ±0.5% de λ hunde p_draw bajo el piso y añade ~+28 LL a la ventana OFICIAL (28/364≈0.077).",
+    "eventosPooled": 0,
+    "afectadosOFICIAL": [
+      "TP10",
+      "AP10",
+      "PA10",
+      "PA10N",
+      "PA20N"
+    ],
+    "uso": "DIAGNÓSTICO SÓLO: la selección usa las métricas del protocolo (pooled W1-4), y los eventos en pooled son 0. El campo deltaOFICIAL_sinPiso y logLoss_sinPiso permiten ver el orden real sin el partido contaminado.",
+    "umbral": 20
+  },
+  "ventanas": [
+    {
+      "nombre": "W1",
+      "fit": 761,
+      "eval": 190,
+      "desde": "2026-03-09",
+      "hasta": "2026-04-10"
+    },
+    {
+      "nombre": "W2",
+      "fit": 951,
+      "eval": 208,
+      "desde": "2026-04-11",
+      "hasta": "2026-05-02"
+    },
+    {
+      "nombre": "W3",
+      "fit": 1159,
+      "eval": 174,
+      "desde": "2026-05-03",
+      "hasta": "2026-05-19"
+    },
+    {
+      "nombre": "W4",
+      "fit": 1333,
+      "eval": 190,
+      "desde": "2026-05-20",
+      "hasta": "2026-06-18"
+    }
+  ],
+  "baseline_V1": {
+    "oficial": {
+      "n": 364,
+      "accuracy": 0.4835,
+      "logLoss": 1.0751,
+      "brier": 0.64,
+      "probRealMedia": 0.4154,
+      "ece": 0.2137,
+      "calibration": [
+        {
+          "rango": "0-20%",
+          "n": 315,
+          "probPredicha": 0.1182,
+          "frecuenciaReal": 0.1968
+        },
+        {
+          "rango": "20-40%",
+          "n": 447,
+          "probPredicha": 0.2838,
+          "frecuenciaReal": 0.3154
+        },
+        {
+          "rango": "40-60%",
+          "n": 176,
+          "probPredicha": 0.4856,
+          "frecuenciaReal": 0.4261
+        },
+        {
+          "rango": "60-80%",
+          "n": 107,
+          "probPredicha": 0.6843,
+          "frecuenciaReal": 0.486
+        },
+        {
+          "rango": "80-100%",
+          "n": 47,
+          "probPredicha": 0.8768,
+          "frecuenciaReal": 0.7234
+        }
+      ]
+    },
+    "pooled": {
+      "accuracy": 0.4659,
+      "logLoss": 1.11,
+      "brier": 0.6582,
+      "ece": 0.2288,
+      "llEmpate": 1.4266,
+      "brierEmpate": 0.9213,
+      "recall": {
+        "home": 0.7322,
+        "draw": 0.085,
+        "away": 0.3839
+      },
+      "distPred": {
+        "home": 484,
+        "draw": 63,
+        "away": 215
+      },
+      "distProb": {
+        "home": 0.4612795275590556,
+        "draw": 0.254198162729659,
+        "away": 0.28452230971128595
+      }
+    },
+    "porVentana": {
+      "OFICIAL": {
+        "accuracy": 0.4835,
+        "logLoss": 1.0751,
+        "brier": 0.64,
+        "ece": 0.2137,
+        "llEmpate": 1.4994
+      },
+      "W1": {
+        "accuracy": 0.4105,
+        "logLoss": 1.1687,
+        "brier": 0.7023,
+        "ece": 0.3144,
+        "llEmpate": 1.4687
+      },
+      "W2": {
+        "accuracy": 0.4856,
+        "logLoss": 1.1527,
+        "brier": 0.6682,
+        "ece": 0.2592,
+        "llEmpate": 1.3491
+      },
+      "W3": {
+        "accuracy": 0.477,
+        "logLoss": 1.0842,
+        "brier": 0.6513,
+        "ece": 0.1775,
+        "llEmpate": 1.4656
+      },
+      "W4": {
+        "accuracy": 0.4895,
+        "logLoss": 1.0283,
+        "brier": 0.6095,
+        "ece": 0.2048,
+        "llEmpate": 1.4171
+      }
+    }
+  },
+  "experimentos": {
+    "AP20N": {
+      "desc": "V1 + Accurate passes MA20 norm",
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1087,
+        "brier": 0.6574,
+        "ece": 0.2233,
+        "llEmpate": 1.4323,
+        "brierEmpate": 0.9243,
+        "recall": {
+          "home": 0.7322,
+          "draw": 0.08,
+          "away": 0.3744
+        },
+        "distPred": {
+          "home": 487,
+          "draw": 61,
+          "away": 214
+        },
+        "distProb": {
+          "home": 0.4614960629921261,
+          "draw": 0.2535997375328082,
+          "away": 0.2849041994750656
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4753,
+          "logLoss": 1.0768,
+          "brier": 0.6397,
+          "ece": 0.2142,
+          "llEmpate": 1.5156,
+          "brierEmpate": 0.9675,
+          "recall": {
+            "home": 0.7602,
+            "draw": 0.0412,
+            "away": 0.4063
+          },
+          "deltaLLvsV1": 0.0017
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.165,
+          "brier": 0.7001,
+          "ece": 0.3265,
+          "llEmpate": 1.4678,
+          "brierEmpate": 0.9487,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0037
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.151,
+          "brier": 0.6675,
+          "ece": 0.2722,
+          "llEmpate": 1.3569,
+          "brierEmpate": 0.8616,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": -0.0017
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.477,
+          "logLoss": 1.081,
+          "brier": 0.6491,
+          "ece": 0.1672,
+          "llEmpate": 1.4675,
+          "brierEmpate": 0.9503,
+          "recall": {
+            "home": 0.7763,
+            "draw": 0.0233,
+            "away": 0.4182
+          },
+          "deltaLLvsV1": -0.0032
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4789,
+          "logLoss": 1.0316,
+          "brier": 0.6113,
+          "ece": 0.2107,
+          "llEmpate": 1.4309,
+          "brierEmpate": 0.9314,
+          "recall": {
+            "home": 0.7684,
+            "draw": 0.0556,
+            "away": 0.3659
+          },
+          "deltaLLvsV1": 0.0033
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0768,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0.0017
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.165,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0037
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.151,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": -0.0018
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.081,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0032
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0316,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0033
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1087,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": -0.0013
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0013,
+        "brier": -0.0008,
+        "ece": -0.0055,
+        "llEmpate": 0.0057,
+        "brierEmpate": 0.003,
+        "accuracy": -0.004
+      },
+      "senales": {
+        "s1_deltaLL": true,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": true,
+        "s7_recalls": true
+      },
+      "totalSenales": 5,
+      "ventanasGanaLL": 3,
+      "peorDeltaRecall": -0.0095,
+      "candidato": true,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "AP20N": {
+            "bf": 0.2647,
+            "ba": 0.0113
+          },
+          "escala": 0.4991,
+          "lrCovFactor": 0.05
+        },
+        "W1": {
+          "AP20N": {
+            "bf": 0.239,
+            "ba": -0.0348
+          },
+          "escala": 0.5447,
+          "lrCovFactor": 0.05
+        },
+        "W2": {
+          "AP20N": {
+            "bf": 0.2499,
+            "ba": -0.0305
+          },
+          "escala": 0.5172,
+          "lrCovFactor": 0.05
+        },
+        "W3": {
+          "AP20N": {
+            "bf": 0.2647,
+            "ba": 0.0113
+          },
+          "escala": 0.4991,
+          "lrCovFactor": 0.05
+        },
+        "W4": {
+          "AP20N": {
+            "bf": 0.2942,
+            "ba": 0.0126
+          },
+          "escala": 0.4865,
+          "lrCovFactor": 0.05
+        }
+      },
+      "porLiga": {
+        "gana": 4,
+        "pierde": 5,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0029
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0037
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": -0.0046
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0033
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": 0.0008
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": -0.0085
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0021
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.0019
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0027
+          }
+        ]
+      }
+    },
+    "PA10N": {
+      "desc": "V1 + Passes MA10 norm",
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1087,
+        "brier": 0.6573,
+        "ece": 0.2283,
+        "llEmpate": 1.4312,
+        "brierEmpate": 0.924,
+        "recall": {
+          "home": 0.7293,
+          "draw": 0.08,
+          "away": 0.3791
+        },
+        "distPred": {
+          "home": 485,
+          "draw": 60,
+          "away": 217
+        },
+        "distProb": {
+          "home": 0.4615551181102359,
+          "draw": 0.25369291338582656,
+          "away": 0.2847519685039373
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4725,
+          "logLoss": 1.1519,
+          "brier": 0.6392,
+          "ece": 0.2197,
+          "llEmpate": 1.7981,
+          "brierEmpate": 0.9664,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0412,
+            "away": 0.4063
+          },
+          "deltaLLvsV1": 0.0768
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1659,
+          "brier": 0.7005,
+          "ece": 0.3307,
+          "llEmpate": 1.4689,
+          "brierEmpate": 0.9492,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0028
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.152,
+          "brier": 0.6676,
+          "ece": 0.2701,
+          "llEmpate": 1.3548,
+          "brierEmpate": 0.8607,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": -0.0007
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0803,
+          "brier": 0.6485,
+          "ece": 0.1732,
+          "llEmpate": 1.4663,
+          "brierEmpate": 0.9497,
+          "recall": {
+            "home": 0.7632,
+            "draw": 0.0233,
+            "away": 0.4182
+          },
+          "deltaLLvsV1": -0.0039
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4842,
+          "logLoss": 1.03,
+          "brier": 0.6108,
+          "ece": 0.2204,
+          "llEmpate": 1.4285,
+          "brierEmpate": 0.9307,
+          "recall": {
+            "home": 0.7684,
+            "draw": 0.0556,
+            "away": 0.3902
+          },
+          "deltaLLvsV1": 0.0017
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 1,
+          "eventos": [
+            {
+              "id": "16308623",
+              "fecha": "2026-06-14",
+              "liga": "La Liga Dos 2025",
+              "partido": "Málaga CF v Almería",
+              "marcador": "0-0",
+              "llModelo": 34.5388,
+              "llV1": 6.2146
+            }
+          ],
+          "logLoss_sinPiso": 1.06,
+          "logLossV1_sinPiso": 1.0609,
+          "deltaSinPiso": -0.001
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1659,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0027
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.152,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": -0.0007
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0803,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0039
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.03,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0018
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1087,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": -0.0013
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0013,
+        "brier": -0.0009,
+        "ece": -0.0005,
+        "llEmpate": 0.0046,
+        "brierEmpate": 0.0027,
+        "accuracy": -0.004
+      },
+      "senales": {
+        "s1_deltaLL": true,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": true,
+        "s7_recalls": true
+      },
+      "totalSenales": 5,
+      "ventanasGanaLL": 3,
+      "peorDeltaRecall": -0.005,
+      "candidato": true,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "PA10N": {
+            "bf": 0.2937,
+            "ba": -0.0031
+          },
+          "escala": 0.4008,
+          "lrCovFactor": 0.05
+        },
+        "W1": {
+          "PA10N": {
+            "bf": 0.2574,
+            "ba": -0.0376
+          },
+          "escala": 0.4218,
+          "lrCovFactor": 0.05
+        },
+        "W2": {
+          "PA10N": {
+            "bf": 0.2666,
+            "ba": -0.0282
+          },
+          "escala": 0.4111,
+          "lrCovFactor": 0.05
+        },
+        "W3": {
+          "PA10N": {
+            "bf": 0.2937,
+            "ba": -0.0031
+          },
+          "escala": 0.4008,
+          "lrCovFactor": 0.05
+        },
+        "W4": {
+          "PA10N": {
+            "bf": 0.3566,
+            "ba": -0.0032
+          },
+          "escala": 0.39,
+          "lrCovFactor": 0.05
+        }
+      },
+      "porLiga": {
+        "gana": 5,
+        "pierde": 4,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0032
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0049
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": -0.0028
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0024
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0001
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": -0.006
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0026
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.0005
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0053
+          }
+        ]
+      }
+    },
+    "AP10N": {
+      "desc": "V1 + Accurate passes MA10 norm",
+      "pooled": {
+        "accuracy": 0.4606,
+        "logLoss": 1.1088,
+        "brier": 0.6573,
+        "ece": 0.2272,
+        "llEmpate": 1.4317,
+        "brierEmpate": 0.9241,
+        "recall": {
+          "home": 0.7293,
+          "draw": 0.08,
+          "away": 0.3744
+        },
+        "distPred": {
+          "home": 486,
+          "draw": 61,
+          "away": 215
+        },
+        "distProb": {
+          "home": 0.46131627296587924,
+          "draw": 0.2537519685039368,
+          "away": 0.2849317585301836
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4725,
+          "logLoss": 1.0757,
+          "brier": 0.6391,
+          "ece": 0.2143,
+          "llEmpate": 1.5137,
+          "brierEmpate": 0.9665,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0412,
+            "away": 0.4063
+          },
+          "deltaLLvsV1": 0.0006
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1653,
+          "brier": 0.7,
+          "ece": 0.3268,
+          "llEmpate": 1.4682,
+          "brierEmpate": 0.9488,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0034
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.1524,
+          "brier": 0.6679,
+          "ece": 0.2722,
+          "llEmpate": 1.3574,
+          "brierEmpate": 0.862,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": -0.0003
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0798,
+          "brier": 0.6482,
+          "ece": 0.1658,
+          "llEmpate": 1.4659,
+          "brierEmpate": 0.9491,
+          "recall": {
+            "home": 0.7632,
+            "draw": 0.0233,
+            "away": 0.4182
+          },
+          "deltaLLvsV1": -0.0044
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4789,
+          "logLoss": 1.0311,
+          "brier": 0.6112,
+          "ece": 0.2209,
+          "llEmpate": 1.4292,
+          "brierEmpate": 0.931,
+          "recall": {
+            "home": 0.7684,
+            "draw": 0.0556,
+            "away": 0.3659
+          },
+          "deltaLLvsV1": 0.0028
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0757,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0.0007
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1653,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0034
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1524,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": -0.0004
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0798,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0044
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0311,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0029
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1088,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": -0.0012
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0012,
+        "brier": -0.0009,
+        "ece": -0.0016,
+        "llEmpate": 0.0051,
+        "brierEmpate": 0.0028,
+        "accuracy": -0.0053
+      },
+      "senales": {
+        "s1_deltaLL": true,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": true,
+        "s7_recalls": true
+      },
+      "totalSenales": 5,
+      "ventanasGanaLL": 3,
+      "peorDeltaRecall": -0.0095,
+      "candidato": true,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "AP10N": {
+            "bf": 0.2766,
+            "ba": -0.0132
+          },
+          "escala": 0.5049,
+          "lrCovFactor": 0.05
+        },
+        "W1": {
+          "AP10N": {
+            "bf": 0.2486,
+            "ba": -0.0441
+          },
+          "escala": 0.5455,
+          "lrCovFactor": 0.05
+        },
+        "W2": {
+          "AP10N": {
+            "bf": 0.2614,
+            "ba": -0.0375
+          },
+          "escala": 0.5222,
+          "lrCovFactor": 0.05
+        },
+        "W3": {
+          "AP10N": {
+            "bf": 0.2766,
+            "ba": -0.0132
+          },
+          "escala": 0.5049,
+          "lrCovFactor": 0.05
+        },
+        "W4": {
+          "AP10N": {
+            "bf": 0.3261,
+            "ba": -0.0072
+          },
+          "escala": 0.4927,
+          "lrCovFactor": 0.05
+        }
+      },
+      "porLiga": {
+        "gana": 6,
+        "pierde": 3,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0027
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0051
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": -0.0044
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0043
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0001
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": -0.0063
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0022
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": -0.0001
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0053
+          }
+        ]
+      }
+    },
+    "PA20N": {
+      "desc": "V1 + Passes MA20 norm",
+      "pooled": {
+        "accuracy": 0.458,
+        "logLoss": 1.1089,
+        "brier": 0.6575,
+        "ece": 0.2259,
+        "llEmpate": 1.4323,
+        "brierEmpate": 0.9243,
+        "recall": {
+          "home": 0.7236,
+          "draw": 0.08,
+          "away": 0.3744
+        },
+        "distPred": {
+          "home": 483,
+          "draw": 61,
+          "away": 218
+        },
+        "distProb": {
+          "home": 0.46167191601049873,
+          "draw": 0.25354199475065664,
+          "away": 0.28478608923884513
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4643,
+          "logLoss": 1.1529,
+          "brier": 0.6396,
+          "ece": 0.2153,
+          "llEmpate": 1.8006,
+          "brierEmpate": 0.9674,
+          "recall": {
+            "home": 0.7368,
+            "draw": 0.0412,
+            "away": 0.4063
+          },
+          "deltaLLvsV1": 0.0778
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1664,
+          "brier": 0.7007,
+          "ece": 0.3304,
+          "llEmpate": 1.4689,
+          "brierEmpate": 0.9493,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0023
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.1506,
+          "brier": 0.6673,
+          "ece": 0.2662,
+          "llEmpate": 1.3545,
+          "brierEmpate": 0.8605,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": -0.0021
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4598,
+          "logLoss": 1.0815,
+          "brier": 0.6492,
+          "ece": 0.1701,
+          "llEmpate": 1.4689,
+          "brierEmpate": 0.9509,
+          "recall": {
+            "home": 0.7368,
+            "draw": 0.0233,
+            "away": 0.4182
+          },
+          "deltaLLvsV1": -0.0027
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4789,
+          "logLoss": 1.0308,
+          "brier": 0.6109,
+          "ece": 0.2143,
+          "llEmpate": 1.4306,
+          "brierEmpate": 0.931,
+          "recall": {
+            "home": 0.7684,
+            "draw": 0.0556,
+            "away": 0.3659
+          },
+          "deltaLLvsV1": 0.0025
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 1,
+          "eventos": [
+            {
+              "id": "16308623",
+              "fecha": "2026-06-14",
+              "liga": "La Liga Dos 2025",
+              "partido": "Málaga CF v Almería",
+              "marcador": "0-0",
+              "llModelo": 34.5388,
+              "llV1": 6.2146
+            }
+          ],
+          "logLoss_sinPiso": 1.0609,
+          "logLossV1_sinPiso": 1.0609,
+          "deltaSinPiso": 0
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1664,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0023
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1506,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": -0.0021
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0815,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0027
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0308,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0025
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1089,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": -0.0011
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0011,
+        "brier": -0.0007,
+        "ece": -0.0029,
+        "llEmpate": 0.0057,
+        "brierEmpate": 0.003,
+        "accuracy": -0.0079
+      },
+      "senales": {
+        "s1_deltaLL": true,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": true,
+        "s7_recalls": true
+      },
+      "totalSenales": 5,
+      "ventanasGanaLL": 3,
+      "peorDeltaRecall": -0.0095,
+      "candidato": true,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "PA20N": {
+            "bf": 0.2803,
+            "ba": 0.0242
+          },
+          "escala": 0.3987,
+          "lrCovFactor": 0.05
+        },
+        "W1": {
+          "PA20N": {
+            "bf": 0.2453,
+            "ba": -0.0291
+          },
+          "escala": 0.4195,
+          "lrCovFactor": 0.05
+        },
+        "W2": {
+          "PA20N": {
+            "bf": 0.2508,
+            "ba": -0.021
+          },
+          "escala": 0.4081,
+          "lrCovFactor": 0.05
+        },
+        "W3": {
+          "PA20N": {
+            "bf": 0.2803,
+            "ba": 0.0242
+          },
+          "escala": 0.3987,
+          "lrCovFactor": 0.05
+        },
+        "W4": {
+          "PA20N": {
+            "bf": 0.315,
+            "ba": 0.0195
+          },
+          "escala": 0.3893,
+          "lrCovFactor": 0.05
+        }
+      },
+      "porLiga": {
+        "gana": 4,
+        "pierde": 5,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0033
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0032
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": -0.0036
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.001
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": 0.0011
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": -0.0079
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0014
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.0018
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0029
+          }
+        ]
+      }
+    },
+    "PA5N": {
+      "desc": "V1 + Passes MA5 norm (eta²=.090)",
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1092,
+        "brier": 0.6576,
+        "ece": 0.2252,
+        "llEmpate": 1.431,
+        "brierEmpate": 0.924,
+        "recall": {
+          "home": 0.7293,
+          "draw": 0.08,
+          "away": 0.3791
+        },
+        "distPred": {
+          "home": 485,
+          "draw": 62,
+          "away": 215
+        },
+        "distProb": {
+          "home": 0.4614343832020998,
+          "draw": 0.25367585301837275,
+          "away": 0.2848897637795275
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4725,
+          "logLoss": 1.0757,
+          "brier": 0.6388,
+          "ece": 0.2202,
+          "llEmpate": 1.5108,
+          "brierEmpate": 0.9644,
+          "recall": {
+            "home": 0.7485,
+            "draw": 0.0515,
+            "away": 0.4063
+          },
+          "deltaLLvsV1": 0.0006
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1675,
+          "brier": 0.7013,
+          "ece": 0.3234,
+          "llEmpate": 1.4706,
+          "brierEmpate": 0.9507,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0012
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.1523,
+          "brier": 0.6682,
+          "ece": 0.272,
+          "llEmpate": 1.3531,
+          "brierEmpate": 0.8605,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": -0.0004
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0801,
+          "brier": 0.6482,
+          "ece": 0.1816,
+          "llEmpate": 1.4637,
+          "brierEmpate": 0.9478,
+          "recall": {
+            "home": 0.7632,
+            "draw": 0.0233,
+            "away": 0.4182
+          },
+          "deltaLLvsV1": -0.0041
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4842,
+          "logLoss": 1.0305,
+          "brier": 0.6109,
+          "ece": 0.2087,
+          "llEmpate": 1.4295,
+          "brierEmpate": 0.9309,
+          "recall": {
+            "home": 0.7684,
+            "draw": 0.0556,
+            "away": 0.3902
+          },
+          "deltaLLvsV1": 0.0022
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0757,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0.0006
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1675,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0012
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1523,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": -0.0004
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0801,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0041
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0305,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0022
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1092,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": -0.0008
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0008,
+        "brier": -0.0006,
+        "ece": -0.0036,
+        "llEmpate": 0.0044,
+        "brierEmpate": 0.0027,
+        "accuracy": -0.004
+      },
+      "senales": {
+        "s1_deltaLL": true,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": true,
+        "s7_recalls": true
+      },
+      "totalSenales": 5,
+      "ventanasGanaLL": 3,
+      "peorDeltaRecall": -0.005,
+      "candidato": true,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "PA5N": {
+            "bf": 0.2071,
+            "ba": 0.0125
+          },
+          "escala": 0.4075,
+          "lrCovFactor": 0.05
+        },
+        "W1": {
+          "PA5N": {
+            "bf": 0.2342,
+            "ba": -0.0115
+          },
+          "escala": 0.424,
+          "lrCovFactor": 0.05
+        },
+        "W2": {
+          "PA5N": {
+            "bf": 0.2164,
+            "ba": -0.0359
+          },
+          "escala": 0.4159,
+          "lrCovFactor": 0.05
+        },
+        "W3": {
+          "PA5N": {
+            "bf": 0.2071,
+            "ba": 0.0125
+          },
+          "escala": 0.4075,
+          "lrCovFactor": 0.05
+        },
+        "W4": {
+          "PA5N": {
+            "bf": 0.3194,
+            "ba": 0.0179
+          },
+          "escala": 0.3978,
+          "lrCovFactor": 0.05
+        }
+      },
+      "porLiga": {
+        "gana": 5,
+        "pierde": 4,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0023
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0038
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": -0.0018
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0046
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": 0.0008
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": -0.0044
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0027
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": -0.0013
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0014
+          }
+        ]
+      }
+    },
+    "AP5N": {
+      "desc": "V1 + Accurate passes MA5 norm (eta²=.091)",
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1095,
+        "brier": 0.6577,
+        "ece": 0.225,
+        "llEmpate": 1.4318,
+        "brierEmpate": 0.9243,
+        "recall": {
+          "home": 0.7293,
+          "draw": 0.08,
+          "away": 0.3791
+        },
+        "distPred": {
+          "home": 484,
+          "draw": 62,
+          "away": 216
+        },
+        "distProb": {
+          "home": 0.4613044619422571,
+          "draw": 0.25366535433070847,
+          "away": 0.28503018372703404
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.478,
+          "logLoss": 1.0755,
+          "brier": 0.6388,
+          "ece": 0.2195,
+          "llEmpate": 1.5113,
+          "brierEmpate": 0.9645,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4167
+          },
+          "deltaLLvsV1": 0.0004
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.166,
+          "brier": 0.7006,
+          "ece": 0.3238,
+          "llEmpate": 1.4698,
+          "brierEmpate": 0.9503,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0027
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.1543,
+          "brier": 0.669,
+          "ece": 0.2818,
+          "llEmpate": 1.3568,
+          "brierEmpate": 0.8623,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0016
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0793,
+          "brier": 0.6478,
+          "ece": 0.1747,
+          "llEmpate": 1.4627,
+          "brierEmpate": 0.947,
+          "recall": {
+            "home": 0.7632,
+            "draw": 0.0233,
+            "away": 0.4182
+          },
+          "deltaLLvsV1": -0.0049
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4842,
+          "logLoss": 1.0317,
+          "brier": 0.6115,
+          "ece": 0.2134,
+          "llEmpate": 1.4309,
+          "brierEmpate": 0.9316,
+          "recall": {
+            "home": 0.7684,
+            "draw": 0.0556,
+            "away": 0.3902
+          },
+          "deltaLLvsV1": 0.0034
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0755,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0.0004
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.166,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0026
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1543,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0016
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0793,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0049
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0317,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0035
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1095,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": -0.0005
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0005,
+        "brier": -0.0005,
+        "ece": -0.0038,
+        "llEmpate": 0.0052,
+        "brierEmpate": 0.003,
+        "accuracy": -0.004
+      },
+      "senales": {
+        "s1_deltaLL": true,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 4,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": -0.005,
+      "candidato": false,
+      "senalDebil": true,
+      "coeficientes": {
+        "OFICIAL": {
+          "AP5N": {
+            "bf": 0.1996,
+            "ba": 0.0022
+          },
+          "escala": 0.5142,
+          "lrCovFactor": 0.05
+        },
+        "W1": {
+          "AP5N": {
+            "bf": 0.2219,
+            "ba": -0.0248
+          },
+          "escala": 0.55,
+          "lrCovFactor": 0.05
+        },
+        "W2": {
+          "AP5N": {
+            "bf": 0.2143,
+            "ba": -0.0446
+          },
+          "escala": 0.5307,
+          "lrCovFactor": 0.05
+        },
+        "W3": {
+          "AP5N": {
+            "bf": 0.1996,
+            "ba": 0.0022
+          },
+          "escala": 0.5142,
+          "lrCovFactor": 0.05
+        },
+        "W4": {
+          "AP5N": {
+            "bf": 0.2883,
+            "ba": 0.0125
+          },
+          "escala": 0.4994,
+          "lrCovFactor": 0.05
+        }
+      },
+      "porLiga": {
+        "gana": 5,
+        "pierde": 4,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0018
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0042
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": -0.0042
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0073
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": 0.0003
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": -0.0034
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.002
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": -0.0015
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0001
+          }
+        ]
+      }
+    },
+    "AP10": {
+      "desc": "V1 + Accurate passes MA10",
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1097,
+        "brier": 0.6574,
+        "ece": 0.2353,
+        "llEmpate": 1.4382,
+        "brierEmpate": 0.928,
+        "recall": {
+          "home": 0.7265,
+          "draw": 0.08,
+          "away": 0.3839
+        },
+        "distPred": {
+          "home": 484,
+          "draw": 57,
+          "away": 221
+        },
+        "distProb": {
+          "home": 0.46322572178477694,
+          "draw": 0.25104855643044643,
+          "away": 0.285725721784777
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.478,
+          "logLoss": 1.1522,
+          "brier": 0.639,
+          "ece": 0.2248,
+          "llEmpate": 1.8059,
+          "brierEmpate": 0.9699,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4167
+          },
+          "deltaLLvsV1": 0.0771
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4053,
+          "logLoss": 1.1646,
+          "brier": 0.7001,
+          "ece": 0.3138,
+          "llEmpate": 1.4595,
+          "brierEmpate": 0.9435,
+          "recall": {
+            "home": 0.7333,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0041
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.1544,
+          "brier": 0.6679,
+          "ece": 0.2789,
+          "llEmpate": 1.3725,
+          "brierEmpate": 0.8731,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0017
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0829,
+          "brier": 0.6498,
+          "ece": 0.2014,
+          "llEmpate": 1.4796,
+          "brierEmpate": 0.9562,
+          "recall": {
+            "home": 0.75,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0013
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4895,
+          "logLoss": 1.0305,
+          "brier": 0.6104,
+          "ece": 0.2176,
+          "llEmpate": 1.4385,
+          "brierEmpate": 0.9357,
+          "recall": {
+            "home": 0.7789,
+            "draw": 0.0556,
+            "away": 0.3902
+          },
+          "deltaLLvsV1": 0.0022
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 1,
+          "eventos": [
+            {
+              "id": "16308623",
+              "fecha": "2026-06-14",
+              "liga": "La Liga Dos 2025",
+              "partido": "Málaga CF v Almería",
+              "marcador": "0-0",
+              "llModelo": 34.5388,
+              "llV1": 6.2146
+            }
+          ],
+          "logLoss_sinPiso": 1.0602,
+          "logLossV1_sinPiso": 1.0609,
+          "deltaSinPiso": -0.0007
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1646,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.004
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1544,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0017
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0829,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0012
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0305,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0022
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1097,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": -0.0003
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0003,
+        "brier": -0.0008,
+        "ece": 0.0065,
+        "llEmpate": 0.0116,
+        "brierEmpate": 0.0067,
+        "accuracy": -0.004
+      },
+      "senales": {
+        "s1_deltaLL": true,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": false,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 3,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": -0.0057,
+      "candidato": false,
+      "senalDebil": true,
+      "coeficientes": {
+        "OFICIAL": {
+          "AP10": {
+            "bf": 0.0005,
+            "ba": -0.0005
+          },
+          "escala": 528.7143,
+          "lrCovFactor": 0.000004471651227849722
+        },
+        "W1": {
+          "AP10": {
+            "bf": 0.0004,
+            "ba": -0.0005
+          },
+          "escala": 542,
+          "lrCovFactor": 0.000004255116351901527
+        },
+        "W2": {
+          "AP10": {
+            "bf": 0.0004,
+            "ba": -0.0005
+          },
+          "escala": 536.75,
+          "lrCovFactor": 0.000004338762788774493
+        },
+        "W3": {
+          "AP10": {
+            "bf": 0.0005,
+            "ba": -0.0005
+          },
+          "escala": 528.7143,
+          "lrCovFactor": 0.000004471651227849722
+        },
+        "W4": {
+          "AP10": {
+            "bf": 0.0006,
+            "ba": -0.0005
+          },
+          "escala": 521.7,
+          "lrCovFactor": 0.000004592702768470206
+        }
+      },
+      "porLiga": {
+        "gana": 4,
+        "pierde": 5,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.004
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0002
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": -0.0006
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0061
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0069
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0031
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0054
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0055
+          }
+        ]
+      }
+    },
+    "PA20": {
+      "desc": "V1 + Passes MA20",
+      "pooled": {
+        "accuracy": 0.4646,
+        "logLoss": 1.1098,
+        "brier": 0.6577,
+        "ece": 0.2328,
+        "llEmpate": 1.4408,
+        "brierEmpate": 0.9298,
+        "recall": {
+          "home": 0.7322,
+          "draw": 0.075,
+          "away": 0.3886
+        },
+        "distPred": {
+          "home": 486,
+          "draw": 56,
+          "away": 220
+        },
+        "distProb": {
+          "home": 0.46391863517060344,
+          "draw": 0.2505538057742781,
+          "away": 0.2855275590551179
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4835,
+          "logLoss": 1.0733,
+          "brier": 0.6387,
+          "ece": 0.2081,
+          "llEmpate": 1.4886,
+          "brierEmpate": 0.9549,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4375
+          },
+          "deltaLLvsV1": -0.0018
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1652,
+          "brier": 0.7004,
+          "ece": 0.3099,
+          "llEmpate": 1.4612,
+          "brierEmpate": 0.9446,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0035
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.476,
+          "logLoss": 1.153,
+          "brier": 0.6674,
+          "ece": 0.2796,
+          "llEmpate": 1.3766,
+          "brierEmpate": 0.8752,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1522,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0003
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0815,
+          "brier": 0.6495,
+          "ece": 0.1784,
+          "llEmpate": 1.4541,
+          "brierEmpate": 0.9428,
+          "recall": {
+            "home": 0.75,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0027
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.5,
+          "logLoss": 1.033,
+          "brier": 0.6119,
+          "ece": 0.2265,
+          "llEmpate": 1.4634,
+          "brierEmpate": 0.9505,
+          "recall": {
+            "home": 0.7895,
+            "draw": 0.0556,
+            "away": 0.4146
+          },
+          "deltaLLvsV1": 0.0047
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0733,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": -0.0018
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1652,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0034
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.153,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0003
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0815,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0027
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.033,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0048
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1098,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": -0.0002
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0002,
+        "brier": -0.0005,
+        "ece": 0.004,
+        "llEmpate": 0.0142,
+        "brierEmpate": 0.0085,
+        "accuracy": -0.0013
+      },
+      "senales": {
+        "s1_deltaLL": true,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": false,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 3,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": -0.01,
+      "candidato": false,
+      "senalDebil": true,
+      "coeficientes": {
+        "OFICIAL": {
+          "PA20": {
+            "bf": 0.0003,
+            "ba": -0.0004
+          },
+          "escala": 601.2,
+          "lrCovFactor": 0.0000034583748891660007
+        },
+        "W1": {
+          "PA20": {
+            "bf": 0.0003,
+            "ba": -0.0004
+          },
+          "escala": 614,
+          "lrCovFactor": 0.0000033156850470562023
+        },
+        "W2": {
+          "PA20": {
+            "bf": 0.0003,
+            "ba": -0.0004
+          },
+          "escala": 609,
+          "lrCovFactor": 0.000003370353293913681
+        },
+        "W3": {
+          "PA20": {
+            "bf": 0.0003,
+            "ba": -0.0004
+          },
+          "escala": 601.2,
+          "lrCovFactor": 0.0000034583748891660007
+        },
+        "W4": {
+          "PA20": {
+            "bf": 0.0005,
+            "ba": -0.0004
+          },
+          "escala": 596,
+          "lrCovFactor": 0.0000035189856312778706
+        }
+      },
+      "porLiga": {
+        "gana": 4,
+        "pierde": 5,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0017
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": -0.0002
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.002
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0059
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0033
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0062
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.0029
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0034
+          }
+        ]
+      }
+    },
+    "V1": {
+      "desc": "base V1 (SPEC30)",
+      "pooled": {
+        "accuracy": 0.4659,
+        "logLoss": 1.11,
+        "brier": 0.6582,
+        "ece": 0.2288,
+        "llEmpate": 1.4266,
+        "brierEmpate": 0.9213,
+        "recall": {
+          "home": 0.7322,
+          "draw": 0.085,
+          "away": 0.3839
+        },
+        "distPred": {
+          "home": 484,
+          "draw": 63,
+          "away": 215
+        },
+        "distProb": {
+          "home": 0.4612795275590556,
+          "draw": 0.254198162729659,
+          "away": 0.28452230971128595
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4835,
+          "logLoss": 1.0751,
+          "brier": 0.64,
+          "ece": 0.2137,
+          "llEmpate": 1.4994,
+          "brierEmpate": 0.9615,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4375
+          },
+          "deltaLLvsV1": 0
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1687,
+          "brier": 0.7023,
+          "ece": 0.3144,
+          "llEmpate": 1.4687,
+          "brierEmpate": 0.9488,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": 0
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4856,
+          "logLoss": 1.1527,
+          "brier": 0.6682,
+          "ece": 0.2592,
+          "llEmpate": 1.3491,
+          "brierEmpate": 0.8597,
+          "recall": {
+            "home": 0.6667,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.477,
+          "logLoss": 1.0842,
+          "brier": 0.6513,
+          "ece": 0.1775,
+          "llEmpate": 1.4656,
+          "brierEmpate": 0.9503,
+          "recall": {
+            "home": 0.7632,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": 0
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4895,
+          "logLoss": 1.0283,
+          "brier": 0.6095,
+          "ece": 0.2048,
+          "llEmpate": 1.4171,
+          "brierEmpate": 0.9217,
+          "recall": {
+            "home": 0.7684,
+            "draw": 0.0741,
+            "away": 0.3902
+          },
+          "deltaLLvsV1": 0
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0751,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1687,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": 0
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1527,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0842,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": 0
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0283,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.11,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0
+        }
+      }
+    },
+    "F3P10": {
+      "desc": "V1 + Final third phase MA10",
+      "pooled": {
+        "accuracy": 0.4659,
+        "logLoss": 1.1102,
+        "brier": 0.6582,
+        "ece": 0.2286,
+        "llEmpate": 1.4338,
+        "brierEmpate": 0.9258,
+        "recall": {
+          "home": 0.7293,
+          "draw": 0.08,
+          "away": 0.3934
+        },
+        "distPred": {
+          "home": 484,
+          "draw": 57,
+          "away": 221
+        },
+        "distProb": {
+          "home": 0.4620931758530184,
+          "draw": 0.25304461942257234,
+          "away": 0.2848622047244093
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4808,
+          "logLoss": 1.0743,
+          "brier": 0.6394,
+          "ece": 0.2158,
+          "llEmpate": 1.4987,
+          "brierEmpate": 0.9615,
+          "recall": {
+            "home": 0.7485,
+            "draw": 0.0515,
+            "away": 0.4375
+          },
+          "deltaLLvsV1": -0.0008
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4053,
+          "logLoss": 1.1655,
+          "brier": 0.7007,
+          "ece": 0.3019,
+          "llEmpate": 1.4598,
+          "brierEmpate": 0.9436,
+          "recall": {
+            "home": 0.7333,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0032
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4856,
+          "logLoss": 1.1553,
+          "brier": 0.6694,
+          "ece": 0.2753,
+          "llEmpate": 1.3542,
+          "brierEmpate": 0.8622,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4211
+          },
+          "deltaLLvsV1": 0.0026
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0838,
+          "brier": 0.651,
+          "ece": 0.1782,
+          "llEmpate": 1.4591,
+          "brierEmpate": 0.9466,
+          "recall": {
+            "home": 0.75,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0004
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.5,
+          "logLoss": 1.0296,
+          "brier": 0.6101,
+          "ece": 0.222,
+          "llEmpate": 1.454,
+          "brierEmpate": 0.9444,
+          "recall": {
+            "home": 0.7895,
+            "draw": 0.0556,
+            "away": 0.4146
+          },
+          "deltaLLvsV1": 0.0013
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0743,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": -0.0008
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1655,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0031
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1553,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0026
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0838,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0004
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0296,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0013
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1102,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0002
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0002,
+        "brier": 0,
+        "ece": -0.0002,
+        "llEmpate": 0.0072,
+        "brierEmpate": 0.0045,
+        "accuracy": 0
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 3,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": -0.005,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "F3P10": {
+            "bf": 0.001,
+            "ba": -0.0008
+          },
+          "escala": 145,
+          "lrCovFactor": 0.00005945303210463734
+        },
+        "W1": {
+          "F3P10": {
+            "bf": 0.0009,
+            "ba": -0.001
+          },
+          "escala": 150.9,
+          "lrCovFactor": 0.00005489484124631491
+        },
+        "W2": {
+          "F3P10": {
+            "bf": 0.0011,
+            "ba": -0.0012
+          },
+          "escala": 148,
+          "lrCovFactor": 0.000057067202337472604
+        },
+        "W3": {
+          "F3P10": {
+            "bf": 0.001,
+            "ba": -0.0008
+          },
+          "escala": 145,
+          "lrCovFactor": 0.00005945303210463734
+        },
+        "W4": {
+          "F3P10": {
+            "bf": 0.0013,
+            "ba": -0.0005
+          },
+          "escala": 142,
+          "lrCovFactor": 0.00006199166831977782
+        }
+      },
+      "porLiga": {
+        "gana": 4,
+        "pierde": 5,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0024
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": -0.0002
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": 0.0028
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0061
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0025
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0044
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.007
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.0005
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0042
+          }
+        ]
+      }
+    },
+    "AP20": {
+      "desc": "V1 + Accurate passes MA20",
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1103,
+        "brier": 0.658,
+        "ece": 0.2291,
+        "llEmpate": 1.4355,
+        "brierEmpate": 0.9266,
+        "recall": {
+          "home": 0.7236,
+          "draw": 0.08,
+          "away": 0.3886
+        },
+        "distPred": {
+          "home": 483,
+          "draw": 56,
+          "away": 223
+        },
+        "distProb": {
+          "home": 0.46279527559055145,
+          "draw": 0.25206167979002647,
+          "away": 0.28514304461942247
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.478,
+          "logLoss": 1.075,
+          "brier": 0.6395,
+          "ece": 0.2152,
+          "llEmpate": 1.5161,
+          "brierEmpate": 0.9713,
+          "recall": {
+            "home": 0.7485,
+            "draw": 0.0515,
+            "away": 0.4271
+          },
+          "deltaLLvsV1": -0.0001
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4053,
+          "logLoss": 1.1653,
+          "brier": 0.7004,
+          "ece": 0.3044,
+          "llEmpate": 1.4586,
+          "brierEmpate": 0.943,
+          "recall": {
+            "home": 0.7333,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0034
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.1545,
+          "brier": 0.6686,
+          "ece": 0.2743,
+          "llEmpate": 1.3463,
+          "brierEmpate": 0.858,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0018
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4655,
+          "logLoss": 1.083,
+          "brier": 0.6502,
+          "ece": 0.1903,
+          "llEmpate": 1.4829,
+          "brierEmpate": 0.9588,
+          "recall": {
+            "home": 0.7368,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0012
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4947,
+          "logLoss": 1.0318,
+          "brier": 0.6112,
+          "ece": 0.2215,
+          "llEmpate": 1.4495,
+          "brierEmpate": 0.942,
+          "recall": {
+            "home": 0.7789,
+            "draw": 0.0556,
+            "away": 0.4146
+          },
+          "deltaLLvsV1": 0.0035
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.075,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1653,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0033
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1545,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0017
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.083,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0012
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0318,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0035
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1103,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0002
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0003,
+        "brier": -0.0002,
+        "ece": 0.0003,
+        "llEmpate": 0.0089,
+        "brierEmpate": 0.0053,
+        "accuracy": -0.004
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 3,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": -0.0085,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "AP20": {
+            "bf": 0.0004,
+            "ba": -0.0004
+          },
+          "escala": 528.7143,
+          "lrCovFactor": 0.000004471651227849722
+        },
+        "W1": {
+          "AP20": {
+            "bf": 0.0003,
+            "ba": -0.0004
+          },
+          "escala": 541.6,
+          "lrCovFactor": 0.000004261403926000755
+        },
+        "W2": {
+          "AP20": {
+            "bf": 0.0003,
+            "ba": -0.0005
+          },
+          "escala": 536.6667,
+          "lrCovFactor": 0.000004340110335249412
+        },
+        "W3": {
+          "AP20": {
+            "bf": 0.0004,
+            "ba": -0.0004
+          },
+          "escala": 528.7143,
+          "lrCovFactor": 0.000004471651227849722
+        },
+        "W4": {
+          "AP20": {
+            "bf": 0.0005,
+            "ba": -0.0004
+          },
+          "escala": 523.5,
+          "lrCovFactor": 0.000004561174009700705
+        }
+      },
+      "porLiga": {
+        "gana": 4,
+        "pierde": 5,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0012
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0017
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": 0.0019
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0054
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0073
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0028
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0029
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": -0.0007
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0016
+          }
+        ]
+      }
+    },
+    "PA10": {
+      "desc": "V1 + Passes MA10",
+      "pooled": {
+        "accuracy": 0.4633,
+        "logLoss": 1.1105,
+        "brier": 0.6582,
+        "ece": 0.24,
+        "llEmpate": 1.4453,
+        "brierEmpate": 0.9326,
+        "recall": {
+          "home": 0.7265,
+          "draw": 0.08,
+          "away": 0.3886
+        },
+        "distPred": {
+          "home": 484,
+          "draw": 56,
+          "away": 222
+        },
+        "distProb": {
+          "home": 0.4644842519685038,
+          "draw": 0.2499199475065618,
+          "away": 0.28559580052493405
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.478,
+          "logLoss": 1.1523,
+          "brier": 0.6392,
+          "ece": 0.2215,
+          "llEmpate": 1.8134,
+          "brierEmpate": 0.9746,
+          "recall": {
+            "home": 0.7485,
+            "draw": 0.0515,
+            "away": 0.4271
+          },
+          "deltaLLvsV1": 0.0772
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4053,
+          "logLoss": 1.1655,
+          "brier": 0.7004,
+          "ece": 0.3093,
+          "llEmpate": 1.46,
+          "brierEmpate": 0.9437,
+          "recall": {
+            "home": 0.7333,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0032
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.1538,
+          "brier": 0.6685,
+          "ece": 0.2715,
+          "llEmpate": 1.3405,
+          "brierEmpate": 0.8552,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0011
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4655,
+          "logLoss": 1.0823,
+          "brier": 0.6496,
+          "ece": 0.197,
+          "llEmpate": 1.4873,
+          "brierEmpate": 0.9613,
+          "recall": {
+            "home": 0.7368,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0019
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.5,
+          "logLoss": 1.0338,
+          "brier": 0.6126,
+          "ece": 0.2444,
+          "llEmpate": 1.4857,
+          "brierEmpate": 0.9639,
+          "recall": {
+            "home": 0.7895,
+            "draw": 0.0556,
+            "away": 0.4146
+          },
+          "deltaLLvsV1": 0.0055
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 1,
+          "eventos": [
+            {
+              "id": "16308623",
+              "fecha": "2026-06-14",
+              "liga": "La Liga Dos 2025",
+              "partido": "Málaga CF v Almería",
+              "marcador": "0-0",
+              "llModelo": 34.5388,
+              "llV1": 6.2146
+            }
+          ],
+          "logLoss_sinPiso": 1.0603,
+          "logLossV1_sinPiso": 1.0609,
+          "deltaSinPiso": -0.0006
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1655,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0032
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1538,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0011
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0823,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0019
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0338,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0055
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1105,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0005
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0005,
+        "brier": 0,
+        "ece": 0.0112,
+        "llEmpate": 0.0187,
+        "brierEmpate": 0.0113,
+        "accuracy": -0.0026
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": false,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 2,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": -0.0057,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "PA10": {
+            "bf": 0.0004,
+            "ba": -0.0004
+          },
+          "escala": 601.1,
+          "lrCovFactor": 0.000003459525666926666
+        },
+        "W1": {
+          "PA10": {
+            "bf": 0.0003,
+            "ba": -0.0004
+          },
+          "escala": 614,
+          "lrCovFactor": 0.0000033156850470562023
+        },
+        "W2": {
+          "PA10": {
+            "bf": 0.0003,
+            "ba": -0.0005
+          },
+          "escala": 610,
+          "lrCovFactor": 0.000003359312012899758
+        },
+        "W3": {
+          "PA10": {
+            "bf": 0.0004,
+            "ba": -0.0004
+          },
+          "escala": 601.1,
+          "lrCovFactor": 0.000003459525666926666
+        },
+        "W4": {
+          "PA10": {
+            "bf": 0.0006,
+            "ba": -0.0004
+          },
+          "escala": 595,
+          "lrCovFactor": 0.0000035308240943436198
+        }
+      },
+      "porLiga": {
+        "gana": 4,
+        "pierde": 5,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0024
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.003
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": 0.0035
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0053
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0095
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0026
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0022
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": -0.0051
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0038
+          }
+        ]
+      }
+    },
+    "TP5N": {
+      "desc": "V1 + Touches MA5 norm liga (eta²=.065)",
+      "pooled": {
+        "accuracy": 0.4659,
+        "logLoss": 1.1107,
+        "brier": 0.6584,
+        "ece": 0.2283,
+        "llEmpate": 1.429,
+        "brierEmpate": 0.9224,
+        "recall": {
+          "home": 0.7322,
+          "draw": 0.085,
+          "away": 0.3839
+        },
+        "distPred": {
+          "home": 484,
+          "draw": 62,
+          "away": 216
+        },
+        "distProb": {
+          "home": 0.4611325459317586,
+          "draw": 0.2539737532808399,
+          "away": 0.28489370078740156
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4808,
+          "logLoss": 1.0768,
+          "brier": 0.6396,
+          "ece": 0.2127,
+          "llEmpate": 1.5085,
+          "brierEmpate": 0.9625,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4271
+          },
+          "deltaLLvsV1": 0.0017
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1683,
+          "brier": 0.7022,
+          "ece": 0.3175,
+          "llEmpate": 1.4672,
+          "brierEmpate": 0.9475,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0004
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4856,
+          "logLoss": 1.1568,
+          "brier": 0.6694,
+          "ece": 0.2598,
+          "llEmpate": 1.3559,
+          "brierEmpate": 0.8631,
+          "recall": {
+            "home": 0.6667,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0041
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0833,
+          "brier": 0.6502,
+          "ece": 0.1833,
+          "llEmpate": 1.4664,
+          "brierEmpate": 0.9497,
+          "recall": {
+            "home": 0.75,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0009
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4947,
+          "logLoss": 1.0278,
+          "brier": 0.6099,
+          "ece": 0.2085,
+          "llEmpate": 1.421,
+          "brierEmpate": 0.9245,
+          "recall": {
+            "home": 0.7789,
+            "draw": 0.0741,
+            "away": 0.3902
+          },
+          "deltaLLvsV1": -0.0005
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0768,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0.0017
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1683,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0004
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1568,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.004
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0833,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0009
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0278,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": -0.0005
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1107,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0007
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0007,
+        "brier": 0.0002,
+        "ece": -0.0005,
+        "llEmpate": 0.0024,
+        "brierEmpate": 0.0011,
+        "accuracy": 0
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": false,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": true,
+        "s7_recalls": true
+      },
+      "totalSenales": 3,
+      "ventanasGanaLL": 3,
+      "peorDeltaRecall": 0,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "TP5N": {
+            "bf": 0.0419,
+            "ba": 0.0528
+          },
+          "escala": 0.6817,
+          "lrCovFactor": 0.05
+        },
+        "W1": {
+          "TP5N": {
+            "bf": -0.0076,
+            "ba": -0.0284
+          },
+          "escala": 0.7351,
+          "lrCovFactor": 0.05
+        },
+        "W2": {
+          "TP5N": {
+            "bf": 0.0296,
+            "ba": -0.0453
+          },
+          "escala": 0.7015,
+          "lrCovFactor": 0.05
+        },
+        "W3": {
+          "TP5N": {
+            "bf": 0.0419,
+            "ba": 0.0528
+          },
+          "escala": 0.6817,
+          "lrCovFactor": 0.05
+        },
+        "W4": {
+          "TP5N": {
+            "bf": 0.0508,
+            "ba": 0.0542
+          },
+          "escala": 0.6547,
+          "lrCovFactor": 0.05
+        }
+      },
+      "porLiga": {
+        "gana": 3,
+        "pierde": 6,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0018
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0037
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": 0.0004
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0034
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0006
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": 0.0032
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": -0.0016
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0048
+          }
+        ]
+      }
+    },
+    "PA5": {
+      "desc": "V1 + Passes MA5",
+      "pooled": {
+        "accuracy": 0.4672,
+        "logLoss": 1.1108,
+        "brier": 0.6584,
+        "ece": 0.234,
+        "llEmpate": 1.4389,
+        "brierEmpate": 0.9289,
+        "recall": {
+          "home": 0.7322,
+          "draw": 0.085,
+          "away": 0.3886
+        },
+        "distPred": {
+          "home": 485,
+          "draw": 57,
+          "away": 220
+        },
+        "distProb": {
+          "home": 0.4634606299212594,
+          "draw": 0.25130839895013135,
+          "away": 0.285230971128609
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4808,
+          "logLoss": 1.0739,
+          "brier": 0.639,
+          "ece": 0.2042,
+          "llEmpate": 1.4953,
+          "brierEmpate": 0.959,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4271
+          },
+          "deltaLLvsV1": -0.0012
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4158,
+          "logLoss": 1.1656,
+          "brier": 0.7002,
+          "ece": 0.3072,
+          "llEmpate": 1.455,
+          "brierEmpate": 0.9408,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0877,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0031
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.1545,
+          "brier": 0.6688,
+          "ece": 0.2801,
+          "llEmpate": 1.3459,
+          "brierEmpate": 0.8584,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0018
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0824,
+          "brier": 0.6501,
+          "ece": 0.1723,
+          "llEmpate": 1.4615,
+          "brierEmpate": 0.9471,
+          "recall": {
+            "home": 0.75,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0018
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.5,
+          "logLoss": 1.0343,
+          "brier": 0.6126,
+          "ece": 0.2473,
+          "llEmpate": 1.4832,
+          "brierEmpate": 0.962,
+          "recall": {
+            "home": 0.7895,
+            "draw": 0.0556,
+            "away": 0.4146
+          },
+          "deltaLLvsV1": 0.006
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0739,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": -0.0012
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1656,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0031
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1545,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0018
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0824,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0017
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0343,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.006
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1108,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0008
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0008,
+        "brier": 0.0002,
+        "ece": 0.0052,
+        "llEmpate": 0.0123,
+        "brierEmpate": 0.0076,
+        "accuracy": 0.0013
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": false,
+        "s4_deltaECE": false,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 1,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": 0,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "PA5": {
+            "bf": 0.0002,
+            "ba": -0.0003
+          },
+          "escala": 602.6,
+          "lrCovFactor": 0.00000344232410742739
+        },
+        "W1": {
+          "PA5": {
+            "bf": 0.0002,
+            "ba": -0.0003
+          },
+          "escala": 616,
+          "lrCovFactor": 0.000003294189576657109
+        },
+        "W2": {
+          "PA5": {
+            "bf": 0.0002,
+            "ba": -0.0004
+          },
+          "escala": 611,
+          "lrCovFactor": 0.0000033483249000190183
+        },
+        "W3": {
+          "PA5": {
+            "bf": 0.0002,
+            "ba": -0.0003
+          },
+          "escala": 602.6,
+          "lrCovFactor": 0.00000344232410742739
+        },
+        "W4": {
+          "PA5": {
+            "bf": 0.0005,
+            "ba": -0.0003
+          },
+          "escala": 595.8,
+          "lrCovFactor": 0.0000035213485559259456
+        }
+      },
+      "porLiga": {
+        "gana": 3,
+        "pierde": 6,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0019
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0017
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": 0.0015
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0037
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0096
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0058
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0031
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": -0.0021
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": 0.0002
+          }
+        ]
+      }
+    },
+    "TP10": {
+      "desc": "V1 + Touches MA10",
+      "pooled": {
+        "accuracy": 0.4685,
+        "logLoss": 1.111,
+        "brier": 0.6587,
+        "ece": 0.229,
+        "llEmpate": 1.4411,
+        "brierEmpate": 0.9292,
+        "recall": {
+          "home": 0.7379,
+          "draw": 0.08,
+          "away": 0.3886
+        },
+        "distPred": {
+          "home": 488,
+          "draw": 58,
+          "away": 216
+        },
+        "distProb": {
+          "home": 0.4628674540682415,
+          "draw": 0.2521102362204724,
+          "away": 0.2850223097112859
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4835,
+          "logLoss": 1.1535,
+          "brier": 0.64,
+          "ece": 0.2153,
+          "llEmpate": 1.8022,
+          "brierEmpate": 0.9678,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4375
+          },
+          "deltaLLvsV1": 0.0784
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1663,
+          "brier": 0.7011,
+          "ece": 0.3075,
+          "llEmpate": 1.4684,
+          "brierEmpate": 0.9481,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0024
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4856,
+          "logLoss": 1.1554,
+          "brier": 0.6692,
+          "ece": 0.2513,
+          "llEmpate": 1.3524,
+          "brierEmpate": 0.8594,
+          "recall": {
+            "home": 0.6667,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0027
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.477,
+          "logLoss": 1.0842,
+          "brier": 0.651,
+          "ece": 0.1794,
+          "llEmpate": 1.4718,
+          "brierEmpate": 0.9537,
+          "recall": {
+            "home": 0.7632,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": 0
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.5,
+          "logLoss": 1.0319,
+          "brier": 0.6116,
+          "ece": 0.2284,
+          "llEmpate": 1.4634,
+          "brierEmpate": 0.9491,
+          "recall": {
+            "home": 0.7895,
+            "draw": 0.0556,
+            "away": 0.4146
+          },
+          "deltaLLvsV1": 0.0036
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 1,
+          "eventos": [
+            {
+              "id": "16308623",
+              "fecha": "2026-06-14",
+              "liga": "La Liga Dos 2025",
+              "partido": "Málaga CF v Almería",
+              "marcador": "0-0",
+              "llModelo": 34.5388,
+              "llV1": 6.2146
+            }
+          ],
+          "logLoss_sinPiso": 1.0615,
+          "logLossV1_sinPiso": 1.0609,
+          "deltaSinPiso": 0.0006
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1663,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0024
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1554,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0026
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0842,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": 0
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0319,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0036
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.111,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.001
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.001,
+        "brier": 0.0005,
+        "ece": 0.0002,
+        "llEmpate": 0.0145,
+        "brierEmpate": 0.0079,
+        "accuracy": 0.0026
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": false,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 2,
+      "ventanasGanaLL": 1,
+      "peorDeltaRecall": -0.005,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "TP10": {
+            "bf": 0.0027,
+            "ba": -0.0006
+          },
+          "escala": 35.4,
+          "lrCovFactor": 0.0009974783746688374
+        },
+        "W1": {
+          "TP10": {
+            "bf": 0.0025,
+            "ba": -0.0026
+          },
+          "escala": 36,
+          "lrCovFactor": 0.0009645061728395061
+        },
+        "W2": {
+          "TP10": {
+            "bf": 0.0026,
+            "ba": -0.004
+          },
+          "escala": 35.5,
+          "lrCovFactor": 0.0009918666931164452
+        },
+        "W3": {
+          "TP10": {
+            "bf": 0.0027,
+            "ba": -0.0006
+          },
+          "escala": 35.4,
+          "lrCovFactor": 0.0009974783746688374
+        },
+        "W4": {
+          "TP10": {
+            "bf": 0.0033,
+            "ba": 0.0005
+          },
+          "escala": 34.8,
+          "lrCovFactor": 0.001032170696261065
+        }
+      },
+      "porLiga": {
+        "gana": 4,
+        "pierde": 5,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0017
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0018
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": -0.0024
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0051
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0007
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0034
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0035
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.0014
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0011
+          }
+        ]
+      }
+    },
+    "F3E5": {
+      "desc": "V1 + Final third entries MA5",
+      "pooled": {
+        "accuracy": 0.4672,
+        "logLoss": 1.1111,
+        "brier": 0.6587,
+        "ece": 0.2346,
+        "llEmpate": 1.4393,
+        "brierEmpate": 0.9289,
+        "recall": {
+          "home": 0.735,
+          "draw": 0.08,
+          "away": 0.3886
+        },
+        "distPred": {
+          "home": 488,
+          "draw": 58,
+          "away": 216
+        },
+        "distProb": {
+          "home": 0.4633280839895012,
+          "draw": 0.25158267716535443,
+          "away": 0.28508923884514403
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4835,
+          "logLoss": 1.0744,
+          "brier": 0.6395,
+          "ece": 0.2183,
+          "llEmpate": 1.4944,
+          "brierEmpate": 0.9585,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4375
+          },
+          "deltaLLvsV1": -0.0007
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1702,
+          "brier": 0.7031,
+          "ece": 0.3165,
+          "llEmpate": 1.4753,
+          "brierEmpate": 0.9525,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": 0.0015
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.1533,
+          "brier": 0.668,
+          "ece": 0.249,
+          "llEmpate": 1.3506,
+          "brierEmpate": 0.8604,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0006
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.477,
+          "logLoss": 1.0832,
+          "brier": 0.6508,
+          "ece": 0.184,
+          "llEmpate": 1.4574,
+          "brierEmpate": 0.9457,
+          "recall": {
+            "home": 0.7632,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.001
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.5,
+          "logLoss": 1.0313,
+          "brier": 0.6113,
+          "ece": 0.2273,
+          "llEmpate": 1.4623,
+          "brierEmpate": 0.9489,
+          "recall": {
+            "home": 0.7895,
+            "draw": 0.0556,
+            "away": 0.4146
+          },
+          "deltaLLvsV1": 0.003
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0744,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": -0.0007
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1702,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": 0.0015
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1533,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0005
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0832,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.001
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0313,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0031
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1111,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0011
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0011,
+        "brier": 0.0005,
+        "ece": 0.0058,
+        "llEmpate": 0.0127,
+        "brierEmpate": 0.0076,
+        "accuracy": 0.0013
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": false,
+        "s4_deltaECE": false,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 1,
+      "ventanasGanaLL": 1,
+      "peorDeltaRecall": -0.005,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "F3E5": {
+            "bf": 0.0003,
+            "ba": 0.0001
+          },
+          "escala": 69,
+          "lrCovFactor": 0.0002625498844780508
+        },
+        "W1": {
+          "F3E5": {
+            "bf": 0.0004,
+            "ba": -0.0001
+          },
+          "escala": 69.5,
+          "lrCovFactor": 0.00025878577713368876
+        },
+        "W2": {
+          "F3E5": {
+            "bf": 0.0002,
+            "ba": -0.0008
+          },
+          "escala": 69,
+          "lrCovFactor": 0.0002625498844780508
+        },
+        "W3": {
+          "F3E5": {
+            "bf": 0.0003,
+            "ba": 0.0001
+          },
+          "escala": 69,
+          "lrCovFactor": 0.0002625498844780508
+        },
+        "W4": {
+          "F3E5": {
+            "bf": 0.0009,
+            "ba": 0.0007
+          },
+          "escala": 69,
+          "lrCovFactor": 0.0002625498844780508
+        }
+      },
+      "porLiga": {
+        "gana": 3,
+        "pierde": 6,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0021
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": 0.0023
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.004
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0032
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0031
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0012
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.0007
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0008
+          }
+        ]
+      }
+    },
+    "AP5": {
+      "desc": "V1 + Accurate passes MA5",
+      "pooled": {
+        "accuracy": 0.4646,
+        "logLoss": 1.1111,
+        "brier": 0.6583,
+        "ece": 0.233,
+        "llEmpate": 1.4418,
+        "brierEmpate": 0.9302,
+        "recall": {
+          "home": 0.7293,
+          "draw": 0.085,
+          "away": 0.3839
+        },
+        "distPred": {
+          "home": 485,
+          "draw": 58,
+          "away": 219
+        },
+        "distProb": {
+          "home": 0.4637073490813643,
+          "draw": 0.25057611548556424,
+          "away": 0.285716535433071
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.478,
+          "logLoss": 1.0756,
+          "brier": 0.6396,
+          "ece": 0.2126,
+          "llEmpate": 1.5237,
+          "brierEmpate": 0.9756,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4167
+          },
+          "deltaLLvsV1": 0.0005
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4158,
+          "logLoss": 1.1653,
+          "brier": 0.7,
+          "ece": 0.3086,
+          "llEmpate": 1.4565,
+          "brierEmpate": 0.9419,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0877,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0034
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.1564,
+          "brier": 0.6695,
+          "ece": 0.2833,
+          "llEmpate": 1.3524,
+          "brierEmpate": 0.8619,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0037
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4655,
+          "logLoss": 1.0838,
+          "brier": 0.6505,
+          "ece": 0.1774,
+          "llEmpate": 1.4903,
+          "brierEmpate": 0.9628,
+          "recall": {
+            "home": 0.7368,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0004
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4947,
+          "logLoss": 1.0324,
+          "brier": 0.6114,
+          "ece": 0.236,
+          "llEmpate": 1.4638,
+          "brierEmpate": 0.9502,
+          "recall": {
+            "home": 0.7895,
+            "draw": 0.0556,
+            "away": 0.3902
+          },
+          "deltaLLvsV1": 0.0041
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0756,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0.0005
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1653,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0034
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1564,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0037
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0838,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0004
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0324,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0041
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1111,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0011
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0011,
+        "brier": 0.0001,
+        "ece": 0.0042,
+        "llEmpate": 0.0152,
+        "brierEmpate": 0.0089,
+        "accuracy": -0.0013
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": false,
+        "s4_deltaECE": false,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 1,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": -0.0028,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "AP5": {
+            "bf": 0.0003,
+            "ba": -0.0003
+          },
+          "escala": 531.3333,
+          "lrCovFactor": 0.000004427676559998362
+        },
+        "W1": {
+          "AP5": {
+            "bf": 0.0003,
+            "ba": -0.0004
+          },
+          "escala": 546.4,
+          "lrCovFactor": 0.0000041868618552634695
+        },
+        "W2": {
+          "AP5": {
+            "bf": 0.0003,
+            "ba": -0.0005
+          },
+          "escala": 540.2,
+          "lrCovFactor": 0.000004283520535745738
+        },
+        "W3": {
+          "AP5": {
+            "bf": 0.0003,
+            "ba": -0.0003
+          },
+          "escala": 531.3333,
+          "lrCovFactor": 0.000004427676559998362
+        },
+        "W4": {
+          "AP5": {
+            "bf": 0.0005,
+            "ba": -0.0003
+          },
+          "escala": 525,
+          "lrCovFactor": 0.000004535147392290249
+        }
+      },
+      "porLiga": {
+        "gana": 3,
+        "pierde": 6,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0019
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0025
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": 0.0005
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0091
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0094
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.005
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0022
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": -0.0024
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": 0.0006
+          }
+        ]
+      }
+    },
+    "F3P5": {
+      "desc": "V1 + Final third phase MA5",
+      "pooled": {
+        "accuracy": 0.4685,
+        "logLoss": 1.1115,
+        "brier": 0.6588,
+        "ece": 0.2267,
+        "llEmpate": 1.4374,
+        "brierEmpate": 0.9277,
+        "recall": {
+          "home": 0.7322,
+          "draw": 0.08,
+          "away": 0.3981
+        },
+        "distPred": {
+          "home": 484,
+          "draw": 57,
+          "away": 221
+        },
+        "distProb": {
+          "home": 0.4626482939632552,
+          "draw": 0.2522782152230974,
+          "away": 0.2850734908136483
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4808,
+          "logLoss": 1.0751,
+          "brier": 0.6396,
+          "ece": 0.211,
+          "llEmpate": 1.5008,
+          "brierEmpate": 0.9625,
+          "recall": {
+            "home": 0.7485,
+            "draw": 0.0515,
+            "away": 0.4375
+          },
+          "deltaLLvsV1": 0
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1678,
+          "brier": 0.7017,
+          "ece": 0.2994,
+          "llEmpate": 1.4687,
+          "brierEmpate": 0.9483,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0009
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4856,
+          "logLoss": 1.1567,
+          "brier": 0.6702,
+          "ece": 0.2695,
+          "llEmpate": 1.3526,
+          "brierEmpate": 0.8619,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4211
+          },
+          "deltaLLvsV1": 0.004
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0837,
+          "brier": 0.6507,
+          "ece": 0.1723,
+          "llEmpate": 1.4613,
+          "brierEmpate": 0.9474,
+          "recall": {
+            "home": 0.75,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0005
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.5053,
+          "logLoss": 1.0309,
+          "brier": 0.611,
+          "ece": 0.2329,
+          "llEmpate": 1.4573,
+          "brierEmpate": 0.9464,
+          "recall": {
+            "home": 0.7895,
+            "draw": 0.0556,
+            "away": 0.439
+          },
+          "deltaLLvsV1": 0.0026
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0751,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1678,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0008
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1567,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.004
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0837,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0005
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0309,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0027
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1115,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0014
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0015,
+        "brier": 0.0006,
+        "ece": -0.0021,
+        "llEmpate": 0.0108,
+        "brierEmpate": 0.0064,
+        "accuracy": 0.0026
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": false,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 2,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": -0.005,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "F3P5": {
+            "bf": 0.0008,
+            "ba": -0.0006
+          },
+          "escala": 148,
+          "lrCovFactor": 0.000057067202337472604
+        },
+        "W1": {
+          "F3P5": {
+            "bf": 0.0008,
+            "ba": -0.0007
+          },
+          "escala": 153.4,
+          "lrCovFactor": 0.000053120150130293105
+        },
+        "W2": {
+          "F3P5": {
+            "bf": 0.0009,
+            "ba": -0.0011
+          },
+          "escala": 150.6,
+          "lrCovFactor": 0.000055113763626326925
+        },
+        "W3": {
+          "F3P5": {
+            "bf": 0.0008,
+            "ba": -0.0006
+          },
+          "escala": 148,
+          "lrCovFactor": 0.000057067202337472604
+        },
+        "W4": {
+          "F3P5": {
+            "bf": 0.0013,
+            "ba": -0.0004
+          },
+          "escala": 145.4,
+          "lrCovFactor": 0.0000591263677111379
+        }
+      },
+      "porLiga": {
+        "gana": 2,
+        "pierde": 7,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0028
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0005
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": 0.0053
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.007
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": 0.001
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.006
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0052
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.001
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0003
+          }
+        ]
+      }
+    },
+    "TP10N": {
+      "desc": "V1 + Touches MA10 norm liga",
+      "pooled": {
+        "accuracy": 0.4633,
+        "logLoss": 1.1115,
+        "brier": 0.6587,
+        "ece": 0.2289,
+        "llEmpate": 1.428,
+        "brierEmpate": 0.922,
+        "recall": {
+          "home": 0.7322,
+          "draw": 0.08,
+          "away": 0.3791
+        },
+        "distPred": {
+          "home": 486,
+          "draw": 61,
+          "away": 215
+        },
+        "distProb": {
+          "home": 0.4613950131233592,
+          "draw": 0.25407742782152226,
+          "away": 0.2845275590551184
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.478,
+          "logLoss": 1.0753,
+          "brier": 0.64,
+          "ece": 0.2143,
+          "llEmpate": 1.5006,
+          "brierEmpate": 0.9619,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4167
+          },
+          "deltaLLvsV1": 0.0002
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1691,
+          "brier": 0.7025,
+          "ece": 0.3167,
+          "llEmpate": 1.4665,
+          "brierEmpate": 0.9471,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": 0.0004
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4808,
+          "logLoss": 1.158,
+          "brier": 0.67,
+          "ece": 0.2584,
+          "llEmpate": 1.3536,
+          "brierEmpate": 0.8628,
+          "recall": {
+            "home": 0.6667,
+            "draw": 0.1522,
+            "away": 0.4035
+          },
+          "deltaLLvsV1": 0.0053
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0841,
+          "brier": 0.6511,
+          "ece": 0.1771,
+          "llEmpate": 1.4677,
+          "brierEmpate": 0.9507,
+          "recall": {
+            "home": 0.75,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0001
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.4895,
+          "logLoss": 1.0281,
+          "brier": 0.6097,
+          "ece": 0.2065,
+          "llEmpate": 1.4189,
+          "brierEmpate": 0.9229,
+          "recall": {
+            "home": 0.7789,
+            "draw": 0.0741,
+            "away": 0.3659
+          },
+          "deltaLLvsV1": -0.0002
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0753,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0.0002
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1691,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": 0.0005
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.158,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0053
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0841,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": 0
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0281,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": -0.0002
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1115,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0015
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0015,
+        "brier": 0.0005,
+        "ece": 0.0001,
+        "llEmpate": 0.0014,
+        "brierEmpate": 0.0007,
+        "accuracy": -0.0026
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": false,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 2,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": -0.005,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "TP10N": {
+            "bf": 0.0025,
+            "ba": 0.0486
+          },
+          "escala": 0.6561,
+          "lrCovFactor": 0.05
+        },
+        "W1": {
+          "TP10N": {
+            "bf": -0.0362,
+            "ba": -0.0384
+          },
+          "escala": 0.7272,
+          "lrCovFactor": 0.05
+        },
+        "W2": {
+          "TP10N": {
+            "bf": -0.0081,
+            "ba": -0.0627
+          },
+          "escala": 0.682,
+          "lrCovFactor": 0.05
+        },
+        "W3": {
+          "TP10N": {
+            "bf": 0.0025,
+            "ba": 0.0486
+          },
+          "escala": 0.6561,
+          "lrCovFactor": 0.05
+        },
+        "W4": {
+          "TP10N": {
+            "bf": 0.0143,
+            "ba": 0.0455
+          },
+          "escala": 0.63,
+          "lrCovFactor": 0.05
+        }
+      },
+      "porLiga": {
+        "gana": 2,
+        "pierde": 7,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0036
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": 0.0031
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0011
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0017
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0047
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": 0.0049
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.0005
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0023
+          }
+        ]
+      }
+    },
+    "TP5": {
+      "desc": "V1 + Touches in opp box MA5",
+      "pooled": {
+        "accuracy": 0.4685,
+        "logLoss": 1.1115,
+        "brier": 0.6587,
+        "ece": 0.2247,
+        "llEmpate": 1.4436,
+        "brierEmpate": 0.9303,
+        "recall": {
+          "home": 0.735,
+          "draw": 0.08,
+          "away": 0.3934
+        },
+        "distPred": {
+          "home": 487,
+          "draw": 56,
+          "away": 219
+        },
+        "distProb": {
+          "home": 0.4629120734908134,
+          "draw": 0.2517060367454071,
+          "away": 0.28538188976377954
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4835,
+          "logLoss": 1.0769,
+          "brier": 0.6395,
+          "ece": 0.2046,
+          "llEmpate": 1.5183,
+          "brierEmpate": 0.968,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4375
+          },
+          "deltaLLvsV1": 0.0018
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4105,
+          "logLoss": 1.1672,
+          "brier": 0.7018,
+          "ece": 0.3021,
+          "llEmpate": 1.4724,
+          "brierEmpate": 0.9504,
+          "recall": {
+            "home": 0.7467,
+            "draw": 0.0702,
+            "away": 0.3103
+          },
+          "deltaLLvsV1": -0.0015
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4856,
+          "logLoss": 1.1562,
+          "brier": 0.6691,
+          "ece": 0.2514,
+          "llEmpate": 1.3528,
+          "brierEmpate": 0.8593,
+          "recall": {
+            "home": 0.6571,
+            "draw": 0.1739,
+            "away": 0.4211
+          },
+          "deltaLLvsV1": 0.0035
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.477,
+          "logLoss": 1.083,
+          "brier": 0.6501,
+          "ece": 0.167,
+          "llEmpate": 1.4705,
+          "brierEmpate": 0.9527,
+          "recall": {
+            "home": 0.7632,
+            "draw": 0.0233,
+            "away": 0.4364
+          },
+          "deltaLLvsV1": -0.0012
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.5,
+          "logLoss": 1.0328,
+          "brier": 0.612,
+          "ece": 0.2315,
+          "llEmpate": 1.4691,
+          "brierEmpate": 0.9519,
+          "recall": {
+            "home": 0.7895,
+            "draw": 0.0556,
+            "away": 0.4146
+          },
+          "deltaLLvsV1": 0.0045
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0769,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0.0018
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1672,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0015
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1562,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0035
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.083,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0012
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0328,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0045
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1115,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0014
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0015,
+        "brier": 0.0005,
+        "ece": -0.0041,
+        "llEmpate": 0.017,
+        "brierEmpate": 0.009,
+        "accuracy": 0.0026
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": false,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 2,
+      "ventanasGanaLL": 2,
+      "peorDeltaRecall": -0.005,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "TP5": {
+            "bf": 0.0034,
+            "ba": -0.0004
+          },
+          "escala": 36,
+          "lrCovFactor": 0.0009645061728395061
+        },
+        "W1": {
+          "TP5": {
+            "bf": 0.0029,
+            "ba": -0.0023
+          },
+          "escala": 37,
+          "lrCovFactor": 0.0009130752373995617
+        },
+        "W2": {
+          "TP5": {
+            "bf": 0.0033,
+            "ba": -0.0037
+          },
+          "escala": 36.5,
+          "lrCovFactor": 0.0009382623381497467
+        },
+        "W3": {
+          "TP5": {
+            "bf": 0.0034,
+            "ba": -0.0004
+          },
+          "escala": 36,
+          "lrCovFactor": 0.0009645061728395061
+        },
+        "W4": {
+          "TP5": {
+            "bf": 0.0043,
+            "ba": 0.0006
+          },
+          "escala": 35.6,
+          "lrCovFactor": 0.0009863022345663426
+        }
+      },
+      "porLiga": {
+        "gana": 3,
+        "pierde": 6,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0026
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0014
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": -0.0018
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0073
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": 0.0025
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0042
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.004
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.0006
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0028
+          }
+        ]
+      }
+    },
+    "SIB5": {
+      "desc": "V1 + Shots inside box MA5",
+      "pooled": {
+        "accuracy": 0.4659,
+        "logLoss": 1.1128,
+        "brier": 0.6594,
+        "ece": 0.2246,
+        "llEmpate": 1.425,
+        "brierEmpate": 0.9205,
+        "recall": {
+          "home": 0.735,
+          "draw": 0.085,
+          "away": 0.3791
+        },
+        "distPred": {
+          "home": 487,
+          "draw": 61,
+          "away": 214
+        },
+        "distProb": {
+          "home": 0.46088713910761137,
+          "draw": 0.25535958005249354,
+          "away": 0.283753280839895
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "accuracy": 0.4808,
+          "logLoss": 1.074,
+          "brier": 0.6402,
+          "ece": 0.2143,
+          "llEmpate": 1.4954,
+          "brierEmpate": 0.9633,
+          "recall": {
+            "home": 0.7544,
+            "draw": 0.0515,
+            "away": 0.4271
+          },
+          "deltaLLvsV1": -0.0011
+        },
+        "W1": {
+          "n": 190,
+          "accuracy": 0.4211,
+          "logLoss": 1.1627,
+          "brier": 0.6989,
+          "ece": 0.2662,
+          "llEmpate": 1.4342,
+          "brierEmpate": 0.9286,
+          "recall": {
+            "home": 0.7333,
+            "draw": 0.1053,
+            "away": 0.3276
+          },
+          "deltaLLvsV1": -0.006
+        },
+        "W2": {
+          "n": 208,
+          "accuracy": 0.4712,
+          "logLoss": 1.1644,
+          "brier": 0.6737,
+          "ece": 0.2547,
+          "llEmpate": 1.3352,
+          "brierEmpate": 0.8505,
+          "recall": {
+            "home": 0.6667,
+            "draw": 0.1522,
+            "away": 0.3684
+          },
+          "deltaLLvsV1": 0.0117
+        },
+        "W3": {
+          "n": 174,
+          "accuracy": 0.4713,
+          "logLoss": 1.0854,
+          "brier": 0.6519,
+          "ece": 0.178,
+          "llEmpate": 1.4689,
+          "brierEmpate": 0.9527,
+          "recall": {
+            "home": 0.7632,
+            "draw": 0.0233,
+            "away": 0.4182
+          },
+          "deltaLLvsV1": 0.0012
+        },
+        "W4": {
+          "n": 190,
+          "accuracy": 0.5,
+          "logLoss": 1.0314,
+          "brier": 0.6112,
+          "ece": 0.2297,
+          "llEmpate": 1.4569,
+          "brierEmpate": 0.9458,
+          "recall": {
+            "home": 0.7895,
+            "draw": 0.0556,
+            "away": 0.4146
+          },
+          "deltaLLvsV1": 0.0031
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.074,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": -0.0011
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1627,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.006
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1644,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0.0116
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0854,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": 0.0012
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0314,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0032
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1128,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0.0028
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0028,
+        "brier": 0.0012,
+        "ece": -0.0042,
+        "llEmpate": -0.0016,
+        "brierEmpate": -0.0008,
+        "accuracy": 0
+      },
+      "senales": {
+        "s1_deltaLL": false,
+        "s2_deltaLLEmpate": true,
+        "s3_deltaBrier": false,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": true,
+        "s6_ventanasLL": false,
+        "s7_recalls": true
+      },
+      "totalSenales": 4,
+      "ventanasGanaLL": 1,
+      "peorDeltaRecall": -0.0047,
+      "candidato": false,
+      "senalDebil": false,
+      "coeficientes": {
+        "OFICIAL": {
+          "SIB5": {
+            "bf": 0.0062,
+            "ba": -0.0113
+          },
+          "escala": 12.5,
+          "lrCovFactor": 0.008
+        },
+        "W1": {
+          "SIB5": {
+            "bf": 0.0017,
+            "ba": -0.0172
+          },
+          "escala": 12.75,
+          "lrCovFactor": 0.007689350249903883
+        },
+        "W2": {
+          "SIB5": {
+            "bf": 0.0014,
+            "ba": -0.0201
+          },
+          "escala": 12.6,
+          "lrCovFactor": 0.007873519778281683
+        },
+        "W3": {
+          "SIB5": {
+            "bf": 0.0062,
+            "ba": -0.0113
+          },
+          "escala": 12.5,
+          "lrCovFactor": 0.008
+        },
+        "W4": {
+          "SIB5": {
+            "bf": 0.0065,
+            "ba": -0.005
+          },
+          "escala": 12.3333,
+          "lrCovFactor": 0.008217677136596055
+        }
+      },
+      "porLiga": {
+        "gana": 3,
+        "pierde": 6,
+        "filas": [
+          {
+            "liga": "Serie A 2025 2026",
+            "n": 101,
+            "llV1": 1.0526,
+            "deltaLL": 0.0049
+          },
+          {
+            "liga": "Liga Peruana Apertura 2026",
+            "n": 97,
+            "llV1": 1.0347,
+            "deltaLL": 0.0051
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 35,
+            "llV1": 1.0193,
+            "deltaLL": 0.0004
+          },
+          {
+            "liga": "Premier League 2025 2026",
+            "n": 89,
+            "llV1": 1.2559,
+            "deltaLL": 0.0022
+          },
+          {
+            "liga": "International Friendly Games",
+            "n": 73,
+            "llV1": 1.0225,
+            "deltaLL": -0.0052
+          },
+          {
+            "liga": "Copa Sudamericana 2026",
+            "n": 95,
+            "llV1": 1.2115,
+            "deltaLL": 0.0104
+          },
+          {
+            "liga": "Copa Libertadores 2026",
+            "n": 94,
+            "llV1": 1.1802,
+            "deltaLL": -0.0002
+          },
+          {
+            "liga": "Bundesliga 2025 2026",
+            "n": 45,
+            "llV1": 1.0672,
+            "deltaLL": 0.0069
+          },
+          {
+            "liga": "La Liga 2025 2026",
+            "n": 50,
+            "llV1": 0.9801,
+            "deltaLL": -0.0005
+          }
+        ]
+      }
+    }
+  },
+  "ranking": [
+    "AP20N",
+    "PA10N",
+    "AP10N",
+    "PA20N",
+    "PA5N",
+    "AP5N",
+    "AP10",
+    "PA20",
+    "V1",
+    "F3P10",
+    "AP20",
+    "PA10",
+    "TP5N",
+    "PA5",
+    "TP10",
+    "F3E5",
+    "AP5",
+    "F3P5",
+    "TP10N",
+    "TP5",
+    "SIB5"
+  ],
+  "candidatas_a_combinacion": [
+    "AP20N",
+    "PA10N",
+    "AP10N",
+    "PA20N",
+    "PA5N"
+  ],
+  "candidatas_piso_oficial": {
+    "AP20N": {
+      "n": 0,
+      "deltaOFICIAL_sinPiso": 0.0017,
+      "eventos": []
+    },
+    "PA10N": {
+      "n": 1,
+      "deltaOFICIAL_sinPiso": -0.001,
+      "eventos": [
+        {
+          "id": "16308623",
+          "fecha": "2026-06-14",
+          "liga": "La Liga Dos 2025",
+          "partido": "Málaga CF v Almería",
+          "marcador": "0-0",
+          "llModelo": 34.5388,
+          "llV1": 6.2146
+        }
+      ]
+    },
+    "AP10N": {
+      "n": 0,
+      "deltaOFICIAL_sinPiso": 0.0007,
+      "eventos": []
+    },
+    "PA20N": {
+      "n": 1,
+      "deltaOFICIAL_sinPiso": 0,
+      "eventos": [
+        {
+          "id": "16308623",
+          "fecha": "2026-06-14",
+          "liga": "La Liga Dos 2025",
+          "partido": "Málaga CF v Almería",
+          "marcador": "0-0",
+          "llModelo": 34.5388,
+          "llV1": 6.2146
+        }
+      ]
+    },
+    "PA5N": {
+      "n": 0,
+      "deltaOFICIAL_sinPiso": 0.0006,
+      "eventos": []
+    }
+  },
+  "descartadas": [
+    "TP5",
+    "TP10",
+    "TP5N",
+    "TP10N",
+    "F3P5",
+    "F3P10",
+    "F3E5",
+    "SIB5",
+    "AP5",
+    "AP10",
+    "AP20",
+    "AP5N",
+    "PA5",
+    "PA10",
+    "PA20"
+  ],
+  "redundancia": {
+    "tp|5": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.4689,
+      "r_feature_vs_def": 0.268,
+      "r_deltaFeature_vs_deltaAtt": 0.4925,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.6871,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    },
+    "tp|10": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.4592,
+      "r_feature_vs_def": 0.2562,
+      "r_deltaFeature_vs_deltaAtt": 0.5106,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.6742,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    },
+    "f3p|5": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.4633,
+      "r_feature_vs_def": 0.3028,
+      "r_deltaFeature_vs_deltaAtt": 0.4748,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.6159,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    },
+    "f3p|10": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.4568,
+      "r_feature_vs_def": 0.2912,
+      "r_deltaFeature_vs_deltaAtt": 0.4923,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.6017,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    },
+    "f3e|5": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.1564,
+      "r_feature_vs_def": 0.0994,
+      "r_deltaFeature_vs_deltaAtt": 0.2798,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.2591,
+      "interpretacion_delta": "INFORMACIÓN RELATIVAMENTE NUEVA"
+    },
+    "sib|5": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.5147,
+      "r_feature_vs_def": 0.2625,
+      "r_deltaFeature_vs_deltaAtt": 0.4596,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.6983,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    },
+    "ap|5": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.4226,
+      "r_feature_vs_def": 0.3406,
+      "r_deltaFeature_vs_deltaAtt": 0.4184,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.4901,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    },
+    "ap|10": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.4135,
+      "r_feature_vs_def": 0.333,
+      "r_deltaFeature_vs_deltaAtt": 0.4299,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.5015,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    },
+    "ap|20": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.4109,
+      "r_feature_vs_def": 0.3299,
+      "r_deltaFeature_vs_deltaAtt": 0.4336,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.4958,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    },
+    "pa|5": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.4049,
+      "r_feature_vs_def": 0.336,
+      "r_deltaFeature_vs_deltaAtt": 0.4106,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.5029,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    },
+    "pa|10": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.3951,
+      "r_feature_vs_def": 0.3284,
+      "r_deltaFeature_vs_deltaAtt": 0.4227,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.5141,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    },
+    "pa|20": {
+      "nEquipos": 232,
+      "r_feature_vs_att": 0.3924,
+      "r_feature_vs_def": 0.325,
+      "r_deltaFeature_vs_deltaAtt": 0.4265,
+      "nLigas": 14,
+      "r_ligaFeature_vs_muHome": 0.5083,
+      "interpretacion_delta": "REDUNDANTE PARCIAL"
+    }
+  },
+  "modelo_2T_conservado": {
+    "estado": "CONSERVADO SIN ENTRENAR (fase posterior)",
+    "candidatas": [
+      {
+        "stat": "Accurate passes",
+        "corr_prepartido_rolling1T_vs_goles2T": 0.267,
+        "corr_mismo_partido_1T_vs_goles2T": 0.308,
+        "fuente": "experimentos_fase5/informes/fase5_ingenieria_variables.json (TRAIN+VAL)"
+      },
+      {
+        "stat": "Passes",
+        "corr_prepartido_rolling1T_vs_goles2T": 0.262,
+        "corr_mismo_partido_1T_vs_goles2T": 0.306,
+        "fuente": "experimentos_fase5/informes/fase5_ingenieria_variables.json (TRAIN+VAL)"
+      },
+      {
+        "stat": "Ball possession",
+        "corr_prepartido_rolling1T_vs_goles2T": 0.246,
+        "corr_mismo_partido_1T_vs_goles2T": 0.311,
+        "fuente": "experimentos_fase5/informes/fase5_ingenieria_variables.json (TRAIN+VAL)"
+      },
+      {
+        "stat": "Final third entries",
+        "corr_prepartido_rolling1T_vs_goles2T": 0.226,
+        "corr_mismo_partido_1T_vs_goles2T": 0.293,
+        "fuente": "experimentos_fase5/informes/fase5_ingenieria_variables.json (TRAIN+VAL)"
+      },
+      {
+        "stat": "Total shots",
+        "corr_prepartido_rolling1T_vs_goles2T": 0.2,
+        "corr_mismo_partido_1T_vs_goles2T": 0.281,
+        "fuente": "experimentos_fase5/informes/fase5_ingenieria_variables.json (TRAIN+VAL)"
+      },
+      {
+        "stat": "Expected goals",
+        "corr_prepartido_rolling1T_vs_goles2T": 0.198,
+        "corr_mismo_partido_1T_vs_goles2T": 0.193,
+        "fuente": "experimentos_fase5/informes/fase5_ingenieria_variables.json (TRAIN+VAL)"
+      },
+      {
+        "stat": "Shots inside box",
+        "corr_prepartido_rolling1T_vs_goles2T": 0.191,
+        "corr_mismo_partido_1T_vs_goles2T": 0.246,
+        "fuente": "experimentos_fase5/informes/fase5_ingenieria_variables.json (TRAIN+VAL)"
+      }
+    ],
+    "hallazgos_clave": {
+      "goles1T_vs_goles2T": {
+        "n": 1523,
+        "r": 0.088,
+        "lectura": "Los goles del 1T NO explican los del 2T (casi independiente): el estado al descanso induce efectos opuestos (el que va ganando baja ritmo, el que va perdiendo sube)"
+      },
+      "estado_al_descanso": {
+        "lidera": {
+          "n": 523,
+          "g2t": 530,
+          "goles2T_local_promedio": 1.013
+        },
+        "empata": {
+          "n": 627,
+          "g2t": 524,
+          "goles2T_local_promedio": 0.836
+        },
+        "va_perdiendo": {
+          "n": 373,
+          "g2t": 344,
+          "goles2T_local_promedio": 0.922
+        }
+      },
+      "advertencia_leakage": "Los predictores MISMO partido (1ST) sólo son válidos si el modelo 2T se ejecuta en tiempo descanso (datos del 1T conocidos). Prepartido SÓLO valen los rolling day-strict de 1ST."
+    }
+  },
+  "verificacion": {
+    "hashes_protegidos": "22/22 (verify_post_audit.js — experimentos/ fase0-2 intacto)",
+    "json_modelo": "prediccion_poisson.json intacto (sha F6E3405C...5BD1, poisson 1.0, entrenado 2026-09-28)",
+    "endpoints": "GET /api/predictions/model 200 activeModel=V1_BETA version=1.0; GET /api/leagues 200 (25 ligas); servidor vivo PID puerto 3050",
+    "test": "NO cargado ni evaluado (SQL <= 2026-06-18); fase6 NO ejecutada",
+    "nota_rutas": "verify_post_audit.js prueba rutas antiguas (/api/salud, /api/prediccion/modelo) que hoy devuelven 404 por cambio de rutas; la verificación real se hizo contra /api/predictions/model y /api/leagues",
+    "realizado": "2026-09-29T14:17:53.951Z"
+  }
+}

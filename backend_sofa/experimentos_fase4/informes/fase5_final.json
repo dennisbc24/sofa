@@ -1,0 +1,228 @@
+{
+  "generado": "2026-09-29T00:57:56.493Z",
+  "nota": "CIERRE FINAL — agrega informes ya validados. Sin reentrenamiento, sin datos nuevos, sin tocar producción.",
+  "proceso": [
+    {
+      "fase": "0-1",
+      "titulo": "auditoría, V1, splits temporales",
+      "estado": "HECHA",
+      "nota": "splits TRAIN/VAL/TEST con backtest registrado en el JSON oficial"
+    },
+    {
+      "fase": "2",
+      "titulo": "V1 + backtest completo + diagnóstico",
+      "estado": "HECHA",
+      "nota": "V1 (SPEC30) = modelo en producción V1_BETA"
+    },
+    {
+      "fase": "3.1-3.2",
+      "titulo": "diagnóstico y análisis de errores (OOF 762)",
+      "estado": "HECHA",
+      "nota": "407 errores; P(E) subestimada; ~45% de empates fallados"
+    },
+    {
+      "fase": "3.3",
+      "titulo": "experimentos A-G",
+      "estado": "HECHA",
+      "nota": "ganador OOF: A (V1+Elo K=32), ΔLL −0.0055, 3/4 ventanas"
+    },
+    {
+      "fase": "3.4",
+      "titulo": "A+F (localía ajustada)",
+      "estado": "DESCARTADA",
+      "nota": "gana LL pero empeora ECE → mantener A"
+    },
+    {
+      "fase": "3.5",
+      "titulo": "diagnóstico del empate",
+      "estado": "DIAGNÓSTICO",
+      "nota": "CASOS A (0-0/1-1 invertidos), C (argmax), D (sin señal); B descartado"
+    },
+    {
+      "fase": "3.6",
+      "titulo": "Experimento 1: Dixon-Coles",
+      "estado": "DESCARTADA (2/7 señales)",
+      "nota": "ρ̂≈−0.05 estable pero sin mejora eval/OOF; composición intacta"
+    },
+    {
+      "fase": "3.7",
+      "titulo": "Experimento 2: Davidson",
+      "estado": "DESCARTADA (3/7 señales)",
+      "nota": "ν̂≈1.02: masa de empate ya correcta; gana LL empate pero pierde global/H/A"
+    },
+    {
+      "fase": "3-cierre",
+      "titulo": "consolidado de Fase 3",
+      "estado": "HECHA",
+      "nota": "candidato OOF = A; problemas estructurales abiertos"
+    },
+    {
+      "fase": "4",
+      "titulo": "evaluación ÚNICA en TEST (378)",
+      "estado": "HECHA — A FALLA",
+      "nota": "decisión pre-registrada: NO_MEJORA_MANTENER_V1"
+    },
+    {
+      "fase": "5",
+      "titulo": "promoción",
+      "estado": "NO APLICA",
+      "nota": "TEST no confirma a A → producción V1_BETA intacta (22/22 hashes, endpoints 200, activeModel V1_BETA)"
+    }
+  ],
+  "fase4": {
+    "splits": {
+      "train": 1159,
+      "val": 364,
+      "test": 378,
+      "rangoTest": [
+        "2026-06-19",
+        "2026-09-27"
+      ]
+    },
+    "sanidades": {
+      "tvDrift": true,
+      "testDrift": true,
+      "v1ParamsIguales": true,
+      "v1TestReplica": true,
+      "v1RefitIgualProd": true,
+      "aOficialReproducido": true,
+      "aBetaFinito": true,
+      "aEntreno1523": true
+    },
+    "backtestTestRegistradoFase1": {
+      "accuracy": 0.5503,
+      "logLoss": 0.9719,
+      "brier": 0.578,
+      "ece": 0.0673,
+      "baselineTest": 0.4524
+    },
+    "metricas": {
+      "V1": {
+        "n": 378,
+        "accuracy": 0.5503,
+        "logLoss": 0.9719,
+        "brier": 0.578,
+        "probRealMedia": 0.4252,
+        "ece": 0.0673,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 238,
+            "probPredicha": 0.1376,
+            "frecuenciaReal": 0.1765
+          },
+          {
+            "rango": "20-40%",
+            "n": 565,
+            "probPredicha": 0.2801,
+            "frecuenciaReal": 0.2619
+          },
+          {
+            "rango": "40-60%",
+            "n": 218,
+            "probPredicha": 0.4888,
+            "frecuenciaReal": 0.5046
+          },
+          {
+            "rango": "60-80%",
+            "n": 95,
+            "probPredicha": 0.6816,
+            "frecuenciaReal": 0.6737
+          },
+          {
+            "rango": "80-100%",
+            "n": 18,
+            "probPredicha": 0.8718,
+            "frecuenciaReal": 0.7778
+          }
+        ]
+      },
+      "A": {
+        "n": 378,
+        "accuracy": 0.5423,
+        "logLoss": 1.0002,
+        "brier": 0.5973,
+        "probRealMedia": 0.407,
+        "ece": 0.1238,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 198,
+            "probPredicha": 0.1461,
+            "frecuenciaReal": 0.197
+          },
+          {
+            "rango": "20-40%",
+            "n": 612,
+            "probPredicha": 0.2817,
+            "frecuenciaReal": 0.2582
+          },
+          {
+            "rango": "40-60%",
+            "n": 237,
+            "probPredicha": 0.488,
+            "frecuenciaReal": 0.5443
+          },
+          {
+            "rango": "60-80%",
+            "n": 76,
+            "probPredicha": 0.6773,
+            "frecuenciaReal": 0.5789
+          },
+          {
+            "rango": "80-100%",
+            "n": 11,
+            "probPredicha": 0.8647,
+            "frecuenciaReal": 0.7273
+          }
+        ]
+      }
+    },
+    "deltas": {
+      "dLL": 0.0283,
+      "dBrier": 0.0193,
+      "dECE": 0.0565,
+      "dAcc": -0.008
+    },
+    "pareado": {
+      "mediaDeltaLL": 0.0283,
+      "sd": 0.1403,
+      "se": 0.0072,
+      "ic95": [
+        0.0142,
+        0.0425
+      ],
+      "ganaA": 153,
+      "ganaV1": 216,
+      "empate": 9,
+      "significativo": true
+    },
+    "decision": "NO_MEJORA_MANTENER_V1"
+  },
+  "decisionFinal": {
+    "modeloEnProduccion": "V1_BETA (V1 SPEC30, refit TV=1523)",
+    "promocion": false,
+    "porque": "A superó a V1 en OOF (ΔLL −0.0055) pero FALLÓ en TEST: ΔLL +0.0283, ΔBrier +0.0193, ΔECE +0.0565, ΔAcc -0.008; pareado media +0.0283 con IC95 [0.0142, 0.0425] (significativo), A peor en 216/378 partidos. La mejora OOF no generaliza.",
+    "cambiosEnProduccion": "ninguno (cero archivos protegidos modificados en todo el proceso)",
+    "verificacionesFinales": "22/22 hashes SHA-256 == baseline · prediccion_poisson.json == F6E3405C…5BD1 · endpoints HTTP 200 · activeModel V1_BETA"
+  },
+  "lecciones": [
+    "OOF no garantiza TEST: A ganaba de forma consistente en OOF (3/4 ventanas, −0.0055) y empeoró +0.0283 en el bloque reciente — el criterio de 7 señales con ventanas era necesario pero no suficiente.",
+    "El TEST de V1 ya estaba registrado en backtest.test desde Fase 1 (LL 0.9719); se replicó exactamente como sanidad, y la evaluación de A fue primera y única (sin shopping).",
+    "Los empates son el problema estructural sin resolver: CASO A (0-0 sobreestimado / 1-1 subestimado) persiste en V1 y A; DC y Davidson no lo corrigen; la familia Poisson+correlación no lo arregla.",
+    "V1 sobreestima P(E) también en TEST (ΣP(E)=92.83 vs 77 empates reales) pero sigue siendo mejor calibrado que A (ECE 0.0673 vs 0.1238)."
+  ],
+  "addendum38": {
+    "fecha": "2026-09-28",
+    "que": "Experimento 3.8 (post-cierre, petición del usuario): capas de calibración de empate sobre V1 — M0 (Platt P(E), diagnóstico), M1 (logística con |ΔElo|, λh+λa, tasa de liga previa), M2 (softmax 6 clases {H,0-0,1-1,2-2,otrosE,V}); capas entrenadas por cross-fit temporal dentro del fit de cada ventana (3 pliegues crecientes day-strict); TEST NO cargado; 10/10 sanidades; idM1 ≡ base (1e-15), idM2 ≡ base (1e-12).",
+    "resultadoOOF": "M1 7/7 señales (ΔLL −0.0226), M2 7/7 (ΔLL −0.0641). M0 ≈ M1 (−0.0225) ⇒ casi todo el gain de M1 es recalibración del nivel de P(E) (pendiente b=0.13–0.29, muy aplana); las señales de equilibrio aportan ~cero y la separación emp−no CAE de 1.40 a 0.24 (CASO D reconfirmado). M2 recompone la matriz de marcadores (error Σ|obs−esp| 90.3→29.0; 0-0 obs 50 vs esp 50.4) y ECE global 0.2288→0.0137, pero sus B sobre log p_k≈0 (ignora casi la estructura de V1) y su argmax colapsa a local (recall H 97.7%, A 6.6%; acc +0.0026).",
+    "estado": "CANDIDATOS EXPERIMENTALES — SIN producción. Regla pre-registrada: el TEST se consumió en Fase 4; la confirmación es con partidos futuros > 2026-09-27 mediante experimentos_fase4/fase6_confirmacion.js (≥150 partidos, criterio 6 señales, evaluación única). Si confirma → plantear promoción al usuario (requiere aprobación explícita + backup de archivos protegidos).",
+    "integridadTras38": "22/22 hashes SHA-256 == baseline · JSON F6E3405C…5BD1 · endpoints HTTP 200 · activeModel V1_BETA"
+  },
+  "referencias": [
+    "../experimentos_fase3/informes/fase3_cierre.json",
+    "../experimentos_fase3/informes/fase3_8_capas.json",
+    "fase4_1_test.json",
+    "fase6_confirmacion.js"
+  ]
+}

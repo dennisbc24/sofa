@@ -107,7 +107,11 @@ function construirExplicacion({ home, away, modelo, pred, homeFuente, awayFuente
 
   frases.push(
     `El modelo Poisson estima una media de ${i.lambdaHome} goles para ${home} y ${i.lambdaAway} goles para ${away} ` +
-      `(tasa base ${i.muHome} y ${i.muAway} goles, de la liga ${i.usaLigaEspecifica ? "seleccionada" : "general"}).`
+      `(tasa base ${i.muHome} y ${i.muAway} goles, de la liga ${
+        i.origenMu === "exacta" ? "seleccionada"
+        : i.origenMu === "familia" ? "seleccionada por familia (el nombre de temporada aún no existe en el modelo)"
+        : "general"
+      }).`
   );
   frases.push(
     `Esas medias salen de la tasa base del modelo ajustada por el ataque/defensa estimado de cada equipo: ` +
@@ -187,6 +191,8 @@ async function analizarPartido({ localTeam, awayTeam, date, league }) {
     advertencias.push(`${nombreLocal} no está en la muestra de entrenamiento del modelo (parámetros neutros).`);
   if (pred.internos.equipoVisitanteSinHistorial)
     advertencias.push(`${nombreVisita} no está en la muestra de entrenamiento del modelo (parámetros neutros).`);
+  if (pred.internos.lambdaCapped)
+    advertencias.push("Media de goles limitada a 8 por el guardrail antidegenerado (ataque/defensa con poca historia).");
 
   const comparison = construirComparacion(fuenteLocal.stats, fuenteVisita.stats);
   const principal = prediccionPrincipal(pred.probabilities);

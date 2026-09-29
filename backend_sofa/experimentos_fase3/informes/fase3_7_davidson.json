@@ -1,0 +1,5348 @@
+{
+  "generado": "2026-09-29T00:46:33.824Z",
+  "nota": "EXPERIMENTO 2 Davidson — investigación exclusiva. NO producción, NO TEST, NO Platt/umbrales/reglas. λs de A congelados; sólo ν estimado por MLE en fit de cada ventana (todos los partidos). Con ν=1, DAV-A ≡ A (sanidad). Decisión exclusivamente eval/OOF.",
+  "formula": {
+    "modelo": "Davidson: p(x,y) = ν^(x=y)·Pois(x;λh)·Pois(y;λa)/Z; toda la diagonal de empates × ν, luego renormalizar",
+    "estimacion": "MLE condicional: max_ν Σ [1{empate}·log ν − log(A_i + ν·B_i)] sobre TODOS los partidos del fit (grid log 0.05–20, 4001+4001); sin decaimiento temporal",
+    "datos": "sólo partidos del fit de cada ventana (OFICIAL=TRAIN; W1-4=su fit); jamás eval ni TEST",
+    "rango": "ν ∈ (0.05, 20]; única restricción ν>0; grid en log-espacio con refinamiento",
+    "signo": "ν>1 → todos los empates suben; ν<1 → todos bajan; ν=1 ≡ A",
+    "notaDecision": "ll(ν̂)−ll(1) es evidencia SÓLO in-sample (el MLE ajustó el fit). La decisión DAV-A vs A se decide EXCLUSIVAMENTE con eval/OOF (762 OOF + ventanas W1-W4 + OFICIAL)."
+  },
+  "sanidad": {
+    "aIgualOficial": true,
+    "aIgualFase33": true,
+    "nu1ReproduceA": true,
+    "ventanasIguales": true,
+    "probsValidas": true,
+    "testNoCargado": true
+  },
+  "ventanas": [
+    {
+      "nombre": "W1",
+      "fit": 761,
+      "eval": 190,
+      "desde": "2026-03-09",
+      "hasta": "2026-04-10"
+    },
+    {
+      "nombre": "W2",
+      "fit": 951,
+      "eval": 208,
+      "desde": "2026-04-11",
+      "hasta": "2026-05-02"
+    },
+    {
+      "nombre": "W3",
+      "fit": 1159,
+      "eval": 174,
+      "desde": "2026-05-03",
+      "hasta": "2026-05-19"
+    },
+    {
+      "nombre": "W4",
+      "fit": 1333,
+      "eval": 190,
+      "desde": "2026-05-20",
+      "hasta": "2026-06-18"
+    }
+  ],
+  "nu": {
+    "porVentana": {
+      "OFICIAL": {
+        "nu": 1.0181841823914284,
+        "llNu": 0.0986,
+        "ll1": 0.0662,
+        "rango": {
+          "lo": 0.05,
+          "hi": 20
+        },
+        "nFit": 1159,
+        "nDraws": 274,
+        "enBorde": false
+      },
+      "W1": {
+        "nu": 0.9899203262612207,
+        "llNu": 0.052,
+        "ll1": 0.0455,
+        "rango": {
+          "lo": 0.05,
+          "hi": 20
+        },
+        "nFit": 761,
+        "nDraws": 171,
+        "enBorde": false
+      },
+      "W2": {
+        "nu": 1.0335074385405854,
+        "llNu": 0.1399,
+        "ll1": 0.0514,
+        "rango": {
+          "lo": 0.05,
+          "hi": 20
+        },
+        "nFit": 951,
+        "nDraws": 228,
+        "enBorde": false
+      },
+      "W3": {
+        "nu": 1.0181841823914284,
+        "llNu": 0.0986,
+        "ll1": 0.0662,
+        "rango": {
+          "lo": 0.05,
+          "hi": 20
+        },
+        "nFit": 1159,
+        "nDraws": 274,
+        "enBorde": false
+      },
+      "W4": {
+        "nu": 1.0161311778430133,
+        "llNu": 0.0834,
+        "ll1": 0.0538,
+        "rango": {
+          "lo": 0.05,
+          "hi": 20
+        },
+        "nFit": 1333,
+        "nDraws": 317,
+        "enBorde": false
+      }
+    },
+    "nota": "llNu−ll1 = evidencia in-sample del MLE (NO es evidencia de mejora fuera de muestra); la mejora se mide en eval/OOF."
+  },
+  "secciones": {
+    "global": {
+      "A": {
+        "metricas": {
+          "n": 762,
+          "accuracy": 0.4423,
+          "logLoss": 1.1045,
+          "brier": 0.6587,
+          "probRealMedia": 0.3918,
+          "ece": 0.2112,
+          "calibration": [
+            {
+              "rango": "0-20%",
+              "n": 550,
+              "probPredicha": 0.1275,
+              "frecuenciaReal": 0.2273
+            },
+            {
+              "rango": "20-40%",
+              "n": 1061,
+              "probPredicha": 0.2832,
+              "frecuenciaReal": 0.3073
+            },
+            {
+              "rango": "40-60%",
+              "n": 406,
+              "probPredicha": 0.4904,
+              "frecuenciaReal": 0.4039
+            },
+            {
+              "rango": "60-80%",
+              "n": 219,
+              "probPredicha": 0.6819,
+              "frecuenciaReal": 0.5251
+            },
+            {
+              "rango": "80-100%",
+              "n": 50,
+              "probPredicha": 0.8601,
+              "frecuenciaReal": 0.64
+            }
+          ]
+        },
+        "porClase": {
+          "home": {
+            "recall": 0.7066,
+            "precision": 0.5082,
+            "f1": 0.5912
+          },
+          "draw": {
+            "recall": 0.09,
+            "precision": 0.2647,
+            "f1": 0.1343
+          },
+          "away": {
+            "recall": 0.3365,
+            "precision": 0.3447,
+            "f1": 0.3405
+          }
+        },
+        "pred": {
+          "home": 488,
+          "draw": 68,
+          "away": 206
+        },
+        "prob": {
+          "home": 0.4555931758530183,
+          "draw": 0.26479527559055127,
+          "away": 0.2796115485564309
+        }
+      },
+      "DAV": {
+        "metricas": {
+          "n": 762,
+          "accuracy": 0.4396,
+          "logLoss": 1.1056,
+          "brier": 0.6592,
+          "probRealMedia": 0.3912,
+          "ece": 0.2063,
+          "calibration": [
+            {
+              "rango": "0-20%",
+              "n": 546,
+              "probPredicha": 0.127,
+              "frecuenciaReal": 0.2289
+            },
+            {
+              "rango": "20-40%",
+              "n": 1065,
+              "probPredicha": 0.2836,
+              "frecuenciaReal": 0.3052
+            },
+            {
+              "rango": "40-60%",
+              "n": 410,
+              "probPredicha": 0.4903,
+              "frecuenciaReal": 0.4024
+            },
+            {
+              "rango": "60-80%",
+              "n": 216,
+              "probPredicha": 0.6823,
+              "frecuenciaReal": 0.537
+            },
+            {
+              "rango": "80-100%",
+              "n": 49,
+              "probPredicha": 0.8604,
+              "frecuenciaReal": 0.6327
+            }
+          ]
+        },
+        "porClase": {
+          "home": {
+            "recall": 0.7037,
+            "precision": 0.5072,
+            "f1": 0.5895
+          },
+          "draw": {
+            "recall": 0.09,
+            "precision": 0.2571,
+            "f1": 0.1333
+          },
+          "away": {
+            "recall": 0.3318,
+            "precision": 0.3415,
+            "f1": 0.3365
+          }
+        },
+        "pred": {
+          "home": 487,
+          "draw": 70,
+          "away": 205
+        },
+        "prob": {
+          "home": 0.4539790026246716,
+          "draw": 0.2675564304461941,
+          "away": 0.2784645669291341
+        }
+      },
+      "delta": {
+        "ll": 0.0011,
+        "brier": 0.0005,
+        "ece": -0.0049,
+        "acc": -0.0027
+      }
+    },
+    "empate": {
+      "A": {
+        "llEmpates": 1.3758,
+        "brierE": 0.2019,
+        "eceE": 0.0637,
+        "recallE": 0.09,
+        "precisionE": 0.2647,
+        "f1E": 0.1343,
+        "pEmedia": 26.4795,
+        "pEmediana": 24.9,
+        "pEnEmpates": 27.272,
+        "pEnNoEmpates": 26.1975,
+        "argmaxE": 68,
+        "separacion": 1.0745
+      },
+      "DAV": {
+        "llEmpates": 1.3667,
+        "brierE": 0.2023,
+        "eceE": 0.0633,
+        "recallE": 0.09,
+        "precisionE": 0.2571,
+        "f1E": 0.1333,
+        "pEmedia": 26.7556,
+        "pEmediana": 25.15,
+        "pEnEmpates": 27.5135,
+        "pEnNoEmpates": 26.4859,
+        "argmaxE": 70,
+        "separacion": 1.0276
+      }
+    },
+    "matriz": {
+      "filas": [
+        {
+          "marcador": "0-0",
+          "observado": 50,
+          "esperadoA": 94.9243,
+          "esperadoDAV": 95.9147,
+          "delta": 0.9904
+        },
+        {
+          "marcador": "1-0",
+          "observado": 73,
+          "esperadoA": 90.5066,
+          "esperadoDAV": 90.0794,
+          "delta": -0.4273
+        },
+        {
+          "marcador": "0-1",
+          "observado": 60,
+          "esperadoA": 69.2675,
+          "esperadoDAV": 68.9122,
+          "delta": -0.3554
+        },
+        {
+          "marcador": "1-1",
+          "observado": 107,
+          "esperadoA": 73.3699,
+          "esperadoDAV": 74.1218,
+          "delta": 0.7519
+        },
+        {
+          "marcador": "2-0",
+          "observado": 58,
+          "esperadoA": 61.4109,
+          "esperadoDAV": 61.1856,
+          "delta": -0.2253
+        },
+        {
+          "marcador": "0-2",
+          "observado": 36,
+          "esperadoA": 35.608,
+          "esperadoDAV": 35.4539,
+          "delta": -0.1541
+        },
+        {
+          "marcador": "2-1",
+          "observado": 60,
+          "esperadoA": 50.69,
+          "esperadoDAV": 50.5239,
+          "delta": -0.166
+        },
+        {
+          "marcador": "1-2",
+          "observado": 58,
+          "esperadoA": 38.4402,
+          "esperadoDAV": 38.3044,
+          "delta": -0.1358
+        },
+        {
+          "marcador": "2-2",
+          "observado": 36,
+          "esperadoA": 26.4094,
+          "esperadoDAV": 26.6662,
+          "delta": 0.2567
+        },
+        {
+          "marcador": "3-3",
+          "observado": 7,
+          "esperadoA": 5.8872,
+          "esperadoDAV": 5.9419,
+          "delta": 0.0547
+        }
+      ],
+      "otrosEmpates": 0,
+      "errorEmpates": {
+        "A": 89.2577,
+        "DAV": 89.1848
+      },
+      "error10Celdas": {
+        "A": 148.7046,
+        "DAV": 148.0797
+      }
+    },
+    "llPorMarcador": [
+      {
+        "marcador": "0-0",
+        "n": 50,
+        "llA": 2.3924,
+        "llDAV": 2.3836,
+        "delta": -0.0088
+      },
+      {
+        "marcador": "1-0",
+        "n": 73,
+        "llA": 2.2569,
+        "llDAV": 2.2615,
+        "delta": 0.0046
+      },
+      {
+        "marcador": "0-1",
+        "n": 60,
+        "llA": 2.5745,
+        "llDAV": 2.5782,
+        "delta": 0.0037
+      },
+      {
+        "marcador": "1-1",
+        "n": 107,
+        "llA": 2.4085,
+        "llDAV": 2.4002,
+        "delta": -0.0083
+      },
+      {
+        "marcador": "2-0",
+        "n": 58,
+        "llA": 2.5071,
+        "llDAV": 2.5115,
+        "delta": 0.0044
+      },
+      {
+        "marcador": "0-2",
+        "n": 36,
+        "llA": 3.1753,
+        "llDAV": 3.1783,
+        "delta": 0.003
+      },
+      {
+        "marcador": "2-1",
+        "n": 60,
+        "llA": 3.0267,
+        "llDAV": 3.0311,
+        "delta": 0.0045
+      },
+      {
+        "marcador": "1-2",
+        "n": 58,
+        "llA": 3.1652,
+        "llDAV": 3.1699,
+        "delta": 0.0048
+      },
+      {
+        "marcador": "2-2",
+        "n": 36,
+        "llA": 3.5651,
+        "llDAV": 3.5541,
+        "delta": -0.011
+      }
+    ],
+    "calibracion": {
+      "A": {
+        "filas": [
+          {
+            "rango": "0-10%",
+            "n": 21,
+            "pEprom": 6.5286,
+            "frecReal": 0.1429,
+            "error": 7.7571,
+            "empates": 3
+          },
+          {
+            "rango": "10-20%",
+            "n": 151,
+            "pEprom": 16.3404,
+            "frecReal": 0.2384,
+            "error": 7.5007,
+            "empates": 36
+          },
+          {
+            "rango": "20-30%",
+            "n": 393,
+            "pEprom": 24.8285,
+            "frecReal": 0.2748,
+            "error": 2.6524,
+            "empates": 108
+          },
+          {
+            "rango": "30-40%",
+            "n": 143,
+            "pEprom": 33.1455,
+            "frecReal": 0.2517,
+            "error": -7.9706,
+            "empates": 36
+          },
+          {
+            "rango": "40-50%",
+            "n": 22,
+            "pEprom": 45.3955,
+            "frecReal": 0.3636,
+            "error": -9.0318,
+            "empates": 8
+          },
+          {
+            "rango": "50-60%",
+            "n": 11,
+            "pEprom": 54.2636,
+            "frecReal": 0.2727,
+            "error": -26.9909,
+            "empates": 3
+          },
+          {
+            "rango": "60-70%",
+            "n": 11,
+            "pEprom": 65.2455,
+            "frecReal": 0.1818,
+            "error": -47.0636,
+            "empates": 2
+          },
+          {
+            "rango": "70-80%",
+            "n": 7,
+            "pEprom": 73.4714,
+            "frecReal": 0.2857,
+            "error": -44.9,
+            "empates": 2
+          },
+          {
+            "rango": "80-90%",
+            "n": 3,
+            "pEprom": 82.6333,
+            "frecReal": 0.6667,
+            "error": -15.9667,
+            "empates": 2
+          }
+        ],
+        "ece": 0.0637,
+        "brier": 0.2019
+      },
+      "DAV": {
+        "filas": [
+          {
+            "rango": "0-10%",
+            "n": 21,
+            "pEprom": 6.6048,
+            "frecReal": 0.1429,
+            "error": 7.681,
+            "empates": 3
+          },
+          {
+            "rango": "10-20%",
+            "n": 141,
+            "pEprom": 16.2674,
+            "frecReal": 0.2482,
+            "error": 8.5553,
+            "empates": 35
+          },
+          {
+            "rango": "20-30%",
+            "n": 396,
+            "pEprom": 24.8737,
+            "frecReal": 0.2702,
+            "error": 2.1465,
+            "empates": 107
+          },
+          {
+            "rango": "30-40%",
+            "n": 147,
+            "pEprom": 33.2041,
+            "frecReal": 0.2517,
+            "error": -8.034,
+            "empates": 37
+          },
+          {
+            "rango": "40-50%",
+            "n": 24,
+            "pEprom": 44.925,
+            "frecReal": 0.375,
+            "error": -7.425,
+            "empates": 9
+          },
+          {
+            "rango": "50-60%",
+            "n": 11,
+            "pEprom": 54.0182,
+            "frecReal": 0.2727,
+            "error": -26.7455,
+            "empates": 3
+          },
+          {
+            "rango": "60-70%",
+            "n": 12,
+            "pEprom": 65.375,
+            "frecReal": 0.1667,
+            "error": -48.7083,
+            "empates": 2
+          },
+          {
+            "rango": "70-80%",
+            "n": 7,
+            "pEprom": 74.0714,
+            "frecReal": 0.2857,
+            "error": -45.5,
+            "empates": 2
+          },
+          {
+            "rango": "80-90%",
+            "n": 3,
+            "pEprom": 83,
+            "frecReal": 0.6667,
+            "error": -16.3333,
+            "empates": 2
+          }
+        ],
+        "ece": 0.0633,
+        "brier": 0.2023
+      }
+    },
+    "empatesReales": {
+      "resumen": {
+        "A": {
+          "pH": 43.189,
+          "pE": 27.272,
+          "pA": 29.539,
+          "pMax": 54.689,
+          "gap": 27.417,
+          "lh": 1.3964,
+          "la": 1.0583
+        },
+        "DAV": {
+          "pH": 43.056,
+          "pE": 27.5135,
+          "pA": 29.4305,
+          "pMax": 54.557,
+          "gap": 27.0435,
+          "lh": 1.3964,
+          "la": 1.0583
+        }
+      },
+      "detalle": [
+        {
+          "fecha": "2026-03-10",
+          "liga": "UEFA Champions League 2025 2026",
+          "home": "Newcastle United",
+          "away": "FC Barcelona",
+          "marcador": "1-1",
+          "A": {
+            "pH": 75.6,
+            "pE": 13.2,
+            "pA": 11.2,
+            "gap": 62.39999999999999,
+            "lh": 3.195,
+            "la": 1.2414
+          },
+          "DAV": {
+            "pH": 75.7,
+            "pE": 13.1,
+            "pA": 11.2,
+            "gap": 62.6,
+            "lh": 3.195,
+            "la": 1.2414
+          }
+        },
+        {
+          "fecha": "2026-03-11",
+          "liga": "UEFA Champions League 2025 2026",
+          "home": "Bayer 04 Leverkusen",
+          "away": "Arsenal",
+          "marcador": "1-1",
+          "A": {
+            "pH": 32.8,
+            "pE": 25.6,
+            "pA": 41.6,
+            "gap": 16,
+            "lh": 1.2578,
+            "la": 1.4481
+          },
+          "DAV": {
+            "pH": 32.9,
+            "pE": 25.4,
+            "pA": 41.7,
+            "gap": 16.300000000000004,
+            "lh": 1.2578,
+            "la": 1.4481
+          }
+        },
+        {
+          "fecha": "2026-03-14",
+          "liga": "Serie A 2025 2026",
+          "home": "Inter",
+          "away": "Atalanta",
+          "marcador": "1-1",
+          "A": {
+            "pH": 34.6,
+            "pE": 28.1,
+            "pA": 37.3,
+            "gap": 9.199999999999996,
+            "lh": 1.1437,
+            "la": 1.199
+          },
+          "DAV": {
+            "pH": 34.7,
+            "pE": 27.9,
+            "pA": 37.4,
+            "gap": 9.5,
+            "lh": 1.1437,
+            "la": 1.199
+          }
+        },
+        {
+          "fecha": "2026-03-14",
+          "liga": "Premier League 2025 2026",
+          "home": "Burnley",
+          "away": "Bournemouth",
+          "marcador": "0-0",
+          "A": {
+            "pH": 47.1,
+            "pE": 24.8,
+            "pA": 28.1,
+            "gap": 22.3,
+            "lh": 1.5966,
+            "la": 1.1774
+          },
+          "DAV": {
+            "pH": 47.2,
+            "pE": 24.7,
+            "pA": 28.1,
+            "gap": 22.500000000000004,
+            "lh": 1.5966,
+            "la": 1.1774
+          }
+        },
+        {
+          "fecha": "2026-03-14",
+          "liga": "Premier League 2025 2026",
+          "home": "West Ham United",
+          "away": "Manchester City",
+          "marcador": "1-1",
+          "A": {
+            "pH": 22.1,
+            "pE": 24.9,
+            "pA": 53,
+            "gap": 28.1,
+            "lh": 0.9473,
+            "la": 1.6164
+          },
+          "DAV": {
+            "pH": 22.1,
+            "pE": 24.7,
+            "pA": 53.2,
+            "gap": 28.500000000000004,
+            "lh": 0.9473,
+            "la": 1.6164
+          }
+        },
+        {
+          "fecha": "2026-03-14",
+          "liga": "Bundesliga 2025 2026",
+          "home": "Bayer 04 Leverkusen",
+          "away": "FC Bayern München",
+          "marcador": "1-1",
+          "A": {
+            "pH": 58.6,
+            "pE": 21.1,
+            "pA": 20.3,
+            "gap": 37.5,
+            "lh": 2.0359,
+            "la": 1.1183
+          },
+          "DAV": {
+            "pH": 58.7,
+            "pE": 21,
+            "pA": 20.3,
+            "gap": 37.7,
+            "lh": 2.0359,
+            "la": 1.1183
+          }
+        },
+        {
+          "fecha": "2026-03-14",
+          "liga": "Bundesliga 2025 2026",
+          "home": "TSG Hoffenheim",
+          "away": "VfL Wolfsburg",
+          "marcador": "1-1",
+          "A": {
+            "pH": 74.3,
+            "pE": 13.8,
+            "pA": 11.9,
+            "gap": 60.5,
+            "lh": 3.0932,
+            "la": 1.2383
+          },
+          "DAV": {
+            "pH": 74.3,
+            "pE": 13.7,
+            "pA": 12,
+            "gap": 60.599999999999994,
+            "lh": 3.0932,
+            "la": 1.2383
+          }
+        },
+        {
+          "fecha": "2026-03-14",
+          "liga": "Bundesliga 2025 2026",
+          "home": "Hamburger SV",
+          "away": "1. FC Köln",
+          "marcador": "1-1",
+          "A": {
+            "pH": 65.2,
+            "pE": 21.2,
+            "pA": 13.6,
+            "gap": 44,
+            "lh": 1.9047,
+            "la": 0.7299
+          },
+          "DAV": {
+            "pH": 65.4,
+            "pE": 21,
+            "pA": 13.6,
+            "gap": 44.400000000000006,
+            "lh": 1.9047,
+            "la": 0.7299
+          }
+        },
+        {
+          "fecha": "2026-03-14",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Deportivo Garcilaso",
+          "away": "Alianza Lima",
+          "marcador": "1-1",
+          "A": {
+            "pH": 26.3,
+            "pE": 39.9,
+            "pA": 33.8,
+            "gap": 0,
+            "lh": 0.591,
+            "la": 0.711
+          },
+          "DAV": {
+            "pH": 26.5,
+            "pE": 39.6,
+            "pA": 33.9,
+            "gap": 0,
+            "lh": 0.591,
+            "la": 0.711
+          }
+        },
+        {
+          "fecha": "2026-03-15",
+          "liga": "Premier League 2025 2026",
+          "home": "Crystal Palace",
+          "away": "Leeds United",
+          "marcador": "0-0",
+          "A": {
+            "pH": 47.1,
+            "pE": 24.8,
+            "pA": 28.1,
+            "gap": 22.3,
+            "lh": 1.5966,
+            "la": 1.1774
+          },
+          "DAV": {
+            "pH": 47.2,
+            "pE": 24.7,
+            "pA": 28.1,
+            "gap": 22.500000000000004,
+            "lh": 1.5966,
+            "la": 1.1774
+          }
+        },
+        {
+          "fecha": "2026-03-15",
+          "liga": "Premier League 2025 2026",
+          "home": "Liverpool FC",
+          "away": "Tottenham Hotspur",
+          "marcador": "1-1",
+          "A": {
+            "pH": 56.1,
+            "pE": 27.2,
+            "pA": 16.7,
+            "gap": 28.900000000000002,
+            "lh": 1.4198,
+            "la": 0.6358
+          },
+          "DAV": {
+            "pH": 56.3,
+            "pE": 27,
+            "pA": 16.7,
+            "gap": 29.299999999999997,
+            "lh": 1.4198,
+            "la": 0.6358
+          }
+        },
+        {
+          "fecha": "2026-03-15",
+          "liga": "Premier League 2025 2026",
+          "home": "Nottingham Forest",
+          "away": "Fulham",
+          "marcador": "0-0",
+          "A": {
+            "pH": 47.1,
+            "pE": 24.8,
+            "pA": 28.1,
+            "gap": 22.3,
+            "lh": 1.5966,
+            "la": 1.1774
+          },
+          "DAV": {
+            "pH": 47.2,
+            "pE": 24.7,
+            "pA": 28.1,
+            "gap": 22.500000000000004,
+            "lh": 1.5966,
+            "la": 1.1774
+          }
+        },
+        {
+          "fecha": "2026-03-15",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Melgar",
+          "away": "Club Atlético Grau",
+          "marcador": "0-0",
+          "A": {
+            "pH": 81.8,
+            "pE": 14.5,
+            "pA": 3.7,
+            "gap": 67.3,
+            "lh": 2.199,
+            "la": 0.2877
+          },
+          "DAV": {
+            "pH": 81.9,
+            "pE": 14.5,
+            "pA": 3.6,
+            "gap": 67.4,
+            "lh": 2.199,
+            "la": 0.2877
+          }
+        },
+        {
+          "fecha": "2026-03-16",
+          "liga": "Premier League 2025 2026",
+          "home": "Brentford",
+          "away": "Wolverhampton",
+          "marcador": "2-2",
+          "A": {
+            "pH": 20.4,
+            "pE": 16.6,
+            "pA": 63,
+            "gap": 46.4,
+            "lh": 1.6658,
+            "la": 2.8905
+          },
+          "DAV": {
+            "pH": 20.4,
+            "pE": 16.5,
+            "pA": 63.1,
+            "gap": 46.6,
+            "lh": 1.6658,
+            "la": 2.8905
+          }
+        },
+        {
+          "fecha": "2026-03-20",
+          "liga": "Premier League 2025 2026",
+          "home": "Bournemouth",
+          "away": "Manchester United",
+          "marcador": "2-2",
+          "A": {
+            "pH": 48.6,
+            "pE": 24.5,
+            "pA": 26.9,
+            "gap": 24.1,
+            "lh": 1.6335,
+            "la": 1.1508
+          },
+          "DAV": {
+            "pH": 48.7,
+            "pE": 24.4,
+            "pA": 26.9,
+            "gap": 24.300000000000004,
+            "lh": 1.6335,
+            "la": 1.1508
+          }
+        },
+        {
+          "fecha": "2026-03-20",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Asociación Deportiva Tarma",
+          "away": "Melgar",
+          "marcador": "1-1",
+          "A": {
+            "pH": 16,
+            "pE": 23.3,
+            "pA": 60.7,
+            "gap": 37.400000000000006,
+            "lh": 0.7611,
+            "la": 1.7362
+          },
+          "DAV": {
+            "pH": 16.1,
+            "pE": 23.1,
+            "pA": 60.8,
+            "gap": 37.699999999999996,
+            "lh": 0.7611,
+            "la": 1.7362
+          }
+        },
+        {
+          "fecha": "2026-03-21",
+          "liga": "Serie A 2025 2026",
+          "home": "Juventus",
+          "away": "Sassuolo",
+          "marcador": "1-1",
+          "A": {
+            "pH": 80,
+            "pE": 11.5,
+            "pA": 8.5,
+            "gap": 68.5,
+            "lh": 3.36,
+            "la": 1.1031
+          },
+          "DAV": {
+            "pH": 80.1,
+            "pE": 11.4,
+            "pA": 8.5,
+            "gap": 68.69999999999999,
+            "lh": 3.36,
+            "la": 1.1031
+          }
+        },
+        {
+          "fecha": "2026-03-21",
+          "liga": "Premier League 2025 2026",
+          "home": "Leeds United",
+          "away": "Brentford",
+          "marcador": "0-0",
+          "A": {
+            "pH": 45.1,
+            "pE": 25.1,
+            "pA": 29.8,
+            "gap": 20,
+            "lh": 1.5505,
+            "la": 1.2124
+          },
+          "DAV": {
+            "pH": 45.2,
+            "pE": 24.9,
+            "pA": 29.9,
+            "gap": 20.300000000000004,
+            "lh": 1.5505,
+            "la": 1.2124
+          }
+        },
+        {
+          "fecha": "2026-03-21",
+          "liga": "Bundesliga 2025 2026",
+          "home": "1. FC Heidenheim",
+          "away": "Bayer 04 Leverkusen",
+          "marcador": "3-3",
+          "A": {
+            "pH": 14.7,
+            "pE": 19.4,
+            "pA": 65.9,
+            "gap": 46.50000000000001,
+            "lh": 0.9063,
+            "la": 2.1526
+          },
+          "DAV": {
+            "pH": 14.7,
+            "pE": 19.3,
+            "pA": 66,
+            "gap": 46.7,
+            "lh": 0.9063,
+            "la": 2.1526
+          }
+        },
+        {
+          "fecha": "2026-03-21",
+          "liga": "Bundesliga 2025 2026",
+          "home": "1. FC Köln",
+          "away": "Borussia M'gladbach",
+          "marcador": "3-3",
+          "A": {
+            "pH": 43.1,
+            "pE": 30,
+            "pA": 26.9,
+            "gap": 13.100000000000001,
+            "lh": 1.1724,
+            "la": 0.8588
+          },
+          "DAV": {
+            "pH": 43.2,
+            "pE": 29.8,
+            "pA": 27,
+            "gap": 13.400000000000002,
+            "lh": 1.1724,
+            "la": 0.8588
+          }
+        },
+        {
+          "fecha": "2026-03-21",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Comerciantes Unidos",
+          "away": "Universitario de Deportes",
+          "marcador": "0-0",
+          "A": {
+            "pH": 42.6,
+            "pE": 24.8,
+            "pA": 32.6,
+            "gap": 17.8,
+            "lh": 1.5372,
+            "la": 1.3137
+          },
+          "DAV": {
+            "pH": 42.7,
+            "pE": 24.7,
+            "pA": 32.6,
+            "gap": 18.000000000000004,
+            "lh": 1.5372,
+            "la": 1.3137
+          }
+        },
+        {
+          "fecha": "2026-03-22",
+          "liga": "Serie A 2025 2026",
+          "home": "Fiorentina",
+          "away": "Inter",
+          "marcador": "1-1",
+          "A": {
+            "pH": 22.1,
+            "pE": 25.1,
+            "pA": 52.8,
+            "gap": 27.699999999999996,
+            "lh": 0.9339,
+            "la": 1.5934
+          },
+          "DAV": {
+            "pH": 22.2,
+            "pE": 24.9,
+            "pA": 52.9,
+            "gap": 28,
+            "lh": 0.9339,
+            "la": 1.5934
+          }
+        },
+        {
+          "fecha": "2026-03-22",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Club Atlético Grau",
+          "away": "Deportivo Garcilaso",
+          "marcador": "0-0",
+          "A": {
+            "pH": 26.5,
+            "pE": 42.7,
+            "pA": 30.8,
+            "gap": 0,
+            "lh": 0.5489,
+            "la": 0.6144
+          },
+          "DAV": {
+            "pH": 26.7,
+            "pE": 42.4,
+            "pA": 30.9,
+            "gap": 0,
+            "lh": 0.5489,
+            "la": 0.6144
+          }
+        },
+        {
+          "fecha": "2026-03-22",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Universidad Técnica de Cajamarca",
+          "away": "Alianza Atlético de Sullana",
+          "marcador": "1-1",
+          "A": {
+            "pH": 52.7,
+            "pE": 31.2,
+            "pA": 16.1,
+            "gap": 21.500000000000004,
+            "lh": 1.1879,
+            "la": 0.5176
+          },
+          "DAV": {
+            "pH": 52.8,
+            "pE": 31,
+            "pA": 16.2,
+            "gap": 21.799999999999997,
+            "lh": 1.1879,
+            "la": 0.5176
+          }
+        },
+        {
+          "fecha": "2026-03-27",
+          "liga": "International Friendly Games",
+          "home": "England",
+          "away": "Uruguay",
+          "marcador": "1-1",
+          "A": {
+            "pH": 78.9,
+            "pE": 15.6,
+            "pA": 5.5,
+            "gap": 63.300000000000004,
+            "lh": 2.18,
+            "la": 0.3946
+          },
+          "DAV": {
+            "pH": 79,
+            "pE": 15.6,
+            "pA": 5.4,
+            "gap": 63.4,
+            "lh": 2.18,
+            "la": 0.3946
+          }
+        },
+        {
+          "fecha": "2026-03-27",
+          "liga": "International Friendly Games",
+          "home": "Morocco",
+          "away": "Ecuador",
+          "marcador": "1-1",
+          "A": {
+            "pH": 43.8,
+            "pE": 35.8,
+            "pA": 20.4,
+            "gap": 8,
+            "lh": 0.9411,
+            "la": 0.5416
+          },
+          "DAV": {
+            "pH": 43.9,
+            "pE": 35.6,
+            "pA": 20.5,
+            "gap": 8.299999999999997,
+            "lh": 0.9411,
+            "la": 0.5416
+          }
+        },
+        {
+          "fecha": "2026-03-29",
+          "liga": "International Friendly Games",
+          "home": "Mexico",
+          "away": "Portugal",
+          "marcador": "0-0",
+          "A": {
+            "pH": 22.8,
+            "pE": 28.3,
+            "pA": 48.9,
+            "gap": 20.599999999999998,
+            "lh": 0.8136,
+            "la": 1.3335
+          },
+          "DAV": {
+            "pH": 22.9,
+            "pE": 28,
+            "pA": 49.1,
+            "gap": 21.1,
+            "lh": 0.8136,
+            "la": 1.3335
+          }
+        },
+        {
+          "fecha": "2026-03-31",
+          "liga": "International Friendly Games",
+          "home": "Netherlands",
+          "away": "Ecuador",
+          "marcador": "1-1",
+          "A": {
+            "pH": 37.3,
+            "pE": 30.5,
+            "pA": 32.2,
+            "gap": 6.799999999999997,
+            "lh": 1.0625,
+            "la": 0.965
+          },
+          "DAV": {
+            "pH": 37.4,
+            "pE": 30.3,
+            "pA": 32.3,
+            "gap": 7.099999999999998,
+            "lh": 1.0625,
+            "la": 0.965
+          }
+        },
+        {
+          "fecha": "2026-03-31",
+          "liga": "International Friendly Games",
+          "home": "Spain",
+          "away": "Egypt",
+          "marcador": "0-0",
+          "A": {
+            "pH": 75.6,
+            "pE": 13.9,
+            "pA": 10.5,
+            "gap": 61.699999999999996,
+            "lh": 2.939,
+            "la": 1.0547
+          },
+          "DAV": {
+            "pH": 75.7,
+            "pE": 13.7,
+            "pA": 10.6,
+            "gap": 62,
+            "lh": 2.939,
+            "la": 1.0547
+          }
+        },
+        {
+          "fecha": "2026-03-31",
+          "liga": "International Friendly Games",
+          "home": "Algeria",
+          "away": "Uruguay",
+          "marcador": "0-0",
+          "A": {
+            "pH": 51.6,
+            "pE": 29.6,
+            "pA": 18.8,
+            "gap": 22,
+            "lh": 1.263,
+            "la": 0.6385
+          },
+          "DAV": {
+            "pH": 51.7,
+            "pE": 29.4,
+            "pA": 18.9,
+            "gap": 22.300000000000004,
+            "lh": 1.263,
+            "la": 0.6385
+          }
+        },
+        {
+          "fecha": "2026-03-31",
+          "liga": "International Friendly Games",
+          "home": "Peru",
+          "away": "Honduras",
+          "marcador": "2-2",
+          "A": {
+            "pH": 61.9,
+            "pE": 22.9,
+            "pA": 15.2,
+            "gap": 39,
+            "lh": 1.7639,
+            "la": 0.7379
+          },
+          "DAV": {
+            "pH": 62.1,
+            "pE": 22.7,
+            "pA": 15.2,
+            "gap": 39.400000000000006,
+            "lh": 1.7639,
+            "la": 0.7379
+          }
+        },
+        {
+          "fecha": "2026-04-01",
+          "liga": "International Friendly Games",
+          "home": "Mexico",
+          "away": "Belgium",
+          "marcador": "1-1",
+          "A": {
+            "pH": 28.9,
+            "pE": 36.1,
+            "pA": 35,
+            "gap": 0,
+            "lh": 0.7156,
+            "la": 0.8209
+          },
+          "DAV": {
+            "pH": 29,
+            "pE": 35.9,
+            "pA": 35.1,
+            "gap": 0,
+            "lh": 0.7156,
+            "la": 0.8209
+          }
+        },
+        {
+          "fecha": "2026-04-01",
+          "liga": "International Friendly Games",
+          "home": "Canada",
+          "away": "Tunisia",
+          "marcador": "0-0",
+          "A": {
+            "pH": 21,
+            "pE": 47.3,
+            "pA": 31.7,
+            "gap": 0,
+            "lh": 0.406,
+            "la": 0.5607
+          },
+          "DAV": {
+            "pH": 21.2,
+            "pE": 47,
+            "pA": 31.8,
+            "gap": 0,
+            "lh": 0.406,
+            "la": 0.5607
+          }
+        },
+        {
+          "fecha": "2026-04-03",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Alianza Atlético de Sullana",
+          "away": "Club Atlético Grau",
+          "marcador": "2-2",
+          "A": {
+            "pH": 44.7,
+            "pE": 46,
+            "pA": 9.3,
+            "gap": 0,
+            "lh": 0.7161,
+            "la": 0.197
+          },
+          "DAV": {
+            "pH": 44.9,
+            "pE": 45.7,
+            "pA": 9.4,
+            "gap": 0,
+            "lh": 0.7161,
+            "la": 0.197
+          }
+        },
+        {
+          "fecha": "2026-04-04",
+          "liga": "Serie A 2025 2026",
+          "home": "Lazio",
+          "away": "Parma",
+          "marcador": "1-1",
+          "A": {
+            "pH": 26.2,
+            "pE": 36.5,
+            "pA": 37.3,
+            "gap": 0.7999999999999972,
+            "lh": 0.6562,
+            "la": 0.8451
+          },
+          "DAV": {
+            "pH": 26.4,
+            "pE": 36.2,
+            "pA": 37.4,
+            "gap": 1.1999999999999957,
+            "lh": 0.6562,
+            "la": 0.8451
+          }
+        },
+        {
+          "fecha": "2026-04-04",
+          "liga": "Bundesliga 2025 2026",
+          "home": "Borussia M'gladbach",
+          "away": "1. FC Heidenheim",
+          "marcador": "2-2",
+          "A": {
+            "pH": 38.4,
+            "pE": 26.5,
+            "pA": 35.1,
+            "gap": 11.899999999999999,
+            "lh": 1.3279,
+            "la": 1.2582
+          },
+          "DAV": {
+            "pH": 38.5,
+            "pE": 26.3,
+            "pA": 35.2,
+            "gap": 12.2,
+            "lh": 1.3279,
+            "la": 1.2582
+          }
+        },
+        {
+          "fecha": "2026-04-04",
+          "liga": "Bundesliga 2025 2026",
+          "home": "Hamburger SV",
+          "away": "FC Augsburg",
+          "marcador": "1-1",
+          "A": {
+            "pH": 56.4,
+            "pE": 22.3,
+            "pA": 21.3,
+            "gap": 34.099999999999994,
+            "lh": 1.8763,
+            "la": 1.0666
+          },
+          "DAV": {
+            "pH": 56.4,
+            "pE": 22.3,
+            "pA": 21.3,
+            "gap": 34.099999999999994,
+            "lh": 1.8763,
+            "la": 1.0666
+          }
+        },
+        {
+          "fecha": "2026-04-05",
+          "liga": "Bundesliga 2025 2026",
+          "home": "Eintracht Frankfurt",
+          "away": "1. FC Köln",
+          "marcador": "2-2",
+          "A": {
+            "pH": 54.4,
+            "pE": 28.1,
+            "pA": 17.5,
+            "gap": 26.299999999999997,
+            "lh": 1.3631,
+            "la": 0.6393
+          },
+          "DAV": {
+            "pH": 54.6,
+            "pE": 27.9,
+            "pA": 17.5,
+            "gap": 26.700000000000003,
+            "lh": 1.3631,
+            "la": 0.6393
+          }
+        },
+        {
+          "fecha": "2026-04-05",
+          "liga": "Bundesliga 2025 2026",
+          "home": "1. FC Union Berlin",
+          "away": "FC St. Pauli",
+          "marcador": "1-1",
+          "A": {
+            "pH": 32.7,
+            "pE": 30.1,
+            "pA": 37.2,
+            "gap": 7.100000000000001,
+            "lh": 0.9932,
+            "la": 1.0815
+          },
+          "DAV": {
+            "pH": 32.8,
+            "pE": 29.9,
+            "pA": 37.3,
+            "gap": 7.399999999999999,
+            "lh": 0.9932,
+            "la": 1.0815
+          }
+        },
+        {
+          "fecha": "2026-04-05",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Sport Huancayo",
+          "away": "Comerciantes Unidos",
+          "marcador": "1-1",
+          "A": {
+            "pH": 75.9,
+            "pE": 14.1,
+            "pA": 10,
+            "gap": 61.800000000000004,
+            "lh": 2.8379,
+            "la": 0.9706
+          },
+          "DAV": {
+            "pH": 76,
+            "pE": 13.9,
+            "pA": 10.1,
+            "gap": 62.1,
+            "lh": 2.8379,
+            "la": 0.9706
+          }
+        },
+        {
+          "fecha": "2026-04-06",
+          "liga": "Serie A 2025 2026",
+          "home": "Udinese",
+          "away": "Como",
+          "marcador": "0-0",
+          "A": {
+            "pH": 23.5,
+            "pE": 25.8,
+            "pA": 50.7,
+            "gap": 24.900000000000002,
+            "lh": 0.9504,
+            "la": 1.5262
+          },
+          "DAV": {
+            "pH": 23.6,
+            "pE": 25.6,
+            "pA": 50.8,
+            "gap": 25.199999999999996,
+            "lh": 0.9504,
+            "la": 1.5262
+          }
+        },
+        {
+          "fecha": "2026-04-07",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Barracas Central",
+          "away": "Vasco da Gama",
+          "marcador": "0-0",
+          "A": {
+            "pH": 88.1,
+            "pE": 7.9,
+            "pA": 4,
+            "gap": 80.19999999999999,
+            "lh": 3.6033,
+            "la": 0.7449
+          },
+          "DAV": {
+            "pH": 88.2,
+            "pE": 7.8,
+            "pA": 4,
+            "gap": 80.4,
+            "lh": 3.6033,
+            "la": 0.7449
+          }
+        },
+        {
+          "fecha": "2026-04-07",
+          "liga": "Copa Libertadores 2026",
+          "home": "Deportivo La Guaira",
+          "away": "Fluminense",
+          "marcador": "0-0",
+          "A": {
+            "pH": 29.2,
+            "pE": 29.4,
+            "pA": 41.4,
+            "gap": 12,
+            "lh": 0.949,
+            "la": 1.1873
+          },
+          "DAV": {
+            "pH": 29.3,
+            "pE": 29.2,
+            "pA": 41.5,
+            "gap": 12.3,
+            "lh": 0.949,
+            "la": 1.1873
+          }
+        },
+        {
+          "fecha": "2026-04-08",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Alianza Atlético de Sullana",
+          "away": "Tigre",
+          "marcador": "1-1",
+          "A": {
+            "pH": 30.8,
+            "pE": 37.5,
+            "pA": 31.7,
+            "gap": 0,
+            "lh": 0.7185,
+            "la": 0.7343
+          },
+          "DAV": {
+            "pH": 30.9,
+            "pE": 37.2,
+            "pA": 31.9,
+            "gap": 0,
+            "lh": 0.7185,
+            "la": 0.7343
+          }
+        },
+        {
+          "fecha": "2026-04-08",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Recoleta FC",
+          "away": "San Lorenzo",
+          "marcador": "1-1",
+          "A": {
+            "pH": 47.1,
+            "pE": 24.8,
+            "pA": 28.1,
+            "gap": 22.3,
+            "lh": 1.5966,
+            "la": 1.1774
+          },
+          "DAV": {
+            "pH": 47.2,
+            "pE": 24.7,
+            "pA": 28.1,
+            "gap": 22.500000000000004,
+            "lh": 1.5966,
+            "la": 1.1774
+          }
+        },
+        {
+          "fecha": "2026-04-08",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Deportivo Riestra",
+          "away": "Palestino",
+          "marcador": "0-0",
+          "A": {
+            "pH": 89,
+            "pE": 8.8,
+            "pA": 2.2,
+            "gap": 80.2,
+            "lh": 2.8423,
+            "la": 0.2972
+          },
+          "DAV": {
+            "pH": 89,
+            "pE": 8.8,
+            "pA": 2.2,
+            "gap": 80.2,
+            "lh": 2.8423,
+            "la": 0.2972
+          }
+        },
+        {
+          "fecha": "2026-04-08",
+          "liga": "Copa Libertadores 2026",
+          "home": "Coquimbo Unido",
+          "away": "Nacional",
+          "marcador": "1-1",
+          "A": {
+            "pH": 47.1,
+            "pE": 24.8,
+            "pA": 28.1,
+            "gap": 22.3,
+            "lh": 1.5966,
+            "la": 1.1774
+          },
+          "DAV": {
+            "pH": 47.2,
+            "pE": 24.7,
+            "pA": 28.1,
+            "gap": 22.500000000000004,
+            "lh": 1.5966,
+            "la": 1.1774
+          }
+        },
+        {
+          "fecha": "2026-04-08",
+          "liga": "Copa Libertadores 2026",
+          "home": "Deportes Tolima",
+          "away": "Universitario de Deportes",
+          "marcador": "0-0",
+          "A": {
+            "pH": 54.2,
+            "pE": 23.7,
+            "pA": 22.1,
+            "gap": 30.500000000000004,
+            "lh": 1.7478,
+            "la": 1.0312
+          },
+          "DAV": {
+            "pH": 54.2,
+            "pE": 23.4,
+            "pA": 22.4,
+            "gap": 30.800000000000004,
+            "lh": 1.7478,
+            "la": 1.0312
+          }
+        },
+        {
+          "fecha": "2026-04-09",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Juventud de Las Piedras",
+          "away": "Cienciano",
+          "marcador": "1-1",
+          "A": {
+            "pH": 66.6,
+            "pE": 17.4,
+            "pA": 16,
+            "gap": 49.199999999999996,
+            "lh": 2.5389,
+            "la": 1.1922
+          },
+          "DAV": {
+            "pH": 66.7,
+            "pE": 17.2,
+            "pA": 16.1,
+            "gap": 49.5,
+            "lh": 2.5389,
+            "la": 1.1922
+          }
+        },
+        {
+          "fecha": "2026-04-09",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Botafogo",
+          "away": "Caracas F.C.",
+          "marcador": "1-1",
+          "A": {
+            "pH": 59.4,
+            "pE": 30.3,
+            "pA": 10.3,
+            "gap": 29.099999999999998,
+            "lh": 1.2373,
+            "la": 0.3458
+          },
+          "DAV": {
+            "pH": 59.6,
+            "pE": 30.1,
+            "pA": 10.3,
+            "gap": 29.5,
+            "lh": 1.2373,
+            "la": 0.3458
+          }
+        },
+        {
+          "fecha": "2026-04-09",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Blooming",
+          "away": "River Plate",
+          "marcador": "1-1",
+          "A": {
+            "pH": 46.3,
+            "pE": 32,
+            "pA": 21.7,
+            "gap": 14.299999999999997,
+            "lh": 1.1083,
+            "la": 0.6573
+          },
+          "DAV": {
+            "pH": 46.4,
+            "pE": 31.8,
+            "pA": 21.8,
+            "gap": 14.599999999999998,
+            "lh": 1.1083,
+            "la": 0.6573
+          }
+        },
+        {
+          "fecha": "2026-04-09",
+          "liga": "Copa Libertadores 2026",
+          "home": "Independiente Medellín",
+          "away": "Estudiantes de La Plata",
+          "marcador": "1-1",
+          "A": {
+            "pH": 47.1,
+            "pE": 24.8,
+            "pA": 28.1,
+            "gap": 22.3,
+            "lh": 1.5966,
+            "la": 1.1774
+          },
+          "DAV": {
+            "pH": 47.2,
+            "pE": 24.7,
+            "pA": 28.1,
+            "gap": 22.500000000000004,
+            "lh": 1.5966,
+            "la": 1.1774
+          }
+        },
+        {
+          "fecha": "2026-04-09",
+          "liga": "Copa Libertadores 2026",
+          "home": "Rosario Central",
+          "away": "Independiente del Valle",
+          "marcador": "0-0",
+          "A": {
+            "pH": 36.5,
+            "pE": 28.3,
+            "pA": 35.2,
+            "gap": 8.2,
+            "lh": 1.1701,
+            "la": 1.1419
+          },
+          "DAV": {
+            "pH": 36.6,
+            "pE": 28.1,
+            "pA": 35.3,
+            "gap": 8.5,
+            "lh": 1.1701,
+            "la": 1.1419
+          }
+        },
+        {
+          "fecha": "2026-04-09",
+          "liga": "Copa Libertadores 2026",
+          "home": "Junior Barranquilla",
+          "away": "Palmeiras",
+          "marcador": "1-1",
+          "A": {
+            "pH": 51.5,
+            "pE": 29.2,
+            "pA": 19.3,
+            "gap": 22.3,
+            "lh": 1.2863,
+            "la": 0.6667
+          },
+          "DAV": {
+            "pH": 51.6,
+            "pE": 29,
+            "pA": 19.4,
+            "gap": 22.6,
+            "lh": 1.2863,
+            "la": 0.6667
+          }
+        },
+        {
+          "fecha": "2026-04-10",
+          "liga": "Bundesliga 2025 2026",
+          "home": "FC Augsburg",
+          "away": "TSG Hoffenheim",
+          "marcador": "2-2",
+          "A": {
+            "pH": 41.1,
+            "pE": 21.4,
+            "pA": 37.5,
+            "gap": 19.700000000000003,
+            "lh": 1.9284,
+            "la": 1.84
+          },
+          "DAV": {
+            "pH": 41.2,
+            "pE": 21.2,
+            "pA": 37.6,
+            "gap": 20.000000000000004,
+            "lh": 1.9284,
+            "la": 1.84
+          }
+        },
+        {
+          "fecha": "2026-04-10",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Macará",
+          "away": "América de Cali",
+          "marcador": "1-1",
+          "A": {
+            "pH": 68.9,
+            "pE": 17.3,
+            "pA": 13.8,
+            "gap": 51.60000000000001,
+            "lh": 2.4496,
+            "la": 1.0115
+          },
+          "DAV": {
+            "pH": 69.1,
+            "pE": 17.2,
+            "pA": 13.7,
+            "gap": 51.89999999999999,
+            "lh": 2.4496,
+            "la": 1.0115
+          }
+        },
+        {
+          "fecha": "2026-04-10",
+          "liga": "Copa Libertadores 2026",
+          "home": "Independiente Santa Fe",
+          "away": "Peñarol",
+          "marcador": "1-1",
+          "A": {
+            "pH": 47.1,
+            "pE": 24.8,
+            "pA": 28.1,
+            "gap": 22.3,
+            "lh": 1.5966,
+            "la": 1.1774
+          },
+          "DAV": {
+            "pH": 47.2,
+            "pE": 24.7,
+            "pA": 28.1,
+            "gap": 22.500000000000004,
+            "lh": 1.5966,
+            "la": 1.1774
+          }
+        },
+        {
+          "fecha": "2026-04-11",
+          "liga": "Premier League 2025 2026",
+          "home": "Brentford",
+          "away": "Everton",
+          "marcador": "2-2",
+          "A": {
+            "pH": 12.1,
+            "pE": 20.8,
+            "pA": 67.1,
+            "gap": 46.3,
+            "lh": 0.6633,
+            "la": 1.9091
+          },
+          "DAV": {
+            "pH": 12,
+            "pE": 21.4,
+            "pA": 66.6,
+            "gap": 45.199999999999996,
+            "lh": 0.6633,
+            "la": 1.9091
+          }
+        },
+        {
+          "fecha": "2026-04-12",
+          "liga": "Serie A 2025 2026",
+          "home": "Parma",
+          "away": "SSC Napoli",
+          "marcador": "1-1",
+          "A": {
+            "pH": 27.3,
+            "pE": 29.3,
+            "pA": 43.4,
+            "gap": 14.099999999999998,
+            "lh": 0.9022,
+            "la": 1.2185
+          },
+          "DAV": {
+            "pH": 27,
+            "pE": 30,
+            "pA": 43,
+            "gap": 13,
+            "lh": 0.9022,
+            "la": 1.2185
+          }
+        },
+        {
+          "fecha": "2026-04-12",
+          "liga": "Premier League 2025 2026",
+          "home": "Nottingham Forest",
+          "away": "Aston Villa",
+          "marcador": "1-1",
+          "A": {
+            "pH": 39.6,
+            "pE": 54.8,
+            "pA": 5.6,
+            "gap": 0,
+            "lh": 0.5565,
+            "la": 0.1003
+          },
+          "DAV": {
+            "pH": 38.9,
+            "pE": 55.6,
+            "pA": 5.5,
+            "gap": 0,
+            "lh": 0.5565,
+            "la": 0.1003
+          }
+        },
+        {
+          "fecha": "2026-04-12",
+          "liga": "La Liga Dos 2025",
+          "home": "Huesca",
+          "away": "Deportivo de A Coruña",
+          "marcador": "1-1",
+          "A": {
+            "pH": 12.9,
+            "pE": 29.6,
+            "pA": 57.5,
+            "gap": 27.9,
+            "lh": 0.4458,
+            "la": 1.2775
+          },
+          "DAV": {
+            "pH": 12.8,
+            "pE": 30.2,
+            "pA": 57,
+            "gap": 26.8,
+            "lh": 0.4458,
+            "la": 1.2775
+          }
+        },
+        {
+          "fecha": "2026-04-15",
+          "liga": "UEFA Champions League 2025 2026",
+          "home": "Arsenal",
+          "away": "Sporting CP",
+          "marcador": "0-0",
+          "A": {
+            "pH": 63.7,
+            "pE": 22.9,
+            "pA": 13.4,
+            "gap": 40.800000000000004,
+            "lh": 1.7365,
+            "la": 0.6486
+          },
+          "DAV": {
+            "pH": 63.2,
+            "pE": 23.5,
+            "pA": 13.3,
+            "gap": 39.7,
+            "lh": 1.7365,
+            "la": 0.6486
+          }
+        },
+        {
+          "fecha": "2026-04-15",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Santos",
+          "away": "Recoleta FC",
+          "marcador": "1-1",
+          "A": {
+            "pH": 18.4,
+            "pE": 42.1,
+            "pA": 39.5,
+            "gap": 0,
+            "lh": 0.4082,
+            "la": 0.7382
+          },
+          "DAV": {
+            "pH": 18.1,
+            "pE": 42.9,
+            "pA": 39,
+            "gap": 0,
+            "lh": 0.4082,
+            "la": 0.7382
+          }
+        },
+        {
+          "fecha": "2026-04-15",
+          "liga": "Copa Libertadores 2026",
+          "home": "Bolívar",
+          "away": "Deportivo La Guaira",
+          "marcador": "1-1",
+          "A": {
+            "pH": 22.5,
+            "pE": 72.8,
+            "pA": 4.7,
+            "gap": 0,
+            "lh": 0.2702,
+            "la": 0.0647
+          },
+          "DAV": {
+            "pH": 22,
+            "pE": 73.4,
+            "pA": 4.6,
+            "gap": 0,
+            "lh": 0.2702,
+            "la": 0.0647
+          }
+        },
+        {
+          "fecha": "2026-04-15",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Universidad Técnica de Cajamarca",
+          "away": "Sport Huancayo",
+          "marcador": "2-2",
+          "A": {
+            "pH": 68.7,
+            "pE": 18.9,
+            "pA": 12.4,
+            "gap": 49.800000000000004,
+            "lh": 2.1467,
+            "la": 0.7865
+          },
+          "DAV": {
+            "pH": 68.2,
+            "pE": 19.4,
+            "pA": 12.4,
+            "gap": 48.800000000000004,
+            "lh": 2.1467,
+            "la": 0.7865
+          }
+        },
+        {
+          "fecha": "2026-04-16",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Olimpia",
+          "away": "Barracas Central",
+          "marcador": "0-0",
+          "A": {
+            "pH": 32.7,
+            "pE": 66.1,
+            "pA": 1.2,
+            "gap": 0,
+            "lh": 0.403,
+            "la": 0.0189
+          },
+          "DAV": {
+            "pH": 32,
+            "pE": 66.8,
+            "pA": 1.2,
+            "gap": 0,
+            "lh": 0.403,
+            "la": 0.0189
+          }
+        },
+        {
+          "fecha": "2026-04-17",
+          "liga": "Bundesliga 2025 2026",
+          "home": "FC St. Pauli",
+          "away": "1. FC Köln",
+          "marcador": "1-1",
+          "A": {
+            "pH": 44.3,
+            "pE": 30.1,
+            "pA": 25.6,
+            "gap": 14.199999999999996,
+            "lh": 1.184,
+            "la": 0.8251
+          },
+          "DAV": {
+            "pH": 43.8,
+            "pE": 30.8,
+            "pA": 25.4,
+            "gap": 12.999999999999996,
+            "lh": 1.184,
+            "la": 0.8251
+          }
+        },
+        {
+          "fecha": "2026-04-18",
+          "liga": "Serie A 2025 2026",
+          "home": "AS Roma",
+          "away": "Atalanta",
+          "marcador": "1-1",
+          "A": {
+            "pH": 38.7,
+            "pE": 25,
+            "pA": 36.3,
+            "gap": 13.700000000000003,
+            "lh": 1.4566,
+            "la": 1.402
+          },
+          "DAV": {
+            "pH": 38.4,
+            "pE": 25.6,
+            "pA": 36,
+            "gap": 12.799999999999997,
+            "lh": 1.4566,
+            "la": 1.402
+          }
+        },
+        {
+          "fecha": "2026-04-18",
+          "liga": "Premier League 2025 2026",
+          "home": "Brentford",
+          "away": "Fulham",
+          "marcador": "0-0",
+          "A": {
+            "pH": 0.9,
+            "pE": 4.2,
+            "pA": 94.9,
+            "gap": 90.7,
+            "lh": 0.2962,
+            "la": 3.7842
+          },
+          "DAV": {
+            "pH": 1,
+            "pE": 4.3,
+            "pA": 94.7,
+            "gap": 90.4,
+            "lh": 0.2962,
+            "la": 3.7842
+          }
+        },
+        {
+          "fecha": "2026-04-18",
+          "liga": "Premier League 2025 2026",
+          "home": "Tottenham Hotspur",
+          "away": "Brighton & Hove Albion",
+          "marcador": "2-2",
+          "A": {
+            "pH": 14.1,
+            "pE": 18.7,
+            "pA": 67.2,
+            "gap": 48.5,
+            "lh": 0.9161,
+            "la": 2.234
+          },
+          "DAV": {
+            "pH": 14,
+            "pE": 19.2,
+            "pA": 66.8,
+            "gap": 47.599999999999994,
+            "lh": 0.9161,
+            "la": 2.234
+          }
+        },
+        {
+          "fecha": "2026-04-18",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "ADC Juan Pablo II",
+          "away": "Comerciantes Unidos",
+          "marcador": "2-2",
+          "A": {
+            "pH": 48.5,
+            "pE": 18.9,
+            "pA": 32.6,
+            "gap": 29.6,
+            "lh": 2.5115,
+            "la": 2.0707
+          },
+          "DAV": {
+            "pH": 48.2,
+            "pE": 19.4,
+            "pA": 32.4,
+            "gap": 28.800000000000004,
+            "lh": 2.5115,
+            "la": 2.0707
+          }
+        },
+        {
+          "fecha": "2026-04-19",
+          "liga": "Serie A 2025 2026",
+          "home": "Cremonese",
+          "away": "Torino",
+          "marcador": "0-0",
+          "A": {
+            "pH": 32,
+            "pE": 28,
+            "pA": 40,
+            "gap": 12,
+            "lh": 1.0854,
+            "la": 1.2483
+          },
+          "DAV": {
+            "pH": 31.7,
+            "pE": 28.7,
+            "pA": 39.6,
+            "gap": 10.900000000000002,
+            "lh": 1.0854,
+            "la": 1.2483
+          }
+        },
+        {
+          "fecha": "2026-04-19",
+          "liga": "Bundesliga 2025 2026",
+          "home": "Borussia M'gladbach",
+          "away": "1. FSV Mainz 05",
+          "marcador": "1-1",
+          "A": {
+            "pH": 30.5,
+            "pE": 27.6,
+            "pA": 41.9,
+            "gap": 14.299999999999997,
+            "lh": 1.0731,
+            "la": 1.3067
+          },
+          "DAV": {
+            "pH": 30.3,
+            "pE": 28.2,
+            "pA": 41.5,
+            "gap": 13.3,
+            "lh": 1.0731,
+            "la": 1.3067
+          }
+        },
+        {
+          "fecha": "2026-04-20",
+          "liga": "Serie A 2025 2026",
+          "home": "Lecce",
+          "away": "Fiorentina",
+          "marcador": "1-1",
+          "A": {
+            "pH": 40.9,
+            "pE": 29.2,
+            "pA": 29.9,
+            "gap": 11.7,
+            "lh": 1.1894,
+            "la": 0.9723
+          },
+          "DAV": {
+            "pH": 40.5,
+            "pE": 29.9,
+            "pA": 29.6,
+            "gap": 10.600000000000001,
+            "lh": 1.1894,
+            "la": 0.9723
+          }
+        },
+        {
+          "fecha": "2026-04-20",
+          "liga": "Premier League 2025 2026",
+          "home": "Crystal Palace",
+          "away": "West Ham United",
+          "marcador": "0-0",
+          "A": {
+            "pH": 13.2,
+            "pE": 47.5,
+            "pA": 39.3,
+            "gap": 0,
+            "lh": 0.2629,
+            "la": 0.6435
+          },
+          "DAV": {
+            "pH": 13,
+            "pE": 48.3,
+            "pA": 38.7,
+            "gap": 0,
+            "lh": 0.2629,
+            "la": 0.6435
+          }
+        },
+        {
+          "fecha": "2026-04-22",
+          "liga": "Premier League 2025 2026",
+          "home": "Bournemouth",
+          "away": "Leeds United",
+          "marcador": "2-2",
+          "A": {
+            "pH": 19.8,
+            "pE": 78.2,
+            "pA": 2,
+            "gap": 0,
+            "lh": 0.2262,
+            "la": 0.0254
+          },
+          "DAV": {
+            "pH": 19.3,
+            "pE": 78.8,
+            "pA": 1.9,
+            "gap": 0,
+            "lh": 0.2262,
+            "la": 0.0254
+          }
+        },
+        {
+          "fecha": "2026-04-25",
+          "liga": "Serie A 2025 2026",
+          "home": "Hellas Verona",
+          "away": "Lecce",
+          "marcador": "0-0",
+          "A": {
+            "pH": 20.3,
+            "pE": 33.4,
+            "pA": 46.3,
+            "gap": 12.899999999999999,
+            "lh": 0.5872,
+            "la": 1.0514
+          },
+          "DAV": {
+            "pH": 20.1,
+            "pE": 34.1,
+            "pA": 45.8,
+            "gap": 11.699999999999996,
+            "lh": 0.5872,
+            "la": 1.0514
+          }
+        },
+        {
+          "fecha": "2026-04-25",
+          "liga": "Bundesliga 2025 2026",
+          "home": "FC Augsburg",
+          "away": "Eintracht Frankfurt",
+          "marcador": "1-1",
+          "A": {
+            "pH": 38.2,
+            "pE": 31.5,
+            "pA": 30.3,
+            "gap": 6.700000000000003,
+            "lh": 1.0339,
+            "la": 0.8848
+          },
+          "DAV": {
+            "pH": 37.8,
+            "pE": 32.2,
+            "pA": 30,
+            "gap": 5.599999999999994,
+            "lh": 1.0339,
+            "la": 0.8848
+          }
+        },
+        {
+          "fecha": "2026-04-25",
+          "liga": "Bundesliga 2025 2026",
+          "home": "VfL Wolfsburg",
+          "away": "Borussia M'gladbach",
+          "marcador": "0-0",
+          "A": {
+            "pH": 40.3,
+            "pE": 25.3,
+            "pA": 34.4,
+            "gap": 14.999999999999996,
+            "lh": 1.4545,
+            "la": 1.3231
+          },
+          "DAV": {
+            "pH": 40,
+            "pE": 26,
+            "pA": 34,
+            "gap": 14,
+            "lh": 1.4545,
+            "la": 1.3231
+          }
+        },
+        {
+          "fecha": "2026-04-25",
+          "liga": "La Liga Dos 2025",
+          "home": "Burgos Club de Fútbol",
+          "away": "Deportivo de A Coruña",
+          "marcador": "1-1",
+          "A": {
+            "pH": 14,
+            "pE": 30.5,
+            "pA": 55.5,
+            "gap": 25,
+            "lh": 0.4637,
+            "la": 1.2283
+          },
+          "DAV": {
+            "pH": 13.8,
+            "pE": 31.2,
+            "pA": 55,
+            "gap": 23.8,
+            "lh": 0.4637,
+            "la": 1.2283
+          }
+        },
+        {
+          "fecha": "2026-04-26",
+          "liga": "Serie A 2025 2026",
+          "home": "Torino",
+          "away": "Inter",
+          "marcador": "2-2",
+          "A": {
+            "pH": 19.7,
+            "pE": 20.6,
+            "pA": 59.7,
+            "gap": 39.1,
+            "lh": 1.1273,
+            "la": 2.0991
+          },
+          "DAV": {
+            "pH": 19.6,
+            "pE": 21.2,
+            "pA": 59.2,
+            "gap": 38,
+            "lh": 1.1273,
+            "la": 2.0991
+          }
+        },
+        {
+          "fecha": "2026-04-26",
+          "liga": "Serie A 2025 2026",
+          "home": "AC Milan",
+          "away": "Juventus",
+          "marcador": "0-0",
+          "A": {
+            "pH": 40.1,
+            "pE": 27.2,
+            "pA": 32.7,
+            "gap": 12.900000000000002,
+            "lh": 1.3023,
+            "la": 1.1501
+          },
+          "DAV": {
+            "pH": 39.7,
+            "pE": 27.9,
+            "pA": 32.4,
+            "gap": 11.800000000000004,
+            "lh": 1.3023,
+            "la": 1.1501
+          }
+        },
+        {
+          "fecha": "2026-04-26",
+          "liga": "Serie A 2025 2026",
+          "home": "Fiorentina",
+          "away": "Sassuolo",
+          "marcador": "0-0",
+          "A": {
+            "pH": 43.1,
+            "pE": 26.4,
+            "pA": 30.5,
+            "gap": 16.700000000000003,
+            "lh": 1.4081,
+            "la": 1.1424
+          },
+          "DAV": {
+            "pH": 42.7,
+            "pE": 27,
+            "pA": 30.3,
+            "gap": 15.700000000000003,
+            "lh": 1.4081,
+            "la": 1.1424
+          }
+        },
+        {
+          "fecha": "2026-04-26",
+          "liga": "Bundesliga 2025 2026",
+          "home": "VfB Stuttgart",
+          "away": "SV Werder Bremen",
+          "marcador": "1-1",
+          "A": {
+            "pH": 55.8,
+            "pE": 24.8,
+            "pA": 19.4,
+            "gap": 30.999999999999996,
+            "lh": 1.6178,
+            "la": 0.8412
+          },
+          "DAV": {
+            "pH": 55.4,
+            "pE": 25.3,
+            "pA": 19.3,
+            "gap": 30.099999999999998,
+            "lh": 1.6178,
+            "la": 0.8412
+          }
+        },
+        {
+          "fecha": "2026-04-26",
+          "liga": "La Liga Dos 2025",
+          "home": "AD Ceuta",
+          "away": "Real Racing Club",
+          "marcador": "0-0",
+          "A": {
+            "pH": 68.7,
+            "pE": 18.3,
+            "pA": 13,
+            "gap": 50.400000000000006,
+            "lh": 2.2585,
+            "la": 0.8736
+          },
+          "DAV": {
+            "pH": 68.2,
+            "pE": 18.8,
+            "pA": 13,
+            "gap": 49.400000000000006,
+            "lh": 2.2585,
+            "la": 0.8736
+          }
+        },
+        {
+          "fecha": "2026-04-26",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Sport Boys",
+          "away": "ADC Juan Pablo II",
+          "marcador": "1-1",
+          "A": {
+            "pH": 60.1,
+            "pE": 20.2,
+            "pA": 19.7,
+            "gap": 39.900000000000006,
+            "lh": 2.1772,
+            "la": 1.1726
+          },
+          "DAV": {
+            "pH": 59.8,
+            "pE": 20.6,
+            "pA": 19.6,
+            "gap": 39.199999999999996,
+            "lh": 2.1772,
+            "la": 1.1726
+          }
+        },
+        {
+          "fecha": "2026-04-26",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Universidad Técnica de Cajamarca",
+          "away": "Cienciano",
+          "marcador": "2-2",
+          "A": {
+            "pH": 68.2,
+            "pE": 16.3,
+            "pA": 15.5,
+            "gap": 51.900000000000006,
+            "lh": 2.7365,
+            "la": 1.2736
+          },
+          "DAV": {
+            "pH": 67.8,
+            "pE": 16.8,
+            "pA": 15.4,
+            "gap": 51,
+            "lh": 2.7365,
+            "la": 1.2736
+          }
+        },
+        {
+          "fecha": "2026-04-27",
+          "liga": "Serie A 2025 2026",
+          "home": "Lazio",
+          "away": "Udinese",
+          "marcador": "3-3",
+          "A": {
+            "pH": 27.3,
+            "pE": 32.6,
+            "pA": 40.1,
+            "gap": 7.5,
+            "lh": 0.7813,
+            "la": 1.0174
+          },
+          "DAV": {
+            "pH": 27,
+            "pE": 33.3,
+            "pA": 39.7,
+            "gap": 6.400000000000006,
+            "lh": 0.7813,
+            "la": 1.0174
+          }
+        },
+        {
+          "fecha": "2026-04-28",
+          "liga": "Copa Sudamericana 2026",
+          "home": "San Lorenzo",
+          "away": "Santos",
+          "marcador": "1-1",
+          "A": {
+            "pH": 56.2,
+            "pE": 34.2,
+            "pA": 9.6,
+            "gap": 22,
+            "lh": 1.0734,
+            "la": 0.2807
+          },
+          "DAV": {
+            "pH": 55.5,
+            "pE": 35,
+            "pA": 9.5,
+            "gap": 20.5,
+            "lh": 1.0734,
+            "la": 0.2807
+          }
+        },
+        {
+          "fecha": "2026-04-29",
+          "liga": "UEFA Champions League 2025 2026",
+          "home": "Atlético Madrid",
+          "away": "Arsenal",
+          "marcador": "1-1",
+          "A": {
+            "pH": 20.1,
+            "pE": 22.1,
+            "pA": 57.8,
+            "gap": 35.699999999999996,
+            "lh": 1.0327,
+            "la": 1.908
+          },
+          "DAV": {
+            "pH": 19.9,
+            "pE": 22.7,
+            "pA": 57.4,
+            "gap": 34.7,
+            "lh": 1.0327,
+            "la": 1.908
+          }
+        },
+        {
+          "fecha": "2026-04-29",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Caracas F.C.",
+          "away": "Racing Club",
+          "marcador": "1-1",
+          "A": {
+            "pH": 71.6,
+            "pE": 14,
+            "pA": 14.4,
+            "gap": 57.599999999999994,
+            "lh": 3.3012,
+            "la": 1.5333
+          },
+          "DAV": {
+            "pH": 71.4,
+            "pE": 14.3,
+            "pA": 14.3,
+            "gap": 57.10000000000001,
+            "lh": 3.3012,
+            "la": 1.5333
+          }
+        },
+        {
+          "fecha": "2026-04-29",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Barracas Central",
+          "away": "Audax Italiano",
+          "marcador": "1-1",
+          "A": {
+            "pH": 11.3,
+            "pE": 83.7,
+            "pA": 5,
+            "gap": 0,
+            "lh": 0.1269,
+            "la": 0.06
+          },
+          "DAV": {
+            "pH": 11,
+            "pE": 84,
+            "pA": 5,
+            "gap": 0,
+            "lh": 0.1269,
+            "la": 0.06
+          }
+        },
+        {
+          "fecha": "2026-04-29",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Millonarios",
+          "away": "São Paulo",
+          "marcador": "0-0",
+          "A": {
+            "pH": 3.8,
+            "pE": 32.9,
+            "pA": 63.3,
+            "gap": 30.4,
+            "lh": 0.1147,
+            "la": 1.1213
+          },
+          "DAV": {
+            "pH": 3.7,
+            "pE": 33.7,
+            "pA": 62.6,
+            "gap": 28.9,
+            "lh": 0.1147,
+            "la": 1.1213
+          }
+        },
+        {
+          "fecha": "2026-04-29",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Recoleta FC",
+          "away": "Deportivo Cuenca",
+          "marcador": "0-0",
+          "A": {
+            "pH": 14.1,
+            "pE": 39.3,
+            "pA": 46.6,
+            "gap": 7.300000000000004,
+            "lh": 0.3468,
+            "la": 0.8688
+          },
+          "DAV": {
+            "pH": 13.9,
+            "pE": 40.1,
+            "pA": 46,
+            "gap": 5.899999999999999,
+            "lh": 0.3468,
+            "la": 0.8688
+          }
+        },
+        {
+          "fecha": "2026-04-30",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Palestino",
+          "away": "Grêmio",
+          "marcador": "0-0",
+          "A": {
+            "pH": 10.1,
+            "pE": 23.6,
+            "pA": 66.3,
+            "gap": 42.699999999999996,
+            "lh": 0.463,
+            "la": 1.6269
+          },
+          "DAV": {
+            "pH": 10.1,
+            "pE": 24.2,
+            "pA": 65.7,
+            "gap": 41.5,
+            "lh": 0.463,
+            "la": 1.6269
+          }
+        },
+        {
+          "fecha": "2026-04-30",
+          "liga": "Copa Libertadores 2026",
+          "home": "Estudiantes de La Plata",
+          "away": "Flamengo",
+          "marcador": "1-1",
+          "A": {
+            "pH": 34.2,
+            "pE": 24.9,
+            "pA": 40.9,
+            "gap": 16,
+            "lh": 1.3577,
+            "la": 1.5056
+          },
+          "DAV": {
+            "pH": 34,
+            "pE": 25.5,
+            "pA": 40.5,
+            "gap": 15,
+            "lh": 1.3577,
+            "la": 1.5056
+          }
+        },
+        {
+          "fecha": "2026-04-30",
+          "liga": "Copa Libertadores 2026",
+          "home": "Cerro Porteño",
+          "away": "Palmeiras",
+          "marcador": "1-1",
+          "A": {
+            "pH": 10.9,
+            "pE": 64.7,
+            "pA": 24.4,
+            "gap": 0,
+            "lh": 0.1602,
+            "la": 0.327
+          },
+          "DAV": {
+            "pH": 10.7,
+            "pE": 65.5,
+            "pA": 23.8,
+            "gap": 0,
+            "lh": 0.1602,
+            "la": 0.327
+          }
+        },
+        {
+          "fecha": "2026-05-02",
+          "liga": "Serie A 2025 2026",
+          "home": "Como",
+          "away": "SSC Napoli",
+          "marcador": "0-0",
+          "A": {
+            "pH": 70.1,
+            "pE": 20.2,
+            "pA": 9.7,
+            "gap": 49.89999999999999,
+            "lh": 1.918,
+            "la": 0.5537
+          },
+          "DAV": {
+            "pH": 69.5,
+            "pE": 20.6,
+            "pA": 9.9,
+            "gap": 48.9,
+            "lh": 1.918,
+            "la": 0.5537
+          }
+        },
+        {
+          "fecha": "2026-05-02",
+          "liga": "Serie A 2025 2026",
+          "home": "Atalanta",
+          "away": "Genoa",
+          "marcador": "0-0",
+          "A": {
+            "pH": 64.4,
+            "pE": 20.5,
+            "pA": 15.1,
+            "gap": 43.900000000000006,
+            "lh": 2.0205,
+            "la": 0.8592
+          },
+          "DAV": {
+            "pH": 64,
+            "pE": 21,
+            "pA": 15,
+            "gap": 43,
+            "lh": 2.0205,
+            "la": 0.8592
+          }
+        },
+        {
+          "fecha": "2026-05-02",
+          "liga": "Premier League 2025 2026",
+          "home": "Wolverhampton",
+          "away": "Sunderland",
+          "marcador": "1-1",
+          "A": {
+            "pH": 24.9,
+            "pE": 20.7,
+            "pA": 54.4,
+            "gap": 33.7,
+            "lh": 1.4021,
+            "la": 2.1403
+          },
+          "DAV": {
+            "pH": 24.7,
+            "pE": 21.3,
+            "pA": 54,
+            "gap": 32.7,
+            "lh": 1.4021,
+            "la": 2.1403
+          }
+        },
+        {
+          "fecha": "2026-05-02",
+          "liga": "Bundesliga 2025 2026",
+          "home": "FC Bayern München",
+          "away": "1. FC Heidenheim",
+          "marcador": "3-3",
+          "A": {
+            "pH": 81.5,
+            "pE": 11.4,
+            "pA": 7.1,
+            "gap": 70.1,
+            "lh": 3.1364,
+            "la": 0.8733
+          },
+          "DAV": {
+            "pH": 81.2,
+            "pE": 11.8,
+            "pA": 7,
+            "gap": 69.4,
+            "lh": 3.1364,
+            "la": 0.8733
+          }
+        },
+        {
+          "fecha": "2026-05-02",
+          "liga": "Bundesliga 2025 2026",
+          "home": "1. FC Union Berlin",
+          "away": "1. FC Köln",
+          "marcador": "2-2",
+          "A": {
+            "pH": 45,
+            "pE": 27.9,
+            "pA": 27.1,
+            "gap": 17.1,
+            "lh": 1.3239,
+            "la": 0.9606
+          },
+          "DAV": {
+            "pH": 44.6,
+            "pE": 28.5,
+            "pA": 26.9,
+            "gap": 16.1,
+            "lh": 1.3239,
+            "la": 0.9606
+          }
+        },
+        {
+          "fecha": "2026-05-02",
+          "liga": "Bundesliga 2025 2026",
+          "home": "TSG Hoffenheim",
+          "away": "VfB Stuttgart",
+          "marcador": "3-3",
+          "A": {
+            "pH": 31.4,
+            "pE": 22,
+            "pA": 46.6,
+            "gap": 24.6,
+            "lh": 1.5453,
+            "la": 1.9152
+          },
+          "DAV": {
+            "pH": 31.2,
+            "pE": 22.6,
+            "pA": 46.2,
+            "gap": 23.6,
+            "lh": 1.5453,
+            "la": 1.9152
+          }
+        },
+        {
+          "fecha": "2026-05-03",
+          "liga": "Serie A 2025 2026",
+          "home": "Bologna",
+          "away": "Cagliari",
+          "marcador": "0-0",
+          "A": {
+            "pH": 38.9,
+            "pE": 29,
+            "pA": 32.1,
+            "gap": 9.899999999999999,
+            "lh": 1.1695,
+            "la": 1.0325
+          },
+          "DAV": {
+            "pH": 38.7,
+            "pE": 29.4,
+            "pA": 31.9,
+            "gap": 9.300000000000004,
+            "lh": 1.1695,
+            "la": 1.0325
+          }
+        },
+        {
+          "fecha": "2026-05-03",
+          "liga": "Serie A 2025 2026",
+          "home": "Juventus",
+          "away": "Hellas Verona",
+          "marcador": "1-1",
+          "A": {
+            "pH": 85.7,
+            "pE": 11,
+            "pA": 3.3,
+            "gap": 74.7,
+            "lh": 2.6765,
+            "la": 0.3834
+          },
+          "DAV": {
+            "pH": 85.5,
+            "pE": 11.1,
+            "pA": 3.4,
+            "gap": 74.4,
+            "lh": 2.6765,
+            "la": 0.3834
+          }
+        },
+        {
+          "fecha": "2026-05-03",
+          "liga": "Bundesliga 2025 2026",
+          "home": "SC Freiburg",
+          "away": "VfL Wolfsburg",
+          "marcador": "1-1",
+          "A": {
+            "pH": 44.1,
+            "pE": 28.7,
+            "pA": 27.2,
+            "gap": 15.400000000000002,
+            "lh": 1.2614,
+            "la": 0.9263
+          },
+          "DAV": {
+            "pH": 43.8,
+            "pE": 29.1,
+            "pA": 27.1,
+            "gap": 14.699999999999996,
+            "lh": 1.2614,
+            "la": 0.9263
+          }
+        },
+        {
+          "fecha": "2026-05-03",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Club Sporting Cristal",
+          "away": "Cusco FC",
+          "marcador": "2-2",
+          "A": {
+            "pH": 66.5,
+            "pE": 18.1,
+            "pA": 15.4,
+            "gap": 48.4,
+            "lh": 2.3719,
+            "la": 1.0603
+          },
+          "DAV": {
+            "pH": 66.4,
+            "pE": 18.3,
+            "pA": 15.3,
+            "gap": 48.10000000000001,
+            "lh": 2.3719,
+            "la": 1.0603
+          }
+        },
+        {
+          "fecha": "2026-05-04",
+          "liga": "Premier League 2025 2026",
+          "home": "Everton",
+          "away": "Manchester City",
+          "marcador": "3-3",
+          "A": {
+            "pH": 54.6,
+            "pE": 22.1,
+            "pA": 23.3,
+            "gap": 32.5,
+            "lh": 1.9319,
+            "la": 1.1923
+          },
+          "DAV": {
+            "pH": 54.4,
+            "pE": 22.4,
+            "pA": 23.2,
+            "gap": 32,
+            "lh": 1.9319,
+            "la": 1.1923
+          }
+        },
+        {
+          "fecha": "2026-05-05",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Juventud de Las Piedras",
+          "away": "Atlético Mineiro",
+          "marcador": "2-2",
+          "A": {
+            "pH": 51.5,
+            "pE": 24.9,
+            "pA": 23.6,
+            "gap": 26.6,
+            "lh": 1.6107,
+            "la": 1.0029
+          },
+          "DAV": {
+            "pH": 51.3,
+            "pE": 25.2,
+            "pA": 23.5,
+            "gap": 26.099999999999998,
+            "lh": 1.6107,
+            "la": 1.0029
+          }
+        },
+        {
+          "fecha": "2026-05-06",
+          "liga": "UEFA Champions League 2025 2026",
+          "home": "FC Bayern München",
+          "away": "Paris Saint-Germain",
+          "marcador": "1-1",
+          "A": {
+            "pH": 39.8,
+            "pE": 19.7,
+            "pA": 40.5,
+            "gap": 20.8,
+            "lh": 2.1789,
+            "la": 2.1997
+          },
+          "DAV": {
+            "pH": 39.6,
+            "pE": 20,
+            "pA": 40.4,
+            "gap": 20.4,
+            "lh": 2.1789,
+            "la": 2.1997
+          }
+        },
+        {
+          "fecha": "2026-05-06",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Deportivo Cuenca",
+          "away": "San Lorenzo",
+          "marcador": "0-0",
+          "A": {
+            "pH": 28.1,
+            "pE": 41.9,
+            "pA": 30,
+            "gap": 0,
+            "lh": 0.5867,
+            "la": 0.6175
+          },
+          "DAV": {
+            "pH": 28,
+            "pE": 42.3,
+            "pA": 29.7,
+            "gap": 0,
+            "lh": 0.5867,
+            "la": 0.6175
+          }
+        },
+        {
+          "fecha": "2026-05-06",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Recoleta FC",
+          "away": "Santos",
+          "marcador": "1-1",
+          "A": {
+            "pH": 45.2,
+            "pE": 35.8,
+            "pA": 19,
+            "gap": 9.400000000000006,
+            "lh": 0.9549,
+            "la": 0.5072
+          },
+          "DAV": {
+            "pH": 44.9,
+            "pE": 36.2,
+            "pA": 18.9,
+            "gap": 8.699999999999996,
+            "lh": 0.9549,
+            "la": 0.5072
+          }
+        },
+        {
+          "fecha": "2026-05-06",
+          "liga": "Copa Libertadores 2026",
+          "home": "Cusco FC",
+          "away": "Estudiantes de La Plata",
+          "marcador": "1-1",
+          "A": {
+            "pH": 35.8,
+            "pE": 30.2,
+            "pA": 34,
+            "gap": 5.599999999999998,
+            "lh": 1.0543,
+            "la": 1.0179
+          },
+          "DAV": {
+            "pH": 35.6,
+            "pE": 30.6,
+            "pA": 33.8,
+            "gap": 5,
+            "lh": 1.0543,
+            "la": 1.0179
+          }
+        },
+        {
+          "fecha": "2026-05-06",
+          "liga": "Copa Libertadores 2026",
+          "home": "Deportivo La Guaira",
+          "away": "Bolívar",
+          "marcador": "1-1",
+          "A": {
+            "pH": 25.9,
+            "pE": 35.4,
+            "pA": 38.7,
+            "gap": 3.3000000000000043,
+            "lh": 0.6717,
+            "la": 0.8951
+          },
+          "DAV": {
+            "pH": 25.7,
+            "pE": 35.8,
+            "pA": 38.5,
+            "gap": 2.700000000000003,
+            "lh": 0.6717,
+            "la": 0.8951
+          }
+        },
+        {
+          "fecha": "2026-05-07",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Macará",
+          "away": "Tigre",
+          "marcador": "2-2",
+          "A": {
+            "pH": 62.7,
+            "pE": 28.8,
+            "pA": 8.5,
+            "gap": 33.900000000000006,
+            "lh": 1.3017,
+            "la": 0.2998
+          },
+          "DAV": {
+            "pH": 62.4,
+            "pE": 29.2,
+            "pA": 8.4,
+            "gap": 33.2,
+            "lh": 1.3017,
+            "la": 0.2998
+          }
+        },
+        {
+          "fecha": "2026-05-07",
+          "liga": "Copa Sudamericana 2026",
+          "home": "O'Higgins",
+          "away": "São Paulo",
+          "marcador": "0-0",
+          "A": {
+            "pH": 13.8,
+            "pE": 41.7,
+            "pA": 44.5,
+            "gap": 2.799999999999997,
+            "lh": 0.3165,
+            "la": 0.7939
+          },
+          "DAV": {
+            "pH": 13.7,
+            "pE": 42.2,
+            "pA": 44.1,
+            "gap": 1.8999999999999986,
+            "lh": 0.3165,
+            "la": 0.7939
+          }
+        },
+        {
+          "fecha": "2026-05-07",
+          "liga": "Copa Libertadores 2026",
+          "home": "Independiente Santa Fe",
+          "away": "Corinthians",
+          "marcador": "1-1",
+          "A": {
+            "pH": 3.3,
+            "pE": 31,
+            "pA": 65.7,
+            "gap": 34.7,
+            "lh": 0.1079,
+            "la": 1.1888
+          },
+          "DAV": {
+            "pH": 3.3,
+            "pE": 31.3,
+            "pA": 65.4,
+            "gap": 34.10000000000001,
+            "lh": 0.1079,
+            "la": 1.1888
+          }
+        },
+        {
+          "fecha": "2026-05-07",
+          "liga": "Copa Libertadores 2026",
+          "home": "Club Atlético Platense",
+          "away": "Peñarol",
+          "marcador": "1-1",
+          "A": {
+            "pH": 66.2,
+            "pE": 18.9,
+            "pA": 14.9,
+            "gap": 47.300000000000004,
+            "lh": 2.2351,
+            "la": 0.9549
+          },
+          "DAV": {
+            "pH": 66.1,
+            "pE": 19.2,
+            "pA": 14.7,
+            "gap": 46.89999999999999,
+            "lh": 2.2351,
+            "la": 0.9549
+          }
+        },
+        {
+          "fecha": "2026-05-07",
+          "liga": "Copa Libertadores 2026",
+          "home": "Independiente Rivadavia",
+          "away": "Fluminense",
+          "marcador": "1-1",
+          "A": {
+            "pH": 78.6,
+            "pE": 14.7,
+            "pA": 6.7,
+            "gap": 63.89999999999999,
+            "lh": 2.4128,
+            "la": 0.5574
+          },
+          "DAV": {
+            "pH": 78.3,
+            "pE": 15,
+            "pA": 6.7,
+            "gap": 63.3,
+            "lh": 2.4128,
+            "la": 0.5574
+          }
+        },
+        {
+          "fecha": "2026-05-07",
+          "liga": "Copa Libertadores 2026",
+          "home": "Universidad Católica",
+          "away": "Cruzeiro",
+          "marcador": "0-0",
+          "A": {
+            "pH": 50.6,
+            "pE": 25.1,
+            "pA": 24.3,
+            "gap": 25.5,
+            "lh": 1.5892,
+            "la": 1.0182
+          },
+          "DAV": {
+            "pH": 50.4,
+            "pE": 25.4,
+            "pA": 24.2,
+            "gap": 25,
+            "lh": 1.5892,
+            "la": 1.0182
+          }
+        },
+        {
+          "fecha": "2026-05-09",
+          "liga": "Premier League 2025 2026",
+          "home": "Sunderland",
+          "away": "Manchester United",
+          "marcador": "0-0",
+          "A": {
+            "pH": 23.7,
+            "pE": 21.5,
+            "pA": 54.8,
+            "gap": 33.3,
+            "lh": 1.2584,
+            "la": 2.0082
+          },
+          "DAV": {
+            "pH": 23.6,
+            "pE": 21.8,
+            "pA": 54.6,
+            "gap": 32.8,
+            "lh": 1.2584,
+            "la": 2.0082
+          }
+        },
+        {
+          "fecha": "2026-05-09",
+          "liga": "Premier League 2025 2026",
+          "home": "Liverpool FC",
+          "away": "Chelsea",
+          "marcador": "1-1",
+          "A": {
+            "pH": 49.1,
+            "pE": 29.8,
+            "pA": 21.1,
+            "gap": 19.3,
+            "lh": 1.2419,
+            "la": 0.7063
+          },
+          "DAV": {
+            "pH": 48.8,
+            "pE": 30.2,
+            "pA": 21,
+            "gap": 18.599999999999998,
+            "lh": 1.2419,
+            "la": 0.7063
+          }
+        },
+        {
+          "fecha": "2026-05-09",
+          "liga": "La Liga 2025 2026",
+          "home": "Elche",
+          "away": "Deportivo Alavés",
+          "marcador": "1-1",
+          "A": {
+            "pH": 43.2,
+            "pE": 31.4,
+            "pA": 25.4,
+            "gap": 11.800000000000004,
+            "lh": 1.104,
+            "la": 0.7711
+          },
+          "DAV": {
+            "pH": 43,
+            "pE": 31.8,
+            "pA": 25.2,
+            "gap": 11.2,
+            "lh": 1.104,
+            "la": 0.7711
+          }
+        },
+        {
+          "fecha": "2026-05-09",
+          "liga": "La Liga 2025 2026",
+          "home": "Real Sociedad",
+          "away": "Real Betis",
+          "marcador": "2-2",
+          "A": {
+            "pH": 33.3,
+            "pE": 26.9,
+            "pA": 39.8,
+            "gap": 12.899999999999999,
+            "lh": 1.1811,
+            "la": 1.3191
+          },
+          "DAV": {
+            "pH": 33.1,
+            "pE": 27.3,
+            "pA": 39.6,
+            "gap": 12.3,
+            "lh": 1.1811,
+            "la": 1.3191
+          }
+        },
+        {
+          "fecha": "2026-05-09",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "CD Moquegua",
+          "away": "Asociación Deportiva Tarma",
+          "marcador": "2-2",
+          "A": {
+            "pH": 39.9,
+            "pE": 30.3,
+            "pA": 29.8,
+            "gap": 9.599999999999998,
+            "lh": 1.1145,
+            "la": 0.9188
+          },
+          "DAV": {
+            "pH": 39.7,
+            "pE": 30.7,
+            "pA": 29.6,
+            "gap": 9.000000000000004,
+            "lh": 1.1145,
+            "la": 0.9188
+          }
+        },
+        {
+          "fecha": "2026-05-10",
+          "liga": "Serie A 2025 2026",
+          "home": "Fiorentina",
+          "away": "Genoa",
+          "marcador": "0-0",
+          "A": {
+            "pH": 37.2,
+            "pE": 28.9,
+            "pA": 33.9,
+            "gap": 8.300000000000004,
+            "lh": 1.1454,
+            "la": 1.078
+          },
+          "DAV": {
+            "pH": 37,
+            "pE": 29.3,
+            "pA": 33.7,
+            "gap": 7.699999999999999,
+            "lh": 1.1454,
+            "la": 1.078
+          }
+        },
+        {
+          "fecha": "2026-05-10",
+          "liga": "Premier League 2025 2026",
+          "home": "Burnley",
+          "away": "Aston Villa",
+          "marcador": "2-2",
+          "A": {
+            "pH": 16,
+            "pE": 20.6,
+            "pA": 63.4,
+            "gap": 42.8,
+            "lh": 0.9081,
+            "la": 2.0304
+          },
+          "DAV": {
+            "pH": 15.9,
+            "pE": 20.9,
+            "pA": 63.2,
+            "gap": 42.300000000000004,
+            "lh": 0.9081,
+            "la": 2.0304
+          }
+        },
+        {
+          "fecha": "2026-05-10",
+          "liga": "Premier League 2025 2026",
+          "home": "Crystal Palace",
+          "away": "Everton",
+          "marcador": "2-2",
+          "A": {
+            "pH": 36.1,
+            "pE": 26,
+            "pA": 37.9,
+            "gap": 11.899999999999999,
+            "lh": 1.3158,
+            "la": 1.3529
+          },
+          "DAV": {
+            "pH": 36,
+            "pE": 26.3,
+            "pA": 37.7,
+            "gap": 11.400000000000002,
+            "lh": 1.3158,
+            "la": 1.3529
+          }
+        },
+        {
+          "fecha": "2026-05-10",
+          "liga": "Premier League 2025 2026",
+          "home": "Nottingham Forest",
+          "away": "Newcastle United",
+          "marcador": "1-1",
+          "A": {
+            "pH": 81.1,
+            "pE": 13.7,
+            "pA": 5.2,
+            "gap": 67.39999999999999,
+            "lh": 2.4635,
+            "la": 0.4777
+          },
+          "DAV": {
+            "pH": 80.9,
+            "pE": 13.8,
+            "pA": 5.3,
+            "gap": 67.10000000000001,
+            "lh": 2.4635,
+            "la": 0.4777
+          }
+        },
+        {
+          "fecha": "2026-05-10",
+          "liga": "La Liga 2025 2026",
+          "home": "Mallorca",
+          "away": "Villarreal",
+          "marcador": "1-1",
+          "A": {
+            "pH": 31.3,
+            "pE": 26.9,
+            "pA": 41.8,
+            "gap": 14.899999999999999,
+            "lh": 1.1355,
+            "la": 1.3549
+          },
+          "DAV": {
+            "pH": 31.2,
+            "pE": 27.2,
+            "pA": 41.6,
+            "gap": 14.400000000000002,
+            "lh": 1.1355,
+            "la": 1.3549
+          }
+        },
+        {
+          "fecha": "2026-05-10",
+          "liga": "La Liga 2025 2026",
+          "home": "Real Oviedo",
+          "away": "Getafe",
+          "marcador": "0-0",
+          "A": {
+            "pH": 16.5,
+            "pE": 35.3,
+            "pA": 48.2,
+            "gap": 12.900000000000006,
+            "lh": 0.4561,
+            "la": 0.9992
+          },
+          "DAV": {
+            "pH": 16.4,
+            "pE": 35.7,
+            "pA": 47.9,
+            "gap": 12.199999999999996,
+            "lh": 0.4561,
+            "la": 0.9992
+          }
+        },
+        {
+          "fecha": "2026-05-10",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Comerciantes Unidos",
+          "away": "Melgar",
+          "marcador": "1-1",
+          "A": {
+            "pH": 48.8,
+            "pE": 25.2,
+            "pA": 26,
+            "gap": 23.599999999999998,
+            "lh": 1.5691,
+            "la": 1.0752
+          },
+          "DAV": {
+            "pH": 48.5,
+            "pE": 25.6,
+            "pA": 25.9,
+            "gap": 22.9,
+            "lh": 1.5691,
+            "la": 1.0752
+          }
+        },
+        {
+          "fecha": "2026-05-10",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Alianza Lima",
+          "away": "Club Sporting Cristal",
+          "marcador": "1-1",
+          "A": {
+            "pH": 75.7,
+            "pE": 16.2,
+            "pA": 8.1,
+            "gap": 59.5,
+            "lh": 2.3251,
+            "la": 0.6236
+          },
+          "DAV": {
+            "pH": 75.5,
+            "pE": 16.3,
+            "pA": 8.2,
+            "gap": 59.2,
+            "lh": 2.3251,
+            "la": 0.6236
+          }
+        },
+        {
+          "fecha": "2026-05-10",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Cusco FC",
+          "away": "Los Chankas CYC",
+          "marcador": "1-1",
+          "A": {
+            "pH": 40.2,
+            "pE": 25.7,
+            "pA": 34.1,
+            "gap": 14.500000000000004,
+            "lh": 1.4306,
+            "la": 1.2995
+          },
+          "DAV": {
+            "pH": 40,
+            "pE": 25.9,
+            "pA": 34.1,
+            "gap": 14.100000000000001,
+            "lh": 1.4306,
+            "la": 1.2995
+          }
+        },
+        {
+          "fecha": "2026-05-11",
+          "liga": "Premier League 2025 2026",
+          "home": "Tottenham Hotspur",
+          "away": "Leeds United",
+          "marcador": "1-1",
+          "A": {
+            "pH": 22.7,
+            "pE": 27.5,
+            "pA": 49.8,
+            "gap": 22.299999999999997,
+            "lh": 0.8398,
+            "la": 1.3875
+          },
+          "DAV": {
+            "pH": 22.6,
+            "pE": 27.9,
+            "pA": 49.5,
+            "gap": 21.6,
+            "lh": 0.8398,
+            "la": 1.3875
+          }
+        },
+        {
+          "fecha": "2026-05-11",
+          "liga": "La Liga 2025 2026",
+          "home": "Rayo Vallecano",
+          "away": "Girona FC",
+          "marcador": "1-1",
+          "A": {
+            "pH": 65.6,
+            "pE": 23.7,
+            "pA": 10.7,
+            "gap": 41.89999999999999,
+            "lh": 1.6303,
+            "la": 0.4886
+          },
+          "DAV": {
+            "pH": 65.3,
+            "pE": 24,
+            "pA": 10.7,
+            "gap": 41.3,
+            "lh": 1.6303,
+            "la": 0.4886
+          }
+        },
+        {
+          "fecha": "2026-05-12",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Sport Boys",
+          "away": "Universitario de Deportes",
+          "marcador": "0-0",
+          "A": {
+            "pH": 35.6,
+            "pE": 30.3,
+            "pA": 34.1,
+            "gap": 5.300000000000001,
+            "lh": 1.0427,
+            "la": 1.014
+          },
+          "DAV": {
+            "pH": 35.4,
+            "pE": 30.7,
+            "pA": 33.9,
+            "gap": 4.699999999999999,
+            "lh": 1.0427,
+            "la": 1.014
+          }
+        },
+        {
+          "fecha": "2026-05-14",
+          "liga": "La Liga 2025 2026",
+          "home": "Girona FC",
+          "away": "Real Sociedad",
+          "marcador": "1-1",
+          "A": {
+            "pH": 18.6,
+            "pE": 29.4,
+            "pA": 52,
+            "gap": 22.6,
+            "lh": 0.6366,
+            "la": 1.275
+          },
+          "DAV": {
+            "pH": 18.5,
+            "pE": 29.8,
+            "pA": 51.7,
+            "gap": 21.900000000000002,
+            "lh": 0.6366,
+            "la": 1.275
+          }
+        },
+        {
+          "fecha": "2026-05-14",
+          "liga": "La Liga 2025 2026",
+          "home": "Valencia",
+          "away": "Rayo Vallecano",
+          "marcador": "1-1",
+          "A": {
+            "pH": 27.2,
+            "pE": 27.3,
+            "pA": 45.5,
+            "gap": 18.2,
+            "lh": 0.9935,
+            "la": 1.3716
+          },
+          "DAV": {
+            "pH": 27.1,
+            "pE": 27.6,
+            "pA": 45.3,
+            "gap": 17.699999999999996,
+            "lh": 0.9935,
+            "la": 1.3716
+          }
+        },
+        {
+          "fecha": "2026-05-16",
+          "liga": "Bundesliga 2025 2026",
+          "home": "Bayer 04 Leverkusen",
+          "away": "Hamburger SV",
+          "marcador": "1-1",
+          "A": {
+            "pH": 69.9,
+            "pE": 18.1,
+            "pA": 12,
+            "gap": 51.800000000000004,
+            "lh": 2.2388,
+            "la": 0.8066
+          },
+          "DAV": {
+            "pH": 69.6,
+            "pE": 18.4,
+            "pA": 12,
+            "gap": 51.199999999999996,
+            "lh": 2.2388,
+            "la": 0.8066
+          }
+        },
+        {
+          "fecha": "2026-05-16",
+          "liga": "Bundesliga 2025 2026",
+          "home": "Eintracht Frankfurt",
+          "away": "VfB Stuttgart",
+          "marcador": "2-2",
+          "A": {
+            "pH": 36.7,
+            "pE": 26.5,
+            "pA": 36.8,
+            "gap": 10.299999999999997,
+            "lh": 1.2909,
+            "la": 1.2931
+          },
+          "DAV": {
+            "pH": 36.5,
+            "pE": 26.9,
+            "pA": 36.6,
+            "gap": 9.700000000000003,
+            "lh": 1.2909,
+            "la": 1.2931
+          }
+        },
+        {
+          "fecha": "2026-05-17",
+          "liga": "Serie A 2025 2026",
+          "home": "Inter",
+          "away": "Hellas Verona",
+          "marcador": "1-1",
+          "A": {
+            "pH": 78.6,
+            "pE": 15.7,
+            "pA": 5.7,
+            "gap": 62.89999999999999,
+            "lh": 2.2113,
+            "la": 0.4245
+          },
+          "DAV": {
+            "pH": 78.3,
+            "pE": 15.9,
+            "pA": 5.8,
+            "gap": 62.4,
+            "lh": 2.2113,
+            "la": 0.4245
+          }
+        },
+        {
+          "fecha": "2026-05-17",
+          "liga": "Premier League 2025 2026",
+          "home": "Brentford",
+          "away": "Crystal Palace",
+          "marcador": "2-2",
+          "A": {
+            "pH": 51.5,
+            "pE": 30.6,
+            "pA": 17.9,
+            "gap": 20.9,
+            "lh": 1.2127,
+            "la": 0.5858
+          },
+          "DAV": {
+            "pH": 51.2,
+            "pE": 31,
+            "pA": 17.8,
+            "gap": 20.200000000000003,
+            "lh": 1.2127,
+            "la": 0.5858
+          }
+        },
+        {
+          "fecha": "2026-05-17",
+          "liga": "Premier League 2025 2026",
+          "home": "Wolverhampton",
+          "away": "Fulham",
+          "marcador": "1-1",
+          "A": {
+            "pH": 26,
+            "pE": 31.5,
+            "pA": 42.5,
+            "gap": 11,
+            "lh": 0.7863,
+            "la": 1.0934
+          },
+          "DAV": {
+            "pH": 25.9,
+            "pE": 31.9,
+            "pA": 42.2,
+            "gap": 10.300000000000004,
+            "lh": 0.7863,
+            "la": 1.0934
+          }
+        },
+        {
+          "fecha": "2026-05-17",
+          "liga": "La Liga 2025 2026",
+          "home": "Athletic Club",
+          "away": "Celta Vigo",
+          "marcador": "1-1",
+          "A": {
+            "pH": 54.7,
+            "pE": 27.7,
+            "pA": 17.6,
+            "gap": 27.000000000000004,
+            "lh": 1.3906,
+            "la": 0.6573
+          },
+          "DAV": {
+            "pH": 54.4,
+            "pE": 28,
+            "pA": 17.6,
+            "gap": 26.4,
+            "lh": 1.3906,
+            "la": 0.6573
+          }
+        },
+        {
+          "fecha": "2026-05-19",
+          "liga": "Premier League 2025 2026",
+          "home": "Bournemouth",
+          "away": "Manchester City",
+          "marcador": "1-1",
+          "A": {
+            "pH": 54.9,
+            "pE": 23.8,
+            "pA": 21.3,
+            "gap": 31.099999999999998,
+            "lh": 1.718,
+            "la": 0.974
+          },
+          "DAV": {
+            "pH": 54.6,
+            "pE": 24.2,
+            "pA": 21.2,
+            "gap": 30.400000000000002,
+            "lh": 1.718,
+            "la": 0.974
+          }
+        },
+        {
+          "fecha": "2026-05-20",
+          "liga": "Copa Sudamericana 2026",
+          "home": "América de Cali",
+          "away": "Tigre",
+          "marcador": "1-1",
+          "A": {
+            "pH": 31.9,
+            "pE": 27,
+            "pA": 41.1,
+            "gap": 14.100000000000001,
+            "lh": 1.1418,
+            "la": 1.3347
+          },
+          "DAV": {
+            "pH": 31.8,
+            "pE": 27.3,
+            "pA": 40.9,
+            "gap": 13.599999999999998,
+            "lh": 1.1418,
+            "la": 1.3347
+          }
+        },
+        {
+          "fecha": "2026-05-20",
+          "liga": "Copa Sudamericana 2026",
+          "home": "São Paulo",
+          "away": "Millonarios",
+          "marcador": "1-1",
+          "A": {
+            "pH": 60,
+            "pE": 36.3,
+            "pA": 3.7,
+            "gap": 23.700000000000003,
+            "lh": 1.0115,
+            "la": 0.1029
+          },
+          "DAV": {
+            "pH": 59.7,
+            "pE": 36.7,
+            "pA": 3.6,
+            "gap": 23,
+            "lh": 1.0115,
+            "la": 0.1029
+          }
+        },
+        {
+          "fecha": "2026-05-20",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Santos",
+          "away": "San Lorenzo",
+          "marcador": "2-2",
+          "A": {
+            "pH": 28.4,
+            "pE": 28,
+            "pA": 43.6,
+            "gap": 15.600000000000001,
+            "lh": 0.9902,
+            "la": 1.3002
+          },
+          "DAV": {
+            "pH": 28.2,
+            "pE": 28.3,
+            "pA": 43.5,
+            "gap": 15.2,
+            "lh": 0.9902,
+            "la": 1.3002
+          }
+        },
+        {
+          "fecha": "2026-05-20",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Deportivo Cuenca",
+          "away": "Recoleta FC",
+          "marcador": "2-2",
+          "A": {
+            "pH": 20.2,
+            "pE": 57.4,
+            "pA": 22.4,
+            "gap": 0,
+            "lh": 0.3163,
+            "la": 0.3443
+          },
+          "DAV": {
+            "pH": 20.1,
+            "pE": 57.8,
+            "pA": 22.1,
+            "gap": 0,
+            "lh": 0.3163,
+            "la": 0.3443
+          }
+        },
+        {
+          "fecha": "2026-05-20",
+          "liga": "Copa Libertadores 2026",
+          "home": "Nacional",
+          "away": "Universitario de Deportes",
+          "marcador": "0-0",
+          "A": {
+            "pH": 64,
+            "pE": 18.3,
+            "pA": 17.7,
+            "gap": 45.7,
+            "lh": 2.42,
+            "la": 1.2141
+          },
+          "DAV": {
+            "pH": 63.8,
+            "pE": 18.6,
+            "pA": 17.6,
+            "gap": 45.199999999999996,
+            "lh": 2.42,
+            "la": 1.2141
+          }
+        },
+        {
+          "fecha": "2026-05-20",
+          "liga": "Copa Libertadores 2026",
+          "home": "Boca Juniors",
+          "away": "Cruzeiro",
+          "marcador": "1-1",
+          "A": {
+            "pH": 44.6,
+            "pE": 42.8,
+            "pA": 12.6,
+            "gap": 1.8000000000000043,
+            "lh": 0.7728,
+            "la": 0.2823
+          },
+          "DAV": {
+            "pH": 44.3,
+            "pE": 43.2,
+            "pA": 12.5,
+            "gap": 1.0999999999999943,
+            "lh": 0.7728,
+            "la": 0.2823
+          }
+        },
+        {
+          "fecha": "2026-05-21",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Academia Puerto Cabello",
+          "away": "Juventud de Las Piedras",
+          "marcador": "1-1",
+          "A": {
+            "pH": 24.6,
+            "pE": 21.6,
+            "pA": 53.8,
+            "gap": 32.199999999999996,
+            "lh": 1.2919,
+            "la": 1.9968
+          },
+          "DAV": {
+            "pH": 24.5,
+            "pE": 21.9,
+            "pA": 53.6,
+            "gap": 31.700000000000003,
+            "lh": 1.2919,
+            "la": 1.9968
+          }
+        },
+        {
+          "fecha": "2026-05-21",
+          "liga": "Copa Sudamericana 2026",
+          "home": "River Plate",
+          "away": "Red Bull Bragantino",
+          "marcador": "1-1",
+          "A": {
+            "pH": 45.2,
+            "pE": 32.2,
+            "pA": 22.6,
+            "gap": 13,
+            "lh": 1.0881,
+            "la": 0.6794
+          },
+          "DAV": {
+            "pH": 44.8,
+            "pE": 32.6,
+            "pA": 22.6,
+            "gap": 12.199999999999996,
+            "lh": 1.0881,
+            "la": 0.6794
+          }
+        },
+        {
+          "fecha": "2026-05-22",
+          "liga": "Serie A 2025 2026",
+          "home": "Fiorentina",
+          "away": "Atalanta",
+          "marcador": "1-1",
+          "A": {
+            "pH": 22.4,
+            "pE": 27.9,
+            "pA": 49.7,
+            "gap": 21.800000000000004,
+            "lh": 0.8163,
+            "la": 1.3644
+          },
+          "DAV": {
+            "pH": 22.3,
+            "pE": 28.2,
+            "pA": 49.5,
+            "gap": 21.3,
+            "lh": 0.8163,
+            "la": 1.3644
+          }
+        },
+        {
+          "fecha": "2026-05-22",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Macará",
+          "away": "Alianza Atlético de Sullana",
+          "marcador": "0-0",
+          "A": {
+            "pH": 68.1,
+            "pE": 22.5,
+            "pA": 9.4,
+            "gap": 45.599999999999994,
+            "lh": 1.6994,
+            "la": 0.457
+          },
+          "DAV": {
+            "pH": 67.9,
+            "pE": 22.6,
+            "pA": 9.5,
+            "gap": 45.300000000000004,
+            "lh": 1.6994,
+            "la": 0.457
+          }
+        },
+        {
+          "fecha": "2026-05-22",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Racing Club",
+          "away": "Caracas F.C.",
+          "marcador": "2-2",
+          "A": {
+            "pH": 54.8,
+            "pE": 21.5,
+            "pA": 23.7,
+            "gap": 33.3,
+            "lh": 2.0065,
+            "la": 1.2566
+          },
+          "DAV": {
+            "pH": 54.6,
+            "pE": 21.8,
+            "pA": 23.6,
+            "gap": 32.8,
+            "lh": 2.0065,
+            "la": 1.2566
+          }
+        },
+        {
+          "fecha": "2026-05-22",
+          "liga": "Copa Libertadores 2026",
+          "home": "Peñarol",
+          "away": "Corinthians",
+          "marcador": "1-1",
+          "A": {
+            "pH": 11.7,
+            "pE": 35.4,
+            "pA": 52.9,
+            "gap": 17.5,
+            "lh": 0.3255,
+            "la": 1.0219
+          },
+          "DAV": {
+            "pH": 11.6,
+            "pE": 35.7,
+            "pA": 52.7,
+            "gap": 17,
+            "lh": 0.3255,
+            "la": 1.0219
+          }
+        },
+        {
+          "fecha": "2026-05-22",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "ADC Juan Pablo II",
+          "away": "Melgar",
+          "marcador": "1-1",
+          "A": {
+            "pH": 36.9,
+            "pE": 21.4,
+            "pA": 41.7,
+            "gap": 20.300000000000004,
+            "lh": 1.8241,
+            "la": 1.9455
+          },
+          "DAV": {
+            "pH": 36.8,
+            "pE": 21.6,
+            "pA": 41.6,
+            "gap": 20,
+            "lh": 1.8241,
+            "la": 1.9455
+          }
+        },
+        {
+          "fecha": "2026-05-23",
+          "liga": "Serie A 2025 2026",
+          "home": "Bologna",
+          "away": "Inter",
+          "marcador": "3-3",
+          "A": {
+            "pH": 20.6,
+            "pE": 24.7,
+            "pA": 54.7,
+            "gap": 30.000000000000004,
+            "lh": 0.893,
+            "la": 1.63
+          },
+          "DAV": {
+            "pH": 20.5,
+            "pE": 25,
+            "pA": 54.5,
+            "gap": 29.5,
+            "lh": 0.893,
+            "la": 1.63
+          }
+        },
+        {
+          "fecha": "2026-05-23",
+          "liga": "La Liga 2025 2026",
+          "home": "Espanyol",
+          "away": "Real Sociedad",
+          "marcador": "1-1",
+          "A": {
+            "pH": 49.3,
+            "pE": 25.1,
+            "pA": 25.6,
+            "gap": 24.199999999999996,
+            "lh": 1.5813,
+            "la": 1.0654
+          },
+          "DAV": {
+            "pH": 49.1,
+            "pE": 25.4,
+            "pA": 25.5,
+            "gap": 23.700000000000003,
+            "lh": 1.5813,
+            "la": 1.0654
+          }
+        },
+        {
+          "fecha": "2026-05-23",
+          "liga": "La Liga 2025 2026",
+          "home": "Girona FC",
+          "away": "Elche",
+          "marcador": "1-1",
+          "A": {
+            "pH": 19.8,
+            "pE": 29.9,
+            "pA": 50.3,
+            "gap": 20.4,
+            "lh": 0.6618,
+            "la": 1.2406
+          },
+          "DAV": {
+            "pH": 19.7,
+            "pE": 30.3,
+            "pA": 50,
+            "gap": 19.7,
+            "lh": 0.6618,
+            "la": 1.2406
+          }
+        },
+        {
+          "fecha": "2026-05-23",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "CD Moquegua",
+          "away": "Universitario de Deportes",
+          "marcador": "0-0",
+          "A": {
+            "pH": 28.4,
+            "pE": 28.2,
+            "pA": 43.4,
+            "gap": 15.2,
+            "lh": 0.9816,
+            "la": 1.2857
+          },
+          "DAV": {
+            "pH": 28.3,
+            "pE": 28.5,
+            "pA": 43.2,
+            "gap": 14.700000000000003,
+            "lh": 0.9816,
+            "la": 1.2857
+          }
+        },
+        {
+          "fecha": "2026-05-23",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Universidad Técnica de Cajamarca",
+          "away": "Sport Boys",
+          "marcador": "0-0",
+          "A": {
+            "pH": 60.5,
+            "pE": 23.8,
+            "pA": 15.7,
+            "gap": 36.7,
+            "lh": 1.6809,
+            "la": 0.718
+          },
+          "DAV": {
+            "pH": 60.3,
+            "pE": 24.1,
+            "pA": 15.6,
+            "gap": 36.199999999999996,
+            "lh": 1.6809,
+            "la": 0.718
+          }
+        },
+        {
+          "fecha": "2026-05-24",
+          "liga": "Serie A 2025 2026",
+          "home": "Torino",
+          "away": "Juventus",
+          "marcador": "2-2",
+          "A": {
+            "pH": 15.3,
+            "pE": 17.8,
+            "pA": 66.9,
+            "gap": 49.10000000000001,
+            "lh": 1.0876,
+            "la": 2.4319
+          },
+          "DAV": {
+            "pH": 15.2,
+            "pE": 18,
+            "pA": 66.8,
+            "gap": 48.8,
+            "lh": 1.0876,
+            "la": 2.4319
+          }
+        },
+        {
+          "fecha": "2026-05-24",
+          "liga": "Premier League 2025 2026",
+          "home": "Burnley",
+          "away": "Wolverhampton",
+          "marcador": "1-1",
+          "A": {
+            "pH": 55.3,
+            "pE": 23.5,
+            "pA": 21.2,
+            "gap": 31.799999999999997,
+            "lh": 1.7575,
+            "la": 0.9936
+          },
+          "DAV": {
+            "pH": 55.1,
+            "pE": 23.8,
+            "pA": 21.1,
+            "gap": 31.3,
+            "lh": 1.7575,
+            "la": 0.9936
+          }
+        },
+        {
+          "fecha": "2026-05-24",
+          "liga": "Premier League 2025 2026",
+          "home": "Liverpool FC",
+          "away": "Brentford",
+          "marcador": "1-1",
+          "A": {
+            "pH": 65.2,
+            "pE": 21.8,
+            "pA": 13,
+            "gap": 43.400000000000006,
+            "lh": 1.8385,
+            "la": 0.6801
+          },
+          "DAV": {
+            "pH": 64.9,
+            "pE": 22,
+            "pA": 13.1,
+            "gap": 42.900000000000006,
+            "lh": 1.8385,
+            "la": 0.6801
+          }
+        },
+        {
+          "fecha": "2026-05-24",
+          "liga": "Premier League 2025 2026",
+          "home": "Nottingham Forest",
+          "away": "Bournemouth",
+          "marcador": "1-1",
+          "A": {
+            "pH": 65.5,
+            "pE": 19.4,
+            "pA": 15.1,
+            "gap": 46.1,
+            "lh": 2.16,
+            "la": 0.9302
+          },
+          "DAV": {
+            "pH": 65.3,
+            "pE": 19.7,
+            "pA": 15,
+            "gap": 45.599999999999994,
+            "lh": 2.16,
+            "la": 0.9302
+          }
+        },
+        {
+          "fecha": "2026-05-24",
+          "liga": "La Liga Dos 2025",
+          "home": "Málaga CF",
+          "away": "Real Racing Club",
+          "marcador": "1-1",
+          "A": {
+            "pH": 49.6,
+            "pE": 21.8,
+            "pA": 28.6,
+            "gap": 27.8,
+            "lh": 1.9669,
+            "la": 1.4549
+          },
+          "DAV": {
+            "pH": 49.4,
+            "pE": 22.1,
+            "pA": 28.5,
+            "gap": 27.299999999999997,
+            "lh": 1.9669,
+            "la": 1.4549
+          }
+        },
+        {
+          "fecha": "2026-05-24",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Sport Huancayo",
+          "away": "Cienciano",
+          "marcador": "2-2",
+          "A": {
+            "pH": 35.1,
+            "pE": 24.4,
+            "pA": 40.5,
+            "gap": 16.1,
+            "lh": 1.4236,
+            "la": 1.5467
+          },
+          "DAV": {
+            "pH": 34.9,
+            "pE": 24.7,
+            "pA": 40.4,
+            "gap": 15.7,
+            "lh": 1.4236,
+            "la": 1.5467
+          }
+        },
+        {
+          "fecha": "2026-05-24",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Alianza Atlético de Sullana",
+          "away": "FC Cajamarca",
+          "marcador": "1-1",
+          "A": {
+            "pH": 66.3,
+            "pE": 20.5,
+            "pA": 13.2,
+            "gap": 45.8,
+            "lh": 1.9727,
+            "la": 0.7455
+          },
+          "DAV": {
+            "pH": 66,
+            "pE": 20.8,
+            "pA": 13.2,
+            "gap": 45.2,
+            "lh": 1.9727,
+            "la": 0.7455
+          }
+        },
+        {
+          "fecha": "2026-05-25",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Comerciantes Unidos",
+          "away": "Deportivo Garcilaso",
+          "marcador": "0-0",
+          "A": {
+            "pH": 53.2,
+            "pE": 26.8,
+            "pA": 20,
+            "gap": 26.400000000000002,
+            "lh": 1.4525,
+            "la": 0.7761
+          },
+          "DAV": {
+            "pH": 53,
+            "pE": 27.1,
+            "pA": 19.9,
+            "gap": 25.9,
+            "lh": 1.4525,
+            "la": 0.7761
+          }
+        },
+        {
+          "fecha": "2026-05-26",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Grêmio",
+          "away": "Montevideo City Torque",
+          "marcador": "2-2",
+          "A": {
+            "pH": 45.2,
+            "pE": 32.4,
+            "pA": 22.4,
+            "gap": 12.800000000000004,
+            "lh": 1.0826,
+            "la": 0.6657
+          },
+          "DAV": {
+            "pH": 45,
+            "pE": 32.7,
+            "pA": 22.3,
+            "gap": 12.299999999999997,
+            "lh": 1.0826,
+            "la": 0.6657
+          }
+        },
+        {
+          "fecha": "2026-05-26",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Palestino",
+          "away": "Deportivo Riestra",
+          "marcador": "1-1",
+          "A": {
+            "pH": 19.5,
+            "pE": 51.9,
+            "pA": 28.6,
+            "gap": 0,
+            "lh": 0.341,
+            "la": 0.4693
+          },
+          "DAV": {
+            "pH": 19.3,
+            "pE": 52.3,
+            "pA": 28.4,
+            "gap": 0,
+            "lh": 0.341,
+            "la": 0.4693
+          }
+        },
+        {
+          "fecha": "2026-05-27",
+          "liga": "Copa Sudamericana 2026",
+          "home": "Cienciano",
+          "away": "Juventud de Las Piedras",
+          "marcador": "1-1",
+          "A": {
+            "pH": 26.9,
+            "pE": 24,
+            "pA": 49.1,
+            "gap": 25.1,
+            "lh": 1.191,
+            "la": 1.6897
+          },
+          "DAV": {
+            "pH": 26.8,
+            "pE": 24.3,
+            "pA": 48.9,
+            "gap": 24.599999999999998,
+            "lh": 1.191,
+            "la": 1.6897
+          }
+        },
+        {
+          "fecha": "2026-05-27",
+          "liga": "Copa Libertadores 2026",
+          "home": "Universitario de Deportes",
+          "away": "Deportes Tolima",
+          "marcador": "0-0",
+          "A": {
+            "pH": 45.3,
+            "pE": 32,
+            "pA": 22.7,
+            "gap": 13.299999999999997,
+            "lh": 1.1061,
+            "la": 0.6924
+          },
+          "DAV": {
+            "pH": 45.1,
+            "pE": 32.1,
+            "pA": 22.8,
+            "gap": 13,
+            "lh": 1.1061,
+            "la": 0.6924
+          }
+        },
+        {
+          "fecha": "2026-05-29",
+          "liga": "Copa Sudamericana 2026",
+          "home": "América de Cali",
+          "away": "Macará",
+          "marcador": "0-0",
+          "A": {
+            "pH": 24.3,
+            "pE": 26.3,
+            "pA": 49.4,
+            "gap": 23.099999999999998,
+            "lh": 0.9471,
+            "la": 1.4731
+          },
+          "DAV": {
+            "pH": 24.1,
+            "pE": 26.7,
+            "pA": 49.2,
+            "gap": 22.500000000000004,
+            "lh": 0.9471,
+            "la": 1.4731
+          }
+        },
+        {
+          "fecha": "2026-05-31",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "Los Chankas CYC",
+          "away": "Universidad Técnica de Cajamarca",
+          "marcador": "2-2",
+          "A": {
+            "pH": 53.1,
+            "pE": 24,
+            "pA": 22.9,
+            "gap": 29.1,
+            "lh": 1.7034,
+            "la": 1.0327
+          },
+          "DAV": {
+            "pH": 52.9,
+            "pE": 24.3,
+            "pA": 22.8,
+            "gap": 28.599999999999998,
+            "lh": 1.7034,
+            "la": 1.0327
+          }
+        },
+        {
+          "fecha": "2026-05-31",
+          "liga": "Liga Peruana Apertura 2026",
+          "home": "FC Cajamarca",
+          "away": "Alianza Lima",
+          "marcador": "1-1",
+          "A": {
+            "pH": 26.3,
+            "pE": 28.6,
+            "pA": 45.1,
+            "gap": 16.5,
+            "lh": 0.9033,
+            "la": 1.2796
+          },
+          "DAV": {
+            "pH": 26.2,
+            "pE": 28.9,
+            "pA": 44.9,
+            "gap": 16,
+            "lh": 0.9033,
+            "la": 1.2796
+          }
+        },
+        {
+          "fecha": "2026-06-02",
+          "liga": "International Friendly Games",
+          "home": "Georgia",
+          "away": "Romania",
+          "marcador": "1-1",
+          "A": {
+            "pH": 56.5,
+            "pE": 24.9,
+            "pA": 18.6,
+            "gap": 31.6,
+            "lh": 1.6068,
+            "la": 0.8011
+          },
+          "DAV": {
+            "pH": 56.3,
+            "pE": 25.2,
+            "pA": 18.5,
+            "gap": 31.099999999999998,
+            "lh": 1.6068,
+            "la": 0.8011
+          }
+        },
+        {
+          "fecha": "2026-06-02",
+          "liga": "International Friendly Games",
+          "home": "Wales",
+          "away": "Ghana",
+          "marcador": "1-1",
+          "A": {
+            "pH": 18.8,
+            "pE": 24.8,
+            "pA": 56.4,
+            "gap": 31.599999999999998,
+            "lh": 0.8167,
+            "la": 1.6199
+          },
+          "DAV": {
+            "pH": 18.7,
+            "pE": 25.1,
+            "pA": 56.2,
+            "gap": 31.1,
+            "lh": 0.8167,
+            "la": 1.6199
+          }
+        },
+        {
+          "fecha": "2026-06-03",
+          "liga": "International Friendly Games",
+          "home": "Poland",
+          "away": "Nigeria",
+          "marcador": "2-2",
+          "A": {
+            "pH": 58.8,
+            "pE": 21.3,
+            "pA": 19.9,
+            "gap": 37.5,
+            "lh": 1.9986,
+            "la": 1.0749
+          },
+          "DAV": {
+            "pH": 58.6,
+            "pE": 21.6,
+            "pA": 19.8,
+            "gap": 37,
+            "lh": 1.9986,
+            "la": 1.0749
+          }
+        },
+        {
+          "fecha": "2026-06-03",
+          "liga": "International Friendly Games",
+          "home": "Denmark",
+          "away": "DR Congo",
+          "marcador": "0-0",
+          "A": {
+            "pH": 53.1,
+            "pE": 31.2,
+            "pA": 15.7,
+            "gap": 21.900000000000002,
+            "lh": 1.1891,
+            "la": 0.5042
+          },
+          "DAV": {
+            "pH": 52.9,
+            "pE": 31.5,
+            "pA": 15.6,
+            "gap": 21.4,
+            "lh": 1.1891,
+            "la": 0.5042
+          }
+        },
+        {
+          "fecha": "2026-06-04",
+          "liga": "International Friendly Games",
+          "home": "Sweden",
+          "away": "Greece",
+          "marcador": "2-2",
+          "A": {
+            "pH": 30.5,
+            "pE": 25.4,
+            "pA": 44.1,
+            "gap": 18.700000000000003,
+            "lh": 1.2132,
+            "la": 1.5104
+          },
+          "DAV": {
+            "pH": 30.4,
+            "pE": 25.7,
+            "pA": 43.9,
+            "gap": 18.2,
+            "lh": 1.2132,
+            "la": 1.5104
+          }
+        },
+        {
+          "fecha": "2026-06-04",
+          "liga": "International Friendly Games",
+          "home": "Spain",
+          "away": "Iraq",
+          "marcador": "1-1",
+          "A": {
+            "pH": 76.5,
+            "pE": 13.8,
+            "pA": 9.7,
+            "gap": 62.7,
+            "lh": 2.8625,
+            "la": 0.9571
+          },
+          "DAV": {
+            "pH": 76.3,
+            "pE": 14,
+            "pA": 9.7,
+            "gap": 62.3,
+            "lh": 2.8625,
+            "la": 0.9571
+          }
+        },
+        {
+          "fecha": "2026-06-05",
+          "liga": "International Friendly Games",
+          "home": "Canada",
+          "away": "Ireland",
+          "marcador": "1-1",
+          "A": {
+            "pH": 53.7,
+            "pE": 28.8,
+            "pA": 17.5,
+            "gap": 24.900000000000002,
+            "lh": 1.3191,
+            "la": 0.6209
+          },
+          "DAV": {
+            "pH": 53.4,
+            "pE": 29.1,
+            "pA": 17.5,
+            "gap": 24.299999999999997,
+            "lh": 1.3191,
+            "la": 0.6209
+          }
+        },
+        {
+          "fecha": "2026-06-05",
+          "liga": "International Friendly Games",
+          "home": "Thailand",
+          "away": "Kuwait",
+          "marcador": "2-2",
+          "A": {
+            "pH": 40.4,
+            "pE": 26.5,
+            "pA": 33.1,
+            "gap": 13.899999999999999,
+            "lh": 1.3621,
+            "la": 1.2069
+          },
+          "DAV": {
+            "pH": 40.2,
+            "pE": 26.8,
+            "pA": 33,
+            "gap": 13.400000000000002,
+            "lh": 1.3621,
+            "la": 1.2069
+          }
+        },
+        {
+          "fecha": "2026-06-07",
+          "liga": "International Friendly Games",
+          "home": "Morocco",
+          "away": "Norway",
+          "marcador": "1-1",
+          "A": {
+            "pH": 67.7,
+            "pE": 18.9,
+            "pA": 13.4,
+            "gap": 48.800000000000004,
+            "lh": 2.1775,
+            "la": 0.853
+          },
+          "DAV": {
+            "pH": 67.3,
+            "pE": 19.2,
+            "pA": 13.5,
+            "gap": 48.099999999999994,
+            "lh": 2.1775,
+            "la": 0.853
+          }
+        },
+        {
+          "fecha": "2026-06-10",
+          "liga": "La Liga Dos 2025",
+          "home": "Málaga CF",
+          "away": "UD Las Palmas",
+          "marcador": "1-1",
+          "A": {
+            "pH": 42.6,
+            "pE": 25.1,
+            "pA": 32.3,
+            "gap": 17.5,
+            "lh": 1.518,
+            "la": 1.2843
+          },
+          "DAV": {
+            "pH": 42.6,
+            "pE": 25.4,
+            "pA": 32,
+            "gap": 17.200000000000003,
+            "lh": 1.518,
+            "la": 1.2843
+          }
+        },
+        {
+          "fecha": "2026-06-12",
+          "liga": "FIFA World Cup 2026",
+          "home": "Canada",
+          "away": "Bosnia & Herzegovina",
+          "marcador": "1-1",
+          "A": {
+            "pH": 70.8,
+            "pE": 20,
+            "pA": 9.2,
+            "gap": 50.8,
+            "lh": 1.8989,
+            "la": 0.5181
+          },
+          "DAV": {
+            "pH": 70.4,
+            "pE": 20.5,
+            "pA": 9.1,
+            "gap": 49.900000000000006,
+            "lh": 1.8989,
+            "la": 0.5181
+          }
+        },
+        {
+          "fecha": "2026-06-13",
+          "liga": "FIFA World Cup 2026",
+          "home": "Qatar",
+          "away": "Switzerland",
+          "marcador": "1-1",
+          "A": {
+            "pH": 6,
+            "pE": 11.6,
+            "pA": 82.4,
+            "gap": 70.80000000000001,
+            "lh": 0.6828,
+            "la": 2.9039
+          },
+          "DAV": {
+            "pH": 6,
+            "pE": 11.8,
+            "pA": 82.2,
+            "gap": 70.4,
+            "lh": 0.6828,
+            "la": 2.9039
+          }
+        },
+        {
+          "fecha": "2026-06-13",
+          "liga": "FIFA World Cup 2026",
+          "home": "Brazil",
+          "away": "Morocco",
+          "marcador": "1-1",
+          "A": {
+            "pH": 43,
+            "pE": 28.2,
+            "pA": 28.8,
+            "gap": 14.8,
+            "lh": 1.2786,
+            "la": 0.9913
+          },
+          "DAV": {
+            "pH": 42.8,
+            "pE": 28.5,
+            "pA": 28.7,
+            "gap": 14.299999999999997,
+            "lh": 1.2786,
+            "la": 0.9913
+          }
+        },
+        {
+          "fecha": "2026-06-14",
+          "liga": "FIFA World Cup 2026",
+          "home": "Netherlands",
+          "away": "Japan",
+          "marcador": "2-2",
+          "A": {
+            "pH": 30,
+            "pE": 31.4,
+            "pA": 38.6,
+            "gap": 7.200000000000003,
+            "lh": 0.8825,
+            "la": 1.0443
+          },
+          "DAV": {
+            "pH": 29.8,
+            "pE": 31.8,
+            "pA": 38.4,
+            "gap": 6.599999999999998,
+            "lh": 0.8825,
+            "la": 1.0443
+          }
+        },
+        {
+          "fecha": "2026-06-14",
+          "liga": "La Liga Dos 2025",
+          "home": "Málaga CF",
+          "away": "Almería",
+          "marcador": "0-0",
+          "A": {
+            "pH": 77,
+            "pE": 12.8,
+            "pA": 10.2,
+            "gap": 64.2,
+            "lh": 3.1755,
+            "la": 1.147
+          },
+          "DAV": {
+            "pH": 76.9,
+            "pE": 13,
+            "pA": 10.1,
+            "gap": 63.900000000000006,
+            "lh": 3.1755,
+            "la": 1.147
+          }
+        },
+        {
+          "fecha": "2026-06-15",
+          "liga": "FIFA World Cup 2026",
+          "home": "Spain",
+          "away": "Cabo Verde",
+          "marcador": "0-0",
+          "A": {
+            "pH": 82.3,
+            "pE": 10.8,
+            "pA": 6.9,
+            "gap": 71.5,
+            "lh": 3.2927,
+            "la": 0.9252
+          },
+          "DAV": {
+            "pH": 82.1,
+            "pE": 10.9,
+            "pA": 7,
+            "gap": 71.19999999999999,
+            "lh": 3.2927,
+            "la": 0.9252
+          }
+        },
+        {
+          "fecha": "2026-06-15",
+          "liga": "FIFA World Cup 2026",
+          "home": "Saudi Arabia",
+          "away": "Uruguay",
+          "marcador": "1-1",
+          "A": {
+            "pH": 54.5,
+            "pE": 27.2,
+            "pA": 18.3,
+            "gap": 27.3,
+            "lh": 1.4274,
+            "la": 0.6999
+          },
+          "DAV": {
+            "pH": 54.3,
+            "pE": 27.5,
+            "pA": 18.2,
+            "gap": 26.799999999999997,
+            "lh": 1.4274,
+            "la": 0.6999
+          }
+        },
+        {
+          "fecha": "2026-06-15",
+          "liga": "FIFA World Cup 2026",
+          "home": "Belgium",
+          "away": "Egypt",
+          "marcador": "1-1",
+          "A": {
+            "pH": 7.3,
+            "pE": 81.8,
+            "pA": 10.9,
+            "gap": 0,
+            "lh": 0.0858,
+            "la": 0.1254
+          },
+          "DAV": {
+            "pH": 7.2,
+            "pE": 82.1,
+            "pA": 10.7,
+            "gap": 0,
+            "lh": 0.0858,
+            "la": 0.1254
+          }
+        },
+        {
+          "fecha": "2026-06-16",
+          "liga": "FIFA World Cup 2026",
+          "home": "Iran",
+          "away": "New Zealand",
+          "marcador": "2-2",
+          "A": {
+            "pH": 63.3,
+            "pE": 20.2,
+            "pA": 16.5,
+            "gap": 43.099999999999994,
+            "lh": 2.0875,
+            "la": 0.9603
+          },
+          "DAV": {
+            "pH": 63.1,
+            "pE": 20.5,
+            "pA": 16.4,
+            "gap": 42.6,
+            "lh": 2.0875,
+            "la": 0.9603
+          }
+        },
+        {
+          "fecha": "2026-06-17",
+          "liga": "FIFA World Cup 2026",
+          "home": "Portugal",
+          "away": "DR Congo",
+          "marcador": "1-1",
+          "A": {
+            "pH": 64.9,
+            "pE": 20.8,
+            "pA": 14.3,
+            "gap": 44.10000000000001,
+            "lh": 1.968,
+            "la": 0.7932
+          },
+          "DAV": {
+            "pH": 64.7,
+            "pE": 21.2,
+            "pA": 14.1,
+            "gap": 43.5,
+            "lh": 1.968,
+            "la": 0.7932
+          }
+        },
+        {
+          "fecha": "2026-06-18",
+          "liga": "FIFA World Cup 2026",
+          "home": "Czechia",
+          "away": "South Africa",
+          "marcador": "1-1",
+          "A": {
+            "pH": 66.5,
+            "pE": 18.4,
+            "pA": 15.1,
+            "gap": 48.1,
+            "lh": 2.3234,
+            "la": 1.0182
+          },
+          "DAV": {
+            "pH": 66.3,
+            "pE": 18.6,
+            "pA": 15.1,
+            "gap": 47.699999999999996,
+            "lh": 2.3234,
+            "la": 1.0182
+          }
+        }
+      ]
+    },
+    "noEmpates": {
+      "A": {
+        "n": 562,
+        "pEmedia": 26.1975,
+        "llNoEmpates": 1.0079,
+        "falsosEmpates": 50,
+        "precisionE": 0.2647
+      },
+      "DAV": {
+        "n": 562,
+        "pEmedia": 26.4859,
+        "llNoEmpates": 1.0127,
+        "falsosEmpates": 52,
+        "precisionE": 0.2571
+      }
+    },
+    "gapLambda": [
+      {
+        "bucket": "0.0-0.2",
+        "n": 146,
+        "empates": 40,
+        "frecReal": 0.274,
+        "pE_A": 35.1836,
+        "ll_A": 1.131,
+        "ece_A": 0.1091,
+        "pE_DAV": 35.5281,
+        "ll_DAV": 1.1239,
+        "ece_DAV": 0.1241
+      },
+      {
+        "bucket": "0.2-0.4",
+        "n": 111,
+        "empates": 30,
+        "frecReal": 0.2703,
+        "pE_A": 32.5667,
+        "ll_A": 1.1343,
+        "ece_A": 0.1194,
+        "pE_DAV": 32.9081,
+        "ll_DAV": 1.1226,
+        "ece_DAV": 0.1253
+      },
+      {
+        "bucket": "0.4-0.6",
+        "n": 122,
+        "empates": 33,
+        "frecReal": 0.2705,
+        "pE_A": 28.7451,
+        "ll_A": 1.2304,
+        "ece_A": 0.0398,
+        "pE_DAV": 28.9836,
+        "ll_DAV": 1.2238,
+        "ece_DAV": 0.0385
+      },
+      {
+        "bucket": "0.6-1.0",
+        "n": 146,
+        "empates": 41,
+        "frecReal": 0.2808,
+        "pE_A": 25.8541,
+        "ll_A": 1.3511,
+        "ece_A": 0.067,
+        "pE_DAV": 26.1014,
+        "ll_DAV": 1.3424,
+        "ece_DAV": 0.0553
+      },
+      {
+        "bucket": "1.0-∞",
+        "n": 237,
+        "empates": 56,
+        "frecReal": 0.2363,
+        "pE_A": 17.4857,
+        "ll_A": 1.7838,
+        "ece_A": 0.0633,
+        "pE_DAV": 17.7262,
+        "ll_DAV": 1.773,
+        "ece_DAV": 0.0752
+      }
+    ],
+    "ventanas": {
+      "A": {
+        "cells": [
+          1.1669,
+          1.1437,
+          1.0676,
+          1.0328
+        ],
+        "pooled": 1.1045,
+        "oficial": 1.0686
+      },
+      "DAV": {
+        "cells": [
+          1.1678,
+          1.1461,
+          1.0679,
+          1.0335
+        ],
+        "pooled": 1.1056,
+        "oficial": 1.0686
+      },
+      "ganaDAV": 0,
+      "ganaOficial": false
+    },
+    "criterio": {
+      "senales": {
+        "s1_ll_global": false,
+        "s2_ll_empate": true,
+        "s3_brier": false,
+        "s4_ece": true,
+        "s5_composicion": true,
+        "s6_consistencia": false,
+        "s7_ha_no_deteriora": false
+      },
+      "nSenales": 3,
+      "candidato": false,
+      "veredicto": "DAV-A NO es mejora clara sobre A (3/7 señales; decisión sólo con eval/OOF) → DESCARTAR; mantener A.",
+      "decisionBase": "exclusivamente eval/OOF (762 + ventanas); ll(ν̂)−ll(1) in-sample NO cuenta",
+      "llH": {
+        "A": 0.8242,
+        "DAV": 0.8286
+      },
+      "llAway": {
+        "A": 1.3135,
+        "DAV": 1.3189
+      }
+    }
+  }
+}

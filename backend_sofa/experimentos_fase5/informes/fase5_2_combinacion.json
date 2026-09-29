@@ -1,0 +1,643 @@
+{
+  "generado": "2026-09-29T16:08:57.996Z",
+  "fase": "5.2 — Combinación de las candidatas de Fase 5.1",
+  "reglas": [
+    "TEST NO cargado. Splits/ventanas oficiales idénticos. pooled = W1-4. Señales s1..s7 idénticas a 5.1 vs V1.",
+    "Combo gana SÓLO si pasa señales vs V1 Y supera en pooled LL al mejor single de 5.1 (AP20N).",
+    "Máximo 2 combos (C1 = top-2, C2 = las 5 candidatas) — sin combinaciones masivas.",
+    "lrCovFactor = 0.05·min(1,25/escala²) por escala p95 de las familias unidas (reparametrización de optimización, mismo MLE).",
+    "Eventos de piso (ll>20) detectados como diagnóstico; no alteran la selección."
+  ],
+  "sanidad": {
+    "v1OficialIgualJson": true,
+    "v1PooledIgualFase33": true,
+    "ventanasIgualesFase33": true
+  },
+  "baseline_V1": {
+    "oficial": {
+      "n": 364,
+      "accuracy": 0.4835,
+      "logLoss": 1.0751,
+      "brier": 0.64,
+      "probRealMedia": 0.4154,
+      "ece": 0.2137,
+      "calibration": [
+        {
+          "rango": "0-20%",
+          "n": 315,
+          "probPredicha": 0.1182,
+          "frecuenciaReal": 0.1968
+        },
+        {
+          "rango": "20-40%",
+          "n": 447,
+          "probPredicha": 0.2838,
+          "frecuenciaReal": 0.3154
+        },
+        {
+          "rango": "40-60%",
+          "n": 176,
+          "probPredicha": 0.4856,
+          "frecuenciaReal": 0.4261
+        },
+        {
+          "rango": "60-80%",
+          "n": 107,
+          "probPredicha": 0.6843,
+          "frecuenciaReal": 0.486
+        },
+        {
+          "rango": "80-100%",
+          "n": 47,
+          "probPredicha": 0.8768,
+          "frecuenciaReal": 0.7234
+        }
+      ]
+    },
+    "pooled": {
+      "accuracy": 0.4659,
+      "logLoss": 1.11,
+      "brier": 0.6582,
+      "ece": 0.2288
+    }
+  },
+  "mejorSingle_5_1": {
+    "id": "AP20N",
+    "pooled": {
+      "accuracy": 0.4619,
+      "logLoss": 1.1087,
+      "brier": 0.6574,
+      "ece": 0.2233,
+      "llEmpate": 1.4323,
+      "brierEmpate": 0.9243,
+      "recall": {
+        "home": 0.7322,
+        "draw": 0.08,
+        "away": 0.3744
+      },
+      "distPred": {
+        "home": 487,
+        "draw": 61,
+        "away": 214
+      },
+      "distProb": {
+        "home": 0.4614960629921261,
+        "draw": 0.2535997375328082,
+        "away": 0.2849041994750656
+      }
+    }
+  },
+  "combos": {
+    "C1": {
+      "desc": "V1 + AP20N + PA10N (top-2 de 5.1)",
+      "pooled": {
+        "accuracy": 0.4633,
+        "logLoss": 1.1087,
+        "brier": 0.6573,
+        "ece": 0.2257,
+        "llEmpate": 1.4328,
+        "brierEmpate": 0.9247,
+        "recall": {
+          "home": 0.7322,
+          "draw": 0.08,
+          "away": 0.3791
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "logLoss": 1.0761,
+          "brier": 0.6393,
+          "ece": 0.2176,
+          "deltaLLvsV1": 0.001
+        },
+        "W1": {
+          "n": 190,
+          "logLoss": 1.1658,
+          "brier": 0.7002,
+          "ece": 0.327,
+          "deltaLLvsV1": -0.0029
+        },
+        "W2": {
+          "n": 208,
+          "logLoss": 1.1509,
+          "brier": 0.6675,
+          "ece": 0.2606,
+          "deltaLLvsV1": -0.0018
+        },
+        "W3": {
+          "n": 174,
+          "logLoss": 1.0803,
+          "brier": 0.6485,
+          "ece": 0.1669,
+          "deltaLLvsV1": -0.0039
+        },
+        "W4": {
+          "n": 190,
+          "logLoss": 1.0316,
+          "brier": 0.6114,
+          "ece": 0.2197,
+          "deltaLLvsV1": 0.0033
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0761,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0.001
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1658,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0029
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1509,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": -0.0019
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0803,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0039
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0316,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0033
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1087,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": -0.0013
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0013,
+        "brier": -0.0009,
+        "ece": -0.0031,
+        "llEmpate": 0.0062,
+        "brierEmpate": 0.0034,
+        "accuracy": -0.0026
+      },
+      "senales": {
+        "s1_deltaLL": true,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": true,
+        "s7_recalls": true
+      },
+      "totalSenales": 5,
+      "ventanasGanaLL": 3,
+      "candidato": true,
+      "vsMejorSingle": {
+        "single": "AP20N",
+        "deltaLL": 0,
+        "ventanasGanaSingle": 2,
+        "superaSingle": false
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "AP20N": {
+            "bf": 0.1753,
+            "ba": 0.0374
+          },
+          "PA10N": {
+            "bf": 0.1419,
+            "ba": -0.0437
+          },
+          "escala": 0.453,
+          "lrCovFactor": 0.05
+        },
+        "W1": {
+          "AP20N": {
+            "bf": 0.1716,
+            "ba": -0.0146
+          },
+          "PA10N": {
+            "bf": 0.1055,
+            "ba": -0.0343
+          },
+          "escala": 0.4775,
+          "lrCovFactor": 0.05
+        },
+        "W2": {
+          "AP20N": {
+            "bf": 0.1775,
+            "ba": -0.0208
+          },
+          "PA10N": {
+            "bf": 0.1146,
+            "ba": -0.0179
+          },
+          "escala": 0.4621,
+          "lrCovFactor": 0.05
+        },
+        "W3": {
+          "AP20N": {
+            "bf": 0.1753,
+            "ba": 0.0374
+          },
+          "PA10N": {
+            "bf": 0.1419,
+            "ba": -0.0437
+          },
+          "escala": 0.453,
+          "lrCovFactor": 0.05
+        },
+        "W4": {
+          "AP20N": {
+            "bf": 0.1492,
+            "ba": 0.0346
+          },
+          "PA10N": {
+            "bf": 0.2291,
+            "ba": -0.0383
+          },
+          "escala": 0.4408,
+          "lrCovFactor": 0.05
+        }
+      }
+    },
+    "C2": {
+      "desc": "V1 + las 5 candidatas de 5.1 (AP20N,PA10N,AP10N,PA20N,PA5N)",
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1088,
+        "brier": 0.6575,
+        "ece": 0.226,
+        "llEmpate": 1.4331,
+        "brierEmpate": 0.925,
+        "recall": {
+          "home": 0.7293,
+          "draw": 0.08,
+          "away": 0.3791
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "logLoss": 1.0771,
+          "brier": 0.6397,
+          "ece": 0.2131,
+          "deltaLLvsV1": 0.002
+        },
+        "W1": {
+          "n": 190,
+          "logLoss": 1.1653,
+          "brier": 0.7001,
+          "ece": 0.3274,
+          "deltaLLvsV1": -0.0034
+        },
+        "W2": {
+          "n": 208,
+          "logLoss": 1.1513,
+          "brier": 0.6677,
+          "ece": 0.2744,
+          "deltaLLvsV1": -0.0014
+        },
+        "W3": {
+          "n": 174,
+          "logLoss": 1.0812,
+          "brier": 0.649,
+          "ece": 0.167,
+          "deltaLLvsV1": -0.003
+        },
+        "W4": {
+          "n": 190,
+          "logLoss": 1.0311,
+          "brier": 0.6114,
+          "ece": 0.2162,
+          "deltaLLvsV1": 0.0028
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0771,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0.002
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1653,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": -0.0034
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1513,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": -0.0015
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0812,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": -0.0029
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0311,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0.0029
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1088,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": -0.0012
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0012,
+        "brier": -0.0007,
+        "ece": -0.0028,
+        "llEmpate": 0.0065,
+        "brierEmpate": 0.0037,
+        "accuracy": -0.004
+      },
+      "senales": {
+        "s1_deltaLL": true,
+        "s2_deltaLLEmpate": false,
+        "s3_deltaBrier": true,
+        "s4_deltaECE": true,
+        "s5_deltaBrierEmpate": false,
+        "s6_ventanasLL": true,
+        "s7_recalls": true
+      },
+      "totalSenales": 5,
+      "ventanasGanaLL": 3,
+      "candidato": true,
+      "vsMejorSingle": {
+        "single": "AP20N",
+        "deltaLL": 0.0001,
+        "ventanasGanaSingle": 1,
+        "superaSingle": false
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "AP20N": {
+            "bf": 0.112,
+            "ba": 0.0446
+          },
+          "PA10N": {
+            "bf": 0.0916,
+            "ba": -0.0336
+          },
+          "AP10N": {
+            "bf": 0.1715,
+            "ba": -0.0678
+          },
+          "PA20N": {
+            "bf": 0.0451,
+            "ba": 0.0523
+          },
+          "PA5N": {
+            "bf": -0.1032,
+            "ba": 0.0053
+          },
+          "escala": 0.4421,
+          "lrCovFactor": 0.05
+        },
+        "W1": {
+          "AP20N": {
+            "bf": 0.0907,
+            "ba": -0.0097
+          },
+          "PA10N": {
+            "bf": 0.0403,
+            "ba": -0.0315
+          },
+          "AP10N": {
+            "bf": 0.1367,
+            "ba": -0.0543
+          },
+          "PA20N": {
+            "bf": -0.0033,
+            "ba": -0.0053
+          },
+          "PA5N": {
+            "bf": 0.0232,
+            "ba": 0.056
+          },
+          "escala": 0.4714,
+          "lrCovFactor": 0.05
+        },
+        "W2": {
+          "AP20N": {
+            "bf": 0.1086,
+            "ba": 0.0014
+          },
+          "PA10N": {
+            "bf": 0.0603,
+            "ba": 0.0033
+          },
+          "AP10N": {
+            "bf": 0.1689,
+            "ba": -0.0262
+          },
+          "PA20N": {
+            "bf": 0.0027,
+            "ba": 0.0201
+          },
+          "PA5N": {
+            "bf": -0.0449,
+            "ba": -0.0442
+          },
+          "escala": 0.4516,
+          "lrCovFactor": 0.05
+        },
+        "W3": {
+          "AP20N": {
+            "bf": 0.112,
+            "ba": 0.0446
+          },
+          "PA10N": {
+            "bf": 0.0916,
+            "ba": -0.0336
+          },
+          "AP10N": {
+            "bf": 0.1715,
+            "ba": -0.0678
+          },
+          "PA20N": {
+            "bf": 0.0451,
+            "ba": 0.0523
+          },
+          "PA5N": {
+            "bf": -0.1032,
+            "ba": 0.0053
+          },
+          "escala": 0.4421,
+          "lrCovFactor": 0.05
+        },
+        "W4": {
+          "AP20N": {
+            "bf": 0.0224,
+            "ba": 0.0339
+          },
+          "PA10N": {
+            "bf": 0.1153,
+            "ba": -0.0384
+          },
+          "AP10N": {
+            "bf": 0.1841,
+            "ba": -0.043
+          },
+          "PA20N": {
+            "bf": -0.0275,
+            "ba": 0.0229
+          },
+          "PA5N": {
+            "bf": 0.1026,
+            "ba": 0.0277
+          },
+          "escala": 0.433,
+          "lrCovFactor": 0.05
+        }
+      }
+    },
+    "V1": {
+      "desc": "base V1 (SPEC30)",
+      "pooled": {
+        "accuracy": 0.4659,
+        "logLoss": 1.11,
+        "brier": 0.6582,
+        "ece": 0.2288,
+        "llEmpate": 1.4266,
+        "brierEmpate": 0.9213,
+        "recall": {
+          "home": 0.7322,
+          "draw": 0.085,
+          "away": 0.3839
+        }
+      },
+      "porVentana": {
+        "OFICIAL": {
+          "n": 364,
+          "logLoss": 1.0751,
+          "brier": 0.64,
+          "ece": 0.2137,
+          "deltaLLvsV1": 0
+        },
+        "W1": {
+          "n": 190,
+          "logLoss": 1.1687,
+          "brier": 0.7023,
+          "ece": 0.3144,
+          "deltaLLvsV1": 0
+        },
+        "W2": {
+          "n": 208,
+          "logLoss": 1.1527,
+          "brier": 0.6682,
+          "ece": 0.2592,
+          "deltaLLvsV1": 0
+        },
+        "W3": {
+          "n": 174,
+          "logLoss": 1.0842,
+          "brier": 0.6513,
+          "ece": 0.1775,
+          "deltaLLvsV1": 0
+        },
+        "W4": {
+          "n": 190,
+          "logLoss": 1.0283,
+          "brier": 0.6095,
+          "ece": 0.2048,
+          "deltaLLvsV1": 0
+        }
+      },
+      "piso": {
+        "OFICIAL": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0751,
+          "logLossV1_sinPiso": 1.0751,
+          "deltaSinPiso": 0
+        },
+        "W1": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1687,
+          "logLossV1_sinPiso": 1.1687,
+          "deltaSinPiso": 0
+        },
+        "W2": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.1527,
+          "logLossV1_sinPiso": 1.1527,
+          "deltaSinPiso": 0
+        },
+        "W3": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0842,
+          "logLossV1_sinPiso": 1.0842,
+          "deltaSinPiso": 0
+        },
+        "W4": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.0283,
+          "logLossV1_sinPiso": 1.0283,
+          "deltaSinPiso": 0
+        },
+        "pooled": {
+          "n": 0,
+          "eventos": [],
+          "logLoss_sinPiso": 1.11,
+          "logLossV1_sinPiso": 1.11,
+          "deltaSinPiso": 0
+        }
+      }
+    }
+  },
+  "redundancia_entre_familias_C1": {
+    "par": "AP20N vs PA10N",
+    "r_feature": 0.9887
+  },
+  "veredicto": {
+    "C1": "PASA_SEÑALES_PERO_NO_SUPERA_AL_SINGLE",
+    "C2": "PASA_SEÑALES_PERO_NO_SUPERA_AL_SINGLE"
+  },
+  "ganador": null,
+  "descartados": [
+    "C1",
+    "C2"
+  ],
+  "diagnostico_piso": {
+    "umbral": 20,
+    "eventosPooled": 0
+  },
+  "verificacion": {
+    "hashes_protegidos": "22/22 (verify_post_audit.js)",
+    "json_modelo": "prediccion_poisson.json intacto (F6E3405C...5BD1)",
+    "endpoints": "GET /api/predictions/model 200 activeModel=V1_BETA; GET /api/leagues 200",
+    "test": "NO cargado; fase6 NO ejecutada",
+    "realizado": "2026-09-29T16:09:26.425Z"
+  }
+}

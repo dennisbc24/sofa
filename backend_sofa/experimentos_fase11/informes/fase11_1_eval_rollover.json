@@ -1,0 +1,618 @@
+{
+  "generado": "2026-09-29T16:42:21.388Z",
+  "fase": "1.1 — evaluación pre-registrada del parche de robustez (rollover de ligas + guardrail λ)",
+  "reglas": [
+    "TEST NO cargado (SQL <= 2026-06-18, n=1523=TV). Ningún archivo protegido modificado.",
+    "FAMILIA adopta si en A2 (rollover simulado sobre VAL): ΔLL(resolvable)<=0 y ΔLL(overall)<=+0.001; y A1 sin daño (≤+0.001).",
+    "CAP adopta si en B (modelo fresco): nCapVAL<=5, LL_VAL(cap)<=LL_VAL(sin)+0.0002, LL_ren(cap)<=LL_ren(sin)+0.001 y el peor ll de VAL queda <6. Orden: 8 → 6 → 5.",
+    "A2 renombra liga a '<liga> 2099': la familia ('<liga>') no cambia y la clave exacta falla — mecánica idéntica al rollover 2026-2027."
+  ],
+  "ventanas": {
+    "A1_fit": "313 (< 2025-08-01)",
+    "A1_eval": "1210",
+    "A2": "364 (VAL, liga renombrada)",
+    "B": "VAL 364"
+  },
+  "sanidad": {
+    "valR0FrescoIgualProduccion": true,
+    "valR0_fresco": 1.0751,
+    "esperado_1_0751": 1.0751,
+    "driftTV1523": true,
+    "notaDesplegado": "el JSON desplegado es refit(1901): su VAL LL (in-sample) es una referencia distinta, ver B.desplegado"
+  },
+  "A1_retro_real": {
+    "nFit": 313,
+    "nEval": 1210,
+    "nFallback": 1206,
+    "ligasConParametrosFit": 3,
+    "metricas": {
+      "R0": {
+        "overall": {
+          "n": 1210,
+          "accuracy": 0.4661,
+          "logLoss": 1.3277,
+          "brier": 0.6641,
+          "ece": 0.1292,
+          "llEmp": 1.4618
+        },
+        "fallback": {
+          "n": 1206,
+          "accuracy": 0.4677,
+          "logLoss": 1.3226,
+          "brier": 0.6616,
+          "ece": 0.1243,
+          "llEmp": 1.4618
+        },
+        "nCambiaOrigen": 0
+      },
+      "R1": {
+        "overall": {
+          "n": 1210,
+          "accuracy": 0.4661,
+          "logLoss": 1.3277,
+          "brier": 0.6641,
+          "ece": 0.1301,
+          "llEmp": 1.4621
+        },
+        "fallback": {
+          "n": 1206,
+          "accuracy": 0.4677,
+          "logLoss": 1.3226,
+          "brier": 0.6616,
+          "ece": 0.1255,
+          "llEmp": 1.4621
+        },
+        "nCambiaOrigen": 26
+      },
+      "R1b": {
+        "overall": {
+          "n": 1210,
+          "accuracy": 0.4661,
+          "logLoss": 1.3277,
+          "brier": 0.6641,
+          "ece": 0.1301,
+          "llEmp": 1.4621
+        },
+        "fallback": {
+          "n": 1206,
+          "accuracy": 0.4677,
+          "logLoss": 1.3226,
+          "brier": 0.6616,
+          "ece": 0.1255,
+          "llEmp": 1.4621
+        },
+        "nCambiaOrigen": 26
+      }
+    }
+  },
+  "A2_rollover_simulado": {
+    "descripcion": "VAL(364) con liga renombrada '<liga> 2099': la clave exacta falla, la familia ('<liga>') no cambia",
+    "nResolvable": 350,
+    "metricas": {
+      "R0": {
+        "overall": {
+          "n": 364,
+          "accuracy": 0.478,
+          "logLoss": 1.0825,
+          "brier": 0.643,
+          "ece": 0.2202,
+          "llEmp": 1.5906
+        },
+        "resolvable": {
+          "n": 350,
+          "accuracy": 0.4743,
+          "logLoss": 1.0611,
+          "brier": 0.6358,
+          "ece": 0.2229,
+          "llEmp": 1.5368
+        },
+        "noResolvable": {
+          "n": 14,
+          "accuracy": 0.5714,
+          "logLoss": 1.6183,
+          "brier": 0.8224,
+          "ece": 0.9527,
+          "llEmp": 3.2774
+        },
+        "nOrigenFamilia": 0,
+        "peores": [
+          {
+            "fecha": "2026-06-14",
+            "partido": "Málaga CF v Almería",
+            "liga": "La Liga Dos 2025 2099",
+            "marcador": "0-0",
+            "ll": 6.2146
+          },
+          {
+            "fecha": "2026-05-28",
+            "partido": "Corinthians v Club Atlético Platense",
+            "liga": "Copa Libertadores 2026 2099",
+            "marcador": "0-2",
+            "ll": 4.8283
+          },
+          {
+            "fecha": "2026-05-31",
+            "partido": "Real Zaragoza v Málaga CF",
+            "liga": "La Liga Dos 2025 2099",
+            "marcador": "0-2",
+            "ll": 3.6889
+          }
+        ]
+      },
+      "R1": {
+        "overall": {
+          "n": 364,
+          "accuracy": 0.4835,
+          "logLoss": 1.074,
+          "brier": 0.6394,
+          "ece": 0.2139,
+          "llEmp": 1.5134
+        },
+        "resolvable": {
+          "n": 350,
+          "accuracy": 0.48,
+          "logLoss": 1.0522,
+          "brier": 0.6321,
+          "ece": 0.2167,
+          "llEmp": 1.4571
+        },
+        "noResolvable": {
+          "n": 14,
+          "accuracy": 0.5714,
+          "logLoss": 1.6183,
+          "brier": 0.8224,
+          "ece": 0.9527,
+          "llEmp": 3.2774
+        },
+        "nOrigenFamilia": 350,
+        "peores": [
+          {
+            "fecha": "2026-06-14",
+            "partido": "Málaga CF v Almería",
+            "liga": "La Liga Dos 2025 2099",
+            "marcador": "0-0",
+            "ll": 6.2146
+          },
+          {
+            "fecha": "2026-05-28",
+            "partido": "Corinthians v Club Atlético Platense",
+            "liga": "Copa Libertadores 2026 2099",
+            "marcador": "0-2",
+            "ll": 4.6052
+          },
+          {
+            "fecha": "2026-05-31",
+            "partido": "Real Zaragoza v Málaga CF",
+            "liga": "La Liga Dos 2025 2099",
+            "marcador": "0-2",
+            "ll": 3.6889
+          }
+        ]
+      },
+      "R1b": {
+        "overall": {
+          "n": 364,
+          "accuracy": 0.4835,
+          "logLoss": 1.074,
+          "brier": 0.6394,
+          "ece": 0.2139,
+          "llEmp": 1.5134
+        },
+        "resolvable": {
+          "n": 350,
+          "accuracy": 0.48,
+          "logLoss": 1.0522,
+          "brier": 0.6321,
+          "ece": 0.2167,
+          "llEmp": 1.4571
+        },
+        "noResolvable": {
+          "n": 14,
+          "accuracy": 0.5714,
+          "logLoss": 1.6183,
+          "brier": 0.8224,
+          "ece": 0.9527,
+          "llEmp": 3.2774
+        },
+        "nOrigenFamilia": 350,
+        "peores": [
+          {
+            "fecha": "2026-06-14",
+            "partido": "Málaga CF v Almería",
+            "liga": "La Liga Dos 2025 2099",
+            "marcador": "0-0",
+            "ll": 6.2146
+          },
+          {
+            "fecha": "2026-05-28",
+            "partido": "Corinthians v Club Atlético Platense",
+            "liga": "Copa Libertadores 2026 2099",
+            "marcador": "0-2",
+            "ll": 4.6052
+          },
+          {
+            "fecha": "2026-05-31",
+            "partido": "Real Zaragoza v Málaga CF",
+            "liga": "La Liga Dos 2025 2099",
+            "marcador": "0-2",
+            "ll": 3.6889
+          }
+        ]
+      }
+    }
+  },
+  "B_protocolo": {
+    "fresco": {
+      "R0_sin": {
+        "n": 364,
+        "accuracy": 0.4835,
+        "logLoss": 1.0751,
+        "brier": 0.64,
+        "ece": 0.2137,
+        "llEmp": 1.4994,
+        "nCap": 0
+      },
+      "R0_c8": {
+        "n": 364,
+        "accuracy": 0.4835,
+        "logLoss": 1.0707,
+        "brier": 0.6399,
+        "ece": 0.2137,
+        "llEmp": 1.4828,
+        "nCap": 1
+      },
+      "R0_c6": {
+        "n": 364,
+        "accuracy": 0.4835,
+        "logLoss": 1.0674,
+        "brier": 0.6396,
+        "ece": 0.2134,
+        "llEmp": 1.4705,
+        "nCap": 2
+      },
+      "R0_c5": {
+        "n": 364,
+        "accuracy": 0.4835,
+        "logLoss": 1.0661,
+        "brier": 0.6392,
+        "ece": 0.2128,
+        "llEmp": 1.4648,
+        "nCap": 5
+      },
+      "R1_sin": {
+        "n": 364,
+        "accuracy": 0.4808,
+        "logLoss": 1.0744,
+        "brier": 0.6397,
+        "ece": 0.2186,
+        "llEmp": 1.5033,
+        "nCap": 0
+      },
+      "R1_c8": {
+        "n": 364,
+        "accuracy": 0.4808,
+        "logLoss": 1.07,
+        "brier": 0.6396,
+        "ece": 0.2185,
+        "llEmp": 1.4867,
+        "nCap": 1
+      },
+      "R1_c6": {
+        "n": 364,
+        "accuracy": 0.4808,
+        "logLoss": 1.0667,
+        "brier": 0.6393,
+        "ece": 0.2183,
+        "llEmp": 1.4744,
+        "nCap": 2
+      },
+      "R1_c5": {
+        "n": 364,
+        "accuracy": 0.4808,
+        "logLoss": 1.0654,
+        "brier": 0.639,
+        "ece": 0.2177,
+        "llEmp": 1.4687,
+        "nCap": 5
+      },
+      "R1b_sin": {
+        "n": 364,
+        "accuracy": 0.4808,
+        "logLoss": 1.0744,
+        "brier": 0.6397,
+        "ece": 0.2186,
+        "llEmp": 1.5033,
+        "nCap": 0
+      },
+      "R1b_c8": {
+        "n": 364,
+        "accuracy": 0.4808,
+        "logLoss": 1.07,
+        "brier": 0.6396,
+        "ece": 0.2185,
+        "llEmp": 1.4867,
+        "nCap": 1
+      },
+      "R1b_c6": {
+        "n": 364,
+        "accuracy": 0.4808,
+        "logLoss": 1.0667,
+        "brier": 0.6393,
+        "ece": 0.2183,
+        "llEmp": 1.4744,
+        "nCap": 2
+      },
+      "R1b_c5": {
+        "n": 364,
+        "accuracy": 0.4808,
+        "logLoss": 1.0654,
+        "brier": 0.639,
+        "ece": 0.2177,
+        "llEmp": 1.4687,
+        "nCap": 5
+      }
+    },
+    "desplegado": {
+      "R0_sin": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.8514,
+        "brier": 0.5011,
+        "ece": 0.0714,
+        "llEmp": 1.3567,
+        "nCap": 0
+      },
+      "R0_c8": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.8514,
+        "brier": 0.5011,
+        "ece": 0.0714,
+        "llEmp": 1.3567,
+        "nCap": 0
+      },
+      "R0_c6": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.8515,
+        "brier": 0.5011,
+        "ece": 0.0715,
+        "llEmp": 1.3567,
+        "nCap": 1
+      },
+      "R0_c5": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.8516,
+        "brier": 0.5011,
+        "ece": 0.0717,
+        "llEmp": 1.3567,
+        "nCap": 1
+      },
+      "R1_sin": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.851,
+        "brier": 0.5009,
+        "ece": 0.0731,
+        "llEmp": 1.3555,
+        "nCap": 0
+      },
+      "R1_c8": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.851,
+        "brier": 0.5009,
+        "ece": 0.0731,
+        "llEmp": 1.3555,
+        "nCap": 0
+      },
+      "R1_c6": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.851,
+        "brier": 0.5009,
+        "ece": 0.0732,
+        "llEmp": 1.3555,
+        "nCap": 1
+      },
+      "R1_c5": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.8511,
+        "brier": 0.501,
+        "ece": 0.0733,
+        "llEmp": 1.3555,
+        "nCap": 1
+      },
+      "R1b_sin": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.851,
+        "brier": 0.5009,
+        "ece": 0.0731,
+        "llEmp": 1.3555,
+        "nCap": 0
+      },
+      "R1b_c8": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.851,
+        "brier": 0.5009,
+        "ece": 0.0731,
+        "llEmp": 1.3555,
+        "nCap": 0
+      },
+      "R1b_c6": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.851,
+        "brier": 0.5009,
+        "ece": 0.0732,
+        "llEmp": 1.3555,
+        "nCap": 1
+      },
+      "R1b_c5": {
+        "n": 364,
+        "accuracy": 0.6071,
+        "logLoss": 0.8511,
+        "brier": 0.501,
+        "ece": 0.0733,
+        "llEmp": 1.3555,
+        "nCap": 1
+      }
+    },
+    "cambiosOrigenR1b": 47,
+    "eventoMalaga_fresco": {
+      "lambdaHome": 10.5529,
+      "lambdaAway": 1.346,
+      "ll_sinGuardrail": 6.2146,
+      "ll_con": {
+        "c8": 4.6052,
+        "c6": 3.4112,
+        "c5": 2.8647
+      }
+    },
+    "eventoMalaga_desplegado": {
+      "lambdaHome": 1.6072,
+      "lambdaAway": 0.2228,
+      "ll_sinGuardrail": 1.5006,
+      "ll_con": {
+        "c8": 1.5006,
+        "c6": 1.5006,
+        "c5": 1.5006
+      }
+    },
+    "raiz": {
+      "attMalaga": -0.2777615996572696,
+      "defMalaga": 1.0922316156611596,
+      "attAlmeria": -0.5390289918803887,
+      "defAlmeria": -0.285046800676107,
+      "nota": "Málaga 14 partidos / Almería 3 en DB → att/def con pocas generaciones"
+    }
+  },
+  "C_impacto_despliegue": {
+    "total": 386,
+    "bajoRegla": {
+      "R0": {
+        "exacta": 16,
+        "global": 370
+      },
+      "R1b": {
+        "exacta": 16,
+        "familia": 369,
+        "global": 1
+      }
+    },
+    "ligas": [
+      {
+        "liga": "Liga Peruana Clausura 2026",
+        "n": 78,
+        "resuelve": "familia"
+      },
+      {
+        "liga": "FIFA World Cup 2026",
+        "n": 66,
+        "resuelve": "familia"
+      },
+      {
+        "liga": "La Liga 2026 2027",
+        "n": 58,
+        "resuelve": "familia"
+      },
+      {
+        "liga": "UEFA Nations League 26/27",
+        "n": 42,
+        "resuelve": "familia"
+      },
+      {
+        "liga": "Serie A 2026 2027",
+        "n": 40,
+        "resuelve": "familia"
+      },
+      {
+        "liga": "Premier League 2026 2027",
+        "n": 40,
+        "resuelve": "familia"
+      },
+      {
+        "liga": "Bundesliga 2026 2027",
+        "n": 18,
+        "resuelve": "familia"
+      },
+      {
+        "liga": "UEFA Champions League 2026 2027",
+        "n": 18,
+        "resuelve": "familia"
+      },
+      {
+        "liga": "Bundesliga 2026 2027",
+        "n": 9,
+        "resuelve": "familia"
+      },
+      {
+        "liga": "La Liga Dos 2025",
+        "n": 1,
+        "resuelve": "global"
+      }
+    ]
+  },
+  "veredicto": {
+    "familia": {
+      "adoptar": true,
+      "A2_deltaLL_resolvable": -0.0089,
+      "A2_deltaLL_overall": -0.0085,
+      "A1_deltaLL_fallback": 0,
+      "A1_deltaLL_overall": 0
+    },
+    "guardrail": {
+      "adoptar": true,
+      "cap": 8,
+      "candidatos": [
+        {
+          "cap": 8,
+          "nCapTV": 1,
+          "dLL_VAL": -0.0044,
+          "dLL_evalRen": -0.0044,
+          "peorLLTras": 4.6052,
+          "cumple": true
+        },
+        {
+          "cap": 6,
+          "nCapTV": 2,
+          "dLL_VAL": -0.0077,
+          "dLL_evalRen": -0.0077,
+          "peorLLTras": 3.4112,
+          "cumple": true
+        },
+        {
+          "cap": 5,
+          "nCapTV": 5,
+          "dLL_VAL": -0.009,
+          "dLL_evalRen": -0.009,
+          "peorLLTras": 2.8647,
+          "cumple": true
+        }
+      ],
+      "peorLL_VAL_antes": 6.2146
+    },
+    "resultado_1_1": "FAMILIA+GUARDRAIL"
+  },
+  "verificacion": {
+    "hashes_protegidos": "22/22 (verify_post_audit.js) — JSON F6E3405C…5BD1 intacto, experimentos/*.js intactos",
+    "tests_unitarios": "13/13 (test_parche11.js): 5 ligas conocidas idénticas al código viejo; 7 nombres nuevos→familia (μ≠global); La Liga Dos/inexistente→global; guardrail λh 8.000 capped; probs suman 100",
+    "archivos_modificados": [
+      "services/prediccion/modelo_poisson.js (familia + guardrail λ≤8 en predecir)",
+      "services/prediccion/modelo_config.js (version V1.1 + metadata parche11)",
+      "services/prediccion/prediccion.js (frase de origen de μ + advertencia λ)"
+    ],
+    "backup": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\opencode\\backup11\\*.bak (3 archivos)",
+    "backend": {
+      "pid": 15796,
+      "reinicio": "aplicado 2026-09-29"
+    },
+    "endpoints": "GET /api/predictions/model 200 activeModel=V1_BETA modeloOperativo.version=V1.1; GET /api/leagues 200 (25); GET /api/predictions/match (Belgium v France, UNL 26/27) 200 → μ familia 1.5 (antes global 1.596), explanation indica 'de la liga seleccionada por familia', modelVersion=V1.1",
+    "test": "NO cargado; Fase 6 NO ejecutada",
+    "realizado": "2026-09-29T16:50:10.463Z"
+  }
+}

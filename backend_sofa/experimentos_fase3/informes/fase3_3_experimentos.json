@@ -1,0 +1,1782 @@
+{
+  "generado": "2026-09-28T23:32:19.245Z",
+  "nota": "TEST no evaluado. K Elo=32 (seleccionado en VAL en fase_elo). F = localía ajustada (x_hfa=+1 vía Δelo ±200 constante). E = forma5 sin Elo. G solo si el mejor B gana en pooled LL.",
+  "sanidad": {
+    "v1OficialIgualJson": true,
+    "aIgualFaseElo10686": true,
+    "reproduccionFaseStats": {
+      "V1": {
+        "prev": "V1",
+        "igual": true,
+        "ll": 1.0751,
+        "llPrev": 1.0751
+      },
+      "A": {
+        "prev": "V2",
+        "igual": true,
+        "ll": 1.0686,
+        "llPrev": 1.0686
+      },
+      "B_raw": {
+        "prev": "V4raw",
+        "igual": true,
+        "ll": 1.0716,
+        "llPrev": 1.0716
+      },
+      "B_norm": {
+        "prev": "V4",
+        "igual": true,
+        "ll": 1.0771,
+        "llPrev": 1.0771
+      },
+      "C_norm": {
+        "prev": "V5T",
+        "igual": true,
+        "ll": 1.0753,
+        "llPrev": 1.0753
+      },
+      "D_raw": {
+        "prev": "V5Sraw",
+        "igual": true,
+        "ll": 1.071,
+        "llPrev": 1.071
+      },
+      "D_norm": {
+        "prev": "V5S",
+        "igual": true,
+        "ll": 1.0742,
+        "llPrev": 1.0742
+      }
+    },
+    "ventanasIgualesFaseStats": true
+  },
+  "ejecutados": [
+    "V1",
+    "A",
+    "B_raw",
+    "B_norm",
+    "C_norm",
+    "D_raw",
+    "D_norm",
+    "E",
+    "F"
+  ],
+  "gEjecutado": false,
+  "gMotivo": "mejor xG (B_raw) NO mejora a V1 en pooled LL (Δ 0.0017)",
+  "ventanas": [
+    {
+      "nombre": "W1",
+      "fit": 761,
+      "eval": 190,
+      "desde": "2026-03-09",
+      "hasta": "2026-04-10"
+    },
+    {
+      "nombre": "W2",
+      "fit": 951,
+      "eval": 208,
+      "desde": "2026-04-11",
+      "hasta": "2026-05-02"
+    },
+    {
+      "nombre": "W3",
+      "fit": 1159,
+      "eval": 174,
+      "desde": "2026-05-03",
+      "hasta": "2026-05-19"
+    },
+    {
+      "nombre": "W4",
+      "fit": 1333,
+      "eval": 190,
+      "desde": "2026-05-20",
+      "hasta": "2026-06-18"
+    }
+  ],
+  "ganador": {
+    "id": "A",
+    "desc": "V1 + Elo (K=32)",
+    "deltaLL": -0.0055,
+    "consistencia": {
+      "rolling": 3,
+      "oficial": true
+    }
+  },
+  "consistenciaLiga": {
+    "gana": 5,
+    "pierde": 4
+  },
+  "porLigaGanador": [
+    {
+      "liga": "Serie A 2025 2026",
+      "n": 101,
+      "llV1": 1.0526,
+      "delta": -0.0182
+    },
+    {
+      "liga": "Liga Peruana Apertura 2026",
+      "n": 97,
+      "llV1": 1.0347,
+      "delta": 0.0029
+    },
+    {
+      "liga": "Bundesliga 2025 2026",
+      "n": 35,
+      "llV1": 1.0193,
+      "delta": 0.0224
+    },
+    {
+      "liga": "Premier League 2025 2026",
+      "n": 89,
+      "llV1": 1.2559,
+      "delta": -0.0262
+    },
+    {
+      "liga": "International Friendly Games",
+      "n": 73,
+      "llV1": 1.0225,
+      "delta": 0.0254
+    },
+    {
+      "liga": "Copa Sudamericana 2026",
+      "n": 95,
+      "llV1": 1.2115,
+      "delta": -0.0084
+    },
+    {
+      "liga": "Copa Libertadores 2026",
+      "n": 94,
+      "llV1": 1.1802,
+      "delta": -0.0181
+    },
+    {
+      "liga": "Bundesliga 2025 2026",
+      "n": 45,
+      "llV1": 1.0672,
+      "delta": -0.0267
+    },
+    {
+      "liga": "La Liga 2025 2026",
+      "n": 50,
+      "llV1": 0.9801,
+      "delta": 0.0044
+    }
+  ],
+  "modelos": {
+    "A": {
+      "desc": "V1 + Elo (K=32)",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4423,
+        "logLoss": 1.0686,
+        "brier": 0.6415,
+        "probRealMedia": 0.4033,
+        "ece": 0.2041,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 274,
+            "probPredicha": 0.1248,
+            "frecuenciaReal": 0.1971
+          },
+          {
+            "rango": "20-40%",
+            "n": 504,
+            "probPredicha": 0.287,
+            "frecuenciaReal": 0.3214
+          },
+          {
+            "rango": "40-60%",
+            "n": 183,
+            "probPredicha": 0.4917,
+            "frecuenciaReal": 0.4153
+          },
+          {
+            "rango": "60-80%",
+            "n": 102,
+            "probPredicha": 0.6863,
+            "frecuenciaReal": 0.5
+          },
+          {
+            "rango": "80-100%",
+            "n": 29,
+            "probPredicha": 0.8671,
+            "frecuenciaReal": 0.7241
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4423,
+        "logLoss": 1.1045,
+        "brier": 0.6587,
+        "ece": 0.2112,
+        "prob": {
+          "home": 0.4555931758530183,
+          "draw": 0.26479527559055127,
+          "away": 0.2796115485564309
+        },
+        "pred": {
+          "home": 488,
+          "draw": 68,
+          "away": 206
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 248,
+          "draw": 119,
+          "away": 121
+        },
+        "draw": {
+          "home": 31,
+          "draw": 18,
+          "away": 19
+        },
+        "away": {
+          "home": 72,
+          "draw": 63,
+          "away": 71
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7066,
+          "precision": 0.5082,
+          "f1": 0.5912
+        },
+        "draw": {
+          "recall": 0.09,
+          "precision": 0.2647,
+          "f1": 0.1343
+        },
+        "away": {
+          "recall": 0.3365,
+          "precision": 0.3447,
+          "f1": 0.3405
+        }
+      },
+      "llEmpates": 1.3758,
+      "llVisitantes": 1.3135,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4423,
+          "logLoss": 1.0686,
+          "brier": 0.6415,
+          "ece": 0.2041
+        },
+        "W1": {
+          "accuracy": 0.3947,
+          "logLoss": 1.1669,
+          "brier": 0.7052,
+          "ece": 0.2795
+        },
+        "W2": {
+          "accuracy": 0.4663,
+          "logLoss": 1.1437,
+          "brier": 0.6677,
+          "ece": 0.2125
+        },
+        "W3": {
+          "accuracy": 0.4368,
+          "logLoss": 1.0676,
+          "brier": 0.6454,
+          "ece": 0.1384
+        },
+        "W4": {
+          "accuracy": 0.4684,
+          "logLoss": 1.0328,
+          "brier": 0.6147,
+          "ece": 0.2074
+        }
+      },
+      "consistencia": {
+        "rolling": 3,
+        "oficial": true
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "beta": -0.9262,
+          "gamma": 0,
+          "betaE": null,
+          "cov": null
+        },
+        "W1": {
+          "beta": -1.3012,
+          "gamma": 0,
+          "betaE": null,
+          "cov": null
+        },
+        "W2": {
+          "beta": -1.0569,
+          "gamma": 0,
+          "betaE": null,
+          "cov": null
+        },
+        "W3": {
+          "beta": -0.9262,
+          "gamma": 0,
+          "betaE": null,
+          "cov": null
+        },
+        "W4": {
+          "beta": -0.9818,
+          "gamma": 0,
+          "betaE": null,
+          "cov": null
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.0055,
+        "brier": 0.0005,
+        "ece": -0.0176,
+        "accuracy": -0.0236
+      }
+    },
+    "F": {
+      "desc": "V1 + localía ajustada (x_hfa=+1 vía Δelo ±200)",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.478,
+        "logLoss": 1.0764,
+        "brier": 0.6432,
+        "probRealMedia": 0.4085,
+        "ece": 0.2055,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 292,
+            "probPredicha": 0.1206,
+            "frecuenciaReal": 0.226
+          },
+          {
+            "rango": "20-40%",
+            "n": 476,
+            "probPredicha": 0.2844,
+            "frecuenciaReal": 0.2983
+          },
+          {
+            "rango": "40-60%",
+            "n": 183,
+            "probPredicha": 0.4882,
+            "frecuenciaReal": 0.4208
+          },
+          {
+            "rango": "60-80%",
+            "n": 103,
+            "probPredicha": 0.6861,
+            "frecuenciaReal": 0.4951
+          },
+          {
+            "rango": "80-100%",
+            "n": 38,
+            "probPredicha": 0.8786,
+            "frecuenciaReal": 0.7368
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.458,
+        "logLoss": 1.108,
+        "brier": 0.6575,
+        "ece": 0.2284,
+        "prob": {
+          "home": 0.4530131233595805,
+          "draw": 0.25455774278215254,
+          "away": 0.2924291338582676
+        },
+        "pred": {
+          "home": 473,
+          "draw": 57,
+          "away": 232
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 250,
+          "draw": 110,
+          "away": 113
+        },
+        "draw": {
+          "home": 26,
+          "draw": 16,
+          "away": 15
+        },
+        "away": {
+          "home": 75,
+          "draw": 74,
+          "away": 83
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7123,
+          "precision": 0.5285,
+          "f1": 0.6068
+        },
+        "draw": {
+          "recall": 0.08,
+          "precision": 0.2807,
+          "f1": 0.1245
+        },
+        "away": {
+          "recall": 0.3934,
+          "precision": 0.3578,
+          "f1": 0.3747
+        }
+      },
+      "llEmpates": 1.4225,
+      "llVisitantes": 1.2708,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.478,
+          "logLoss": 1.0764,
+          "brier": 0.6432,
+          "ece": 0.2055
+        },
+        "W1": {
+          "accuracy": 0.4,
+          "logLoss": 1.1626,
+          "brier": 0.6989,
+          "ece": 0.2783
+        },
+        "W2": {
+          "accuracy": 0.4808,
+          "logLoss": 1.1547,
+          "brier": 0.6689,
+          "ece": 0.2556
+        },
+        "W3": {
+          "accuracy": 0.4598,
+          "logLoss": 1.0804,
+          "brier": 0.6528,
+          "ece": 0.2048
+        },
+        "W4": {
+          "accuracy": 0.4895,
+          "logLoss": 1.0273,
+          "brier": 0.6081,
+          "ece": 0.2217
+        }
+      },
+      "consistencia": {
+        "rolling": 3,
+        "oficial": false
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "beta": -0.0657,
+          "gamma": 0,
+          "betaE": null,
+          "cov": null
+        },
+        "W1": {
+          "beta": -0.0349,
+          "gamma": 0,
+          "betaE": null,
+          "cov": null
+        },
+        "W2": {
+          "beta": -0.0108,
+          "gamma": 0,
+          "betaE": null,
+          "cov": null
+        },
+        "W3": {
+          "beta": -0.0657,
+          "gamma": 0,
+          "betaE": null,
+          "cov": null
+        },
+        "W4": {
+          "beta": 0.0456,
+          "gamma": 0,
+          "betaE": null,
+          "cov": null
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": -0.002,
+        "brier": -0.0007,
+        "ece": -0.0004,
+        "accuracy": -0.0079
+      }
+    },
+    "V1": {
+      "desc": "base V1 (SPEC30)",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4835,
+        "logLoss": 1.0751,
+        "brier": 0.64,
+        "probRealMedia": 0.4154,
+        "ece": 0.2137,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 315,
+            "probPredicha": 0.1182,
+            "frecuenciaReal": 0.1968
+          },
+          {
+            "rango": "20-40%",
+            "n": 447,
+            "probPredicha": 0.2838,
+            "frecuenciaReal": 0.3154
+          },
+          {
+            "rango": "40-60%",
+            "n": 176,
+            "probPredicha": 0.4856,
+            "frecuenciaReal": 0.4261
+          },
+          {
+            "rango": "60-80%",
+            "n": 107,
+            "probPredicha": 0.6843,
+            "frecuenciaReal": 0.486
+          },
+          {
+            "rango": "80-100%",
+            "n": 47,
+            "probPredicha": 0.8768,
+            "frecuenciaReal": 0.7234
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4659,
+        "logLoss": 1.11,
+        "brier": 0.6582,
+        "ece": 0.2288,
+        "prob": {
+          "home": 0.4612795275590556,
+          "draw": 0.254198162729659,
+          "away": 0.28452230971128595
+        },
+        "pred": {
+          "home": 484,
+          "draw": 63,
+          "away": 215
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 257,
+          "draw": 113,
+          "away": 114
+        },
+        "draw": {
+          "home": 30,
+          "draw": 17,
+          "away": 16
+        },
+        "away": {
+          "home": 64,
+          "draw": 70,
+          "away": 81
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7322,
+          "precision": 0.531,
+          "f1": 0.6156
+        },
+        "draw": {
+          "recall": 0.085,
+          "precision": 0.2698,
+          "f1": 0.1293
+        },
+        "away": {
+          "recall": 0.3839,
+          "precision": 0.3767,
+          "f1": 0.3803
+        }
+      },
+      "llEmpates": 1.4266,
+      "llVisitantes": 1.3079,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4835,
+          "logLoss": 1.0751,
+          "brier": 0.64,
+          "ece": 0.2137
+        },
+        "W1": {
+          "accuracy": 0.4105,
+          "logLoss": 1.1687,
+          "brier": 0.7023,
+          "ece": 0.3144
+        },
+        "W2": {
+          "accuracy": 0.4856,
+          "logLoss": 1.1527,
+          "brier": 0.6682,
+          "ece": 0.2592
+        },
+        "W3": {
+          "accuracy": 0.477,
+          "logLoss": 1.0842,
+          "brier": 0.6513,
+          "ece": 0.1775
+        },
+        "W4": {
+          "accuracy": 0.4895,
+          "logLoss": 1.0283,
+          "brier": 0.6095,
+          "ece": 0.2048
+        }
+      },
+      "consistencia": {
+        "rolling": 0,
+        "oficial": false
+      },
+      "coeficientes": {},
+      "deltaVsV1": {
+        "logLoss": 0,
+        "brier": 0,
+        "ece": 0,
+        "accuracy": 0
+      }
+    },
+    "D_raw": {
+      "desc": "V1 + tiros al arco crudo",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4808,
+        "logLoss": 1.071,
+        "brier": 0.641,
+        "probRealMedia": 0.4137,
+        "ece": 0.2046,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 301,
+            "probPredicha": 0.1155,
+            "frecuenciaReal": 0.196
+          },
+          {
+            "rango": "20-40%",
+            "n": 463,
+            "probPredicha": 0.2829,
+            "frecuenciaReal": 0.311
+          },
+          {
+            "rango": "40-60%",
+            "n": 183,
+            "probPredicha": 0.4907,
+            "frecuenciaReal": 0.4208
+          },
+          {
+            "rango": "60-80%",
+            "n": 102,
+            "probPredicha": 0.6919,
+            "frecuenciaReal": 0.5392
+          },
+          {
+            "rango": "80-100%",
+            "n": 43,
+            "probPredicha": 0.8809,
+            "frecuenciaReal": 0.6744
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4646,
+        "logLoss": 1.1102,
+        "brier": 0.6584,
+        "ece": 0.2234,
+        "prob": {
+          "home": 0.46116141732283467,
+          "draw": 0.25583202099737534,
+          "away": 0.28300656167978955
+        },
+        "pred": {
+          "home": 493,
+          "draw": 59,
+          "away": 210
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 259,
+          "draw": 119,
+          "away": 115
+        },
+        "draw": {
+          "home": 26,
+          "draw": 16,
+          "away": 17
+        },
+        "away": {
+          "home": 66,
+          "draw": 65,
+          "away": 79
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7379,
+          "precision": 0.5254,
+          "f1": 0.6137
+        },
+        "draw": {
+          "recall": 0.08,
+          "precision": 0.2712,
+          "f1": 0.1236
+        },
+        "away": {
+          "recall": 0.3744,
+          "precision": 0.3762,
+          "f1": 0.3753
+        }
+      },
+      "llEmpates": 1.4215,
+      "llVisitantes": 1.3165,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4808,
+          "logLoss": 1.071,
+          "brier": 0.641,
+          "ece": 0.2046
+        },
+        "W1": {
+          "accuracy": 0.4211,
+          "logLoss": 1.1603,
+          "brier": 0.6957,
+          "ece": 0.2535
+        },
+        "W2": {
+          "accuracy": 0.4663,
+          "logLoss": 1.1579,
+          "brier": 0.6736,
+          "ece": 0.2706
+        },
+        "W3": {
+          "accuracy": 0.4713,
+          "logLoss": 1.0879,
+          "brier": 0.6529,
+          "ece": 0.186
+        },
+        "W4": {
+          "accuracy": 0.5,
+          "logLoss": 1.0284,
+          "brier": 0.6096,
+          "ece": 0.1995
+        }
+      },
+      "consistencia": {
+        "rolling": 1,
+        "oficial": true
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": 0.0035,
+              "ba": -0.0495
+            }
+          }
+        },
+        "W1": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0054,
+              "ba": -0.055
+            }
+          }
+        },
+        "W2": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0033,
+              "ba": -0.0655
+            }
+          }
+        },
+        "W3": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": 0.0035,
+              "ba": -0.0495
+            }
+          }
+        },
+        "W4": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": 0.0078,
+              "ba": -0.0384
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0002,
+        "brier": 0.0002,
+        "ece": -0.0054,
+        "accuracy": -0.0013
+      }
+    },
+    "B_raw": {
+      "desc": "V1 + xG crudo",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4835,
+        "logLoss": 1.0716,
+        "brier": 0.6414,
+        "probRealMedia": 0.4121,
+        "ece": 0.1996,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 300,
+            "probPredicha": 0.117,
+            "frecuenciaReal": 0.2
+          },
+          {
+            "rango": "20-40%",
+            "n": 466,
+            "probPredicha": 0.2845,
+            "frecuenciaReal": 0.309
+          },
+          {
+            "rango": "40-60%",
+            "n": 180,
+            "probPredicha": 0.4881,
+            "frecuenciaReal": 0.4278
+          },
+          {
+            "rango": "60-80%",
+            "n": 107,
+            "probPredicha": 0.692,
+            "frecuenciaReal": 0.5047
+          },
+          {
+            "rango": "80-100%",
+            "n": 39,
+            "probPredicha": 0.8828,
+            "frecuenciaReal": 0.7436
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1117,
+        "brier": 0.659,
+        "ece": 0.2174,
+        "prob": {
+          "home": 0.4568779527559058,
+          "draw": 0.260792650918635,
+          "away": 0.28232939632545906
+        },
+        "pred": {
+          "home": 491,
+          "draw": 63,
+          "away": 208
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 257,
+          "draw": 117,
+          "away": 117
+        },
+        "draw": {
+          "home": 28,
+          "draw": 18,
+          "away": 17
+        },
+        "away": {
+          "home": 66,
+          "draw": 65,
+          "away": 77
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7322,
+          "precision": 0.5234,
+          "f1": 0.6105
+        },
+        "draw": {
+          "recall": 0.09,
+          "precision": 0.2857,
+          "f1": 0.1369
+        },
+        "away": {
+          "recall": 0.3649,
+          "precision": 0.3702,
+          "f1": 0.3675
+        }
+      },
+      "llEmpates": 1.4017,
+      "llVisitantes": 1.317,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4835,
+          "logLoss": 1.0716,
+          "brier": 0.6414,
+          "ece": 0.1996
+        },
+        "W1": {
+          "accuracy": 0.4158,
+          "logLoss": 1.1598,
+          "brier": 0.6961,
+          "ece": 0.2683
+        },
+        "W2": {
+          "accuracy": 0.4615,
+          "logLoss": 1.1658,
+          "brier": 0.6746,
+          "ece": 0.282
+        },
+        "W3": {
+          "accuracy": 0.477,
+          "logLoss": 1.0845,
+          "brier": 0.652,
+          "ece": 0.172
+        },
+        "W4": {
+          "accuracy": 0.4947,
+          "logLoss": 1.0294,
+          "brier": 0.6114,
+          "ece": 0.1857
+        }
+      },
+      "consistencia": {
+        "rolling": 1,
+        "oficial": true
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.059,
+              "ba": -0.082
+            }
+          }
+        },
+        "W1": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.07,
+              "ba": -0.143
+            }
+          }
+        },
+        "W2": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.0477,
+              "ba": -0.134
+            }
+          }
+        },
+        "W3": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.059,
+              "ba": -0.082
+            }
+          }
+        },
+        "W4": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.0645,
+              "ba": -0.0753
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0017,
+        "brier": 0.0008,
+        "ece": -0.0114,
+        "accuracy": -0.004
+      }
+    },
+    "C_norm": {
+      "desc": "V1 + remates totales norm",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4863,
+        "logLoss": 1.0753,
+        "brier": 0.6405,
+        "probRealMedia": 0.4149,
+        "ece": 0.2101,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 312,
+            "probPredicha": 0.1176,
+            "frecuenciaReal": 0.1987
+          },
+          {
+            "rango": "20-40%",
+            "n": 449,
+            "probPredicha": 0.283,
+            "frecuenciaReal": 0.3118
+          },
+          {
+            "rango": "40-60%",
+            "n": 178,
+            "probPredicha": 0.4859,
+            "frecuenciaReal": 0.427
+          },
+          {
+            "rango": "60-80%",
+            "n": 105,
+            "probPredicha": 0.6839,
+            "frecuenciaReal": 0.4952
+          },
+          {
+            "rango": "80-100%",
+            "n": 48,
+            "probPredicha": 0.874,
+            "frecuenciaReal": 0.7083
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4672,
+        "logLoss": 1.1128,
+        "brier": 0.6593,
+        "ece": 0.2286,
+        "prob": {
+          "home": 0.4622506561679787,
+          "draw": 0.25411679790026254,
+          "away": 0.2836325459317586
+        },
+        "pred": {
+          "home": 488,
+          "draw": 63,
+          "away": 211
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 258,
+          "draw": 116,
+          "away": 114
+        },
+        "draw": {
+          "home": 28,
+          "draw": 18,
+          "away": 17
+        },
+        "away": {
+          "home": 65,
+          "draw": 66,
+          "away": 80
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.735,
+          "precision": 0.5287,
+          "f1": 0.615
+        },
+        "draw": {
+          "recall": 0.09,
+          "precision": 0.2857,
+          "f1": 0.1369
+        },
+        "away": {
+          "recall": 0.3791,
+          "precision": 0.3791,
+          "f1": 0.3791
+        }
+      },
+      "llEmpates": 1.4275,
+      "llVisitantes": 1.3182,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4863,
+          "logLoss": 1.0753,
+          "brier": 0.6405,
+          "ece": 0.2101
+        },
+        "W1": {
+          "accuracy": 0.4158,
+          "logLoss": 1.1689,
+          "brier": 0.7019,
+          "ece": 0.3044
+        },
+        "W2": {
+          "accuracy": 0.4808,
+          "logLoss": 1.1617,
+          "brier": 0.6719,
+          "ece": 0.2541
+        },
+        "W3": {
+          "accuracy": 0.4713,
+          "logLoss": 1.0864,
+          "brier": 0.6529,
+          "ece": 0.1732
+        },
+        "W4": {
+          "accuracy": 0.5,
+          "logLoss": 1.0271,
+          "brier": 0.609,
+          "ece": 0.1985
+        }
+      },
+      "consistencia": {
+        "rolling": 1,
+        "oficial": false
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "ts": {
+              "bf": -0.0309,
+              "ba": -0.0745
+            }
+          }
+        },
+        "W1": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "ts": {
+              "bf": -0.0712,
+              "ba": -0.1439
+            }
+          }
+        },
+        "W2": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "ts": {
+              "bf": -0.0349,
+              "ba": -0.1612
+            }
+          }
+        },
+        "W3": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "ts": {
+              "bf": -0.0309,
+              "ba": -0.0745
+            }
+          }
+        },
+        "W4": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "ts": {
+              "bf": -0.0109,
+              "ba": -0.0446
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0028,
+        "brier": 0.0011,
+        "ece": -0.0002,
+        "accuracy": 0.0013
+      }
+    },
+    "E": {
+      "desc": "V1 + forma5",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4368,
+        "logLoss": 1.0887,
+        "brier": 0.6524,
+        "probRealMedia": 0.4069,
+        "ece": 0.2758,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 301,
+            "probPredicha": 0.1177,
+            "frecuenciaReal": 0.2093
+          },
+          {
+            "rango": "20-40%",
+            "n": 457,
+            "probPredicha": 0.2809,
+            "frecuenciaReal": 0.3304
+          },
+          {
+            "rango": "40-60%",
+            "n": 186,
+            "probPredicha": 0.4878,
+            "frecuenciaReal": 0.3602
+          },
+          {
+            "rango": "60-80%",
+            "n": 104,
+            "probPredicha": 0.6838,
+            "frecuenciaReal": 0.5096
+          },
+          {
+            "rango": "80-100%",
+            "n": 44,
+            "probPredicha": 0.8716,
+            "frecuenciaReal": 0.6818
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4528,
+        "logLoss": 1.1136,
+        "brier": 0.6619,
+        "ece": 0.2381,
+        "prob": {
+          "home": 0.46175196850393685,
+          "draw": 0.2579002624671912,
+          "away": 0.2803477690288713
+        },
+        "pred": {
+          "home": 482,
+          "draw": 61,
+          "away": 219
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 247,
+          "draw": 117,
+          "away": 118
+        },
+        "draw": {
+          "home": 30,
+          "draw": 18,
+          "away": 13
+        },
+        "away": {
+          "home": 74,
+          "draw": 65,
+          "away": 80
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7037,
+          "precision": 0.5124,
+          "f1": 0.593
+        },
+        "draw": {
+          "recall": 0.09,
+          "precision": 0.2951,
+          "f1": 0.1379
+        },
+        "away": {
+          "recall": 0.3791,
+          "precision": 0.3653,
+          "f1": 0.3721
+        }
+      },
+      "llEmpates": 1.4213,
+      "llVisitantes": 1.3257,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4368,
+          "logLoss": 1.0887,
+          "brier": 0.6524,
+          "ece": 0.2758
+        },
+        "W1": {
+          "accuracy": 0.4158,
+          "logLoss": 1.1845,
+          "brier": 0.7112,
+          "ece": 0.2859
+        },
+        "W2": {
+          "accuracy": 0.4856,
+          "logLoss": 1.1361,
+          "brier": 0.6605,
+          "ece": 0.2746
+        },
+        "W3": {
+          "accuracy": 0.4368,
+          "logLoss": 1.083,
+          "brier": 0.6508,
+          "ece": 0.2199
+        },
+        "W4": {
+          "accuracy": 0.4684,
+          "logLoss": 1.0461,
+          "brier": 0.6244,
+          "ece": 0.2296
+        }
+      },
+      "consistencia": {
+        "rolling": 2,
+        "oficial": false
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "beta": 0,
+          "gamma": -0.362,
+          "betaE": null,
+          "cov": null
+        },
+        "W1": {
+          "beta": 0,
+          "gamma": -0.4787,
+          "betaE": null,
+          "cov": null
+        },
+        "W2": {
+          "beta": 0,
+          "gamma": -0.3809,
+          "betaE": null,
+          "cov": null
+        },
+        "W3": {
+          "beta": 0,
+          "gamma": -0.362,
+          "betaE": null,
+          "cov": null
+        },
+        "W4": {
+          "beta": 0,
+          "gamma": -0.3185,
+          "betaE": null,
+          "cov": null
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0036,
+        "brier": 0.0037,
+        "ece": 0.0093,
+        "accuracy": -0.0131
+      }
+    },
+    "D_norm": {
+      "desc": "V1 + tiros al arco norm",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4725,
+        "logLoss": 1.0742,
+        "brier": 0.6418,
+        "probRealMedia": 0.4126,
+        "ece": 0.2062,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 300,
+            "probPredicha": 0.1165,
+            "frecuenciaReal": 0.22
+          },
+          {
+            "rango": "20-40%",
+            "n": 462,
+            "probPredicha": 0.2825,
+            "frecuenciaReal": 0.2965
+          },
+          {
+            "rango": "40-60%",
+            "n": 185,
+            "probPredicha": 0.4888,
+            "frecuenciaReal": 0.4108
+          },
+          {
+            "rango": "60-80%",
+            "n": 102,
+            "probPredicha": 0.6894,
+            "frecuenciaReal": 0.5686
+          },
+          {
+            "rango": "80-100%",
+            "n": 43,
+            "probPredicha": 0.879,
+            "frecuenciaReal": 0.6279
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.1148,
+        "brier": 0.6598,
+        "ece": 0.2293,
+        "prob": {
+          "home": 0.46302230971128594,
+          "draw": 0.2557755905511812,
+          "away": 0.2812020997375331
+        },
+        "pred": {
+          "home": 496,
+          "draw": 60,
+          "away": 206
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 260,
+          "draw": 118,
+          "away": 118
+        },
+        "draw": {
+          "home": 27,
+          "draw": 16,
+          "away": 17
+        },
+        "away": {
+          "home": 64,
+          "draw": 66,
+          "away": 76
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7407,
+          "precision": 0.5242,
+          "f1": 0.6139
+        },
+        "draw": {
+          "recall": 0.08,
+          "precision": 0.2667,
+          "f1": 0.1231
+        },
+        "away": {
+          "recall": 0.3602,
+          "precision": 0.3689,
+          "f1": 0.3645
+        }
+      },
+      "llEmpates": 1.4294,
+      "llVisitantes": 1.336,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4725,
+          "logLoss": 1.0742,
+          "brier": 0.6418,
+          "ece": 0.2062
+        },
+        "W1": {
+          "accuracy": 0.4263,
+          "logLoss": 1.1739,
+          "brier": 0.7012,
+          "ece": 0.284
+        },
+        "W2": {
+          "accuracy": 0.4567,
+          "logLoss": 1.164,
+          "brier": 0.6755,
+          "ece": 0.2663
+        },
+        "W3": {
+          "accuracy": 0.454,
+          "logLoss": 1.0901,
+          "brier": 0.6543,
+          "ece": 0.1894
+        },
+        "W4": {
+          "accuracy": 0.5105,
+          "logLoss": 1.0242,
+          "brier": 0.6063,
+          "ece": 0.1705
+        }
+      },
+      "consistencia": {
+        "rolling": 1,
+        "oficial": true
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0791,
+              "ba": -0.2955
+            }
+          }
+        },
+        "W1": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0794,
+              "ba": -0.3936
+            }
+          }
+        },
+        "W2": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0636,
+              "ba": -0.3715
+            }
+          }
+        },
+        "W3": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0791,
+              "ba": -0.2955
+            }
+          }
+        },
+        "W4": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "st": {
+              "bf": -0.0698,
+              "ba": -0.2774
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.0048,
+        "brier": 0.0016,
+        "ece": 0.0005,
+        "accuracy": -0.004
+      }
+    },
+    "B_norm": {
+      "desc": "V1 + xG norm liga",
+      "oficial": {
+        "n": 364,
+        "accuracy": 0.4753,
+        "logLoss": 1.0771,
+        "brier": 0.6447,
+        "probRealMedia": 0.4114,
+        "ece": 0.2205,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 303,
+            "probPredicha": 0.117,
+            "frecuenciaReal": 0.2013
+          },
+          {
+            "rango": "20-40%",
+            "n": 458,
+            "probPredicha": 0.2826,
+            "frecuenciaReal": 0.3144
+          },
+          {
+            "rango": "40-60%",
+            "n": 186,
+            "probPredicha": 0.4893,
+            "frecuenciaReal": 0.4032
+          },
+          {
+            "rango": "60-80%",
+            "n": 105,
+            "probPredicha": 0.6944,
+            "frecuenciaReal": 0.5333
+          },
+          {
+            "rango": "80-100%",
+            "n": 40,
+            "probPredicha": 0.8802,
+            "frecuenciaReal": 0.7
+          }
+        ]
+      },
+      "pooled": {
+        "accuracy": 0.4619,
+        "logLoss": 1.119,
+        "brier": 0.6629,
+        "ece": 0.2332,
+        "prob": {
+          "home": 0.4614829396325461,
+          "draw": 0.2556706036745407,
+          "away": 0.2828464566929129
+        },
+        "pred": {
+          "home": 485,
+          "draw": 65,
+          "away": 212
+        }
+      },
+      "confusion": {
+        "home": {
+          "home": 254,
+          "draw": 115,
+          "away": 116
+        },
+        "draw": {
+          "home": 28,
+          "draw": 20,
+          "away": 17
+        },
+        "away": {
+          "home": 69,
+          "draw": 65,
+          "away": 78
+        }
+      },
+      "porClase": {
+        "home": {
+          "recall": 0.7236,
+          "precision": 0.5237,
+          "f1": 0.6077
+        },
+        "draw": {
+          "recall": 0.1,
+          "precision": 0.3077,
+          "f1": 0.1509
+        },
+        "away": {
+          "recall": 0.3697,
+          "precision": 0.3679,
+          "f1": 0.3688
+        }
+      },
+      "llEmpates": 1.4324,
+      "llVisitantes": 1.3272,
+      "porVentana": {
+        "OFICIAL": {
+          "accuracy": 0.4753,
+          "logLoss": 1.0771,
+          "brier": 0.6447,
+          "ece": 0.2205
+        },
+        "W1": {
+          "accuracy": 0.4211,
+          "logLoss": 1.1834,
+          "brier": 0.7069,
+          "ece": 0.2878
+        },
+        "W2": {
+          "accuracy": 0.4615,
+          "logLoss": 1.1639,
+          "brier": 0.6741,
+          "ece": 0.2603
+        },
+        "W3": {
+          "accuracy": 0.4828,
+          "logLoss": 1.0881,
+          "brier": 0.6545,
+          "ece": 0.1915
+        },
+        "W4": {
+          "accuracy": 0.4842,
+          "logLoss": 1.0336,
+          "brier": 0.6145,
+          "ece": 0.186
+        }
+      },
+      "consistencia": {
+        "rolling": 0,
+        "oficial": false
+      },
+      "coeficientes": {
+        "OFICIAL": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.1662,
+              "ba": -0.1769
+            }
+          }
+        },
+        "W1": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.2233,
+              "ba": -0.2667
+            }
+          }
+        },
+        "W2": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.1672,
+              "ba": -0.2441
+            }
+          }
+        },
+        "W3": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.1662,
+              "ba": -0.1769
+            }
+          }
+        },
+        "W4": {
+          "beta": null,
+          "gamma": null,
+          "betaE": null,
+          "cov": {
+            "xg": {
+              "bf": -0.16,
+              "ba": -0.176
+            }
+          }
+        }
+      },
+      "deltaVsV1": {
+        "logLoss": 0.009,
+        "brier": 0.0047,
+        "ece": 0.0044,
+        "accuracy": -0.004
+      }
+    }
+  }
+}

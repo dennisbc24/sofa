@@ -18,7 +18,10 @@ const SECCIONES = [
   {
     id: "predictivo",
     titulo: "Predicción",
-    items: [{ id: "predictivo", etiqueta: "Análisis pre-partido (1X2)" }],
+    items: [
+      { id: "predictivo", etiqueta: "Análisis pre-partido (1X2)" },
+      { id: "prediccion2t", etiqueta: "Proyección 2T (modelo)" },
+    ],
   },
   {
     id: "partidos",
@@ -26,6 +29,7 @@ const SECCIONES = [
     items: [
       { id: "ultimos", etiqueta: "Últimos partidos" },
       { id: "statsPartido", etiqueta: "Buscar stats de partido" },
+      { id: "subir", etiqueta: "Subir estadísticas por lote" },
     ],
   },
   {

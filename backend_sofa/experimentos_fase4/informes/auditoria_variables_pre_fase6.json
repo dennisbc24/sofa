@@ -1,0 +1,858 @@
+{
+  "generado": "2026-09-29T12:34:13.087Z",
+  "alcance": "Auditoría SOLO-LECTURA (SELECTs) pre-Fase 6. Producción y TEST intactos: 22/22 hashes SHA-256, prediccion_poisson.json F6E3405C...5BD1 sin cambios, endpoints 200 con activeModel=V1_BETA. Ningún entrenamiento ni evaluación sobre TEST.",
+  "fuente": {
+    "json_fuente": "Dumps JSON estilo Sofascore que sube el usuario (POST /api/estadisticas/lote). transformar() lee info.event (cabecera) + stats.statistics (bloques→period→groups→statisticsItems).",
+    "donde_vive": "El JSON crudo NO se conserva en disco: todo lo persistible ya está en PostgreSQL (tablas partidos + estadisticas). No existe ningún .json de datos en el repo.",
+    "duplicados": "Mismo (partido,periodo,nombre) puede repetirse en distintos grupos → agregación con MAX() (features.js). 41 nombres tienen clave=NULL (filas antiguas)."
+  },
+  "tablas": [
+    {
+      "tabla": "estadisticas",
+      "filas": "244366"
+    },
+    {
+      "tabla": "partidos",
+      "filas": "1937"
+    },
+    {
+      "tabla": "predicciones_beta",
+      "filas": "-1"
+    }
+  ],
+  "partidos": {
+    "columnas": [
+      "id",
+      "equipo_local",
+      "equipo_visitante",
+      "goles_local",
+      "goles_visitante",
+      "goles_local_1t",
+      "goles_visitante_1t",
+      "url",
+      "liga",
+      "fecha_jornada",
+      "fecha_partido",
+      "estado",
+      "scrapeado_en"
+    ],
+    "cobertura_no_null": {
+      "total": "1945",
+      "id": "1945",
+      "equipo_local": "1938",
+      "equipo_visitante": "1938",
+      "goles_local": "1937",
+      "goles_visitante": "1937",
+      "goles_local_1t": "1937",
+      "goles_visitante_1t": "1937",
+      "url": "1937",
+      "liga": "1945",
+      "fecha_jornada": "1945",
+      "fecha_partido": "1938",
+      "estado": "1941",
+      "scrapeado_en": "1945"
+    },
+    "rango_fechas": {
+      "min": "2019-06-01",
+      "max": "2026-09-28",
+      "n": "1945"
+    },
+    "ligas": 25,
+    "por_uso": {
+      "entrada_prediccion_modelo": [
+        "equipo_local",
+        "equipo_visitante",
+        "liga"
+      ],
+      "entrenamiento_modelo": [
+        "goles_local",
+        "goles_visitante",
+        "fecha_partido (splits/ventanas)",
+        "estado (filtro)"
+      ],
+      "solo_UI_perfil_explicacion": [
+        "goles_local_1t",
+        "goles_visitante_1t (gf_t1/gc_t1, comparación 1T/2T)"
+      ],
+      "modulo_probabilidades_no_modelo_1x2": [
+        "fecha_jornada",
+        "goles_1T (análisis corners/roja1T/1T)"
+      ],
+      "nunca_usadas": [
+        "url (link Sofascore → scraping futuro posible)",
+        "scrapeado_en"
+      ]
+    }
+  },
+  "estadisticas": {
+    "total_distintas": 53,
+    "grupos": [
+      {
+        "grupo": "Match overview",
+        "partidos": 1929
+      },
+      {
+        "grupo": "Shots",
+        "partidos": 1929
+      },
+      {
+        "grupo": "Passes",
+        "partidos": 1929
+      },
+      {
+        "grupo": "Defending",
+        "partidos": 1928
+      },
+      {
+        "grupo": "Duels",
+        "partidos": 1928
+      },
+      {
+        "grupo": "Attack",
+        "partidos": 1929
+      },
+      {
+        "grupo": "Goalkeeping",
+        "partidos": 1928
+      }
+    ],
+    "periodos": [
+      {
+        "periodo": "ALL",
+        "partidos": 1929
+      },
+      {
+        "periodo": "1ST",
+        "partidos": 1928
+      },
+      {
+        "periodo": "2ND",
+        "partidos": 1927
+      },
+      {
+        "periodo": "ET2",
+        "partidos": 21
+      },
+      {
+        "periodo": "ET1",
+        "partidos": 21
+      }
+    ],
+    "inventario": [
+      {
+        "nombre": "Ball possession",
+        "clave": "ballPossession",
+        "partidos": 1929,
+        "pct_cobertura": 99.2,
+        "periodos": 5,
+        "filas": 5826,
+        "usada_en_UI": true,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Shots off target",
+        "clave": "shotsOffGoal",
+        "partidos": 1929,
+        "pct_cobertura": 99.2,
+        "periodos": 5,
+        "filas": 5826,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Total shots",
+        "clave": "totalShotsOnGoal",
+        "partidos": 1929,
+        "pct_cobertura": 99.2,
+        "periodos": 5,
+        "filas": 11652,
+        "usada_en_UI": true,
+        "experimentada_como_feature": true,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Accurate passes",
+        "clave": "accuratePasses",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5825,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Aerial duels",
+        "clave": "aerialDuelsPercentage",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5822,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Clearances",
+        "clave": "totalClearance",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5825,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Crosses",
+        "clave": "accurateCross",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5825,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Dribbles",
+        "clave": "dribblesPercentage",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5823,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Duels",
+        "clave": "duelWonPercent",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5825,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Final third entries",
+        "clave": "finalThirdEntries",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5825,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Free kicks",
+        "clave": "freeKicks",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5824,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Goal kicks",
+        "clave": "goalKicks",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5824,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Ground duels",
+        "clave": "groundDuelsPercentage",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5825,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Long balls",
+        "clave": "accurateLongBalls",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5825,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Passes",
+        "clave": "passes",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5825,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Shots inside box",
+        "clave": "totalShotsInsideBox",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5825,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Shots on target",
+        "clave": "shotsOnGoal",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5824,
+        "usada_en_UI": true,
+        "experimentada_como_feature": true,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Throw-ins",
+        "clave": "throwIns",
+        "partidos": 1928,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5824,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Corner kicks",
+        "clave": "cornerKicks",
+        "partidos": 1927,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5821,
+        "usada_en_UI": true,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": true
+      },
+      {
+        "nombre": "Dispossessed",
+        "clave": "dispossessed",
+        "partidos": 1927,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5823,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Interceptions",
+        "clave": "interceptionWon",
+        "partidos": 1927,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5823,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Shots outside box",
+        "clave": "totalShotsOutsideBox",
+        "partidos": 1927,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5823,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Tackles",
+        "clave": "totalTackle",
+        "partidos": 1927,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5823,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Tackles won",
+        "clave": "wonTacklePercent",
+        "partidos": 1927,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5823,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Total tackles",
+        "clave": "totalTackle",
+        "partidos": 1927,
+        "pct_cobertura": 99.1,
+        "periodos": 5,
+        "filas": 5823,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Goalkeeper saves",
+        "clave": "goalkeeperSaves",
+        "partidos": 1925,
+        "pct_cobertura": 99,
+        "periodos": 5,
+        "filas": 5815,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Total saves",
+        "clave": "goalkeeperSaves",
+        "partidos": 1925,
+        "pct_cobertura": 99,
+        "periodos": 5,
+        "filas": 5815,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Recoveries",
+        "clave": "ballRecovery",
+        "partidos": 1924,
+        "pct_cobertura": 98.9,
+        "periodos": 5,
+        "filas": 5813,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Blocked shots",
+        "clave": "blockedScoringAttempt",
+        "partidos": 1923,
+        "pct_cobertura": 98.9,
+        "periodos": 5,
+        "filas": 5809,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Final third phase",
+        "clave": "finalThirdPhaseStatistic",
+        "partidos": 1923,
+        "pct_cobertura": 98.9,
+        "periodos": 1,
+        "filas": 1923,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Touches in penalty area",
+        "clave": "touchesInOppBox",
+        "partidos": 1923,
+        "pct_cobertura": 98.9,
+        "periodos": 1,
+        "filas": 1923,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Fouls",
+        "clave": "fouls",
+        "partidos": 1903,
+        "pct_cobertura": 97.8,
+        "periodos": 5,
+        "filas": 5012,
+        "usada_en_UI": true,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Fouled in final third",
+        "clave": "fouledFinalThird",
+        "partidos": 1890,
+        "pct_cobertura": 97.2,
+        "periodos": 5,
+        "filas": 5712,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Expected goals",
+        "clave": "expectedGoals",
+        "partidos": 1885,
+        "pct_cobertura": 96.9,
+        "periodos": 5,
+        "filas": 7451,
+        "usada_en_UI": true,
+        "experimentada_como_feature": true,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Big chances",
+        "clave": "bigChanceCreated",
+        "partidos": 1883,
+        "pct_cobertura": 96.8,
+        "periodos": 5,
+        "filas": 5691,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Yellow cards",
+        "clave": "yellowCards",
+        "partidos": 1859,
+        "pct_cobertura": 95.6,
+        "periodos": 5,
+        "filas": 5614,
+        "usada_en_UI": true,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Offsides",
+        "clave": "offsides",
+        "partidos": 1823,
+        "pct_cobertura": 93.7,
+        "periodos": 5,
+        "filas": 5509,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Big chances missed",
+        "clave": "bigChanceMissed",
+        "partidos": 1745,
+        "pct_cobertura": 89.7,
+        "periodos": 5,
+        "filas": 5275,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Big chances scored",
+        "clave": "bigChanceScored",
+        "partidos": 1556,
+        "pct_cobertura": 80,
+        "periodos": 5,
+        "filas": 4700,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Hit woodwork",
+        "clave": "hitWoodwork",
+        "partidos": 1457,
+        "pct_cobertura": 74.9,
+        "periodos": 5,
+        "filas": 4405,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Big saves",
+        "clave": "diveSaves",
+        "partidos": 1368,
+        "pct_cobertura": 70.3,
+        "periodos": 1,
+        "filas": 1368,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "High claims",
+        "clave": "highClaims",
+        "partidos": 1326,
+        "pct_cobertura": 68.2,
+        "periodos": 1,
+        "filas": 1326,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Goals prevented",
+        "clave": "goalsPrevented",
+        "partidos": 1312,
+        "pct_cobertura": 67.5,
+        "periodos": 1,
+        "filas": 1312,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Distance covered",
+        "clave": "kilometersCovered",
+        "partidos": 1201,
+        "pct_cobertura": 61.7,
+        "periodos": 3,
+        "filas": 1281,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Number of sprints",
+        "clave": "numberOfSprints",
+        "partidos": 1201,
+        "pct_cobertura": 61.7,
+        "periodos": 3,
+        "filas": 1581,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Through balls",
+        "clave": "accurateThroughBall",
+        "partidos": 1190,
+        "pct_cobertura": 61.2,
+        "periodos": 5,
+        "filas": 3604,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Errors lead to a shot",
+        "clave": "errorsLeadToShot",
+        "partidos": 1162,
+        "pct_cobertura": 59.7,
+        "periodos": 1,
+        "filas": 1162,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Punches",
+        "clave": "punches",
+        "partidos": 1102,
+        "pct_cobertura": 56.7,
+        "periodos": 1,
+        "filas": 1102,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Expected goals on target",
+        "clave": "expectedGoalsOnTarget",
+        "partidos": 882,
+        "pct_cobertura": 45.3,
+        "periodos": 5,
+        "filas": 2650,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Errors lead to a goal",
+        "clave": "errorsLeadToGoal",
+        "partidos": 613,
+        "pct_cobertura": 31.5,
+        "periodos": 1,
+        "filas": 613,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Red cards",
+        "clave": "redCards",
+        "partidos": 369,
+        "pct_cobertura": 19,
+        "periodos": 5,
+        "filas": 1115,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Average rating",
+        "clave": "avgRating",
+        "partidos": 291,
+        "pct_cobertura": 15,
+        "periodos": 1,
+        "filas": 291,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      },
+      {
+        "nombre": "Penalty saves",
+        "clave": "penaltySaves",
+        "partidos": 97,
+        "pct_cobertura": 5,
+        "periodos": 1,
+        "filas": 97,
+        "usada_en_UI": false,
+        "experimentada_como_feature": false,
+        "solo_auditoria_cobertura": false
+      }
+    ],
+    "usadas_solo_UI": [
+      "Expected goals",
+      "Total shots",
+      "Shots on target",
+      "Corner kicks",
+      "Fouls",
+      "Yellow cards",
+      "Ball possession"
+    ],
+    "experimentadas_como_feature_modelo": [
+      "Expected goals",
+      "Total shots",
+      "Shots on target"
+    ],
+    "nunca_usadas_ni_UI_ni_modelo": [
+      "Shots off target",
+      "Accurate passes",
+      "Aerial duels",
+      "Clearances",
+      "Crosses",
+      "Dribbles",
+      "Duels",
+      "Final third entries",
+      "Free kicks",
+      "Goal kicks",
+      "Ground duels",
+      "Long balls",
+      "Passes",
+      "Shots inside box",
+      "Throw-ins",
+      "Dispossessed",
+      "Interceptions",
+      "Shots outside box",
+      "Tackles",
+      "Tackles won",
+      "Total tackles",
+      "Goalkeeper saves",
+      "Total saves",
+      "Recoveries",
+      "Blocked shots",
+      "Final third phase",
+      "Touches in penalty area",
+      "Fouled in final third",
+      "Big chances",
+      "Offsides",
+      "Big chances missed",
+      "Big chances scored",
+      "Hit woodwork",
+      "Big saves",
+      "High claims",
+      "Goals prevented",
+      "Distance covered",
+      "Number of sprints",
+      "Through balls",
+      "Errors lead to a shot",
+      "Punches",
+      "Expected goals on target",
+      "Errors lead to a goal",
+      "Red cards",
+      "Average rating",
+      "Penalty saves"
+    ],
+    "periodo_1T_2T_como_feature_separada": "NUNCA experimentado (la UI suma 1T+2T; los experimentos usaron ALL/1T+2T agregado)",
+    "et_prorroga": "ET1/ET2 sólo 21 partidos → irrelevante como feature"
+  },
+  "uso_por_capa": {
+    "modelo_produccion_entradas": "predecir(modelo,{home,away,liga}) — SÓLO equipos+liga (params att/def/mu por liga). Cero estadísticas de partido, cero Elo, cero forma. modelo_config.js lo declara: incluye:{platt:false, elo:false, xg:false, remates:false}.",
+    "modelo_produccion_explicacion": "El endpoint calcula perfil/H2H para el TEXTO de explicación y la tabla comparativa (features.js), pero esas cifras NO entran en predecir().",
+    "experimentos_fases2_3": "Features probadas como input de modelo: xG, Total shots, Shots on target (crudo y normalizado), Elo, forma5, ΔElo localía; estructurales: Dixon-Coles τ, Davidson ν, capas Platt/softmax (M0/M1/M2). Ninguna superó a V1 en TEST.",
+    "probabilidades_js": "Módulo aparte de análisis (corners, goles 1T, roja 1T) — usa Corner kicks/fecha_jornada/goles_1T pero NO alimenta al modelo 1X2."
+  },
+  "calidad_y_caveats": {
+    "sin_valores_no_numericos": "0 stats con texto no parseable",
+    "sin_stats": "16 de 1945 partidos sin filas en estadisticas",
+    "xg_periodos": "xG ALL=1885 partidos pero 1T/2ND sólo ~1345 (70%) — peor que remates/arco (~99%)",
+    "ligas_debiles_xg": "International Friendly Games 78%, Final de Champions 43%",
+    "bajas_cobertura": [
+      "Average rating 291 (15%)",
+      "Penalty saves 97 (5%)",
+      "Red cards 369 (19%)",
+      "Errors lead to a goal 613 (32%)",
+      "Distance/sprints 1201 (62%, sólo ALL)",
+      "xGOT 882 (45%)"
+    ],
+    "variantes_nombre": [
+      "Accurate passes / otra (null)",
+      "Goalkeeper saves / otra (goalkeeperSaves)",
+      "Tackles / otra (totalTackle)"
+    ]
+  },
+  "no_experimentadas_prioridad": {
+    "nota": "Orden por (a) señal de OCASIÓN/calidad de tiro — la que sí predice goles según lección CASO D — y (b) cobertura. Las de tipo posesión/pases/duels ya tienen precedente negativo (features de equilibrio ~cero aporte en M0/M1).",
+    "tier1_ocasiones": [
+      "Big chances (1883)",
+      "Touches in penalty area (1923)",
+      "Final third entries (1928)",
+      "Big chances missed (1745)",
+      "Big chances scored (1556)",
+      "Hit woodwork (1457)",
+      "Expected goals on target (882)",
+      "Through balls (1190)",
+      "Shots inside box (1928)"
+    ],
+    "tier2_contexto_columnas": [
+      "goles_local_1t/visitante_1T histórico del equipo como feature pre-partido (1937 partidos, YA en BD)",
+      "fecha_jornada (fase de temporada)",
+      "H2H como input (hoy sólo texto)",
+      "días de descanso (derivable de fecha_partido)",
+      "forma 10/20 (sólo se probó forma5)"
+    ],
+    "tier3_disciplina_ritmo": [
+      "Yellow cards (1859)",
+      "Fouls (1903)",
+      "Offsides (1823)",
+      "Red cards (369)"
+    ],
+    "tier4_porteria": [
+      "Goalkeeper saves (1925)",
+      "Goals prevented (1312)",
+      "Big saves (1368)",
+      "High claims (1326)"
+    ],
+    "tier5_territorio_ya_negativo": [
+      "Ball possession (UI, nunca modelo)",
+      "Passes/Accurate passes",
+      "Duels/Dribbles/Crosses",
+      "Distance covered / sprints (1201)"
+    ],
+    "tier6_requiere_scraping_nuevo": [
+      "url → alineaciones, árbitros, lesiones (datos externos: requiere decisión explícita del usuario; nada inventado)"
+    ]
+  }
+}

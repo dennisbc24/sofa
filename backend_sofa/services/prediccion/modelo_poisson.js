@@ -210,19 +210,74 @@ function lambdasCon(muFn, liga, att, def, home, away) {
 
 // ---------------------------------------------------------------------------
 // PREDICCIÓN con un modelo ya entrenado (parámetros cargados del JSON).
+//
+// PARCHE v1.1 (evaluación pre-registrada:
+// experimentos_fase11/informes/fase11_1_eval_rollover.json):
+//  1) Familia de liga: si el nombre EXACTO no existe en `ligas` (rollover de
+//     temporada: "Serie A 2026 2027" aún no está), se usa la μ de la FAMILIA
+//     (nombre sin años/temporadas/apertura-clausura), promediada por n sobre
+//     las claves del modelo; sólo si tampoco hay familia → μ global.
+//     En VAL simulado: ΔLL −0.0085; en despliegue: 369/386 partidos recientes
+//     dejan de caer a global. Los JSON y el entrenamiento NO cambian.
+//  2) Guardrail λ≤8: λ>8 sólo aparece por att/def degenerados (pocas
+//     generaciones); en VAL el peor-ll baja de 6.21 a 4.61 con ≤5 partidos
+//     tocados. `internos.lambdaCapped` lo señala.
 // ---------------------------------------------------------------------------
+function familia(liga) {
+  // Copia de experimentos/modelo_mu_exp.js:familia — producción no importa de experimentos/.
+  return String(liga)
+    .replace(/\u00A0/g, " ")
+    .replace(/\b(19|20)\d{2}\b/g, " ")
+    .replace(/\b\d{2}\/\d{2}\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+function familiaLimpia(liga) {
+  return familia(liga).replace(/\b(apertura|clausura)\b/gi, " ").replace(/\s+/g, " ").trim();
+}
+const LAMBDA_MAX = 8;
+const cacheFamilias = new WeakMap();
+function mapaFamilias(modelo) {
+  let m = cacheFamilias.get(modelo);
+  if (m) return m;
+  m = {};
+  for (const [k, v] of Object.entries(modelo.ligas || {})) {
+    const f = familiaLimpia(k);
+    if (!f) continue;
+    if (!m[f]) m[f] = { n: 0, sh: 0, sa: 0 };
+    const n = v.n || 0;
+    m[f].n += n; m[f].sh += n * v.muHome; m[f].sa += n * v.muAway;
+  }
+  for (const f of Object.keys(m)) {
+    const v = m[f];
+    if (v.n > 0) m[f] = { muHome: v.sh / v.n, muAway: v.sa / v.n, n: v.n };
+    else delete m[f];
+  }
+  cacheFamilias.set(modelo, m);
+  return m;
+}
+
 function predecir(modelo, { home, away, liga }) {
   const att = modelo.att || {};
   const def = modelo.def || {};
   const ligas = modelo.ligas || {};
 
-  // Tasa base: de la liga si el modelo tiene parámetros para ella, si no global.
+  // Tasa base: liga exacta → familia de liga → global (parche v1.1).
   let muH = modelo.muHomeGlobal;
   let muA = modelo.muAwayGlobal;
   const usaLigaEspecifica = Boolean(liga && ligas[liga]);
+  let origenMu = "global";
   if (usaLigaEspecifica) {
     muH = ligas[liga].muHome;
     muA = ligas[liga].muAway;
+    origenMu = "exacta";
+  } else if (liga) {
+    const f = mapaFamilias(modelo)[familiaLimpia(liga)];
+    if (f) {
+      muH = f.muHome;
+      muA = f.muAway;
+      origenMu = "familia";
+    }
   }
 
   const aH = att[home] ?? 0;
@@ -230,8 +285,13 @@ function predecir(modelo, { home, away, liga }) {
   const aA = att[away] ?? 0;
   const dA = def[away] ?? 0;
 
-  const lambdaHome = Math.exp(Math.log(muH) + aH - dA);
-  const lambdaAway = Math.exp(Math.log(muA) + aA - dH);
+  let lambdaHome = Math.exp(Math.log(muH) + aH - dA);
+  let lambdaAway = Math.exp(Math.log(muA) + aA - dH);
+  const lambdaCapped = lambdaHome > LAMBDA_MAX || lambdaAway > LAMBDA_MAX;
+  if (lambdaCapped) {
+    lambdaHome = Math.min(lambdaHome, LAMBDA_MAX);
+    lambdaAway = Math.min(lambdaAway, LAMBDA_MAX);
+  }
 
   const { home: pH, draw: pD, away: pA } = probsDesdeLambdas(lambdaHome, lambdaAway);
   const pct = aPorcentajes(pH, pD, pA, 1);
@@ -244,6 +304,8 @@ function predecir(modelo, { home, away, liga }) {
       muHome: Math.round(muH * 1000) / 1000,
       muAway: Math.round(muA * 1000) / 1000,
       usaLigaEspecifica,
+      origenMu,
+      lambdaCapped,
       attHome: Math.round(aH * 1000) / 1000,
       defHome: Math.round(dH * 1000) / 1000,
       attAway: Math.round(aA * 1000) / 1000,

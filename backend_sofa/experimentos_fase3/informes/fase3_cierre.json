@@ -1,0 +1,327 @@
+{
+  "generado": "2026-09-29T00:49:09.946Z",
+  "nota": "CIERRE DE FASE 3 — agregación de informes ya validados (sanidades 6/6 y hashes 22/22 en cada ejecución). Sin reentrenamiento, sin TEST, sin datos nuevos. Todo cifra procedente de informes/fase3_*.json.",
+  "tablaComparativa": [
+    {
+      "id": "V1",
+      "desc": "base V1 (SPEC30) = producción",
+      "accuracy": 0.4659,
+      "logLoss": 1.11,
+      "brier": 0.6582,
+      "ece": 0.2288,
+      "dLL_vs_V1": 0,
+      "estado": "producción actual"
+    },
+    {
+      "id": "A",
+      "desc": "V1 + Elo K=32",
+      "accuracy": 0.4423,
+      "logLoss": 1.1045,
+      "brier": 0.6587,
+      "ece": 0.2112,
+      "dLL_vs_V1": -0.0055,
+      "estado": "CANDIDATO GANADOR"
+    },
+    {
+      "id": "F",
+      "desc": "V1 + localía ajustada",
+      "accuracy": 0.458,
+      "logLoss": 1.108,
+      "brier": 0.6575,
+      "ece": 0.2284,
+      "dLL_vs_V1": -0.002,
+      "estado": "descartado en 3.4"
+    },
+    {
+      "id": "AF",
+      "desc": "V1 + Elo + localía ajustada",
+      "accuracy": 0.4462,
+      "logLoss": 1.1026,
+      "brier": 0.6579,
+      "ece": 0.2192,
+      "dLL_vs_V1": -0.0074,
+      "estado": "descartado en 3.4"
+    },
+    {
+      "id": "DC",
+      "desc": "A + corrección Dixon-Coles (ρ̂)",
+      "accuracy": 0.4396,
+      "logLoss": 1.1068,
+      "brier": 0.659,
+      "ece": 0.2074,
+      "dLL_vs_V1": -0.0032,
+      "estado": "descartado en 3.6 (2/7)"
+    },
+    {
+      "id": "DAV",
+      "desc": "A + Davidson (ν̂)",
+      "accuracy": 0.4396,
+      "logLoss": 1.1056,
+      "brier": 0.6592,
+      "ece": 0.2063,
+      "dLL_vs_V1": -0.0044,
+      "estado": "descartado en 3.7 (3/7)"
+    }
+  ],
+  "ventanasLL": {
+    "V1": {
+      "cells": [
+        1.1687,
+        1.1527,
+        1.0842,
+        1.0283
+      ],
+      "oficial": 1.0751
+    },
+    "A": {
+      "cells": [
+        1.1669,
+        1.1437,
+        1.0676,
+        1.0328
+      ],
+      "oficial": 1.0686
+    },
+    "F": {
+      "cells": [
+        1.1626,
+        1.1547,
+        1.0804,
+        1.0273
+      ],
+      "oficial": 1.0764
+    },
+    "AF": {
+      "cells": [
+        1.1634,
+        1.1435,
+        1.0657,
+        1.0311
+      ],
+      "oficial": 1.0708
+    },
+    "DC": {
+      "cells": [
+        1.1671,
+        1.151,
+        1.0692,
+        1.0326
+      ],
+      "oficial": 1.0688
+    },
+    "DAV": {
+      "cells": [
+        1.1678,
+        1.1461,
+        1.0679,
+        1.0335
+      ],
+      "oficial": 1.0686
+    }
+  },
+  "experimentos": [
+    {
+      "fase": "3.1",
+      "titulo": "diagnóstico inicial",
+      "resultado": "ECE por buckets empeora con el tiempo; P(E) subestimada; ver informe fase3_1."
+    },
+    {
+      "fase": "3.2",
+      "titulo": "análisis de errores",
+      "resultado": "762 OOF: 407 errores; ~45% de los empates fallados; ver informe fase3_2."
+    },
+    {
+      "fase": "3.3",
+      "titulo": "experimentos A–G",
+      "resultado": "ganador = A (V1+Elo K=32): {\"id\":\"A\",\"desc\":\"V1 + Elo (K=32)\",\"deltaLL\":-0.0055,\"consistencia\":{\"rolling\":3,\"oficial\":true}}"
+    },
+    {
+      "fase": "3.4",
+      "titulo": "A+F (localía ajustada)",
+      "resultado": "A+F gana en LL pero empeora ECE vs A → NO es mejora clara; mantener A.",
+      "candidato": false
+    },
+    {
+      "fase": "3.5",
+      "titulo": "diagnóstico del empate",
+      "resultado": "sólo diagnóstico (sin modelo nuevo)",
+      "casos": {
+        "A_lambda": {
+          "desc": "Poisson genera λ poco adecuadas para equilibrados",
+          "evidencia": {
+            "ecePorBucket": {
+              "muy pequeña": {
+                "v1": 0.0496,
+                "a": 0.0475
+              },
+              "pequeña": {
+                "v1": 0.033,
+                "a": 0.0491
+              },
+              "media": {
+                "v1": 0.1366,
+                "a": 0.1384
+              },
+              "grande": {
+                "v1": 0.0851,
+                "a": 0.088
+              },
+              "muy grande": {
+                "v1": 0.0937,
+                "a": 0.0724
+              }
+            },
+            "frecVsPEquilib": {
+              "bucket0": {
+                "frecReal": 0.2368,
+                "pEV1": 27.5513,
+                "pEA": 27.3349
+              }
+            },
+            "gapDeltaL": [
+              {
+                "bucket": "0.0-0.2",
+                "n": 114,
+                "empatesReales": 34,
+                "frecReal": 0.2982,
+                "pEV1": 36.6114,
+                "pEA": 36.4746
+              },
+              {
+                "bucket": "0.2-0.4",
+                "n": 105,
+                "empatesReales": 22,
+                "frecReal": 0.2095,
+                "pEV1": 32.3686,
+                "pEA": 32.3124
+              },
+              {
+                "bucket": "0.4-0.6",
+                "n": 124,
+                "empatesReales": 41,
+                "frecReal": 0.3306,
+                "pEV1": 28.329,
+                "pEA": 28.4855
+              },
+              {
+                "bucket": "0.6-1.0",
+                "n": 149,
+                "empatesReales": 43,
+                "frecReal": 0.2886,
+                "pEV1": 26.3128,
+                "pEA": 27.2846
+              },
+              {
+                "bucket": "1.0-∞",
+                "n": 270,
+                "empatesReales": 60,
+                "frecReal": 0.2222,
+                "pEV1": 16.1633,
+                "pEA": 18.6256
+              }
+            ]
+          }
+        },
+        "B_conversion": {
+          "desc": "λ razonables pero conversión λ→1X2 subestima el empate",
+          "evidencia": {
+            "difConvPromPts": 0.0316,
+            "difConvMaxPts": 0.1597
+          }
+        },
+        "C_argmax": {
+          "desc": "P(E) razonablemente calibrada pero argmax favorece H/A",
+          "evidencia": {
+            "sumaEsperadaVsReal": {
+              "V1": 193.699,
+              "A": 201.774,
+              "reales": 200
+            },
+            "eArgmaxEnEmpates": {
+              "V1": 17,
+              "A": 18
+            },
+            "gapMediano": {
+              "V1": 25.55,
+              "A": 22.45
+            },
+            "cerca10": {
+              "V1": 0.165,
+              "A": 0.185
+            },
+            "separacion": {
+              "v1": 1.4002,
+              "a": 1.0745
+            }
+          }
+        },
+        "D_dificil": {
+          "desc": "Empates intrínsecamente difíciles sin señal fuerte",
+          "evidencia": {
+            "separacion": {
+              "v1": 1.4002,
+              "a": 1.0745
+            },
+            "recallE": {
+              "V1": 0.085,
+              "A": 0.09
+            },
+            "llEmpates": {
+              "V1": 1.4266,
+              "A": 1.3758
+            }
+          }
+        }
+      }
+    },
+    {
+      "fase": "3.6",
+      "titulo": "Experimento 1: Dixon-Coles",
+      "resultado": "DC-A NO es mejora clara sobre A (2/7 señales; decisión sólo con eval/OOF) → DESCARTAR; mantener A.",
+      "senales": "2/7",
+      "candidato": false
+    },
+    {
+      "fase": "3.7",
+      "titulo": "Experimento 2: Davidson",
+      "resultado": "DAV-A NO es mejora clara sobre A (3/7 señales; decisión sólo con eval/OOF) → DESCARTAR; mantener A.",
+      "senales": "3/7",
+      "candidato": false
+    }
+  ],
+  "candidato": {
+    "modelo": "A (V1 + Elo K=32)",
+    "pooled": {
+      "logLoss": 1.1045,
+      "brier": 0.6587,
+      "ece": 0.2112,
+      "accuracy": 0.4423
+    },
+    "vsV1": {
+      "dLL": -0.0055,
+      "dBrier": 0.0005,
+      "dECE": -0.0176
+    },
+    "consistencia": {
+      "rolling": 3,
+      "oficial": true
+    },
+    "porque": "único cambio con mejora clara y consistente fuera de muestra (3.3); A+F (3.4), Dixon-Coles (3.6) y Davidson (3.7) no superaron el criterio de 7 señales sobre eval/OOF."
+  },
+  "problemasAbiertos": {
+    "composicion00_11": "CASO A de 3.5: 0-0 sobreestimado (obs 50 vs esp ~95) y 1-1 subestimado (obs 107 vs esp ~73); DC y Davidson NO lo corrigen (0-0 y 1-1 se mueven juntos o en proporción).",
+    "sinSenalEmpate": "CASO D: la separación P(E)|emp−|no≈ 1.1 pts apenas se mueve con cualquier transformación de la matriz; el problema es estructural de la familia Poisson+correlación.",
+    "argmax": "CASO C: en empates el argmax elige local/visita en ~63-68/200 casos; la P(E) correcta no gana la carrera de argmax.",
+    "pipeline": "CASO B descartado (conversión λ→1X2 exacta ≤0.16 pt): el problema no es el pipeline."
+  },
+  "siguiente": "Fase 4: evaluación ÚNICA en TEST (378 partidos, 2026-06-19…2026-09-27) de V1 vs A (entrenados sobre TRAIN+VAL completo); si A supera a V1, promoción a producción a prueba de hashes.",
+  "referencias": [
+    "fase3_1_diagnostico.json",
+    "fase3_2_errores.json",
+    "fase3_3_experimentos.json",
+    "fase3_4_af.json",
+    "fase3_5_empates.json",
+    "fase3_6_dixoncoles.json",
+    "fase3_7_davidson.json"
+  ]
+}

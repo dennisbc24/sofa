@@ -17,6 +17,8 @@ import { Equipos } from './components/Equipos.jsx'
 import { TablaProbabilidades } from './components/TablaProbabilidades.jsx'
 import { TablaProbabilidadesOver } from './components/TablaProbabilidadesOver.jsx'
 import { AnalisisPredictivo } from './components/AnalisisPredictivo.jsx'
+import { Prediccion2T } from './components/Prediccion2T.jsx'
+import { SubirEstadisticas } from './components/SubirEstadisticas.jsx'
 
 function App() {
   const [vista, setVista] = useState("analisis1")
@@ -101,6 +103,10 @@ function App() {
         <Equipos />
       ) : vista === "predictivo" ? (
         <AnalisisPredictivo />
+      ) : vista === "prediccion2t" ? (
+        <Prediccion2T />
+      ) : vista === "subir" ? (
+        <SubirEstadisticas />
       ) : (
         <>
           <h2 className="view-title">Corners y goles</h2>

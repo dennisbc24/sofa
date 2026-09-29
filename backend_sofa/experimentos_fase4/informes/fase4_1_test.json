@@ -1,0 +1,7376 @@
+{
+  "generado": "2026-09-29T00:56:37.598Z",
+  "nota": "FASE 4 — evaluación ÚNICA en TEST (378). V1 en TEST ya estaba registrado en backtest.test desde Fase 1 (réplica como sanidad); la evaluación de A es PRIMERA y única, sin shopping de variantes. Modelos refit sobre TV (1523, ≤2026-06-18); Elo TEST en pasada cronológica con ratings previos. Criterio pre-registrado en la cabecera del script.",
+  "splits": {
+    "train": 1159,
+    "val": 364,
+    "test": 378,
+    "rangoTest": [
+      "2026-06-19",
+      "2026-09-27"
+    ]
+  },
+  "sanidades": {
+    "tvDrift": true,
+    "testDrift": true,
+    "v1ParamsIguales": true,
+    "v1TestReplica": true,
+    "v1RefitIgualProd": true,
+    "aOficialReproducido": true,
+    "aBetaFinito": true,
+    "aEntreno1523": true
+  },
+  "backtestTestRegistradoFase1": {
+    "accuracy": 0.5503,
+    "logLoss": 0.9719,
+    "brier": 0.578,
+    "ece": 0.0673,
+    "baselineTest": 0.4524
+  },
+  "modelos": {
+    "V1": {
+      "desc": "V1 (refit TV=1523)",
+      "metricas": {
+        "n": 378,
+        "accuracy": 0.5503,
+        "logLoss": 0.9719,
+        "brier": 0.578,
+        "probRealMedia": 0.4252,
+        "ece": 0.0673,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 238,
+            "probPredicha": 0.1376,
+            "frecuenciaReal": 0.1765
+          },
+          {
+            "rango": "20-40%",
+            "n": 565,
+            "probPredicha": 0.2801,
+            "frecuenciaReal": 0.2619
+          },
+          {
+            "rango": "40-60%",
+            "n": 218,
+            "probPredicha": 0.4888,
+            "frecuenciaReal": 0.5046
+          },
+          {
+            "rango": "60-80%",
+            "n": 95,
+            "probPredicha": 0.6816,
+            "frecuenciaReal": 0.6737
+          },
+          {
+            "rango": "80-100%",
+            "n": 18,
+            "probPredicha": 0.8718,
+            "frecuenciaReal": 0.7778
+          }
+        ]
+      },
+      "ll": {
+        "empates": 1.4021,
+        "local": 0.6765,
+        "visita": 1.1057
+      },
+      "nEmpates": 77,
+      "sumaPE": 92.83,
+      "composicion": {
+        "observado": {
+          "0-0": 23,
+          "1-1": 35,
+          "2-2": 17
+        },
+        "esperado": {
+          "0-0": 34.58,
+          "1-1": 38.65,
+          "2-2": 15.53
+        }
+      },
+      "real": {
+        "home": 171,
+        "draw": 77,
+        "away": 130
+      }
+    },
+    "A": {
+      "desc": "A = V1 + Elo K=32 (refit TV=1523)",
+      "beta": -0.8456,
+      "metricas": {
+        "n": 378,
+        "accuracy": 0.5423,
+        "logLoss": 1.0002,
+        "brier": 0.5973,
+        "probRealMedia": 0.407,
+        "ece": 0.1238,
+        "calibration": [
+          {
+            "rango": "0-20%",
+            "n": 198,
+            "probPredicha": 0.1461,
+            "frecuenciaReal": 0.197
+          },
+          {
+            "rango": "20-40%",
+            "n": 612,
+            "probPredicha": 0.2817,
+            "frecuenciaReal": 0.2582
+          },
+          {
+            "rango": "40-60%",
+            "n": 237,
+            "probPredicha": 0.488,
+            "frecuenciaReal": 0.5443
+          },
+          {
+            "rango": "60-80%",
+            "n": 76,
+            "probPredicha": 0.6773,
+            "frecuenciaReal": 0.5789
+          },
+          {
+            "rango": "80-100%",
+            "n": 11,
+            "probPredicha": 0.8647,
+            "frecuenciaReal": 0.7273
+          }
+        ]
+      },
+      "ll": {
+        "empates": 1.38,
+        "local": 0.7062,
+        "visita": 1.1622
+      },
+      "nEmpates": 77,
+      "sumaPE": 95.64,
+      "composicion": {
+        "observado": {
+          "0-0": 23,
+          "1-1": 35,
+          "2-2": 17
+        },
+        "esperado": {
+          "0-0": 35.58,
+          "1-1": 39.85,
+          "2-2": 16.02
+        }
+      },
+      "real": {
+        "home": 171,
+        "draw": 77,
+        "away": 130
+      }
+    }
+  },
+  "deltas": {
+    "dLL": 0.0283,
+    "dBrier": 0.0193,
+    "dECE": 0.0565,
+    "dAcc": -0.008
+  },
+  "pareado": {
+    "mediaDeltaLL": 0.0283,
+    "sd": 0.1403,
+    "se": 0.0072,
+    "ic95": [
+      0.0142,
+      0.0425
+    ],
+    "ganaA": 153,
+    "ganaV1": 216,
+    "empate": 9,
+    "significativo": true
+  },
+  "criterio": {
+    "promocion": "ΔLL≤−0.005 y ΔBrier≤0 y ΔAcc≥−0.005 y ΔECE≤+0.005",
+    "marginal": "−0.005<ΔLL<0 → no promover",
+    "noMejora": "ΔLL≥0 → mantener V1"
+  },
+  "decision": "NO_MEJORA_MANTENER_V1",
+  "items": [
+    {
+      "id": "15186490",
+      "fecha": "2026-06-19",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 40.9,
+        "draw": 30.4,
+        "away": 28.7
+      },
+      "probsA": {
+        "home": 43.3,
+        "draw": 30.1,
+        "away": 26.6
+      },
+      "llV1": 0.894,
+      "llA": 0.837
+    },
+    {
+      "id": "15186859",
+      "fecha": "2026-06-19",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 23.8,
+        "draw": 34.4,
+        "away": 41.8
+      },
+      "probsA": {
+        "home": 25.1,
+        "draw": 34.5,
+        "away": 40.4
+      },
+      "llV1": 0.8723,
+      "llA": 0.9063
+    },
+    {
+      "id": "15186878",
+      "fecha": "2026-06-19",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 56.8,
+        "draw": 22.8,
+        "away": 20.4
+      },
+      "probsA": {
+        "home": 53,
+        "draw": 24.1,
+        "away": 22.9
+      },
+      "llV1": 0.5656,
+      "llA": 0.6349
+    },
+    {
+      "id": "15186856",
+      "fecha": "2026-06-20",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 92.2,
+        "draw": 6,
+        "away": 1.8
+      },
+      "probsA": {
+        "home": 87.7,
+        "draw": 9.2,
+        "away": 3.1
+      },
+      "llV1": 0.0812,
+      "llA": 0.1312
+    },
+    {
+      "id": "15186879",
+      "fecha": "2026-06-20",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 47.9,
+        "draw": 22.3,
+        "away": 29.8
+      },
+      "probsA": {
+        "home": 45.9,
+        "draw": 22.6,
+        "away": 31.5
+      },
+      "llV1": 1.2107,
+      "llA": 1.1552
+    },
+    {
+      "id": "15186905",
+      "fecha": "2026-06-20",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 13.8,
+        "draw": 22.9,
+        "away": 63.3
+      },
+      "probsA": {
+        "home": 16.2,
+        "draw": 24.1,
+        "away": 59.7
+      },
+      "llV1": 1.9805,
+      "llA": 1.8202
+    },
+    {
+      "id": "15186957",
+      "fecha": "2026-06-20",
+      "marcador": "5-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 53.1,
+        "draw": 20.3,
+        "away": 26.6
+      },
+      "probsA": {
+        "home": 52.5,
+        "draw": 20.4,
+        "away": 27.1
+      },
+      "llV1": 0.633,
+      "llA": 0.6444
+    },
+    {
+      "id": "16309146",
+      "fecha": "2026-06-20",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "La Liga Dos 2025",
+      "probsV1": {
+        "home": 10.1,
+        "draw": 32.3,
+        "away": 57.6
+      },
+      "probsA": {
+        "home": 12,
+        "draw": 33.9,
+        "away": 54.1
+      },
+      "llV1": 0.5516,
+      "llA": 0.6143
+    },
+    {
+      "id": "15186499",
+      "fecha": "2026-06-21",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 78.2,
+        "draw": 12.5,
+        "away": 9.3
+      },
+      "probsA": {
+        "home": 71.7,
+        "draw": 15.3,
+        "away": 13
+      },
+      "llV1": 2.0794,
+      "llA": 1.8773
+    },
+    {
+      "id": "15186800",
+      "fecha": "2026-06-21",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 6.5,
+        "draw": 82.9,
+        "away": 10.6
+      },
+      "probsA": {
+        "home": 6.5,
+        "draw": 82.9,
+        "away": 10.6
+      },
+      "llV1": 0.1875,
+      "llA": 0.1875
+    },
+    {
+      "id": "15186840",
+      "fecha": "2026-06-21",
+      "marcador": "4-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 81.6,
+        "draw": 10.9,
+        "away": 7.5
+      },
+      "probsA": {
+        "home": 75.8,
+        "draw": 13.5,
+        "away": 10.7
+      },
+      "llV1": 0.2033,
+      "llA": 0.2771
+    },
+    {
+      "id": "15186906",
+      "fecha": "2026-06-21",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 92.3,
+        "draw": 5.4,
+        "away": 2.3
+      },
+      "probsA": {
+        "home": 92.6,
+        "draw": 5.2,
+        "away": 2.2
+      },
+      "llV1": 2.9188,
+      "llA": 2.9565
+    },
+    {
+      "id": "15186963",
+      "fecha": "2026-06-21",
+      "marcador": "0-4",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 13.4,
+        "draw": 40.9,
+        "away": 45.7
+      },
+      "probsA": {
+        "home": 16.1,
+        "draw": 42.7,
+        "away": 41.2
+      },
+      "llV1": 0.7831,
+      "llA": 0.8867
+    },
+    {
+      "id": "15186502",
+      "fecha": "2026-06-22",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 69.7,
+        "draw": 19.7,
+        "away": 10.6
+      },
+      "probsA": {
+        "home": 58.4,
+        "draw": 24.2,
+        "away": 17.4
+      },
+      "llV1": 0.361,
+      "llA": 0.5379
+    },
+    {
+      "id": "15186769",
+      "fecha": "2026-06-22",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 87.3,
+        "draw": 8.7,
+        "away": 4
+      },
+      "probsA": {
+        "home": 82.6,
+        "draw": 11.4,
+        "away": 6
+      },
+      "llV1": 0.1358,
+      "llA": 0.1912
+    },
+    {
+      "id": "15186827",
+      "fecha": "2026-06-22",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 25.7,
+        "draw": 42.5,
+        "away": 31.8
+      },
+      "probsA": {
+        "home": 28.9,
+        "draw": 42.5,
+        "away": 28.6
+      },
+      "llV1": 1.1457,
+      "llA": 1.2518
+    },
+    {
+      "id": "15186520",
+      "fecha": "2026-06-23",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 20.3,
+        "draw": 18.7,
+        "away": 61
+      },
+      "probsA": {
+        "home": 21.3,
+        "draw": 18.8,
+        "away": 59.9
+      },
+      "llV1": 0.4943,
+      "llA": 0.5125
+    },
+    {
+      "id": "15186672",
+      "fecha": "2026-06-23",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 77.2,
+        "draw": 14.5,
+        "away": 8.3
+      },
+      "probsA": {
+        "home": 72.3,
+        "draw": 17,
+        "away": 10.7
+      },
+      "llV1": 1.931,
+      "llA": 1.772
+    },
+    {
+      "id": "15186740",
+      "fecha": "2026-06-23",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 28.9,
+        "draw": 44.1,
+        "away": 27
+      },
+      "probsA": {
+        "home": 34.3,
+        "draw": 43.3,
+        "away": 22.4
+      },
+      "llV1": 1.3093,
+      "llA": 1.4961
+    },
+    {
+      "id": "15186770",
+      "fecha": "2026-06-23",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 70.7,
+        "draw": 15.7,
+        "away": 13.6
+      },
+      "probsA": {
+        "home": 65.1,
+        "draw": 17.5,
+        "away": 17.4
+      },
+      "llV1": 0.3467,
+      "llA": 0.4292
+    },
+    {
+      "id": "15186858",
+      "fecha": "2026-06-23",
+      "marcador": "5-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 92,
+        "draw": 5.9,
+        "away": 2.1
+      },
+      "probsA": {
+        "home": 84.6,
+        "draw": 10.5,
+        "away": 4.9
+      },
+      "llV1": 0.0834,
+      "llA": 0.1672
+    },
+    {
+      "id": "15186713",
+      "fecha": "2026-06-24",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 48.6,
+        "draw": 29.1,
+        "away": 22.3
+      },
+      "probsA": {
+        "home": 49.8,
+        "draw": 28.5,
+        "away": 21.7
+      },
+      "llV1": 0.7215,
+      "llA": 0.6972
+    },
+    {
+      "id": "15186821",
+      "fecha": "2026-06-24",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 41.2,
+        "draw": 25,
+        "away": 33.8
+      },
+      "probsA": {
+        "home": 47,
+        "draw": 24.5,
+        "away": 28.5
+      },
+      "llV1": 0.8867,
+      "llA": 0.755
+    },
+    {
+      "id": "15186829",
+      "fecha": "2026-06-24",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 65.3,
+        "draw": 21.5,
+        "away": 13.2
+      },
+      "probsA": {
+        "home": 63.5,
+        "draw": 22.1,
+        "away": 14.4
+      },
+      "llV1": 0.4262,
+      "llA": 0.4541
+    },
+    {
+      "id": "15186861",
+      "fecha": "2026-06-24",
+      "marcador": "0-3",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 28.4,
+        "draw": 26,
+        "away": 45.6
+      },
+      "probsA": {
+        "home": 33.4,
+        "draw": 26.5,
+        "away": 40.1
+      },
+      "llV1": 0.7853,
+      "llA": 0.9138
+    },
+    {
+      "id": "15186864",
+      "fecha": "2026-06-24",
+      "marcador": "4-2",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 84.5,
+        "draw": 12.9,
+        "away": 2.6
+      },
+      "probsA": {
+        "home": 76.6,
+        "draw": 18.7,
+        "away": 4.7
+      },
+      "llV1": 0.1684,
+      "llA": 0.2666
+    },
+    {
+      "id": "15186732",
+      "fecha": "2026-06-25",
+      "marcador": "0-3",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 45.1,
+        "draw": 28.1,
+        "away": 26.8
+      },
+      "probsA": {
+        "home": 50.5,
+        "draw": 27.1,
+        "away": 22.4
+      },
+      "llV1": 1.3168,
+      "llA": 1.4961
+    },
+    {
+      "id": "15186744",
+      "fecha": "2026-06-25",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 23.3,
+        "draw": 29.5,
+        "away": 47.2
+      },
+      "probsA": {
+        "home": 26,
+        "draw": 30,
+        "away": 44
+      },
+      "llV1": 1.4567,
+      "llA": 1.3471
+    },
+    {
+      "id": "15186907",
+      "fecha": "2026-06-25",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 42.3,
+        "draw": 27.7,
+        "away": 30
+      },
+      "probsA": {
+        "home": 47.4,
+        "draw": 26.7,
+        "away": 25.9
+      },
+      "llV1": 0.8604,
+      "llA": 0.7465
+    },
+    {
+      "id": "15186908",
+      "fecha": "2026-06-25",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 0.4,
+        "draw": 1.4,
+        "away": 98.2
+      },
+      "probsA": {
+        "home": 0.5,
+        "draw": 2,
+        "away": 97.5
+      },
+      "llV1": 0.0182,
+      "llA": 0.0253
+    },
+    {
+      "id": "15186972",
+      "fecha": "2026-06-25",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 66.1,
+        "draw": 19.9,
+        "away": 14
+      },
+      "probsA": {
+        "home": 55.3,
+        "draw": 23.6,
+        "away": 21.1
+      },
+      "llV1": 1.6145,
+      "llA": 1.4439
+    },
+    {
+      "id": "15186973",
+      "fecha": "2026-06-25",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 23.1,
+        "draw": 36.4,
+        "away": 40.5
+      },
+      "probsA": {
+        "home": 25.9,
+        "draw": 36.8,
+        "away": 37.3
+      },
+      "llV1": 0.9039,
+      "llA": 0.9862
+    },
+    {
+      "id": "15186537",
+      "fecha": "2026-06-26",
+      "marcador": "1-4",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 30.2,
+        "draw": 19.7,
+        "away": 50.1
+      },
+      "probsA": {
+        "home": 33.1,
+        "draw": 20.1,
+        "away": 46.8
+      },
+      "llV1": 0.6911,
+      "llA": 0.7593
+    },
+    {
+      "id": "15186771",
+      "fecha": "2026-06-26",
+      "marcador": "5-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 53.5,
+        "draw": 24.2,
+        "away": 22.3
+      },
+      "probsA": {
+        "home": 55.1,
+        "draw": 23.6,
+        "away": 21.3
+      },
+      "llV1": 0.6255,
+      "llA": 0.596
+    },
+    {
+      "id": "15186887",
+      "fecha": "2026-06-26",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 38.3,
+        "draw": 23.4,
+        "away": 38.3
+      },
+      "probsA": {
+        "home": 42,
+        "draw": 23.4,
+        "away": 34.6
+      },
+      "llV1": 0.9597,
+      "llA": 0.8675
+    },
+    {
+      "id": "15186891",
+      "fecha": "2026-06-26",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 48.6,
+        "draw": 24.3,
+        "away": 27.1
+      },
+      "probsA": {
+        "home": 41.1,
+        "draw": 25.5,
+        "away": 33.4
+      },
+      "llV1": 1.4147,
+      "llA": 1.3665
+    },
+    {
+      "id": "15186624",
+      "fecha": "2026-06-27",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 62.2,
+        "draw": 20.2,
+        "away": 17.6
+      },
+      "probsA": {
+        "home": 61.1,
+        "draw": 20.6,
+        "away": 18.3
+      },
+      "llV1": 0.4748,
+      "llA": 0.4927
+    },
+    {
+      "id": "15186676",
+      "fecha": "2026-06-27",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 9.1,
+        "draw": 13.1,
+        "away": 77.8
+      },
+      "probsA": {
+        "home": 14,
+        "draw": 16.4,
+        "away": 69.6
+      },
+      "llV1": 0.251,
+      "llA": 0.3624
+    },
+    {
+      "id": "15186696",
+      "fecha": "2026-06-27",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 40.5,
+        "draw": 25.9,
+        "away": 33.6
+      },
+      "probsA": {
+        "home": 44.8,
+        "draw": 25.5,
+        "away": 29.7
+      },
+      "llV1": 1.3509,
+      "llA": 1.3665
+    },
+    {
+      "id": "15186717",
+      "fecha": "2026-06-27",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 78.4,
+        "draw": 15.6,
+        "away": 6
+      },
+      "probsA": {
+        "home": 71.6,
+        "draw": 19.4,
+        "away": 9
+      },
+      "llV1": 0.2433,
+      "llA": 0.3341
+    },
+    {
+      "id": "15186803",
+      "fecha": "2026-06-27",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 23.3,
+        "draw": 71,
+        "away": 5.7
+      },
+      "probsA": {
+        "home": 20.3,
+        "draw": 72.9,
+        "away": 6.8
+      },
+      "llV1": 0.3425,
+      "llA": 0.3161
+    },
+    {
+      "id": "15186822",
+      "fecha": "2026-06-27",
+      "marcador": "1-5",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 29.4,
+        "draw": 32,
+        "away": 38.6
+      },
+      "probsA": {
+        "home": 34,
+        "draw": 32.3,
+        "away": 33.7
+      },
+      "llV1": 0.9519,
+      "llA": 1.0877
+    },
+    {
+      "id": "15186828",
+      "fecha": "2026-06-27",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 67.6,
+        "draw": 20.4,
+        "away": 12
+      },
+      "probsA": {
+        "home": 58.5,
+        "draw": 24.2,
+        "away": 17.3
+      },
+      "llV1": 1.5896,
+      "llA": 1.4188
+    },
+    {
+      "id": "15186841",
+      "fecha": "2026-06-27",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 25.8,
+        "draw": 26.8,
+        "away": 47.4
+      },
+      "probsA": {
+        "home": 27.2,
+        "draw": 27.1,
+        "away": 45.7
+      },
+      "llV1": 0.7465,
+      "llA": 0.7831
+    },
+    {
+      "id": "12813000",
+      "fecha": "2026-06-28",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 25.1,
+        "draw": 35.8,
+        "away": 39.1
+      },
+      "probsA": {
+        "home": 23.9,
+        "draw": 35.3,
+        "away": 40.8
+      },
+      "llV1": 0.939,
+      "llA": 0.8965
+    },
+    {
+      "id": "15186734",
+      "fecha": "2026-06-28",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 7.9,
+        "draw": 23.7,
+        "away": 68.4
+      },
+      "probsA": {
+        "home": 15.1,
+        "draw": 31.3,
+        "away": 53.6
+      },
+      "llV1": 0.3798,
+      "llA": 0.6236
+    },
+    {
+      "id": "15186747",
+      "fecha": "2026-06-28",
+      "marcador": "3-3",
+      "real": "draw",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 24,
+        "draw": 33.5,
+        "away": 42.5
+      },
+      "probsA": {
+        "home": 18.4,
+        "draw": 31,
+        "away": 50.6
+      },
+      "llV1": 1.0936,
+      "llA": 1.1712
+    },
+    {
+      "id": "12813012",
+      "fecha": "2026-06-29",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 39.3,
+        "draw": 29,
+        "away": 31.7
+      },
+      "probsA": {
+        "home": 38.5,
+        "draw": 29.1,
+        "away": 32.4
+      },
+      "llV1": 0.9339,
+      "llA": 0.9545
+    },
+    {
+      "id": "12812989",
+      "fecha": "2026-06-30",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 85.9,
+        "draw": 10.3,
+        "away": 3.8
+      },
+      "probsA": {
+        "home": 80.8,
+        "draw": 13.4,
+        "away": 5.8
+      },
+      "llV1": 3.2702,
+      "llA": 2.8473
+    },
+    {
+      "id": "12812995",
+      "fecha": "2026-06-30",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 85.6,
+        "draw": 8.4,
+        "away": 6
+      },
+      "probsA": {
+        "home": 72.8,
+        "draw": 13.7,
+        "away": 13.5
+      },
+      "llV1": 0.1555,
+      "llA": 0.3175
+    },
+    {
+      "id": "12813001",
+      "fecha": "2026-07-01",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 26.2,
+        "draw": 37.5,
+        "away": 36.3
+      },
+      "probsA": {
+        "home": 25.3,
+        "draw": 37.5,
+        "away": 37.2
+      },
+      "llV1": 1.3394,
+      "llA": 1.3744
+    },
+    {
+      "id": "12813020",
+      "fecha": "2026-07-01",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 55.1,
+        "draw": 27.7,
+        "away": 17.2
+      },
+      "probsA": {
+        "home": 53.8,
+        "draw": 28.1,
+        "away": 18.1
+      },
+      "llV1": 0.596,
+      "llA": 0.6199
+    },
+    {
+      "id": "12812992",
+      "fecha": "2026-07-02",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 92.7,
+        "draw": 5.3,
+        "away": 2
+      },
+      "probsA": {
+        "home": 90,
+        "draw": 7,
+        "away": 3
+      },
+      "llV1": 0.0758,
+      "llA": 0.1054
+    },
+    {
+      "id": "12812997",
+      "fecha": "2026-07-02",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 65.2,
+        "draw": 19.8,
+        "away": 15
+      },
+      "probsA": {
+        "home": 58.8,
+        "draw": 22.1,
+        "away": 19.1
+      },
+      "llV1": 0.4277,
+      "llA": 0.531
+    },
+    {
+      "id": "12813004",
+      "fecha": "2026-07-02",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 70,
+        "draw": 15.5,
+        "away": 14.5
+      },
+      "probsA": {
+        "home": 60.6,
+        "draw": 18.4,
+        "away": 21
+      },
+      "llV1": 0.3567,
+      "llA": 0.5009
+    },
+    {
+      "id": "12813019",
+      "fecha": "2026-07-03",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 46.3,
+        "draw": 30.3,
+        "away": 23.4
+      },
+      "probsA": {
+        "home": 55.5,
+        "draw": 27.5,
+        "away": 17
+      },
+      "llV1": 0.77,
+      "llA": 0.5888
+    },
+    {
+      "id": "12813009",
+      "fecha": "2026-07-04",
+      "marcador": "0-3",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 23.1,
+        "draw": 35.4,
+        "away": 41.5
+      },
+      "probsA": {
+        "home": 27.1,
+        "draw": 36.2,
+        "away": 36.7
+      },
+      "llV1": 0.8795,
+      "llA": 1.0024
+    },
+    {
+      "id": "12813011",
+      "fecha": "2026-07-04",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 70.9,
+        "draw": 17.1,
+        "away": 12
+      },
+      "probsA": {
+        "home": 66,
+        "draw": 19.1,
+        "away": 14.9
+      },
+      "llV1": 0.3439,
+      "llA": 0.4155
+    },
+    {
+      "id": "12813006",
+      "fecha": "2026-07-05",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 56.1,
+        "draw": 19.2,
+        "away": 24.7
+      },
+      "probsA": {
+        "home": 52,
+        "draw": 19.9,
+        "away": 28.1
+      },
+      "llV1": 1.3984,
+      "llA": 1.2694
+    },
+    {
+      "id": "12812990",
+      "fecha": "2026-07-06",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 52.4,
+        "draw": 22.2,
+        "away": 25.4
+      },
+      "probsA": {
+        "home": 49.8,
+        "draw": 22.8,
+        "away": 27.4
+      },
+      "llV1": 1.3704,
+      "llA": 1.2946
+    },
+    {
+      "id": "12813007",
+      "fecha": "2026-07-06",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 20.7,
+        "draw": 28.9,
+        "away": 50.4
+      },
+      "probsA": {
+        "home": 20.4,
+        "draw": 28.9,
+        "away": 50.7
+      },
+      "llV1": 0.6852,
+      "llA": 0.6792
+    },
+    {
+      "id": "12812993",
+      "fecha": "2026-07-07",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 44.4,
+        "draw": 40.1,
+        "away": 15.5
+      },
+      "probsA": {
+        "home": 38.7,
+        "draw": 41.8,
+        "away": 19.5
+      },
+      "llV1": 0.8119,
+      "llA": 0.9493
+    },
+    {
+      "id": "12813002",
+      "fecha": "2026-07-07",
+      "marcador": "1-4",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 38.5,
+        "draw": 26.2,
+        "away": 35.3
+      },
+      "probsA": {
+        "home": 39.8,
+        "draw": 26.3,
+        "away": 33.9
+      },
+      "llV1": 1.0413,
+      "llA": 1.0818
+    },
+    {
+      "id": "12813016",
+      "fecha": "2026-07-09",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 58.1,
+        "draw": 24.2,
+        "away": 17.7
+      },
+      "probsA": {
+        "home": 55.6,
+        "draw": 25.1,
+        "away": 19.3
+      },
+      "llV1": 0.543,
+      "llA": 0.587
+    },
+    {
+      "id": "12812994",
+      "fecha": "2026-07-10",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 53,
+        "draw": 22.6,
+        "away": 24.4
+      },
+      "probsA": {
+        "home": 48.9,
+        "draw": 23.4,
+        "away": 27.7
+      },
+      "llV1": 0.6349,
+      "llA": 0.7154
+    },
+    {
+      "id": "12813008",
+      "fecha": "2026-07-14",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 64.4,
+        "draw": 17.1,
+        "away": 18.5
+      },
+      "probsA": {
+        "home": 61.9,
+        "draw": 17.8,
+        "away": 20.3
+      },
+      "llV1": 1.6874,
+      "llA": 1.5945
+    },
+    {
+      "id": "12812996",
+      "fecha": "2026-07-15",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "FIFA World Cup 2026",
+      "probsV1": {
+        "home": 36.6,
+        "draw": 31.5,
+        "away": 31.9
+      },
+      "probsA": {
+        "home": 41.9,
+        "draw": 30.7,
+        "away": 27.4
+      },
+      "llV1": 1.1426,
+      "llA": 1.2946
+    },
+    {
+      "id": "16281111",
+      "fecha": "2026-07-17",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 29.9,
+        "draw": 23.2,
+        "away": 46.9
+      },
+      "probsA": {
+        "home": 29,
+        "draw": 23.1,
+        "away": 47.9
+      },
+      "llV1": 1.461,
+      "llA": 1.4653
+    },
+    {
+      "id": "16281116",
+      "fecha": "2026-07-17",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 42.7,
+        "draw": 23.8,
+        "away": 33.5
+      },
+      "probsA": {
+        "home": 52.4,
+        "draw": 22.2,
+        "away": 25.4
+      },
+      "llV1": 0.851,
+      "llA": 0.6463
+    },
+    {
+      "id": "16281108",
+      "fecha": "2026-07-18",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 31.7,
+        "draw": 29.8,
+        "away": 38.5
+      },
+      "probsA": {
+        "home": 32.8,
+        "draw": 30,
+        "away": 37.2
+      },
+      "llV1": 0.9545,
+      "llA": 0.9889
+    },
+    {
+      "id": "16281110",
+      "fecha": "2026-07-18",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 54.2,
+        "draw": 21.8,
+        "away": 24
+      },
+      "probsA": {
+        "home": 51.8,
+        "draw": 22.3,
+        "away": 25.9
+      },
+      "llV1": 1.4271,
+      "llA": 1.3509
+    },
+    {
+      "id": "16281112",
+      "fecha": "2026-07-18",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 38.2,
+        "draw": 29.9,
+        "away": 31.9
+      },
+      "probsA": {
+        "home": 37.2,
+        "draw": 29.9,
+        "away": 32.9
+      },
+      "llV1": 1.2073,
+      "llA": 1.2073
+    },
+    {
+      "id": "16281113",
+      "fecha": "2026-07-18",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 39.1,
+        "draw": 28,
+        "away": 32.9
+      },
+      "probsA": {
+        "home": 35.1,
+        "draw": 28,
+        "away": 36.9
+      },
+      "llV1": 0.939,
+      "llA": 1.047
+    },
+    {
+      "id": "16281114",
+      "fecha": "2026-07-18",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 37.7,
+        "draw": 32.2,
+        "away": 30.1
+      },
+      "probsA": {
+        "home": 31.7,
+        "draw": 32.3,
+        "away": 36
+      },
+      "llV1": 0.9755,
+      "llA": 1.1489
+    },
+    {
+      "id": "16281115",
+      "fecha": "2026-07-19",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 55.7,
+        "draw": 26,
+        "away": 18.3
+      },
+      "probsA": {
+        "home": 53,
+        "draw": 27,
+        "away": 20
+      },
+      "llV1": 0.5852,
+      "llA": 0.6349
+    },
+    {
+      "id": "16281109",
+      "fecha": "2026-07-20",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 86.4,
+        "draw": 10,
+        "away": 3.6
+      },
+      "probsA": {
+        "home": 76.8,
+        "draw": 15.7,
+        "away": 7.5
+      },
+      "llV1": 0.1462,
+      "llA": 0.264
+    },
+    {
+      "id": "16251104",
+      "fecha": "2026-07-21",
+      "marcador": "0-3",
+      "real": "away",
+      "liga": "Copa Sudamericana 2026",
+      "probsV1": {
+        "home": 28.3,
+        "draw": 23.3,
+        "away": 48.4
+      },
+      "probsA": {
+        "home": 28.9,
+        "draw": 23.4,
+        "away": 47.7
+      },
+      "llV1": 0.7257,
+      "llA": 0.7402
+    },
+    {
+      "id": "16251102",
+      "fecha": "2026-07-22",
+      "marcador": "1-4",
+      "real": "away",
+      "liga": "Copa Sudamericana 2026",
+      "probsV1": {
+        "home": 26.1,
+        "draw": 20.6,
+        "away": 53.3
+      },
+      "probsA": {
+        "home": 23.2,
+        "draw": 20,
+        "away": 56.8
+      },
+      "llV1": 0.6292,
+      "llA": 0.5656
+    },
+    {
+      "id": "16251105",
+      "fecha": "2026-07-22",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Copa Sudamericana 2026",
+      "probsV1": {
+        "home": 62.8,
+        "draw": 19.5,
+        "away": 17.7
+      },
+      "probsA": {
+        "home": 65.8,
+        "draw": 18.5,
+        "away": 15.7
+      },
+      "llV1": 1.6348,
+      "llA": 1.6874
+    },
+    {
+      "id": "16251106",
+      "fecha": "2026-07-23",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Copa Sudamericana 2026",
+      "probsV1": {
+        "home": 65.6,
+        "draw": 23.2,
+        "away": 11.2
+      },
+      "probsA": {
+        "home": 63,
+        "draw": 24.6,
+        "away": 12.4
+      },
+      "llV1": 0.4216,
+      "llA": 0.462
+    },
+    {
+      "id": "16251107",
+      "fecha": "2026-07-23",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "Copa Sudamericana 2026",
+      "probsV1": {
+        "home": 78.3,
+        "draw": 16.5,
+        "away": 5.2
+      },
+      "probsA": {
+        "home": 77.9,
+        "draw": 17,
+        "away": 5.1
+      },
+      "llV1": 0.2446,
+      "llA": 0.2497
+    },
+    {
+      "id": "16251108",
+      "fecha": "2026-07-23",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "Copa Sudamericana 2026",
+      "probsV1": {
+        "home": 32.2,
+        "draw": 22.2,
+        "away": 45.6
+      },
+      "probsA": {
+        "home": 39.3,
+        "draw": 22.6,
+        "away": 38.1
+      },
+      "llV1": 1.5051,
+      "llA": 1.4872
+    },
+    {
+      "id": "16251101",
+      "fecha": "2026-07-24",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Copa Sudamericana 2026",
+      "probsV1": {
+        "home": 47.4,
+        "draw": 28.7,
+        "away": 23.9
+      },
+      "probsA": {
+        "home": 56.7,
+        "draw": 26,
+        "away": 17.3
+      },
+      "llV1": 0.7465,
+      "llA": 0.5674
+    },
+    {
+      "id": "16251103",
+      "fecha": "2026-07-24",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Copa Sudamericana 2026",
+      "probsV1": {
+        "home": 48.6,
+        "draw": 25.7,
+        "away": 25.7
+      },
+      "probsA": {
+        "home": 44.6,
+        "draw": 26.6,
+        "away": 28.8
+      },
+      "llV1": 0.7215,
+      "llA": 0.8074
+    },
+    {
+      "id": "16281126",
+      "fecha": "2026-07-24",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 43.7,
+        "draw": 27.3,
+        "away": 29
+      },
+      "probsA": {
+        "home": 52.9,
+        "draw": 25.4,
+        "away": 21.7
+      },
+      "llV1": 0.8278,
+      "llA": 0.6368
+    },
+    {
+      "id": "16280778",
+      "fecha": "2026-07-25",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 36.7,
+        "draw": 31.7,
+        "away": 31.6
+      },
+      "probsA": {
+        "home": 35,
+        "draw": 31.9,
+        "away": 33.1
+      },
+      "llV1": 1.0024,
+      "llA": 1.0498
+    },
+    {
+      "id": "16280780",
+      "fecha": "2026-07-25",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 65,
+        "draw": 21.6,
+        "away": 13.4
+      },
+      "probsA": {
+        "home": 63.3,
+        "draw": 22.3,
+        "away": 14.4
+      },
+      "llV1": 0.4308,
+      "llA": 0.4573
+    },
+    {
+      "id": "16280781",
+      "fecha": "2026-07-25",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 42.9,
+        "draw": 29.9,
+        "away": 27.2
+      },
+      "probsA": {
+        "home": 49.4,
+        "draw": 28.6,
+        "away": 22
+      },
+      "llV1": 0.8463,
+      "llA": 0.7052
+    },
+    {
+      "id": "16281117",
+      "fecha": "2026-07-25",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 50.4,
+        "draw": 23.5,
+        "away": 26.1
+      },
+      "probsA": {
+        "home": 48.4,
+        "draw": 23.8,
+        "away": 27.8
+      },
+      "llV1": 0.6852,
+      "llA": 0.7257
+    },
+    {
+      "id": "16281121",
+      "fecha": "2026-07-26",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 53.1,
+        "draw": 24.3,
+        "away": 22.6
+      },
+      "probsA": {
+        "home": 59.6,
+        "draw": 22.3,
+        "away": 18.1
+      },
+      "llV1": 1.4147,
+      "llA": 1.5006
+    },
+    {
+      "id": "16281122",
+      "fecha": "2026-07-26",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 15.3,
+        "draw": 28.6,
+        "away": 56.1
+      },
+      "probsA": {
+        "home": 22.1,
+        "draw": 32,
+        "away": 45.9
+      },
+      "llV1": 1.2518,
+      "llA": 1.1394
+    },
+    {
+      "id": "16281128",
+      "fecha": "2026-07-26",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 67.6,
+        "draw": 16.5,
+        "away": 15.9
+      },
+      "probsA": {
+        "home": 60.7,
+        "draw": 18.5,
+        "away": 20.8
+      },
+      "llV1": 0.3916,
+      "llA": 0.4992
+    },
+    {
+      "id": "16281120",
+      "fecha": "2026-07-27",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 55.5,
+        "draw": 22.9,
+        "away": 21.6
+      },
+      "probsA": {
+        "home": 54,
+        "draw": 23.2,
+        "away": 22.8
+      },
+      "llV1": 0.5888,
+      "llA": 0.6162
+    },
+    {
+      "id": "16280783",
+      "fecha": "2026-08-01",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 48.1,
+        "draw": 23.7,
+        "away": 28.2
+      },
+      "probsA": {
+        "home": 39.6,
+        "draw": 24.5,
+        "away": 35.9
+      },
+      "llV1": 0.7319,
+      "llA": 0.9263
+    },
+    {
+      "id": "16280785",
+      "fecha": "2026-08-01",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 35.2,
+        "draw": 39.5,
+        "away": 25.3
+      },
+      "probsA": {
+        "home": 34.5,
+        "draw": 39.8,
+        "away": 25.7
+      },
+      "llV1": 1.3744,
+      "llA": 1.3587
+    },
+    {
+      "id": "16281125",
+      "fecha": "2026-08-01",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 61,
+        "draw": 18.7,
+        "away": 20.3
+      },
+      "probsA": {
+        "home": 57.6,
+        "draw": 19.6,
+        "away": 22.8
+      },
+      "llV1": 1.5945,
+      "llA": 1.4784
+    },
+    {
+      "id": "16280779",
+      "fecha": "2026-08-02",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 69.3,
+        "draw": 22.2,
+        "away": 8.5
+      },
+      "probsA": {
+        "home": 58,
+        "draw": 27.9,
+        "away": 14.1
+      },
+      "llV1": 0.3667,
+      "llA": 0.5447
+    },
+    {
+      "id": "16280784",
+      "fecha": "2026-08-02",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 30.6,
+        "draw": 21.9,
+        "away": 47.5
+      },
+      "probsA": {
+        "home": 36.8,
+        "draw": 22.4,
+        "away": 40.8
+      },
+      "llV1": 1.1842,
+      "llA": 0.9997
+    },
+    {
+      "id": "16280786",
+      "fecha": "2026-08-02",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 45.1,
+        "draw": 27,
+        "away": 27.9
+      },
+      "probsA": {
+        "home": 51.1,
+        "draw": 25.8,
+        "away": 23.1
+      },
+      "llV1": 0.7963,
+      "llA": 0.6714
+    },
+    {
+      "id": "16281118",
+      "fecha": "2026-08-02",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 42.8,
+        "draw": 28.2,
+        "away": 29
+      },
+      "probsA": {
+        "home": 51.7,
+        "draw": 26.3,
+        "away": 22
+      },
+      "llV1": 1.2379,
+      "llA": 1.5141
+    },
+    {
+      "id": "16280795",
+      "fecha": "2026-08-06",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 35.4,
+        "draw": 27.3,
+        "away": 37.3
+      },
+      "probsA": {
+        "home": 39.4,
+        "draw": 27.3,
+        "away": 33.3
+      },
+      "llV1": 1.0385,
+      "llA": 0.9314
+    },
+    {
+      "id": "16280789",
+      "fecha": "2026-08-07",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 48.6,
+        "draw": 26.4,
+        "away": 25
+      },
+      "probsA": {
+        "home": 50.9,
+        "draw": 25.9,
+        "away": 23.2
+      },
+      "llV1": 0.7215,
+      "llA": 0.6753
+    },
+    {
+      "id": "16280798",
+      "fecha": "2026-08-07",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 32.8,
+        "draw": 22.8,
+        "away": 44.4
+      },
+      "probsA": {
+        "home": 33.7,
+        "draw": 23,
+        "away": 43.3
+      },
+      "llV1": 1.4784,
+      "llA": 1.4697
+    },
+    {
+      "id": "16280788",
+      "fecha": "2026-08-08",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 43.2,
+        "draw": 25.5,
+        "away": 31.3
+      },
+      "probsA": {
+        "home": 45.6,
+        "draw": 25.2,
+        "away": 29.2
+      },
+      "llV1": 1.3665,
+      "llA": 1.3783
+    },
+    {
+      "id": "16280791",
+      "fecha": "2026-08-08",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 67.8,
+        "draw": 18.5,
+        "away": 13.7
+      },
+      "probsA": {
+        "home": 64.6,
+        "draw": 19.7,
+        "away": 15.7
+      },
+      "llV1": 1.6874,
+      "llA": 1.6246
+    },
+    {
+      "id": "16281127",
+      "fecha": "2026-08-08",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 63,
+        "draw": 25.3,
+        "away": 11.7
+      },
+      "probsA": {
+        "home": 60.9,
+        "draw": 26.3,
+        "away": 12.8
+      },
+      "llV1": 1.3744,
+      "llA": 1.3356
+    },
+    {
+      "id": "16280782",
+      "fecha": "2026-08-09",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 57.1,
+        "draw": 25.3,
+        "away": 17.6
+      },
+      "probsA": {
+        "home": 50.5,
+        "draw": 27.1,
+        "away": 22.4
+      },
+      "llV1": 0.5604,
+      "llA": 0.6832
+    },
+    {
+      "id": "16280790",
+      "fecha": "2026-08-09",
+      "marcador": "2-4",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 66.2,
+        "draw": 17.8,
+        "away": 16
+      },
+      "probsA": {
+        "home": 57.2,
+        "draw": 20.4,
+        "away": 22.4
+      },
+      "llV1": 1.8326,
+      "llA": 1.4961
+    },
+    {
+      "id": "16280793",
+      "fecha": "2026-08-09",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 13.2,
+        "draw": 30.1,
+        "away": 56.7
+      },
+      "probsA": {
+        "home": 17,
+        "draw": 33,
+        "away": 50
+      },
+      "llV1": 1.2006,
+      "llA": 1.1087
+    },
+    {
+      "id": "16280792",
+      "fecha": "2026-08-14",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 34,
+        "draw": 36.7,
+        "away": 29.3
+      },
+      "probsA": {
+        "home": 34.8,
+        "draw": 36.7,
+        "away": 28.5
+      },
+      "llV1": 1.0788,
+      "llA": 1.0556
+    },
+    {
+      "id": "16280796",
+      "fecha": "2026-08-14",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 28.1,
+        "draw": 24.7,
+        "away": 47.2
+      },
+      "probsA": {
+        "home": 28.6,
+        "draw": 24.7,
+        "away": 46.7
+      },
+      "llV1": 1.2694,
+      "llA": 1.2518
+    },
+    {
+      "id": "16280799",
+      "fecha": "2026-08-15",
+      "marcador": "0-3",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 43.7,
+        "draw": 23.9,
+        "away": 32.4
+      },
+      "probsA": {
+        "home": 45,
+        "draw": 23.7,
+        "away": 31.3
+      },
+      "llV1": 1.127,
+      "llA": 1.1616
+    },
+    {
+      "id": "16281119",
+      "fecha": "2026-08-15",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 43.4,
+        "draw": 28.9,
+        "away": 27.7
+      },
+      "probsA": {
+        "home": 46.9,
+        "draw": 28.3,
+        "away": 24.8
+      },
+      "llV1": 1.2413,
+      "llA": 1.2623
+    },
+    {
+      "id": "16421047",
+      "fecha": "2026-08-15",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 45.7,
+        "draw": 32.2,
+        "away": 22.1
+      },
+      "probsA": {
+        "home": 42.7,
+        "draw": 33,
+        "away": 24.3
+      },
+      "llV1": 0.7831,
+      "llA": 0.851
+    },
+    {
+      "id": "16421052",
+      "fecha": "2026-08-15",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 40.5,
+        "draw": 26.1,
+        "away": 33.4
+      },
+      "probsA": {
+        "home": 45,
+        "draw": 25.7,
+        "away": 29.3
+      },
+      "llV1": 0.9039,
+      "llA": 0.7985
+    },
+    {
+      "id": "16280794",
+      "fecha": "2026-08-16",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 79.8,
+        "draw": 14.5,
+        "away": 5.7
+      },
+      "probsA": {
+        "home": 62.9,
+        "draw": 23.2,
+        "away": 13.9
+      },
+      "llV1": 0.2256,
+      "llA": 0.4636
+    },
+    {
+      "id": "16280800",
+      "fecha": "2026-08-16",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 58,
+        "draw": 23,
+        "away": 19
+      },
+      "probsA": {
+        "home": 67.7,
+        "draw": 19.3,
+        "away": 13
+      },
+      "llV1": 1.4697,
+      "llA": 1.6451
+    },
+    {
+      "id": "16280806",
+      "fecha": "2026-08-16",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 63.4,
+        "draw": 17.2,
+        "away": 19.4
+      },
+      "probsA": {
+        "home": 63.5,
+        "draw": 17.2,
+        "away": 19.3
+      },
+      "llV1": 0.4557,
+      "llA": 0.4541
+    },
+    {
+      "id": "16281124",
+      "fecha": "2026-08-16",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 29.5,
+        "draw": 26,
+        "away": 44.5
+      },
+      "probsA": {
+        "home": 30,
+        "draw": 26.1,
+        "away": 43.9
+      },
+      "llV1": 0.8097,
+      "llA": 0.8233
+    },
+    {
+      "id": "16281134",
+      "fecha": "2026-08-16",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 40.3,
+        "draw": 32.1,
+        "away": 27.6
+      },
+      "probsA": {
+        "home": 44.4,
+        "draw": 31.4,
+        "away": 24.2
+      },
+      "llV1": 1.1363,
+      "llA": 1.1584
+    },
+    {
+      "id": "16421053",
+      "fecha": "2026-08-16",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 60.6,
+        "draw": 18.2,
+        "away": 21.2
+      },
+      "probsA": {
+        "home": 62.1,
+        "draw": 17.8,
+        "away": 20.1
+      },
+      "llV1": 0.5009,
+      "llA": 0.4764
+    },
+    {
+      "id": "16421061",
+      "fecha": "2026-08-16",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 59.1,
+        "draw": 17.7,
+        "away": 23.2
+      },
+      "probsA": {
+        "home": 42.5,
+        "draw": 20,
+        "away": 37.5
+      },
+      "llV1": 1.7316,
+      "llA": 1.6094
+    },
+    {
+      "id": "16421050",
+      "fecha": "2026-08-17",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 55.7,
+        "draw": 29,
+        "away": 15.3
+      },
+      "probsA": {
+        "home": 48.6,
+        "draw": 32.1,
+        "away": 19.3
+      },
+      "llV1": 1.2379,
+      "llA": 1.1363
+    },
+    {
+      "id": "16421055",
+      "fecha": "2026-08-19",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 33.1,
+        "draw": 37.4,
+        "away": 29.5
+      },
+      "probsA": {
+        "home": 38.2,
+        "draw": 36.7,
+        "away": 25.1
+      },
+      "llV1": 1.1056,
+      "llA": 0.9623
+    },
+    {
+      "id": "16416292",
+      "fecha": "2026-08-20",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 54.3,
+        "draw": 27.8,
+        "away": 17.9
+      },
+      "probsA": {
+        "home": 52.2,
+        "draw": 28.7,
+        "away": 19.1
+      },
+      "llV1": 1.2801,
+      "llA": 1.2483
+    },
+    {
+      "id": "16280801",
+      "fecha": "2026-08-21",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 54.6,
+        "draw": 22.5,
+        "away": 22.9
+      },
+      "probsA": {
+        "home": 58.5,
+        "draw": 21.4,
+        "away": 20.1
+      },
+      "llV1": 0.6051,
+      "llA": 0.5361
+    },
+    {
+      "id": "16281129",
+      "fecha": "2026-08-21",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 49.6,
+        "draw": 28.7,
+        "away": 21.7
+      },
+      "probsA": {
+        "home": 52.2,
+        "draw": 27.9,
+        "away": 19.9
+      },
+      "llV1": 1.5279,
+      "llA": 1.6145
+    },
+    {
+      "id": "16363633",
+      "fecha": "2026-08-21",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 77.4,
+        "draw": 16.5,
+        "away": 6.1
+      },
+      "probsA": {
+        "home": 70.1,
+        "draw": 20.7,
+        "away": 9.2
+      },
+      "llV1": 0.2562,
+      "llA": 0.3552
+    },
+    {
+      "id": "16416293",
+      "fecha": "2026-08-21",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 67.3,
+        "draw": 18.8,
+        "away": 13.9
+      },
+      "probsA": {
+        "home": 57.2,
+        "draw": 22.2,
+        "away": 20.6
+      },
+      "llV1": 0.396,
+      "llA": 0.5586
+    },
+    {
+      "id": "16280683",
+      "fecha": "2026-08-22",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 47,
+        "draw": 24.3,
+        "away": 28.7
+      },
+      "probsA": {
+        "home": 46.2,
+        "draw": 24.5,
+        "away": 29.3
+      },
+      "llV1": 1.2483,
+      "llA": 1.2276
+    },
+    {
+      "id": "16280797",
+      "fecha": "2026-08-22",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 45.5,
+        "draw": 26.3,
+        "away": 28.2
+      },
+      "probsA": {
+        "home": 54.7,
+        "draw": 24.4,
+        "away": 20.9
+      },
+      "llV1": 1.2658,
+      "llA": 1.5654
+    },
+    {
+      "id": "16281133",
+      "fecha": "2026-08-22",
+      "marcador": "5-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 62.1,
+        "draw": 21.7,
+        "away": 16.2
+      },
+      "probsA": {
+        "home": 56.6,
+        "draw": 23.6,
+        "away": 19.8
+      },
+      "llV1": 0.4764,
+      "llA": 0.5692
+    },
+    {
+      "id": "16283040",
+      "fecha": "2026-08-22",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 37.8,
+        "draw": 27.8,
+        "away": 34.4
+      },
+      "probsA": {
+        "home": 45.9,
+        "draw": 26.9,
+        "away": 27.2
+      },
+      "llV1": 1.0671,
+      "llA": 1.302
+    },
+    {
+      "id": "16283043",
+      "fecha": "2026-08-22",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 41.7,
+        "draw": 29.2,
+        "away": 29.1
+      },
+      "probsA": {
+        "home": 43,
+        "draw": 28.8,
+        "away": 28.2
+      },
+      "llV1": 1.2344,
+      "llA": 1.2658
+    },
+    {
+      "id": "16283044",
+      "fecha": "2026-08-22",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 28.4,
+        "draw": 27.1,
+        "away": 44.5
+      },
+      "probsA": {
+        "home": 34.2,
+        "draw": 27.7,
+        "away": 38.1
+      },
+      "llV1": 1.3056,
+      "llA": 1.2837
+    },
+    {
+      "id": "16283050",
+      "fecha": "2026-08-22",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 64.3,
+        "draw": 19.3,
+        "away": 16.4
+      },
+      "probsA": {
+        "home": 51.8,
+        "draw": 22.8,
+        "away": 25.4
+      },
+      "llV1": 0.4416,
+      "llA": 0.6578
+    },
+    {
+      "id": "16363238",
+      "fecha": "2026-08-22",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 63.8,
+        "draw": 22.3,
+        "away": 13.9
+      },
+      "probsA": {
+        "home": 65.6,
+        "draw": 21.5,
+        "away": 12.9
+      },
+      "llV1": 1.9733,
+      "llA": 2.0479
+    },
+    {
+      "id": "16363242",
+      "fecha": "2026-08-22",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 42.3,
+        "draw": 26.8,
+        "away": 30.9
+      },
+      "probsA": {
+        "home": 43.9,
+        "draw": 26.7,
+        "away": 29.4
+      },
+      "llV1": 0.8604,
+      "llA": 0.8233
+    },
+    {
+      "id": "16363634",
+      "fecha": "2026-08-22",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 12.1,
+        "draw": 16.8,
+        "away": 71.1
+      },
+      "probsA": {
+        "home": 17.2,
+        "draw": 19.8,
+        "away": 63
+      },
+      "llV1": 2.112,
+      "llA": 1.7603
+    },
+    {
+      "id": "16363635",
+      "fecha": "2026-08-22",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 63,
+        "draw": 18.5,
+        "away": 18.5
+      },
+      "probsA": {
+        "home": 65.3,
+        "draw": 17.7,
+        "away": 17
+      },
+      "llV1": 0.462,
+      "llA": 0.4262
+    },
+    {
+      "id": "16363636",
+      "fecha": "2026-08-22",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 32.7,
+        "draw": 26.2,
+        "away": 41.1
+      },
+      "probsA": {
+        "home": 35.6,
+        "draw": 26.2,
+        "away": 38.2
+      },
+      "llV1": 1.1178,
+      "llA": 1.0328
+    },
+    {
+      "id": "16416298",
+      "fecha": "2026-08-22",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 45.9,
+        "draw": 25.5,
+        "away": 28.6
+      },
+      "probsA": {
+        "home": 42.6,
+        "draw": 25.8,
+        "away": 31.6
+      },
+      "llV1": 1.3665,
+      "llA": 1.3548
+    },
+    {
+      "id": "16416301",
+      "fecha": "2026-08-22",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 41.1,
+        "draw": 25.8,
+        "away": 33.1
+      },
+      "probsA": {
+        "home": 47.6,
+        "draw": 24.9,
+        "away": 27.5
+      },
+      "llV1": 1.1056,
+      "llA": 1.291
+    },
+    {
+      "id": "16416306",
+      "fecha": "2026-08-22",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 23.8,
+        "draw": 22.9,
+        "away": 53.3
+      },
+      "probsA": {
+        "home": 30,
+        "draw": 24.3,
+        "away": 45.7
+      },
+      "llV1": 0.6292,
+      "llA": 0.7831
+    },
+    {
+      "id": "16280802",
+      "fecha": "2026-08-23",
+      "marcador": "5-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 26.9,
+        "draw": 28.4,
+        "away": 44.7
+      },
+      "probsA": {
+        "home": 22.8,
+        "draw": 27.6,
+        "away": 49.6
+      },
+      "llV1": 1.313,
+      "llA": 1.4784
+    },
+    {
+      "id": "16280803",
+      "fecha": "2026-08-23",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 23,
+        "draw": 27.8,
+        "away": 49.2
+      },
+      "probsA": {
+        "home": 27.7,
+        "draw": 28.7,
+        "away": 43.6
+      },
+      "llV1": 1.2801,
+      "llA": 1.2483
+    },
+    {
+      "id": "16280804",
+      "fecha": "2026-08-23",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 55.1,
+        "draw": 24.4,
+        "away": 20.5
+      },
+      "probsA": {
+        "home": 48.6,
+        "draw": 25.8,
+        "away": 25.6
+      },
+      "llV1": 0.596,
+      "llA": 0.7215
+    },
+    {
+      "id": "16280805",
+      "fecha": "2026-08-23",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 56,
+        "draw": 24.8,
+        "away": 19.2
+      },
+      "probsA": {
+        "home": 50.7,
+        "draw": 26.3,
+        "away": 23
+      },
+      "llV1": 0.5798,
+      "llA": 0.6792
+    },
+    {
+      "id": "16283041",
+      "fecha": "2026-08-23",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 64.8,
+        "draw": 20.3,
+        "away": 14.9
+      },
+      "probsA": {
+        "home": 63.5,
+        "draw": 20.9,
+        "away": 15.6
+      },
+      "llV1": 0.4339,
+      "llA": 0.4541
+    },
+    {
+      "id": "16283046",
+      "fecha": "2026-08-23",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 35.8,
+        "draw": 25.5,
+        "away": 38.7
+      },
+      "probsA": {
+        "home": 32.2,
+        "draw": 25.3,
+        "away": 42.5
+      },
+      "llV1": 0.9493,
+      "llA": 0.8557
+    },
+    {
+      "id": "16283047",
+      "fecha": "2026-08-23",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 64.6,
+        "draw": 21.9,
+        "away": 13.5
+      },
+      "probsA": {
+        "home": 67.4,
+        "draw": 20.6,
+        "away": 12
+      },
+      "llV1": 2.0025,
+      "llA": 2.1203
+    },
+    {
+      "id": "16283048",
+      "fecha": "2026-08-23",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 36.5,
+        "draw": 24.1,
+        "away": 39.4
+      },
+      "probsA": {
+        "home": 41.5,
+        "draw": 24,
+        "away": 34.5
+      },
+      "llV1": 0.9314,
+      "llA": 1.0642
+    },
+    {
+      "id": "16363236",
+      "fecha": "2026-08-23",
+      "marcador": "4-0",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 49.3,
+        "draw": 21.1,
+        "away": 29.6
+      },
+      "probsA": {
+        "home": 57.2,
+        "draw": 19.5,
+        "away": 23.3
+      },
+      "llV1": 0.7072,
+      "llA": 0.5586
+    },
+    {
+      "id": "16363243",
+      "fecha": "2026-08-23",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 35.3,
+        "draw": 27.8,
+        "away": 36.9
+      },
+      "probsA": {
+        "home": 38,
+        "draw": 27.8,
+        "away": 34.2
+      },
+      "llV1": 1.0413,
+      "llA": 0.9676
+    },
+    {
+      "id": "16363246",
+      "fecha": "2026-08-23",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 38.6,
+        "draw": 27.3,
+        "away": 34.1
+      },
+      "probsA": {
+        "home": 37.2,
+        "draw": 27.2,
+        "away": 35.6
+      },
+      "llV1": 1.2983,
+      "llA": 1.302
+    },
+    {
+      "id": "16416300",
+      "fecha": "2026-08-23",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 35.1,
+        "draw": 24.4,
+        "away": 40.5
+      },
+      "probsA": {
+        "home": 48.1,
+        "draw": 23.9,
+        "away": 28
+      },
+      "llV1": 1.047,
+      "llA": 0.7319
+    },
+    {
+      "id": "16416302",
+      "fecha": "2026-08-23",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 66.5,
+        "draw": 17.8,
+        "away": 15.7
+      },
+      "probsA": {
+        "home": 60.8,
+        "draw": 19.8,
+        "away": 19.4
+      },
+      "llV1": 1.726,
+      "llA": 1.6195
+    },
+    {
+      "id": "16416311",
+      "fecha": "2026-08-23",
+      "marcador": "0-5",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 27.5,
+        "draw": 23.4,
+        "away": 49.1
+      },
+      "probsA": {
+        "home": 35.2,
+        "draw": 24.4,
+        "away": 40.4
+      },
+      "llV1": 0.7113,
+      "llA": 0.9063
+    },
+    {
+      "id": "16283045",
+      "fecha": "2026-08-24",
+      "marcador": "4-0",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 65.8,
+        "draw": 20,
+        "away": 14.2
+      },
+      "probsA": {
+        "home": 60.4,
+        "draw": 22,
+        "away": 17.6
+      },
+      "llV1": 0.4186,
+      "llA": 0.5042
+    },
+    {
+      "id": "16283049",
+      "fecha": "2026-08-24",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 45.5,
+        "draw": 26.4,
+        "away": 28.1
+      },
+      "probsA": {
+        "home": 43.3,
+        "draw": 26.6,
+        "away": 30.1
+      },
+      "llV1": 1.2694,
+      "llA": 1.2006
+    },
+    {
+      "id": "16363244",
+      "fecha": "2026-08-24",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 44.1,
+        "draw": 33.6,
+        "away": 22.3
+      },
+      "probsA": {
+        "home": 36,
+        "draw": 35.3,
+        "away": 28.7
+      },
+      "llV1": 1.5006,
+      "llA": 1.2483
+    },
+    {
+      "id": "16416296",
+      "fecha": "2026-08-24",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 43.1,
+        "draw": 24.6,
+        "away": 32.3
+      },
+      "probsA": {
+        "home": 53.4,
+        "draw": 23.1,
+        "away": 23.5
+      },
+      "llV1": 1.4024,
+      "llA": 1.4653
+    },
+    {
+      "id": "16416307",
+      "fecha": "2026-08-24",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 37.5,
+        "draw": 46,
+        "away": 16.5
+      },
+      "probsA": {
+        "home": 36.3,
+        "draw": 47,
+        "away": 16.7
+      },
+      "llV1": 0.7765,
+      "llA": 0.755
+    },
+    {
+      "id": "16421049",
+      "fecha": "2026-08-25",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 36.6,
+        "draw": 22.7,
+        "away": 40.7
+      },
+      "probsA": {
+        "home": 38.8,
+        "draw": 22.7,
+        "away": 38.5
+      },
+      "llV1": 0.8989,
+      "llA": 0.9545
+    },
+    {
+      "id": "16421059",
+      "fecha": "2026-08-27",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 70.5,
+        "draw": 17.3,
+        "away": 12.2
+      },
+      "probsA": {
+        "home": 55.5,
+        "draw": 22.4,
+        "away": 22.1
+      },
+      "llV1": 0.3496,
+      "llA": 0.5888
+    },
+    {
+      "id": "16815992",
+      "fecha": "2026-08-27",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 48,
+        "draw": 31.6,
+        "away": 20.4
+      },
+      "probsA": {
+        "home": 37.5,
+        "draw": 33.9,
+        "away": 28.6
+      },
+      "llV1": 1.5896,
+      "llA": 1.2518
+    },
+    {
+      "id": "16280810",
+      "fecha": "2026-08-28",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 48.7,
+        "draw": 24.8,
+        "away": 26.5
+      },
+      "probsA": {
+        "home": 43.1,
+        "draw": 25.6,
+        "away": 31.3
+      },
+      "llV1": 1.328,
+      "llA": 1.1616
+    },
+    {
+      "id": "16284980",
+      "fecha": "2026-08-28",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 39.5,
+        "draw": 27.9,
+        "away": 32.6
+      },
+      "probsA": {
+        "home": 36.2,
+        "draw": 28,
+        "away": 35.8
+      },
+      "llV1": 0.9289,
+      "llA": 1.0161
+    },
+    {
+      "id": "16363252",
+      "fecha": "2026-08-28",
+      "marcador": "1-4",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 21,
+        "draw": 24.5,
+        "away": 54.5
+      },
+      "probsA": {
+        "home": 28.3,
+        "draw": 26.4,
+        "away": 45.3
+      },
+      "llV1": 0.607,
+      "llA": 0.7919
+    },
+    {
+      "id": "16416290",
+      "fecha": "2026-08-28",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 42.8,
+        "draw": 26.5,
+        "away": 30.7
+      },
+      "probsA": {
+        "home": 38.9,
+        "draw": 27,
+        "away": 34.1
+      },
+      "llV1": 0.8486,
+      "llA": 0.9442
+    },
+    {
+      "id": "16416304",
+      "fecha": "2026-08-28",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 62,
+        "draw": 18.8,
+        "away": 19.2
+      },
+      "probsA": {
+        "home": 51.5,
+        "draw": 21.5,
+        "away": 27
+      },
+      "llV1": 0.478,
+      "llA": 0.6636
+    },
+    {
+      "id": "16434087",
+      "fecha": "2026-08-28",
+      "marcador": "5-1",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 75.2,
+        "draw": 13.6,
+        "away": 11.2
+      },
+      "probsA": {
+        "home": 69.3,
+        "draw": 15.7,
+        "away": 15
+      },
+      "llV1": 0.285,
+      "llA": 0.3667
+    },
+    {
+      "id": "16280807",
+      "fecha": "2026-08-29",
+      "marcador": "2-4",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 28.6,
+        "draw": 27.2,
+        "away": 44.2
+      },
+      "probsA": {
+        "home": 45.1,
+        "draw": 27.1,
+        "away": 27.8
+      },
+      "llV1": 0.8164,
+      "llA": 1.2801
+    },
+    {
+      "id": "16280809",
+      "fecha": "2026-08-29",
+      "marcador": "3-4",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 37.6,
+        "draw": 25.2,
+        "away": 37.2
+      },
+      "probsA": {
+        "home": 40.6,
+        "draw": 25.2,
+        "away": 34.2
+      },
+      "llV1": 0.9889,
+      "llA": 1.0729
+    },
+    {
+      "id": "16284973",
+      "fecha": "2026-08-29",
+      "marcador": "0-3",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 38.6,
+        "draw": 28.2,
+        "away": 33.2
+      },
+      "probsA": {
+        "home": 33,
+        "draw": 28.1,
+        "away": 38.9
+      },
+      "llV1": 1.1026,
+      "llA": 0.9442
+    },
+    {
+      "id": "16284974",
+      "fecha": "2026-08-29",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 59.1,
+        "draw": 20.4,
+        "away": 20.5
+      },
+      "probsA": {
+        "home": 60.4,
+        "draw": 20.1,
+        "away": 19.5
+      },
+      "llV1": 0.5259,
+      "llA": 0.5042
+    },
+    {
+      "id": "16284975",
+      "fecha": "2026-08-29",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 79.2,
+        "draw": 13.8,
+        "away": 7
+      },
+      "probsA": {
+        "home": 72.4,
+        "draw": 17.1,
+        "away": 10.5
+      },
+      "llV1": 0.2332,
+      "llA": 0.323
+    },
+    {
+      "id": "16284979",
+      "fecha": "2026-08-29",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 46.5,
+        "draw": 26.6,
+        "away": 26.9
+      },
+      "probsA": {
+        "home": 49.9,
+        "draw": 25.9,
+        "away": 24.2
+      },
+      "llV1": 1.313,
+      "llA": 1.4188
+    },
+    {
+      "id": "16363247",
+      "fecha": "2026-08-29",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 82.5,
+        "draw": 10.9,
+        "away": 6.6
+      },
+      "probsA": {
+        "home": 75.5,
+        "draw": 14.2,
+        "away": 10.3
+      },
+      "llV1": 2.2164,
+      "llA": 1.9519
+    },
+    {
+      "id": "16363250",
+      "fecha": "2026-08-29",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 47.9,
+        "draw": 24.9,
+        "away": 27.2
+      },
+      "probsA": {
+        "home": 50.9,
+        "draw": 24.3,
+        "away": 24.8
+      },
+      "llV1": 1.302,
+      "llA": 1.3943
+    },
+    {
+      "id": "16363254",
+      "fecha": "2026-08-29",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 26.2,
+        "draw": 25.9,
+        "away": 47.9
+      },
+      "probsA": {
+        "home": 27.2,
+        "draw": 26.1,
+        "away": 46.7
+      },
+      "llV1": 1.3509,
+      "llA": 1.3432
+    },
+    {
+      "id": "16363256",
+      "fecha": "2026-08-29",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 48.1,
+        "draw": 24.7,
+        "away": 27.2
+      },
+      "probsA": {
+        "home": 46,
+        "draw": 25,
+        "away": 29
+      },
+      "llV1": 1.302,
+      "llA": 1.2379
+    },
+    {
+      "id": "16416309",
+      "fecha": "2026-08-29",
+      "marcador": "5-2",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 36.6,
+        "draw": 19.9,
+        "away": 43.5
+      },
+      "probsA": {
+        "home": 48,
+        "draw": 19.6,
+        "away": 32.4
+      },
+      "llV1": 1.0051,
+      "llA": 0.734
+    },
+    {
+      "id": "16416310",
+      "fecha": "2026-08-29",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 36.7,
+        "draw": 26.4,
+        "away": 36.9
+      },
+      "probsA": {
+        "home": 41.3,
+        "draw": 26.2,
+        "away": 32.5
+      },
+      "llV1": 1.0024,
+      "llA": 0.8843
+    },
+    {
+      "id": "16416316",
+      "fecha": "2026-08-29",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 36.2,
+        "draw": 23.1,
+        "away": 40.7
+      },
+      "probsA": {
+        "home": 32,
+        "draw": 22.8,
+        "away": 45.2
+      },
+      "llV1": 0.8989,
+      "llA": 0.7941
+    },
+    {
+      "id": "16434020",
+      "fecha": "2026-08-29",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 28.9,
+        "draw": 25.6,
+        "away": 45.5
+      },
+      "probsA": {
+        "home": 30.3,
+        "draw": 25.8,
+        "away": 43.9
+      },
+      "llV1": 1.2413,
+      "llA": 1.194
+    },
+    {
+      "id": "16434022",
+      "fecha": "2026-08-29",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 43.1,
+        "draw": 23.9,
+        "away": 33
+      },
+      "probsA": {
+        "home": 48.5,
+        "draw": 23.3,
+        "away": 28.2
+      },
+      "llV1": 0.8416,
+      "llA": 0.7236
+    },
+    {
+      "id": "16434023",
+      "fecha": "2026-08-29",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 53.9,
+        "draw": 25.3,
+        "away": 20.8
+      },
+      "probsA": {
+        "home": 51.5,
+        "draw": 26.1,
+        "away": 22.4
+      },
+      "llV1": 0.618,
+      "llA": 0.6636
+    },
+    {
+      "id": "16434025",
+      "fecha": "2026-08-29",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 64,
+        "draw": 20.6,
+        "away": 15.4
+      },
+      "probsA": {
+        "home": 57.1,
+        "draw": 23,
+        "away": 19.9
+      },
+      "llV1": 0.4463,
+      "llA": 0.5604
+    },
+    {
+      "id": "16434026",
+      "fecha": "2026-08-29",
+      "marcador": "3-3",
+      "real": "draw",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 41.8,
+        "draw": 28.8,
+        "away": 29.4
+      },
+      "probsA": {
+        "home": 38.1,
+        "draw": 29.2,
+        "away": 32.7
+      },
+      "llV1": 1.2448,
+      "llA": 1.231
+    },
+    {
+      "id": "16434044",
+      "fecha": "2026-08-29",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 53.1,
+        "draw": 25.2,
+        "away": 21.7
+      },
+      "probsA": {
+        "home": 48.3,
+        "draw": 26.2,
+        "away": 25.5
+      },
+      "llV1": 1.3783,
+      "llA": 1.3394
+    },
+    {
+      "id": "16280808",
+      "fecha": "2026-08-30",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 69.5,
+        "draw": 21.7,
+        "away": 8.8
+      },
+      "probsA": {
+        "home": 68.4,
+        "draw": 22.1,
+        "away": 9.5
+      },
+      "llV1": 2.4304,
+      "llA": 2.3539
+    },
+    {
+      "id": "16280815",
+      "fecha": "2026-08-30",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 43.3,
+        "draw": 26,
+        "away": 30.7
+      },
+      "probsA": {
+        "home": 38.4,
+        "draw": 26.4,
+        "away": 35.2
+      },
+      "llV1": 0.837,
+      "llA": 0.9571
+    },
+    {
+      "id": "16281130",
+      "fecha": "2026-08-30",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 61.9,
+        "draw": 20.3,
+        "away": 17.8
+      },
+      "probsA": {
+        "home": 65.6,
+        "draw": 19.2,
+        "away": 15.2
+      },
+      "llV1": 1.726,
+      "llA": 1.8839
+    },
+    {
+      "id": "16281132",
+      "fecha": "2026-08-30",
+      "marcador": "1-4",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 33.9,
+        "draw": 30.4,
+        "away": 35.7
+      },
+      "probsA": {
+        "home": 33.1,
+        "draw": 30.2,
+        "away": 36.7
+      },
+      "llV1": 1.03,
+      "llA": 1.0024
+    },
+    {
+      "id": "16284971",
+      "fecha": "2026-08-30",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 42.7,
+        "draw": 27.2,
+        "away": 30.1
+      },
+      "probsA": {
+        "home": 32.5,
+        "draw": 27.4,
+        "away": 40.1
+      },
+      "llV1": 0.851,
+      "llA": 1.1239
+    },
+    {
+      "id": "16284972",
+      "fecha": "2026-08-30",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 19,
+        "draw": 21.3,
+        "away": 59.7
+      },
+      "probsA": {
+        "home": 24.2,
+        "draw": 23.4,
+        "away": 52.4
+      },
+      "llV1": 0.5158,
+      "llA": 0.6463
+    },
+    {
+      "id": "16284977",
+      "fecha": "2026-08-30",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 28.7,
+        "draw": 26.3,
+        "away": 45
+      },
+      "probsA": {
+        "home": 29.2,
+        "draw": 26.3,
+        "away": 44.5
+      },
+      "llV1": 0.7985,
+      "llA": 0.8097
+    },
+    {
+      "id": "16363249",
+      "fecha": "2026-08-30",
+      "marcador": "4-3",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 34.2,
+        "draw": 26.5,
+        "away": 39.3
+      },
+      "probsA": {
+        "home": 39.3,
+        "draw": 26.3,
+        "away": 34.4
+      },
+      "llV1": 1.0729,
+      "llA": 0.9339
+    },
+    {
+      "id": "16363253",
+      "fecha": "2026-08-30",
+      "marcador": "5-2",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 88.2,
+        "draw": 8,
+        "away": 3.8
+      },
+      "probsA": {
+        "home": 85.3,
+        "draw": 9.8,
+        "away": 4.9
+      },
+      "llV1": 0.1256,
+      "llA": 0.159
+    },
+    {
+      "id": "16363255",
+      "fecha": "2026-08-30",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 39.2,
+        "draw": 34.5,
+        "away": 26.3
+      },
+      "probsA": {
+        "home": 37.5,
+        "draw": 34.9,
+        "away": 27.6
+      },
+      "llV1": 0.9365,
+      "llA": 0.9808
+    },
+    {
+      "id": "16363266",
+      "fecha": "2026-08-30",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 58,
+        "draw": 25.9,
+        "away": 16.1
+      },
+      "probsA": {
+        "home": 54,
+        "draw": 27.4,
+        "away": 18.6
+      },
+      "llV1": 1.3509,
+      "llA": 1.2946
+    },
+    {
+      "id": "16416291",
+      "fecha": "2026-08-30",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 61.8,
+        "draw": 23.7,
+        "away": 14.5
+      },
+      "probsA": {
+        "home": 58.5,
+        "draw": 25.4,
+        "away": 16.1
+      },
+      "llV1": 0.4813,
+      "llA": 0.5361
+    },
+    {
+      "id": "16416308",
+      "fecha": "2026-08-30",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 44.2,
+        "draw": 29.8,
+        "away": 26
+      },
+      "probsA": {
+        "home": 38.9,
+        "draw": 30.3,
+        "away": 30.8
+      },
+      "llV1": 1.3471,
+      "llA": 1.1777
+    },
+    {
+      "id": "16416312",
+      "fecha": "2026-08-30",
+      "marcador": "4-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 40.7,
+        "draw": 36.2,
+        "away": 23.1
+      },
+      "probsA": {
+        "home": 37,
+        "draw": 36.8,
+        "away": 26.2
+      },
+      "llV1": 0.8989,
+      "llA": 0.9943
+    },
+    {
+      "id": "16434029",
+      "fecha": "2026-08-30",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 48.1,
+        "draw": 29.6,
+        "away": 22.3
+      },
+      "probsA": {
+        "home": 42.6,
+        "draw": 30.8,
+        "away": 26.6
+      },
+      "llV1": 0.7319,
+      "llA": 0.8533
+    },
+    {
+      "id": "16434039",
+      "fecha": "2026-08-30",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 45.8,
+        "draw": 25.3,
+        "away": 28.9
+      },
+      "probsA": {
+        "home": 41,
+        "draw": 25.9,
+        "away": 33.1
+      },
+      "llV1": 0.7809,
+      "llA": 0.8916
+    },
+    {
+      "id": "16280811",
+      "fecha": "2026-08-31",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 69.4,
+        "draw": 17.6,
+        "away": 13
+      },
+      "probsA": {
+        "home": 72.8,
+        "draw": 16.1,
+        "away": 11.1
+      },
+      "llV1": 2.0402,
+      "llA": 2.1982
+    },
+    {
+      "id": "16284970",
+      "fecha": "2026-08-31",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 66.3,
+        "draw": 20.2,
+        "away": 13.5
+      },
+      "probsA": {
+        "home": 68.2,
+        "draw": 19.4,
+        "away": 12.4
+      },
+      "llV1": 0.411,
+      "llA": 0.3827
+    },
+    {
+      "id": "16284976",
+      "fecha": "2026-08-31",
+      "marcador": "0-4",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 20.2,
+        "draw": 23.6,
+        "away": 56.2
+      },
+      "probsA": {
+        "home": 24.6,
+        "draw": 25.1,
+        "away": 50.3
+      },
+      "llV1": 0.5763,
+      "llA": 0.6872
+    },
+    {
+      "id": "16363245",
+      "fecha": "2026-08-31",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 34.7,
+        "draw": 26.5,
+        "away": 38.8
+      },
+      "probsA": {
+        "home": 41.4,
+        "draw": 26.3,
+        "away": 32.3
+      },
+      "llV1": 0.9467,
+      "llA": 1.1301
+    },
+    {
+      "id": "16416295",
+      "fecha": "2026-08-31",
+      "marcador": "5-2",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 56.5,
+        "draw": 22.4,
+        "away": 21.1
+      },
+      "probsA": {
+        "home": 49.4,
+        "draw": 24.1,
+        "away": 26.5
+      },
+      "llV1": 0.5709,
+      "llA": 0.7052
+    },
+    {
+      "id": "16416314",
+      "fecha": "2026-08-31",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 37.3,
+        "draw": 35.8,
+        "away": 26.9
+      },
+      "probsA": {
+        "home": 40,
+        "draw": 35.6,
+        "away": 24.4
+      },
+      "llV1": 0.9862,
+      "llA": 0.9163
+    },
+    {
+      "id": "16280812",
+      "fecha": "2026-09-01",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 26.9,
+        "draw": 31.4,
+        "away": 41.7
+      },
+      "probsA": {
+        "home": 28,
+        "draw": 31.5,
+        "away": 40.5
+      },
+      "llV1": 1.313,
+      "llA": 1.273
+    },
+    {
+      "id": "16416340",
+      "fecha": "2026-09-03",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 38.8,
+        "draw": 28.8,
+        "away": 32.4
+      },
+      "probsA": {
+        "home": 38.6,
+        "draw": 28.8,
+        "away": 32.6
+      },
+      "llV1": 1.2448,
+      "llA": 1.2448
+    },
+    {
+      "id": "16280814",
+      "fecha": "2026-09-04",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 52.8,
+        "draw": 25.1,
+        "away": 22.1
+      },
+      "probsA": {
+        "home": 36.2,
+        "draw": 27.4,
+        "away": 36.4
+      },
+      "llV1": 0.6387,
+      "llA": 1.0161
+    },
+    {
+      "id": "16281131",
+      "fecha": "2026-09-04",
+      "marcador": "2-5",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 31.4,
+        "draw": 22.5,
+        "away": 46.1
+      },
+      "probsA": {
+        "home": 26.4,
+        "draw": 21.7,
+        "away": 51.9
+      },
+      "llV1": 0.7744,
+      "llA": 0.6559
+    },
+    {
+      "id": "16285001",
+      "fecha": "2026-09-04",
+      "marcador": "1-4",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 21.7,
+        "draw": 24.6,
+        "away": 53.7
+      },
+      "probsA": {
+        "home": 36.2,
+        "draw": 27,
+        "away": 36.8
+      },
+      "llV1": 0.6218,
+      "llA": 0.9997
+    },
+    {
+      "id": "16363261",
+      "fecha": "2026-09-04",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 24.2,
+        "draw": 26.1,
+        "away": 49.7
+      },
+      "probsA": {
+        "home": 22.8,
+        "draw": 25.6,
+        "away": 51.6
+      },
+      "llV1": 0.6992,
+      "llA": 0.6616
+    },
+    {
+      "id": "16416315",
+      "fecha": "2026-09-04",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 30.3,
+        "draw": 23,
+        "away": 46.7
+      },
+      "probsA": {
+        "home": 34.8,
+        "draw": 23.5,
+        "away": 41.7
+      },
+      "llV1": 1.194,
+      "llA": 1.0556
+    },
+    {
+      "id": "16434036",
+      "fecha": "2026-09-04",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 75.8,
+        "draw": 14.4,
+        "away": 9.8
+      },
+      "probsA": {
+        "home": 70.1,
+        "draw": 16.7,
+        "away": 13.2
+      },
+      "llV1": 0.2771,
+      "llA": 0.3552
+    },
+    {
+      "id": "16280813",
+      "fecha": "2026-09-05",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 51.4,
+        "draw": 25.2,
+        "away": 23.4
+      },
+      "probsA": {
+        "home": 46.6,
+        "draw": 26.2,
+        "away": 27.2
+      },
+      "llV1": 0.6655,
+      "llA": 0.7636
+    },
+    {
+      "id": "16280817",
+      "fecha": "2026-09-05",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 42.2,
+        "draw": 27.4,
+        "away": 30.4
+      },
+      "probsA": {
+        "home": 49.6,
+        "draw": 26.4,
+        "away": 24
+      },
+      "llV1": 0.8627,
+      "llA": 0.7012
+    },
+    {
+      "id": "16284999",
+      "fecha": "2026-09-05",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 60.1,
+        "draw": 21.7,
+        "away": 18.2
+      },
+      "probsA": {
+        "home": 56.7,
+        "draw": 22.7,
+        "away": 20.6
+      },
+      "llV1": 1.7037,
+      "llA": 1.5799
+    },
+    {
+      "id": "16285003",
+      "fecha": "2026-09-05",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 63,
+        "draw": 20.2,
+        "away": 16.8
+      },
+      "probsA": {
+        "home": 53.8,
+        "draw": 23,
+        "away": 23.2
+      },
+      "llV1": 0.462,
+      "llA": 0.6199
+    },
+    {
+      "id": "16285005",
+      "fecha": "2026-09-05",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 54.1,
+        "draw": 22.6,
+        "away": 23.3
+      },
+      "probsA": {
+        "home": 42.2,
+        "draw": 24.5,
+        "away": 33.3
+      },
+      "llV1": 0.6143,
+      "llA": 0.8627
+    },
+    {
+      "id": "16363258",
+      "fecha": "2026-09-05",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 42.6,
+        "draw": 29.3,
+        "away": 28.1
+      },
+      "probsA": {
+        "home": 50.5,
+        "draw": 27.5,
+        "away": 22
+      },
+      "llV1": 1.2276,
+      "llA": 1.291
+    },
+    {
+      "id": "16363260",
+      "fecha": "2026-09-05",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 43.5,
+        "draw": 26.9,
+        "away": 29.6
+      },
+      "probsA": {
+        "home": 42.3,
+        "draw": 27.1,
+        "away": 30.6
+      },
+      "llV1": 1.313,
+      "llA": 1.3056
+    },
+    {
+      "id": "16363262",
+      "fecha": "2026-09-05",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 21.5,
+        "draw": 19.1,
+        "away": 59.4
+      },
+      "probsA": {
+        "home": 18.8,
+        "draw": 18.1,
+        "away": 63.1
+      },
+      "llV1": 1.6555,
+      "llA": 1.7093
+    },
+    {
+      "id": "16363263",
+      "fecha": "2026-09-05",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 74.7,
+        "draw": 16.3,
+        "away": 9
+      },
+      "probsA": {
+        "home": 63.4,
+        "draw": 21.3,
+        "away": 15.3
+      },
+      "llV1": 0.2917,
+      "llA": 0.4557
+    },
+    {
+      "id": "16363269",
+      "fecha": "2026-09-05",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 54.8,
+        "draw": 29.8,
+        "away": 15.4
+      },
+      "probsA": {
+        "home": 53,
+        "draw": 30.5,
+        "away": 16.5
+      },
+      "llV1": 1.8708,
+      "llA": 1.8018
+    },
+    {
+      "id": "16363637",
+      "fecha": "2026-09-05",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 25.2,
+        "draw": 24.9,
+        "away": 49.9
+      },
+      "probsA": {
+        "home": 28.2,
+        "draw": 25.6,
+        "away": 46.2
+      },
+      "llV1": 1.3903,
+      "llA": 1.3626
+    },
+    {
+      "id": "16363638",
+      "fecha": "2026-09-05",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 78.5,
+        "draw": 13.8,
+        "away": 7.7
+      },
+      "probsA": {
+        "home": 76.5,
+        "draw": 14.8,
+        "away": 8.7
+      },
+      "llV1": 1.9805,
+      "llA": 1.9105
+    },
+    {
+      "id": "16416317",
+      "fecha": "2026-09-05",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 28.8,
+        "draw": 26.3,
+        "away": 44.9
+      },
+      "probsA": {
+        "home": 35.7,
+        "draw": 26.7,
+        "away": 37.6
+      },
+      "llV1": 1.2448,
+      "llA": 1.03
+    },
+    {
+      "id": "16416321",
+      "fecha": "2026-09-05",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 55.9,
+        "draw": 20.9,
+        "away": 23.2
+      },
+      "probsA": {
+        "home": 60.7,
+        "draw": 19.9,
+        "away": 19.4
+      },
+      "llV1": 0.5816,
+      "llA": 0.4992
+    },
+    {
+      "id": "16416324",
+      "fecha": "2026-09-05",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 33.9,
+        "draw": 29.9,
+        "away": 36.2
+      },
+      "probsA": {
+        "home": 41.8,
+        "draw": 30,
+        "away": 28.2
+      },
+      "llV1": 1.0161,
+      "llA": 1.2658
+    },
+    {
+      "id": "16434019",
+      "fecha": "2026-09-05",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 29.4,
+        "draw": 23.6,
+        "away": 47
+      },
+      "probsA": {
+        "home": 37,
+        "draw": 24.5,
+        "away": 38.5
+      },
+      "llV1": 0.755,
+      "llA": 0.9545
+    },
+    {
+      "id": "16434024",
+      "fecha": "2026-09-05",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 50.6,
+        "draw": 25.4,
+        "away": 24
+      },
+      "probsA": {
+        "home": 55,
+        "draw": 24.3,
+        "away": 20.7
+      },
+      "llV1": 1.4271,
+      "llA": 1.575
+    },
+    {
+      "id": "16434028",
+      "fecha": "2026-09-05",
+      "marcador": "3-4",
+      "real": "away",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 44.4,
+        "draw": 28.4,
+        "away": 27.2
+      },
+      "probsA": {
+        "home": 42.5,
+        "draw": 28.8,
+        "away": 28.7
+      },
+      "llV1": 1.302,
+      "llA": 1.2483
+    },
+    {
+      "id": "16434032",
+      "fecha": "2026-09-05",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 16.2,
+        "draw": 18,
+        "away": 65.8
+      },
+      "probsA": {
+        "home": 29.6,
+        "draw": 22.2,
+        "away": 48.2
+      },
+      "llV1": 1.7148,
+      "llA": 1.5051
+    },
+    {
+      "id": "16434042",
+      "fecha": "2026-09-05",
+      "marcador": "4-0",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 73.9,
+        "draw": 16.6,
+        "away": 9.5
+      },
+      "probsA": {
+        "home": 76.3,
+        "draw": 15.4,
+        "away": 8.3
+      },
+      "llV1": 0.3025,
+      "llA": 0.2705
+    },
+    {
+      "id": "16434101",
+      "fecha": "2026-09-05",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 30.6,
+        "draw": 28.6,
+        "away": 40.8
+      },
+      "probsA": {
+        "home": 41,
+        "draw": 28.6,
+        "away": 30.4
+      },
+      "llV1": 1.1842,
+      "llA": 0.8916
+    },
+    {
+      "id": "16280816",
+      "fecha": "2026-09-06",
+      "marcador": "4-2",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 50.4,
+        "draw": 32.4,
+        "away": 17.2
+      },
+      "probsA": {
+        "home": 45.3,
+        "draw": 33.8,
+        "away": 20.9
+      },
+      "llV1": 0.6852,
+      "llA": 0.7919
+    },
+    {
+      "id": "16280818",
+      "fecha": "2026-09-06",
+      "marcador": "5-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 42.5,
+        "draw": 21.8,
+        "away": 35.7
+      },
+      "probsA": {
+        "home": 37.1,
+        "draw": 21.9,
+        "away": 41
+      },
+      "llV1": 0.8557,
+      "llA": 0.9916
+    },
+    {
+      "id": "16280819",
+      "fecha": "2026-09-06",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 59.1,
+        "draw": 25.9,
+        "away": 15
+      },
+      "probsA": {
+        "home": 51,
+        "draw": 28.8,
+        "away": 20.2
+      },
+      "llV1": 1.3509,
+      "llA": 1.2448
+    },
+    {
+      "id": "16280821",
+      "fecha": "2026-09-06",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 58.4,
+        "draw": 22.1,
+        "away": 19.5
+      },
+      "probsA": {
+        "home": 43.6,
+        "draw": 25.2,
+        "away": 31.2
+      },
+      "llV1": 0.5379,
+      "llA": 0.8301
+    },
+    {
+      "id": "16281135",
+      "fecha": "2026-09-06",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 26.5,
+        "draw": 30.3,
+        "away": 43.2
+      },
+      "probsA": {
+        "home": 30.7,
+        "draw": 30.7,
+        "away": 38.6
+      },
+      "llV1": 1.194,
+      "llA": 1.1809
+    },
+    {
+      "id": "16284978",
+      "fecha": "2026-09-06",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 45,
+        "draw": 25.6,
+        "away": 29.4
+      },
+      "probsA": {
+        "home": 41.8,
+        "draw": 26.1,
+        "away": 32.1
+      },
+      "llV1": 1.3626,
+      "llA": 1.3432
+    },
+    {
+      "id": "16285000",
+      "fecha": "2026-09-06",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 47.9,
+        "draw": 24.9,
+        "away": 27.2
+      },
+      "probsA": {
+        "home": 43,
+        "draw": 25.5,
+        "away": 31.5
+      },
+      "llV1": 0.7361,
+      "llA": 0.844
+    },
+    {
+      "id": "16285004",
+      "fecha": "2026-09-06",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 67.1,
+        "draw": 19.4,
+        "away": 13.5
+      },
+      "probsA": {
+        "home": 61.1,
+        "draw": 21.6,
+        "away": 17.3
+      },
+      "llV1": 1.6399,
+      "llA": 1.5325
+    },
+    {
+      "id": "16285008",
+      "fecha": "2026-09-06",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 26.7,
+        "draw": 27.6,
+        "away": 45.7
+      },
+      "probsA": {
+        "home": 25.5,
+        "draw": 27.2,
+        "away": 47.3
+      },
+      "llV1": 1.2874,
+      "llA": 1.302
+    },
+    {
+      "id": "16363257",
+      "fecha": "2026-09-06",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 67,
+        "draw": 22.7,
+        "away": 10.3
+      },
+      "probsA": {
+        "home": 53.3,
+        "draw": 28.7,
+        "away": 18
+      },
+      "llV1": 0.4005,
+      "llA": 0.6292
+    },
+    {
+      "id": "16363259",
+      "fecha": "2026-09-06",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 17.2,
+        "draw": 16.5,
+        "away": 66.3
+      },
+      "probsA": {
+        "home": 23.9,
+        "draw": 18.8,
+        "away": 57.3
+      },
+      "llV1": 1.8018,
+      "llA": 1.6713
+    },
+    {
+      "id": "16416318",
+      "fecha": "2026-09-06",
+      "marcador": "5-2",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 47.5,
+        "draw": 32.5,
+        "away": 20
+      },
+      "probsA": {
+        "home": 40.6,
+        "draw": 34.4,
+        "away": 25
+      },
+      "llV1": 0.7444,
+      "llA": 0.9014
+    },
+    {
+      "id": "16416320",
+      "fecha": "2026-09-06",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 69.7,
+        "draw": 20.7,
+        "away": 9.6
+      },
+      "probsA": {
+        "home": 68.2,
+        "draw": 21.4,
+        "away": 10.4
+      },
+      "llV1": 1.575,
+      "llA": 1.5418
+    },
+    {
+      "id": "16416323",
+      "fecha": "2026-09-06",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 46.9,
+        "draw": 23.4,
+        "away": 29.7
+      },
+      "probsA": {
+        "home": 52.5,
+        "draw": 22.5,
+        "away": 25
+      },
+      "llV1": 1.4524,
+      "llA": 1.4917
+    },
+    {
+      "id": "16416325",
+      "fecha": "2026-09-06",
+      "marcador": "0-5",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 26.5,
+        "draw": 20.1,
+        "away": 53.4
+      },
+      "probsA": {
+        "home": 36.8,
+        "draw": 21.4,
+        "away": 41.8
+      },
+      "llV1": 0.6274,
+      "llA": 0.8723
+    },
+    {
+      "id": "16434021",
+      "fecha": "2026-09-06",
+      "marcador": "1-4",
+      "real": "away",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 43,
+        "draw": 28.2,
+        "away": 28.8
+      },
+      "probsA": {
+        "home": 48.7,
+        "draw": 27.3,
+        "away": 24
+      },
+      "llV1": 1.2448,
+      "llA": 1.4271
+    },
+    {
+      "id": "16434030",
+      "fecha": "2026-09-06",
+      "marcador": "0-5",
+      "real": "away",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 39.7,
+        "draw": 27.9,
+        "away": 32.4
+      },
+      "probsA": {
+        "home": 43.1,
+        "draw": 27.5,
+        "away": 29.4
+      },
+      "llV1": 1.127,
+      "llA": 1.2242
+    },
+    {
+      "id": "16284997",
+      "fecha": "2026-09-07",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 46.4,
+        "draw": 28.5,
+        "away": 25.1
+      },
+      "probsA": {
+        "home": 46.7,
+        "draw": 28.4,
+        "away": 24.9
+      },
+      "llV1": 0.7679,
+      "llA": 0.7614
+    },
+    {
+      "id": "16285006",
+      "fecha": "2026-09-07",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 58,
+        "draw": 24.2,
+        "away": 17.8
+      },
+      "probsA": {
+        "home": 60.5,
+        "draw": 23.2,
+        "away": 16.3
+      },
+      "llV1": 1.726,
+      "llA": 1.814
+    },
+    {
+      "id": "16416319",
+      "fecha": "2026-09-07",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 52.5,
+        "draw": 25.5,
+        "away": 22
+      },
+      "probsA": {
+        "home": 53.4,
+        "draw": 25.4,
+        "away": 21.2
+      },
+      "llV1": 1.5141,
+      "llA": 1.5512
+    },
+    {
+      "id": "16416348",
+      "fecha": "2026-09-07",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 38.2,
+        "draw": 32.8,
+        "away": 29
+      },
+      "probsA": {
+        "home": 39.9,
+        "draw": 32.6,
+        "away": 27.5
+      },
+      "llV1": 1.1147,
+      "llA": 1.1209
+    },
+    {
+      "id": "16938768",
+      "fecha": "2026-09-08",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 66.8,
+        "draw": 17.8,
+        "away": 15.4
+      },
+      "probsA": {
+        "home": 73.4,
+        "draw": 15.3,
+        "away": 11.3
+      },
+      "llV1": 0.4035,
+      "llA": 0.3092
+    },
+    {
+      "id": "16938841",
+      "fecha": "2026-09-08",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 25.9,
+        "draw": 17.2,
+        "away": 56.9
+      },
+      "probsA": {
+        "home": 28.9,
+        "draw": 17.8,
+        "away": 53.3
+      },
+      "llV1": 0.5639,
+      "llA": 0.6292
+    },
+    {
+      "id": "16938848",
+      "fecha": "2026-09-08",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 63.6,
+        "draw": 19.3,
+        "away": 17.1
+      },
+      "probsA": {
+        "home": 44.5,
+        "draw": 23.7,
+        "away": 31.8
+      },
+      "llV1": 0.4526,
+      "llA": 0.8097
+    },
+    {
+      "id": "16938854",
+      "fecha": "2026-09-08",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 11.1,
+        "draw": 15.2,
+        "away": 73.7
+      },
+      "probsA": {
+        "home": 20.4,
+        "draw": 20.2,
+        "away": 59.4
+      },
+      "llV1": 0.3052,
+      "llA": 0.5209
+    },
+    {
+      "id": "16938991",
+      "fecha": "2026-09-08",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 38.7,
+        "draw": 24.6,
+        "away": 36.7
+      },
+      "probsA": {
+        "home": 48.4,
+        "draw": 23.6,
+        "away": 28
+      },
+      "llV1": 1.0024,
+      "llA": 1.273
+    },
+    {
+      "id": "16939050",
+      "fecha": "2026-09-08",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 47.9,
+        "draw": 24.9,
+        "away": 27.2
+      },
+      "probsA": {
+        "home": 47.9,
+        "draw": 24.9,
+        "away": 27.2
+      },
+      "llV1": 0.7361,
+      "llA": 0.7361
+    },
+    {
+      "id": "16938784",
+      "fecha": "2026-09-09",
+      "marcador": "5-1",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 72,
+        "draw": 15.8,
+        "away": 12.2
+      },
+      "probsA": {
+        "home": 58.6,
+        "draw": 20.3,
+        "away": 21.1
+      },
+      "llV1": 0.3285,
+      "llA": 0.5344
+    },
+    {
+      "id": "16938796",
+      "fecha": "2026-09-09",
+      "marcador": "6-1",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 84.3,
+        "draw": 10.8,
+        "away": 4.9
+      },
+      "probsA": {
+        "home": 75,
+        "draw": 15.9,
+        "away": 9.1
+      },
+      "llV1": 0.1708,
+      "llA": 0.2877
+    },
+    {
+      "id": "16938798",
+      "fecha": "2026-09-09",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 54.4,
+        "draw": 24.1,
+        "away": 21.5
+      },
+      "probsA": {
+        "home": 54.7,
+        "draw": 24,
+        "away": 21.3
+      },
+      "llV1": 0.6088,
+      "llA": 0.6033
+    },
+    {
+      "id": "16938888",
+      "fecha": "2026-09-09",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 49.2,
+        "draw": 31.8,
+        "away": 19
+      },
+      "probsA": {
+        "home": 50.6,
+        "draw": 31.4,
+        "away": 18
+      },
+      "llV1": 0.7093,
+      "llA": 0.6812
+    },
+    {
+      "id": "16938985",
+      "fecha": "2026-09-09",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 14.5,
+        "draw": 27,
+        "away": 58.5
+      },
+      "probsA": {
+        "home": 19,
+        "draw": 29.7,
+        "away": 51.3
+      },
+      "llV1": 0.5361,
+      "llA": 0.6675
+    },
+    {
+      "id": "16939028",
+      "fecha": "2026-09-09",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 66.3,
+        "draw": 18.5,
+        "away": 15.2
+      },
+      "probsA": {
+        "home": 57.9,
+        "draw": 21,
+        "away": 21.1
+      },
+      "llV1": 0.411,
+      "llA": 0.5465
+    },
+    {
+      "id": "16938858",
+      "fecha": "2026-09-10",
+      "marcador": "5-0",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 53.8,
+        "draw": 22.1,
+        "away": 24.1
+      },
+      "probsA": {
+        "home": 50.9,
+        "draw": 22.5,
+        "away": 26.6
+      },
+      "llV1": 0.6199,
+      "llA": 0.6753
+    },
+    {
+      "id": "16938880",
+      "fecha": "2026-09-10",
+      "marcador": "4-0",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 88.2,
+        "draw": 8,
+        "away": 3.8
+      },
+      "probsA": {
+        "home": 83.2,
+        "draw": 11,
+        "away": 5.8
+      },
+      "llV1": 0.1256,
+      "llA": 0.1839
+    },
+    {
+      "id": "16938896",
+      "fecha": "2026-09-10",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 65.7,
+        "draw": 19.2,
+        "away": 15.1
+      },
+      "probsA": {
+        "home": 70,
+        "draw": 17.6,
+        "away": 12.4
+      },
+      "llV1": 1.6503,
+      "llA": 1.7373
+    },
+    {
+      "id": "16938963",
+      "fecha": "2026-09-10",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 38.4,
+        "draw": 24.1,
+        "away": 37.5
+      },
+      "probsA": {
+        "home": 54.9,
+        "draw": 22,
+        "away": 23.1
+      },
+      "llV1": 1.423,
+      "llA": 1.5141
+    },
+    {
+      "id": "16939012",
+      "fecha": "2026-09-10",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 18.5,
+        "draw": 24.5,
+        "away": 57
+      },
+      "probsA": {
+        "home": 23,
+        "draw": 26.5,
+        "away": 50.5
+      },
+      "llV1": 0.5621,
+      "llA": 0.6832
+    },
+    {
+      "id": "16939034",
+      "fecha": "2026-09-10",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "UEFA Champions League 2026 2027",
+      "probsV1": {
+        "home": 61.7,
+        "draw": 20.8,
+        "away": 17.5
+      },
+      "probsA": {
+        "home": 53.6,
+        "draw": 23.1,
+        "away": 23.3
+      },
+      "llV1": 0.4829,
+      "llA": 0.6236
+    },
+    {
+      "id": "16280822",
+      "fecha": "2026-09-11",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 29.1,
+        "draw": 24.2,
+        "away": 46.7
+      },
+      "probsA": {
+        "home": 46,
+        "draw": 24.3,
+        "away": 29.7
+      },
+      "llV1": 0.7614,
+      "llA": 1.214
+    },
+    {
+      "id": "16285024",
+      "fecha": "2026-09-11",
+      "marcador": "2-4",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 53.4,
+        "draw": 25.5,
+        "away": 21.1
+      },
+      "probsA": {
+        "home": 56.7,
+        "draw": 24.7,
+        "away": 18.6
+      },
+      "llV1": 1.5559,
+      "llA": 1.682
+    },
+    {
+      "id": "16416330",
+      "fecha": "2026-09-11",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 60.8,
+        "draw": 19,
+        "away": 20.2
+      },
+      "probsA": {
+        "home": 56.3,
+        "draw": 20.2,
+        "away": 23.5
+      },
+      "llV1": 0.4976,
+      "llA": 0.5745
+    },
+    {
+      "id": "16434045",
+      "fecha": "2026-09-11",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 39.2,
+        "draw": 26.3,
+        "away": 34.5
+      },
+      "probsA": {
+        "home": 37.4,
+        "draw": 26.3,
+        "away": 36.3
+      },
+      "llV1": 1.0642,
+      "llA": 1.0134
+    },
+    {
+      "id": "16280823",
+      "fecha": "2026-09-12",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 57,
+        "draw": 22.6,
+        "away": 20.4
+      },
+      "probsA": {
+        "home": 58.2,
+        "draw": 22.4,
+        "away": 19.4
+      },
+      "llV1": 1.5896,
+      "llA": 1.6399
+    },
+    {
+      "id": "16280824",
+      "fecha": "2026-09-12",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 33.3,
+        "draw": 24.2,
+        "away": 42.5
+      },
+      "probsA": {
+        "home": 33.4,
+        "draw": 24.1,
+        "away": 42.5
+      },
+      "llV1": 0.8557,
+      "llA": 0.8557
+    },
+    {
+      "id": "16280826",
+      "fecha": "2026-09-12",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 59.7,
+        "draw": 20,
+        "away": 20.3
+      },
+      "probsA": {
+        "home": 64.2,
+        "draw": 18.8,
+        "away": 17
+      },
+      "llV1": 1.5945,
+      "llA": 1.772
+    },
+    {
+      "id": "16285007",
+      "fecha": "2026-09-12",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 38.6,
+        "draw": 26.8,
+        "away": 34.6
+      },
+      "probsA": {
+        "home": 47.6,
+        "draw": 25.8,
+        "away": 26.6
+      },
+      "llV1": 1.3168,
+      "llA": 1.3548
+    },
+    {
+      "id": "16285010",
+      "fecha": "2026-09-12",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 69.7,
+        "draw": 18.9,
+        "away": 11.4
+      },
+      "probsA": {
+        "home": 72.5,
+        "draw": 17.6,
+        "away": 9.9
+      },
+      "llV1": 2.1716,
+      "llA": 2.3126
+    },
+    {
+      "id": "16285012",
+      "fecha": "2026-09-12",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 40.3,
+        "draw": 28.5,
+        "away": 31.2
+      },
+      "probsA": {
+        "home": 33.7,
+        "draw": 28.7,
+        "away": 37.6
+      },
+      "llV1": 1.2553,
+      "llA": 1.2483
+    },
+    {
+      "id": "16363264",
+      "fecha": "2026-09-12",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 45.4,
+        "draw": 34.7,
+        "away": 19.9
+      },
+      "probsA": {
+        "home": 39,
+        "draw": 36.4,
+        "away": 24.6
+      },
+      "llV1": 1.0584,
+      "llA": 1.0106
+    },
+    {
+      "id": "16363639",
+      "fecha": "2026-09-12",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 29.4,
+        "draw": 20.4,
+        "away": 50.2
+      },
+      "probsA": {
+        "home": 24.4,
+        "draw": 19.4,
+        "away": 56.2
+      },
+      "llV1": 0.6892,
+      "llA": 0.5763
+    },
+    {
+      "id": "16363640",
+      "fecha": "2026-09-12",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 73.3,
+        "draw": 17.5,
+        "away": 9.2
+      },
+      "probsA": {
+        "home": 70.5,
+        "draw": 18.9,
+        "away": 10.6
+      },
+      "llV1": 1.743,
+      "llA": 1.666
+    },
+    {
+      "id": "16363641",
+      "fecha": "2026-09-12",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 59.9,
+        "draw": 22.2,
+        "away": 17.9
+      },
+      "probsA": {
+        "home": 68,
+        "draw": 19.2,
+        "away": 12.8
+      },
+      "llV1": 1.5051,
+      "llA": 1.6503
+    },
+    {
+      "id": "16363643",
+      "fecha": "2026-09-12",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 47.1,
+        "draw": 25.3,
+        "away": 27.6
+      },
+      "probsA": {
+        "home": 46.3,
+        "draw": 25.3,
+        "away": 28.4
+      },
+      "llV1": 1.2874,
+      "llA": 1.2588
+    },
+    {
+      "id": "16363646",
+      "fecha": "2026-09-12",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 23.1,
+        "draw": 30.9,
+        "away": 46
+      },
+      "probsA": {
+        "home": 31.5,
+        "draw": 32.3,
+        "away": 36.2
+      },
+      "llV1": 0.7765,
+      "llA": 1.0161
+    },
+    {
+      "id": "16363647",
+      "fecha": "2026-09-12",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 59.7,
+        "draw": 19.3,
+        "away": 21
+      },
+      "probsA": {
+        "home": 60.3,
+        "draw": 19.2,
+        "away": 20.5
+      },
+      "llV1": 1.6451,
+      "llA": 1.6503
+    },
+    {
+      "id": "16416322",
+      "fecha": "2026-09-12",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 45,
+        "draw": 28.7,
+        "away": 26.3
+      },
+      "probsA": {
+        "home": 39.6,
+        "draw": 29.3,
+        "away": 31.1
+      },
+      "llV1": 1.2483,
+      "llA": 1.2276
+    },
+    {
+      "id": "16416327",
+      "fecha": "2026-09-12",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 33.6,
+        "draw": 31,
+        "away": 35.4
+      },
+      "probsA": {
+        "home": 36,
+        "draw": 31.1,
+        "away": 32.9
+      },
+      "llV1": 1.0385,
+      "llA": 1.1117
+    },
+    {
+      "id": "16416328",
+      "fecha": "2026-09-12",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 59.1,
+        "draw": 20.6,
+        "away": 20.3
+      },
+      "probsA": {
+        "home": 58.5,
+        "draw": 21,
+        "away": 20.5
+      },
+      "llV1": 0.5259,
+      "llA": 0.5361
+    },
+    {
+      "id": "16416331",
+      "fecha": "2026-09-12",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 62.9,
+        "draw": 21.6,
+        "away": 15.5
+      },
+      "probsA": {
+        "home": 56.3,
+        "draw": 24,
+        "away": 19.7
+      },
+      "llV1": 0.4636,
+      "llA": 0.5745
+    },
+    {
+      "id": "16434018",
+      "fecha": "2026-09-12",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 54.4,
+        "draw": 27,
+        "away": 18.6
+      },
+      "probsA": {
+        "home": 46.3,
+        "draw": 29.2,
+        "away": 24.5
+      },
+      "llV1": 1.682,
+      "llA": 1.4065
+    },
+    {
+      "id": "16434027",
+      "fecha": "2026-09-12",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 45.1,
+        "draw": 28.5,
+        "away": 26.4
+      },
+      "probsA": {
+        "home": 44.4,
+        "draw": 28.6,
+        "away": 27
+      },
+      "llV1": 1.2553,
+      "llA": 1.2518
+    },
+    {
+      "id": "16434031",
+      "fecha": "2026-09-12",
+      "marcador": "2-2",
+      "real": "draw",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 27.2,
+        "draw": 25.4,
+        "away": 47.4
+      },
+      "probsA": {
+        "home": 21.4,
+        "draw": 23.8,
+        "away": 54.8
+      },
+      "llV1": 1.3704,
+      "llA": 1.4355
+    },
+    {
+      "id": "16434035",
+      "fecha": "2026-09-12",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 30.6,
+        "draw": 22,
+        "away": 47.4
+      },
+      "probsA": {
+        "home": 41,
+        "draw": 22.6,
+        "away": 36.4
+      },
+      "llV1": 1.1842,
+      "llA": 0.8916
+    },
+    {
+      "id": "16434037",
+      "fecha": "2026-09-12",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 64.6,
+        "draw": 20.2,
+        "away": 15.2
+      },
+      "probsA": {
+        "home": 49.5,
+        "draw": 24.6,
+        "away": 25.9
+      },
+      "llV1": 0.437,
+      "llA": 0.7032
+    },
+    {
+      "id": "16434040",
+      "fecha": "2026-09-12",
+      "marcador": "5-0",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 41.2,
+        "draw": 30.3,
+        "away": 28.5
+      },
+      "probsA": {
+        "home": 35.3,
+        "draw": 30.8,
+        "away": 33.9
+      },
+      "llV1": 0.8867,
+      "llA": 1.0413
+    },
+    {
+      "id": "16280820",
+      "fecha": "2026-09-13",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 58.2,
+        "draw": 28.2,
+        "away": 13.6
+      },
+      "probsA": {
+        "home": 56.5,
+        "draw": 28.9,
+        "away": 14.6
+      },
+      "llV1": 1.9951,
+      "llA": 1.9241
+    },
+    {
+      "id": "16280825",
+      "fecha": "2026-09-13",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 30.5,
+        "draw": 37.3,
+        "away": 32.2
+      },
+      "probsA": {
+        "home": 29.5,
+        "draw": 37.3,
+        "away": 33.2
+      },
+      "llV1": 1.1874,
+      "llA": 1.2208
+    },
+    {
+      "id": "16280827",
+      "fecha": "2026-09-13",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 33.8,
+        "draw": 32.8,
+        "away": 33.4
+      },
+      "probsA": {
+        "home": 41.3,
+        "draw": 32.1,
+        "away": 26.6
+      },
+      "llV1": 1.0847,
+      "llA": 0.8843
+    },
+    {
+      "id": "16281137",
+      "fecha": "2026-09-13",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Liga Peruana Clausura 2026",
+      "probsV1": {
+        "home": 42.4,
+        "draw": 23.7,
+        "away": 33.9
+      },
+      "probsA": {
+        "home": 46.5,
+        "draw": 23.1,
+        "away": 30.4
+      },
+      "llV1": 1.0818,
+      "llA": 1.1907
+    },
+    {
+      "id": "16285013",
+      "fecha": "2026-09-13",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 25.7,
+        "draw": 22.5,
+        "away": 51.8
+      },
+      "probsA": {
+        "home": 32.5,
+        "draw": 23.8,
+        "away": 43.7
+      },
+      "llV1": 1.3587,
+      "llA": 1.1239
+    },
+    {
+      "id": "16285014",
+      "fecha": "2026-09-13",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 27.8,
+        "draw": 28,
+        "away": 44.2
+      },
+      "probsA": {
+        "home": 23.5,
+        "draw": 26.9,
+        "away": 49.6
+      },
+      "llV1": 1.2801,
+      "llA": 1.4482
+    },
+    {
+      "id": "16285015",
+      "fecha": "2026-09-13",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 60.7,
+        "draw": 22.5,
+        "away": 16.8
+      },
+      "probsA": {
+        "home": 59.7,
+        "draw": 22.9,
+        "away": 17.4
+      },
+      "llV1": 0.4992,
+      "llA": 0.5158
+    },
+    {
+      "id": "16363642",
+      "fecha": "2026-09-13",
+      "marcador": "0-5",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 23.7,
+        "draw": 24.1,
+        "away": 52.2
+      },
+      "probsA": {
+        "home": 25.5,
+        "draw": 24.6,
+        "away": 49.9
+      },
+      "llV1": 0.6501,
+      "llA": 0.6951
+    },
+    {
+      "id": "16363645",
+      "fecha": "2026-09-13",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 62.3,
+        "draw": 20.7,
+        "away": 17
+      },
+      "probsA": {
+        "home": 65.9,
+        "draw": 19.3,
+        "away": 14.8
+      },
+      "llV1": 1.772,
+      "llA": 1.9105
+    },
+    {
+      "id": "16416326",
+      "fecha": "2026-09-13",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 24.2,
+        "draw": 37.1,
+        "away": 38.7
+      },
+      "probsA": {
+        "home": 33,
+        "draw": 38.5,
+        "away": 28.5
+      },
+      "llV1": 0.9916,
+      "llA": 0.9545
+    },
+    {
+      "id": "16416329",
+      "fecha": "2026-09-13",
+      "marcador": "2-4",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 25.1,
+        "draw": 17.2,
+        "away": 57.7
+      },
+      "probsA": {
+        "home": 37.4,
+        "draw": 18.9,
+        "away": 43.7
+      },
+      "llV1": 0.5499,
+      "llA": 0.8278
+    },
+    {
+      "id": "16416332",
+      "fecha": "2026-09-13",
+      "marcador": "0-3",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 23.4,
+        "draw": 23.4,
+        "away": 53.2
+      },
+      "probsA": {
+        "home": 23.8,
+        "draw": 23.5,
+        "away": 52.7
+      },
+      "llV1": 0.6311,
+      "llA": 0.6406
+    },
+    {
+      "id": "16416347",
+      "fecha": "2026-09-13",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 19.9,
+        "draw": 41.2,
+        "away": 38.9
+      },
+      "probsA": {
+        "home": 22.7,
+        "draw": 41.8,
+        "away": 35.5
+      },
+      "llV1": 0.8867,
+      "llA": 0.8723
+    },
+    {
+      "id": "16434041",
+      "fecha": "2026-09-13",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 16.2,
+        "draw": 18,
+        "away": 65.8
+      },
+      "probsA": {
+        "home": 24.2,
+        "draw": 21,
+        "away": 54.8
+      },
+      "llV1": 0.4186,
+      "llA": 0.6015
+    },
+    {
+      "id": "16434043",
+      "fecha": "2026-09-13",
+      "marcador": "5-0",
+      "real": "home",
+      "liga": "Bundesliga 2026 2027",
+      "probsV1": {
+        "home": 55.8,
+        "draw": 22.7,
+        "away": 21.5
+      },
+      "probsA": {
+        "home": 48.8,
+        "draw": 24.3,
+        "away": 26.9
+      },
+      "llV1": 0.5834,
+      "llA": 0.7174
+    },
+    {
+      "id": "16285009",
+      "fecha": "2026-09-14",
+      "marcador": "5-3",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 62.2,
+        "draw": 21,
+        "away": 16.8
+      },
+      "probsA": {
+        "home": 49.9,
+        "draw": 24.5,
+        "away": 25.6
+      },
+      "llV1": 0.4748,
+      "llA": 0.6951
+    },
+    {
+      "id": "16285011",
+      "fecha": "2026-09-14",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 81.7,
+        "draw": 13,
+        "away": 5.3
+      },
+      "probsA": {
+        "home": 67.8,
+        "draw": 20.5,
+        "away": 11.7
+      },
+      "llV1": 0.2021,
+      "llA": 0.3886
+    },
+    {
+      "id": "16285016",
+      "fecha": "2026-09-14",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "Serie A 2026 2027",
+      "probsV1": {
+        "home": 20.2,
+        "draw": 18.9,
+        "away": 60.9
+      },
+      "probsA": {
+        "home": 34,
+        "draw": 21.8,
+        "away": 44.2
+      },
+      "llV1": 0.4959,
+      "llA": 0.8164
+    },
+    {
+      "id": "16363644",
+      "fecha": "2026-09-14",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "Premier League 2026 2027",
+      "probsV1": {
+        "home": 55.5,
+        "draw": 25.7,
+        "away": 18.8
+      },
+      "probsA": {
+        "home": 50.7,
+        "draw": 27,
+        "away": 22.3
+      },
+      "llV1": 0.5888,
+      "llA": 0.6792
+    },
+    {
+      "id": "16416333",
+      "fecha": "2026-09-14",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 43.8,
+        "draw": 22.6,
+        "away": 33.6
+      },
+      "probsA": {
+        "home": 63.7,
+        "draw": 18.5,
+        "away": 17.8
+      },
+      "llV1": 1.0906,
+      "llA": 1.726
+    },
+    {
+      "id": "16416334",
+      "fecha": "2026-09-15",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 49.3,
+        "draw": 25.3,
+        "away": 25.4
+      },
+      "probsA": {
+        "home": 44.1,
+        "draw": 26.3,
+        "away": 29.6
+      },
+      "llV1": 1.3704,
+      "llA": 1.2174
+    },
+    {
+      "id": "16416342",
+      "fecha": "2026-09-15",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 20.4,
+        "draw": 23.2,
+        "away": 56.4
+      },
+      "probsA": {
+        "home": 35.9,
+        "draw": 26.3,
+        "away": 37.8
+      },
+      "llV1": 0.5727,
+      "llA": 0.9729
+    },
+    {
+      "id": "16416345",
+      "fecha": "2026-09-15",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 55,
+        "draw": 25.1,
+        "away": 19.9
+      },
+      "probsA": {
+        "home": 51.6,
+        "draw": 26.1,
+        "away": 22.3
+      },
+      "llV1": 0.5978,
+      "llA": 0.6616
+    },
+    {
+      "id": "16416335",
+      "fecha": "2026-09-16",
+      "marcador": "4-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 69.3,
+        "draw": 20.3,
+        "away": 10.4
+      },
+      "probsA": {
+        "home": 60,
+        "draw": 24.5,
+        "away": 15.5
+      },
+      "llV1": 0.3667,
+      "llA": 0.5108
+    },
+    {
+      "id": "16416343",
+      "fecha": "2026-09-16",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 54.2,
+        "draw": 26.7,
+        "away": 19.1
+      },
+      "probsA": {
+        "home": 49.8,
+        "draw": 28.5,
+        "away": 21.7
+      },
+      "llV1": 1.6555,
+      "llA": 1.5279
+    },
+    {
+      "id": "16416346",
+      "fecha": "2026-09-16",
+      "marcador": "7-2",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 70.5,
+        "draw": 14.1,
+        "away": 15.4
+      },
+      "probsA": {
+        "home": 59,
+        "draw": 17.3,
+        "away": 23.7
+      },
+      "llV1": 0.3496,
+      "llA": 0.5276
+    },
+    {
+      "id": "16416336",
+      "fecha": "2026-09-17",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 60.6,
+        "draw": 23.4,
+        "away": 16
+      },
+      "probsA": {
+        "home": 42.6,
+        "draw": 28.2,
+        "away": 29.2
+      },
+      "llV1": 0.5009,
+      "llA": 0.8533
+    },
+    {
+      "id": "16416338",
+      "fecha": "2026-09-17",
+      "marcador": "1-3",
+      "real": "away",
+      "liga": "La Liga 2026 2027",
+      "probsV1": {
+        "home": 57.8,
+        "draw": 29.1,
+        "away": 13.1
+      },
+      "probsA": {
+        "home": 48.5,
+        "draw": 32.9,
+        "away": 18.6
+      },
+      "llV1": 2.0326,
+      "llA": 1.682
+    },
+    {
+      "id": "15534057",
+      "fecha": "2026-09-24",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 34.8,
+        "draw": 23,
+        "away": 42.2
+      },
+      "probsA": {
+        "home": 37.1,
+        "draw": 23,
+        "away": 39.9
+      },
+      "llV1": 1.4697,
+      "llA": 1.4697
+    },
+    {
+      "id": "15534071",
+      "fecha": "2026-09-24",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 28.7,
+        "draw": 34,
+        "away": 37.3
+      },
+      "probsA": {
+        "home": 28,
+        "draw": 33.9,
+        "away": 38.1
+      },
+      "llV1": 0.9862,
+      "llA": 0.965
+    },
+    {
+      "id": "15534097",
+      "fecha": "2026-09-24",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 73.4,
+        "draw": 18.8,
+        "away": 7.8
+      },
+      "probsA": {
+        "home": 68.5,
+        "draw": 21.8,
+        "away": 9.7
+      },
+      "llV1": 0.3092,
+      "llA": 0.3783
+    },
+    {
+      "id": "15534100",
+      "fecha": "2026-09-24",
+      "marcador": "3-2",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 46.4,
+        "draw": 29.7,
+        "away": 23.9
+      },
+      "probsA": {
+        "home": 37.5,
+        "draw": 31.1,
+        "away": 31.4
+      },
+      "llV1": 0.7679,
+      "llA": 0.9808
+    },
+    {
+      "id": "15534155",
+      "fecha": "2026-09-24",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 57.2,
+        "draw": 21.9,
+        "away": 20.9
+      },
+      "probsA": {
+        "home": 63.3,
+        "draw": 19.8,
+        "away": 16.9
+      },
+      "llV1": 0.5586,
+      "llA": 0.4573
+    },
+    {
+      "id": "15534165",
+      "fecha": "2026-09-24",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 78.1,
+        "draw": 14.7,
+        "away": 7.2
+      },
+      "probsA": {
+        "home": 76.3,
+        "draw": 15.7,
+        "away": 8
+      },
+      "llV1": 0.2472,
+      "llA": 0.2705
+    },
+    {
+      "id": "15534241",
+      "fecha": "2026-09-24",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 7.8,
+        "draw": 15.9,
+        "away": 76.3
+      },
+      "probsA": {
+        "home": 7.1,
+        "draw": 15.1,
+        "away": 77.8
+      },
+      "llV1": 0.2705,
+      "llA": 0.251
+    },
+    {
+      "id": "15537726",
+      "fecha": "2026-09-24",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 11.5,
+        "draw": 52.3,
+        "away": 36.2
+      },
+      "probsA": {
+        "home": 11.1,
+        "draw": 51.3,
+        "away": 37.6
+      },
+      "llV1": 1.0161,
+      "llA": 0.9782
+    },
+    {
+      "id": "17110321",
+      "fecha": "2026-09-24",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "International Friendly Games",
+      "probsV1": {
+        "home": 57.5,
+        "draw": 30.7,
+        "away": 11.8
+      },
+      "probsA": {
+        "home": 53.5,
+        "draw": 32.6,
+        "away": 13.9
+      },
+      "llV1": 0.5534,
+      "llA": 0.6255
+    },
+    {
+      "id": "17110322",
+      "fecha": "2026-09-24",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "International Friendly Games",
+      "probsV1": {
+        "home": 33.9,
+        "draw": 30.7,
+        "away": 35.4
+      },
+      "probsA": {
+        "home": 35.6,
+        "draw": 30.7,
+        "away": 33.7
+      },
+      "llV1": 1.0818,
+      "llA": 1.0328
+    },
+    {
+      "id": "17118212",
+      "fecha": "2026-09-24",
+      "marcador": "3-0",
+      "real": "home",
+      "liga": "International Friendly Games",
+      "probsV1": {
+        "home": 69.8,
+        "draw": 18,
+        "away": 12.2
+      },
+      "probsA": {
+        "home": 67.3,
+        "draw": 19,
+        "away": 13.7
+      },
+      "llV1": 0.3595,
+      "llA": 0.396
+    },
+    {
+      "id": "15534031",
+      "fecha": "2026-09-25",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 17.7,
+        "draw": 17.7,
+        "away": 64.6
+      },
+      "probsA": {
+        "home": 26.1,
+        "draw": 20.7,
+        "away": 53.2
+      },
+      "llV1": 0.437,
+      "llA": 0.6311
+    },
+    {
+      "id": "15534037",
+      "fecha": "2026-09-25",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 58.6,
+        "draw": 21.6,
+        "away": 19.8
+      },
+      "probsA": {
+        "home": 58,
+        "draw": 21.8,
+        "away": 20.2
+      },
+      "llV1": 1.6195,
+      "llA": 1.5995
+    },
+    {
+      "id": "15534128",
+      "fecha": "2026-09-25",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 11.5,
+        "draw": 17.9,
+        "away": 70.6
+      },
+      "probsA": {
+        "home": 13.9,
+        "draw": 19.9,
+        "away": 66.2
+      },
+      "llV1": 0.3481,
+      "llA": 0.4125
+    },
+    {
+      "id": "15534138",
+      "fecha": "2026-09-25",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 40,
+        "draw": 27,
+        "away": 33
+      },
+      "probsA": {
+        "home": 44.2,
+        "draw": 26.5,
+        "away": 29.3
+      },
+      "llV1": 1.1087,
+      "llA": 1.2276
+    },
+    {
+      "id": "15534167",
+      "fecha": "2026-09-25",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 82.7,
+        "draw": 11.3,
+        "away": 6
+      },
+      "probsA": {
+        "home": 84,
+        "draw": 10.6,
+        "away": 5.4
+      },
+      "llV1": 2.1804,
+      "llA": 2.2443
+    },
+    {
+      "id": "15534178",
+      "fecha": "2026-09-25",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 26.9,
+        "draw": 19.9,
+        "away": 53.2
+      },
+      "probsA": {
+        "home": 32.6,
+        "draw": 20.8,
+        "away": 46.6
+      },
+      "llV1": 1.313,
+      "llA": 1.1209
+    },
+    {
+      "id": "15534183",
+      "fecha": "2026-09-25",
+      "marcador": "2-1",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 45.4,
+        "draw": 30.4,
+        "away": 24.2
+      },
+      "probsA": {
+        "home": 43.8,
+        "draw": 30.8,
+        "away": 25.4
+      },
+      "llV1": 0.7897,
+      "llA": 0.8255
+    },
+    {
+      "id": "15537760",
+      "fecha": "2026-09-25",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 67.7,
+        "draw": 17.2,
+        "away": 15.1
+      },
+      "probsA": {
+        "home": 72.6,
+        "draw": 15.2,
+        "away": 12.2
+      },
+      "llV1": 0.3901,
+      "llA": 0.3202
+    },
+    {
+      "id": "16814493",
+      "fecha": "2026-09-25",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "International Friendly Games",
+      "probsV1": {
+        "home": 37.7,
+        "draw": 24.9,
+        "away": 37.4
+      },
+      "probsA": {
+        "home": 46.9,
+        "draw": 24.5,
+        "away": 28.6
+      },
+      "llV1": 1.3903,
+      "llA": 1.4065
+    },
+    {
+      "id": "15534084",
+      "fecha": "2026-09-26",
+      "marcador": "2-3",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 54.2,
+        "draw": 21.4,
+        "away": 24.4
+      },
+      "probsA": {
+        "home": 63.1,
+        "draw": 19,
+        "away": 17.9
+      },
+      "llV1": 1.4106,
+      "llA": 1.7204
+    },
+    {
+      "id": "15534090",
+      "fecha": "2026-09-26",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 36.9,
+        "draw": 23,
+        "away": 40.1
+      },
+      "probsA": {
+        "home": 44.7,
+        "draw": 22.8,
+        "away": 32.5
+      },
+      "llV1": 0.9138,
+      "llA": 1.1239
+    },
+    {
+      "id": "15534109",
+      "fecha": "2026-09-26",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 36.4,
+        "draw": 31.9,
+        "away": 31.7
+      },
+      "probsA": {
+        "home": 36.2,
+        "draw": 31.9,
+        "away": 31.9
+      },
+      "llV1": 1.1426,
+      "llA": 1.1426
+    },
+    {
+      "id": "15534115",
+      "fecha": "2026-09-26",
+      "marcador": "0-3",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 36.4,
+        "draw": 25.4,
+        "away": 38.2
+      },
+      "probsA": {
+        "home": 32.7,
+        "draw": 25.4,
+        "away": 41.9
+      },
+      "llV1": 0.9623,
+      "llA": 0.8699
+    },
+    {
+      "id": "15534142",
+      "fecha": "2026-09-26",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 26.9,
+        "draw": 52.4,
+        "away": 20.7
+      },
+      "probsA": {
+        "home": 30.2,
+        "draw": 51.8,
+        "away": 18
+      },
+      "llV1": 1.313,
+      "llA": 1.1973
+    },
+    {
+      "id": "15534152",
+      "fecha": "2026-09-26",
+      "marcador": "0-7",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 30.9,
+        "draw": 34.2,
+        "away": 34.9
+      },
+      "probsA": {
+        "home": 26,
+        "draw": 33.4,
+        "away": 40.6
+      },
+      "llV1": 1.0527,
+      "llA": 0.9014
+    },
+    {
+      "id": "15534193",
+      "fecha": "2026-09-26",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 74,
+        "draw": 19.8,
+        "away": 6.2
+      },
+      "probsA": {
+        "home": 74.4,
+        "draw": 19.5,
+        "away": 6.1
+      },
+      "llV1": 0.3011,
+      "llA": 0.2957
+    },
+    {
+      "id": "15534194",
+      "fecha": "2026-09-26",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 47.6,
+        "draw": 45.8,
+        "away": 6.6
+      },
+      "probsA": {
+        "home": 43.8,
+        "draw": 48.2,
+        "away": 8
+      },
+      "llV1": 0.7809,
+      "llA": 0.7298
+    },
+    {
+      "id": "15534233",
+      "fecha": "2026-09-26",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 73,
+        "draw": 18,
+        "away": 9
+      },
+      "probsA": {
+        "home": 71.7,
+        "draw": 18.4,
+        "away": 9.9
+      },
+      "llV1": 1.7148,
+      "llA": 1.6928
+    },
+    {
+      "id": "15537761",
+      "fecha": "2026-09-26",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 31.9,
+        "draw": 38.4,
+        "away": 29.7
+      },
+      "probsA": {
+        "home": 33.3,
+        "draw": 38.3,
+        "away": 28.4
+      },
+      "llV1": 1.214,
+      "llA": 1.2588
+    },
+    {
+      "id": "16705704",
+      "fecha": "2026-09-26",
+      "marcador": "1-0",
+      "real": "home",
+      "liga": "International Friendly Games",
+      "probsV1": {
+        "home": 18,
+        "draw": 24.2,
+        "away": 57.8
+      },
+      "probsA": {
+        "home": 23.2,
+        "draw": 26.1,
+        "away": 50.7
+      },
+      "llV1": 1.7148,
+      "llA": 1.461
+    },
+    {
+      "id": "16787738",
+      "fecha": "2026-09-26",
+      "marcador": "4-1",
+      "real": "home",
+      "liga": "International Friendly Games",
+      "probsV1": {
+        "home": 57,
+        "draw": 22.6,
+        "away": 20.4
+      },
+      "probsA": {
+        "home": 59.5,
+        "draw": 21.7,
+        "away": 18.8
+      },
+      "llV1": 0.5621,
+      "llA": 0.5192
+    },
+    {
+      "id": "15534060",
+      "fecha": "2026-09-27",
+      "marcador": "0-1",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 54.2,
+        "draw": 24.2,
+        "away": 21.6
+      },
+      "probsA": {
+        "home": 49.1,
+        "draw": 25.4,
+        "away": 25.5
+      },
+      "llV1": 1.5325,
+      "llA": 1.3665
+    },
+    {
+      "id": "15534068",
+      "fecha": "2026-09-27",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 36.4,
+        "draw": 29.4,
+        "away": 34.2
+      },
+      "probsA": {
+        "home": 42,
+        "draw": 28.9,
+        "away": 29.1
+      },
+      "llV1": 1.0729,
+      "llA": 1.2344
+    },
+    {
+      "id": "15534096",
+      "fecha": "2026-09-27",
+      "marcador": "1-2",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 37.3,
+        "draw": 23.2,
+        "away": 39.5
+      },
+      "probsA": {
+        "home": 35.4,
+        "draw": 23.2,
+        "away": 41.4
+      },
+      "llV1": 0.9289,
+      "llA": 0.8819
+    },
+    {
+      "id": "15534101",
+      "fecha": "2026-09-27",
+      "marcador": "2-0",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 49.1,
+        "draw": 37.4,
+        "away": 13.5
+      },
+      "probsA": {
+        "home": 50.5,
+        "draw": 36.9,
+        "away": 12.6
+      },
+      "llV1": 0.7113,
+      "llA": 0.6832
+    },
+    {
+      "id": "15534156",
+      "fecha": "2026-09-27",
+      "marcador": "0-3",
+      "real": "away",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 73.1,
+        "draw": 17.4,
+        "away": 9.5
+      },
+      "probsA": {
+        "home": 73.2,
+        "draw": 17.3,
+        "away": 9.5
+      },
+      "llV1": 2.3539,
+      "llA": 2.3539
+    },
+    {
+      "id": "15534162",
+      "fecha": "2026-09-27",
+      "marcador": "3-1",
+      "real": "home",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 51.6,
+        "draw": 23,
+        "away": 25.4
+      },
+      "probsA": {
+        "home": 58.3,
+        "draw": 21.6,
+        "away": 20.1
+      },
+      "llV1": 0.6616,
+      "llA": 0.5396
+    },
+    {
+      "id": "15534242",
+      "fecha": "2026-09-27",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 72.3,
+        "draw": 18.8,
+        "away": 8.9
+      },
+      "probsA": {
+        "home": 70.4,
+        "draw": 19.8,
+        "away": 9.8
+      },
+      "llV1": 1.6713,
+      "llA": 1.6195
+    },
+    {
+      "id": "15537762",
+      "fecha": "2026-09-27",
+      "marcador": "0-0",
+      "real": "draw",
+      "liga": "UEFA Nations League 26/27",
+      "probsV1": {
+        "home": 52.7,
+        "draw": 42.3,
+        "away": 5
+      },
+      "probsA": {
+        "home": 54.4,
+        "draw": 40.9,
+        "away": 4.7
+      },
+      "llV1": 0.8604,
+      "llA": 0.894
+    },
+    {
+      "id": "17080689",
+      "fecha": "2026-09-27",
+      "marcador": "1-1",
+      "real": "draw",
+      "liga": "International Friendly Games",
+      "probsV1": {
+        "home": 29.1,
+        "draw": 30.2,
+        "away": 40.7
+      },
+      "probsA": {
+        "home": 29.4,
+        "draw": 30.2,
+        "away": 40.4
+      },
+      "llV1": 1.1973,
+      "llA": 1.1973
+    },
+    {
+      "id": "17181257",
+      "fecha": "2026-09-27",
+      "marcador": "0-2",
+      "real": "away",
+      "liga": "International Friendly Games",
+      "probsV1": {
+        "home": 3.3,
+        "draw": 18.1,
+        "away": 78.6
+      },
+      "probsA": {
+        "home": 5.1,
+        "draw": 22.9,
+        "away": 72
+      },
+      "llV1": 0.2408,
+      "llA": 0.3285
+    }
+  ]
+}
