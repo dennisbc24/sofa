@@ -265,8 +265,11 @@ export const Prediccion2T = () => {
                 <div className="result-row">
                   <span className="result-label">Modelo</span>
                   <span className="result-value">
-                    {r.modelo.name} v{r.modelo.version} — {r.historial.local} partidos de{" "}
-                    {r.partido.local}, {r.historial.visitante} de {r.partido.visitante} (cutoff)
+                    <span className={`resultado-chip ${r.modelo.estado === "BETA" ? "resultado-e" : "resultado-v"}`}>
+                      {r.modelo.id || r.modelo.name} {r.modelo.estado ? `(${r.modelo.estado})` : ""}
+                    </span>{" "}
+                    {r.historial.local} partidos de {r.partido.local}, {r.historial.visitante} de{" "}
+                    {r.partido.visitante} (cutoff)
                   </span>
                 </div>
                 <div className="result-row">

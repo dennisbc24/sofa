@@ -1,0 +1,54 @@
+{
+  "fase": "2T-2 — Primer beta de la predicción 2T en producción",
+  "generadoEn": "2026-09-29",
+  "mandato": "Usuario: 'inicia las fases restantes para tener un beta de 2T adicionalmente al pre-partido, y tenerlo en produccion como el primer beta de esa prediccion' (aprobación explícita de despliegue).",
+  "activo": {
+    "id": "V1_BETA_2T",
+    "version": "1.0",
+    "estado": "BETA",
+    "registry": "services/prediccion/modelo_2t_config.js",
+    "archivo": "modelos/prediccion_2t.json",
+    "descripcion": "Primer beta de la predicción 2T: blend por stat (B/TR/R/T) con media de equipo+shrinkage, ridge de 11 features, media de liga (L0) y port del heurístico H",
+    "seleccionadoEn": "TEST 288 partidos/576 lados: Goles 0.7457 vs H 0.8297 (+10.12%), Remates 2.7444 vs 3.8581 (+28.87%), Corners 1.4845 vs 1.9052 (+22.08%); resto 35/38 vs min(T,L0)",
+    "evidencia": "experimentos_fase2t/informes/fase2t_0_backtest.json (protocolo v2 pre-registrado)"
+  },
+  "cambios": {
+    "nuevo": [
+      "services/prediccion/modelo_2t_config.js — registry espejo de modelo_config.js (separado del beta 1X2)",
+      "GET /api/predictions/model/2t ahora expone activeModel/estado/seleccionadoEn/confirmacion",
+      "POST /api/predictions/2t incluye modelo.id y modelo.estado en cada predicción",
+      "Frontend Prediccion2T.jsx: chip del beta (id + estado) por partido"
+    ],
+    "intactos": [
+      "V1_BETA / services/prediccion/modelo_config.js (1X2) — sin tocar",
+      "modelos/prediccion_poisson.json (hash F6E3405C…5BD1)",
+      "GET /api/predictions/model y /match (1X2) — verificados 200 con activeModel=V1_BETA"
+    ]
+  },
+  "protecciones_extendidas": {
+    "nota": "baseline 22 → 26 archivos; se añaden artefacto 2T + protocolos pre-registrados",
+    "nuevos_hashes": {
+      "modelos\\prediccion_2t.json": "6046CFB576550BE0BBB8F8A6F8A03C2B1D2C046DCB76F722DD6BAB237264A856",
+      "experimentos_fase2t\\fase2t_0_backtest.js": "B929C47524F4AA33BFA9797CFA2B49F8ACF7865453DDE35A2F704303874B2FCE",
+      "experimentos_fase2t\\fase2t_1_confirmacion.js": "5741ADD2053DBD2126DBE99EDBC402E96FEE5B9A701F75416ED6196923652E0A",
+      "experimentos_fase2t\\informes\\fase2t_0_backtest.json": "682D3ECF608A9233E7930B1E01EBEC6495767E285DA8FA972CB26F0FB8BAE287"
+    },
+    "no_protegido_a_proposito": [
+      "experimentos_fase2t/comun2t.js — código compartido vivo (lo usa también el servicio en vivo); si se protege, cualquier fix legítimo exige reescribir el baseline",
+      "services/prediccion/modelo_2t.js y modelo_2t_config.js — capa de servicio (los 1X2 tampoco están en el baseline)"
+    ]
+  },
+  "smoke_post_despliegue": {
+    "GET /api/predictions/model/2t": "200 — activeModel=V1_BETA_2T, estado=BETA, confirmacion=PENDIENTE (≥150 futuros > 2026-09-28)",
+    "POST /api/predictions/2t": "200 — Finland vs Belarus, 41 stats, goles 0.76-0.57, modelo=V1_BETA_2T",
+    "GET /api/predictions/model (1X2)": "200 — activeModel=V1_BETA intacto",
+    "GET /api/predictions/match (1X2)": "200",
+    "hashes": "26/26"
+  },
+  "fases_restantes_2T": {
+    "fase2t_1_confirmacion": "PENDIENTE datos — ≥150 partidos > 2026-09-28; evaluación única; criterios s1-s3 pre-registrados 2026-09-29 con 0 futuros",
+    "si_confirma": "proponer promoción de V1_BETA_2T a definitivo (aprobación explícita + backup)",
+    "si_no_confirma": "el beta permanece como beta; producción intacta"
+  },
+  "nota_metodo": "No se creó tabla de log de predicciones 2T (a diferencia de predicciones_beta del 1X2): la confirmación 2T-1 recalcula las predicciones de forma determinista desde el artefacto congelado + DB con cutoff, así que no hace falta registrar cada request."
+}

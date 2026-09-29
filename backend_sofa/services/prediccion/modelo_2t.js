@@ -24,6 +24,7 @@ const {
   TODOS, STATS, GOLES, etiqueta, familiaLiga, baseLiga,
   ridgePredecir, registro, registroVisita, predecirH, featuresLado,
 } = require("../../experimentos_fase2t/comun2t");
+const { modeloActivo2T } = require("./modelo_2t_config");
 
 // FT (= 1T + pred 2T) sólo para stats donde sumar tiene sentido de flujo.
 const FT_WHITELIST = new Set([GOLES, "Total shots", "Corner kicks", "Yellow cards"]);
@@ -415,8 +416,10 @@ async function predecirArchivo({ nombre, contenido }) {
     filas: filasPred,
     advertencias,
     modelo: {
+      id: modeloActivo2T().id,
       name: "Modelo análisis 2T",
       version: modelo.version,
+      estado: modeloActivo2T().estado,
       entrenadoEn: modelo.entrenadoEn,
       backtestPrincipales,
     },

@@ -2,6 +2,7 @@ const { analizarPartido } = require("../services/prediccion/prediccion");
 const { cargarModelo, rutaModelo } = require("../services/prediccion/modelo");
 const { CURRENT_PREDICTION_MODEL, modeloActivo } = require("../services/prediccion/modelo_config");
 const { predecirLote2T, cargarModelo2T, rutaModelo2T } = require("../services/prediccion/modelo_2t");
+const { modeloActivo2T } = require("../services/prediccion/modelo_2t_config");
 
 // GET /api/predictions/match?localTeam=&awayTeam=&date=&league=
 const getPrediction = async (req, res, next) => {
@@ -71,7 +72,7 @@ const postProyeccion2T = async (req, res, next) => {
   }
 };
 
-// GET /api/predictions/model/2t — estado del modelo 2T + métricas del backtest
+// GET /api/predictions/model/2t — estado del beta 2T + métricas del backtest
 const getModelo2TInfo = async (req, res) => {
   const modelo = cargarModelo2T();
   if (!modelo) {
@@ -80,6 +81,7 @@ const getModelo2TInfo = async (req, res) => {
       ruta: rutaModelo2T(),
     });
   }
+  const activo = modeloActivo2T();
   const principales = {};
   for (const s of ["Goles", "Total shots", "Corner kicks", "Yellow cards"]) {
     const info = modelo.stats[s];
@@ -93,9 +95,15 @@ const getModelo2TInfo = async (req, res) => {
     }
   }
   res.json({
+    activeModel: activo.id,
+    estado: activo.estado,
     name: "Modelo análisis 2T",
-    version: modelo.version,
+    version: activo.version,
+    descripcion: activo.descripcion,
+    archivo: activo.archivo,
     entrenadoEn: modelo.entrenadoEn,
+    seleccionadoEn: activo.seleccionadoEn,
+    confirmacion: activo.confirmacion,
     muestra: modelo.fuente && modelo.fuente.partidos,
     principales,
     ruta: rutaModelo2T(),
