@@ -43,6 +43,8 @@ async function asegurarTabla() {
   await pool.query(`
     CREATE INDEX IF NOT EXISTS ${TABLA}_lista
       ON ${TABLA} (usuario_id, ultima_vez DESC)`);
+  await pool.query(`
+    ALTER TABLE ${TABLA} ADD COLUMN IF NOT EXISTS partido_id TEXT`);
   asegurada = true;
 }
 
@@ -205,6 +207,25 @@ async function buscarPartido(row, partidoId) {
       ORDER BY fecha_partido LIMIT 1`,
     [row.local, row.visitante, fecha]
   );
+  if (r.rows[0]) return r.rows[0];
+  // La fecha guardada es la de CORTE (no la del partido), así que si la
+  // ventana ±1 no la acierta se busca por equipos sin ventana: el partido
+  // más cercano a la fecha de corte (con empate, el finalizado primero).
+  r = await pool.query(
+    `SELECT ${cols} FROM partidos
+      WHERE equipo_local = $1 AND equipo_visitante = $2
+      ORDER BY ABS(fecha_partido - $3::date) ASC, (goles_local IS NULL) ASC
+      LIMIT 1`,
+    [row.local, row.visitante, fecha]
+  );
+  if (r.rows[0]) return r.rows[0];
+  r = await pool.query(
+    `SELECT ${cols} FROM partidos
+      WHERE equipo_local ILIKE '%' || $1 || '%' AND equipo_visitante ILIKE '%' || $2 || '%'
+      ORDER BY ABS(fecha_partido - $3::date) ASC, (goles_local IS NULL) ASC
+      LIMIT 1`,
+    [row.local, row.visitante, fecha]
+  );
   return r.rows[0] || null;
 }
 
@@ -337,7 +358,7 @@ async function detalle(id, usuarioId) {
   await asegurarTabla();
   const r = await pool.query(
     `SELECT id, usuario_id, tipo, fecha_partido::text AS fecha, local, visitante, liga,
-            modelo, payload, veces, primera_vez, ultima_vez
+            modelo, payload, veces, primera_vez, ultima_vez, partido_id
        FROM ${TABLA} WHERE id = $1 AND usuario_id = $2`,
     [id, usuarioId]
   );
@@ -345,10 +366,21 @@ async function detalle(id, usuarioId) {
   if (!row) return null;
 
   let evaluacion = { tieneReal: false };
+  let vinculo = { manual: !!row.partido_id, partido: null };
   try {
-    const partidoId = row.tipo === "2t" ? row.payload?.partido?.id : null;
+    // Vínculo: el elegido a mano manda; si no, el id del propio JSON (2T).
+    const partidoId = row.partido_id || (row.tipo === "2t" ? row.payload?.partido?.id : null);
     const p = await buscarPartido(row, partidoId);
     if (p) {
+      vinculo.partido = {
+        id: String(p.id),
+        local: p.equipo_local,
+        visitante: p.equipo_visitante,
+        fecha: p.fecha,
+        estado: p.estado,
+        golesLocal: p.goles_local,
+        golesVisitante: p.goles_visitante,
+      };
       evaluacion = row.tipo === "pre" ? evaluarPre(row, p) : await evaluar2T(row, p);
       if (evaluacion.tieneReal) {
         evaluacion.partidoId = String(p.id);
@@ -358,12 +390,63 @@ async function detalle(id, usuarioId) {
   } catch (e) {
     console.warn(`[historial] no se pudo evaluar la predicción ${id}: ${e.message}`);
   }
-  return { ...row, evaluacion };
+  return { ...row, evaluacion, vinculo };
+}
+
+// Vínculo manual con un partido real (partidoId null = quitar y volver al
+// automático). Sólo la fila del propio usuario; valida que el partido exista.
+async function vincular(usuarioId, id, partidoId) {
+  await asegurarTabla();
+  const own = await pool.query(
+    `SELECT id FROM ${TABLA} WHERE id = $1 AND usuario_id = $2`,
+    [id, usuarioId]
+  );
+  if (!own.rows[0]) return null;
+  if (partidoId !== null) {
+    const p = await pool.query(`SELECT id::text AS id FROM partidos WHERE id::text = $1 LIMIT 1`, [String(partidoId)]);
+    if (!p.rows[0]) {
+      const e = new Error("No existe ningún partido con ese id en la base.");
+      e.statusCode = 404;
+      throw e;
+    }
+  }
+  await pool.query(`UPDATE ${TABLA} SET partido_id = $1 WHERE id = $2 AND usuario_id = $3`, [
+    partidoId === null ? null : String(partidoId),
+    id,
+    usuarioId,
+  ]);
+  return detalle(id, usuarioId);
+}
+
+// Búsqueda de partidos reales para vincular (equipos y/o fecha).
+async function buscarPartidos(q, fecha) {
+  await asegurarTabla();
+  const params = [];
+  const cond = [];
+  if (q) {
+    params.push(q);
+    cond.push(`(equipo_local ILIKE '%' || $${params.length} || '%' OR equipo_visitante ILIKE '%' || $${params.length} || '%')`);
+  }
+  if (fecha) {
+    params.push(fecha);
+    cond.push(`fecha_partido = $${params.length}::date`);
+  }
+  params.push(40);
+  const r = await pool.query(
+    `SELECT id::text AS id, equipo_local, equipo_visitante, fecha_partido::text AS fecha,
+            estado, goles_local, goles_visitante
+       FROM partidos
+       ${cond.length ? "WHERE " + cond.join(" AND ") : ""}
+      ORDER BY fecha_partido DESC
+      LIMIT $${params.length}`,
+    params
+  );
+  return r.rows;
 }
 
 module.exports = {
   asegurarTabla, hashPayload,
   guardarPre, guardar2T,
-  listar, detalle,
+  listar, detalle, vincular, buscarPartidos,
   clasificar,
 };

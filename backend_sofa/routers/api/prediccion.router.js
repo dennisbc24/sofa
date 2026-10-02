@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   getPrediction, getModelInfo, postProyeccion2T, getModelo2TInfo,
-  getHistorial, getHistorialDetalle,
+  getHistorial, getHistorialDetalle, putHistorialPartido, getBuscarPartidos,
 } = require('../../controllers/prediccion.controllers');
 
 // Predicción pre-partido (modelo ya entrenado; nunca entrena en el request)
@@ -12,6 +12,9 @@ router.get('/match', getPrediction);
 // Historial de predicciones del usuario (dedup + evaluación vs datos reales)
 router.get('/historial', getHistorial);
 router.get('/historial/:id', getHistorialDetalle);
+// Vínculo manual con el partido real (visible/cambiable en el historial)
+router.put('/historial/:id/partido', putHistorialPartido);
+router.get('/partidos-buscar', getBuscarPartidos);
 
 // Estado del modelo entrenado + métricas del backtest
 router.get('/model', getModelInfo);

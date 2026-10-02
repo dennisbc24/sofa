@@ -757,6 +757,38 @@
 .password-wrap-compacto {
   width: 200px;
 }
+
+/* ---- Vínculo con el partido real (historial) ---- */
+.vinculo-box {
+  margin-top: 12px;
+  border: 1px dashed var(--card-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.vinculo-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-weight: 600;
+}
+.vinculo-titulo .actions {
+  margin-left: auto;
+}
+.vinculo-busca {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.vinculo-busca .field {
+  min-width: 200px;
+}
+.vinculo-resultados {
+  margin-top: 8px;
+  max-height: 320px;
+}
 .login-vista,
 .usuarios-vista {
   max-width: 720px;

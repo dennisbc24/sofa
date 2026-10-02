@@ -184,10 +184,13 @@ export const HistorialPredicciones = () => {
               )
             ) : (
               <p className="tabla-status">
-                El partido aún no tiene datos reales en la base: cuando entre el resultado se
-                marcarán los aciertos aquí.
+                El partido aún no tiene datos reales en la base (o el vínculo automático no lo
+                encontró): revisa el <strong>partido real vinculado</strong> de abajo — si no es el
+                correcto, cámbialo y se recalculará la evaluación.
               </p>
             )}
+
+            <Vinculo detalle={detalle} setDetalle={setDetalle} />
 
             {detalle.tipo === "pre" ? (
               <PreDetalle payload={payload} ev={ev} />
@@ -204,6 +207,171 @@ export const HistorialPredicciones = () => {
         </>
       )}
     </section>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Vínculo con el partido real: muestra con qué partido está evaluada la
+// predicción (automático por equipos+fecha, o el id del JSON en el 2T) y
+// permite cambiarlo a mano si la coincidencia automática fue otra.
+// ---------------------------------------------------------------------------
+const Vinculo = ({ detalle, setDetalle }) => {
+  const [abierto, setAbierto] = useState(false)
+  const [q, setQ] = useState("")
+  const [fecha, setFecha] = useState("")
+  const [candidatos, setCandidatos] = useState(null)
+  const [buscando, setBuscando] = useState(false)
+  const [guardando, setGuardando] = useState(false)
+  const [error, setError] = useState(null)
+
+  const v = detalle.vinculo
+  const p = v?.partido
+
+  const abrir = () => {
+    setError(null)
+    if (!abierto && !candidatos) {
+      setQ(detalle.local)
+      setFecha("")
+    }
+    setAbierto((a) => !a)
+  }
+
+  const buscar = async () => {
+    setBuscando(true)
+    setError(null)
+    try {
+      const params = {}
+      if (q.trim()) params.q = q.trim()
+      if (fecha) params.fecha = fecha
+      const r = await axios.get(`${API_URL}/api/predictions/partidos-buscar`, { params })
+      setCandidatos(r.data.partidos)
+    } catch (err) {
+      setError(err.response?.data?.message || "Error al buscar partidos.")
+    } finally {
+      setBuscando(false)
+    }
+  }
+
+  const aplicar = async (partidoId) => {
+    setGuardando(true)
+    setError(null)
+    try {
+      const r = await axios.put(`${API_URL}/api/predictions/historial/${detalle.id}/partido`, {
+        partidoId,
+      })
+      setDetalle(r.data)
+      setAbierto(false)
+      setCandidatos(null)
+    } catch (err) {
+      setError(err.response?.data?.message || "Error al guardar el vínculo.")
+    } finally {
+      setGuardando(false)
+    }
+  }
+
+  return (
+    <div className="vinculo-box">
+      <div className="vinculo-titulo">
+        Partido real vinculado:
+        <span className={`resultado-chip ${v?.manual ? "resultado-v" : "resultado-e"}`}>
+          {v?.manual ? "manual" : "automático"}
+        </span>
+        <span className="actions">
+          <button className="btn btn-secondary" onClick={abrir} disabled={guardando}>
+            {abierto ? "Cancelar" : "Cambiar vínculo"}
+          </button>
+          {v?.manual && (
+            <button className="btn btn-secondary" onClick={() => aplicar(null)} disabled={guardando}>
+              Quitar vínculo
+            </button>
+          )}
+        </span>
+      </div>
+
+      {p ? (
+        <p className="tabla-status">
+          {p.local} vs {p.visitante} · {formatearFecha(p.fecha)} ·{" "}
+          {p.golesLocal !== null && p.golesLocal !== undefined
+            ? `finalizado ${p.golesLocal}-${p.golesVisitante}`
+            : p.estado || "sin resultado"}{" "}
+          · id Sofascore {p.id}
+        </p>
+      ) : (
+        <p className="tabla-status">
+          Sin coincidencia automática en la base. Busca el partido real para vincularlo.
+        </p>
+      )}
+
+      {error && <p className="tabla-status tabla-status-error">{error}</p>}
+
+      {abierto && (
+        <div className="vinculo-busca">
+          <label className="field">
+            <span className="field-label">Equipos</span>
+            <input
+              className="field-input"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="p. ej. France"
+            />
+          </label>
+          <label className="field">
+            <span className="field-label">Fecha (YYYY-MM-DD)</span>
+            <input
+              className="field-input"
+              type="date"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+            />
+          </label>
+          <button className="btn btn-primary" onClick={buscar} disabled={buscando}>
+            {buscando ? "Buscando…" : "Buscar"}
+          </button>
+        </div>
+      )}
+
+      {abierto && candidatos && (
+        <div className="tabla-scroll vinculo-resultados">
+          {candidatos.length === 0 && <p className="tabla-status">Sin partidos con esa búsqueda.</p>}
+          {candidatos.length > 0 && (
+            <table className="tabla">
+              <thead>
+                <tr>
+                  <th>Local</th>
+                  <th>Visitante</th>
+                  <th>Fecha</th>
+                  <th>Resultado</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {candidatos.map((c) => (
+                  <tr key={c.id} className={p?.id === c.id ? "fila-activa" : ""}>
+                    <td>{c.equipo_local}</td>
+                    <td>{c.equipo_visitante}</td>
+                    <td className="tabla-num">{formatearFecha(c.fecha)}</td>
+                    <td className="tabla-num">
+                      {c.goles_local !== null && c.goles_local !== undefined
+                        ? `${c.goles_local}-${c.goles_visitante}`
+                        : c.estado || "—"}
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => aplicar(c.id)}
+                        disabled={guardando}
+                      >
+                        {p?.id === c.id ? "Vinculado" : "Vincular"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+    </div>
   )
 }
 

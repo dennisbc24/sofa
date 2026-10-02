@@ -143,7 +143,39 @@ const getHistorialDetalle = async (req, res, next) => {
   }
 };
 
+// PUT /api/predictions/historial/:id/partido — vínculo manual con un partido
+// real. body: { partidoId: "15534028" } o { partidoId: null } (quitar).
+const putHistorialPartido = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const { partidoId } = req.body || {};
+    if (partidoId !== null && (typeof partidoId !== "string" || !/^\d{1,20}$/.test(partidoId))) {
+      return res.status(400).json({ message: "partidoId debe ser el id de un partido o null." });
+    }
+    const d = await historial.vincular(req.usuario.uid, id, partidoId);
+    if (!d) return res.status(404).json({ message: "Predicción no encontrada." });
+    res.json(d);
+  } catch (error) {
+    if (error.statusCode) return res.status(error.statusCode).json({ message: error.message });
+    next(error);
+  }
+};
+
+// GET /api/predictions/partidos-buscar?q=&fecha= — partidos reales para vincular.
+const getBuscarPartidos = async (req, res, next) => {
+  try {
+    const q = typeof req.query.q === "string" && req.query.q.trim() ? req.query.q.trim().slice(0, 60) : null;
+    const fecha = typeof req.query.fecha === "string" && req.query.fecha ? req.query.fecha : null;
+    if (fecha && !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+      return res.status(400).json({ message: "fecha debe tener formato YYYY-MM-DD." });
+    }
+    res.json({ partidos: await historial.buscarPartidos(q, fecha) });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getPrediction, getModelInfo, postProyeccion2T, getModelo2TInfo,
-  getHistorial, getHistorialDetalle,
+  getHistorial, getHistorialDetalle, putHistorialPartido, getBuscarPartidos,
 };
