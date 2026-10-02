@@ -15,6 +15,8 @@
 const crypto = require("crypto");
 const pool = require("../../db");
 const { GOLES } = require("../../experimentos_fase2t/comun2t");
+const { mercadosDePrediccion } = require("./prediccion");
+const { resultado1x2De } = require("./modelo_2t");
 
 const TABLA = "predicciones_usuario";
 let asegurada = false;
@@ -85,6 +87,7 @@ async function guardarPre(usuarioId, r) {
       probabilities: r.probabilities,
       prediction: r.prediction,
       lambdas: r.lambdas,
+      mercados: r.mercados || null,
       model: r.model,
       modelVersion: r.modelVersion,
       advertencias: r.advertencias,
@@ -120,6 +123,7 @@ async function guardar2T(usuarioId, r) {
     const payload = {
       partido: r.partido,
       goles1T: r.goles1T,
+      resultado1x2: r.resultado1x2 || null,
       historial: r.historial,
       filas: r.filas,
       advertencias: r.advertencias,
@@ -236,12 +240,75 @@ function resultadoReal(p) {
   return "away";
 }
 
-// 'pre' → acierto del 1X2 + probabilidad del resultado real.
-function evaluarPre(row, p) {
+// Reales por mercado (sólo ALL) para corners/remates/tarjetas del partido.
+const MERCADOS_STATS = { corners: "Corner kicks", remates: "Total shots", tarjetas: "Yellow cards" };
+async function realesMercados(p) {
+  const out = { corners: null, remates: null, tarjetas: null };
+  const nombres = Object.values(MERCADOS_STATS);
+  const s = await pool.query(
+    `SELECT nombre, max(valor_local_num)::float AS l, max(valor_visitante_num)::float AS v
+       FROM estadisticas
+      WHERE partido_id = $1 AND periodo = 'ALL' AND nombre = ANY($2)
+        AND valor_local_num IS NOT NULL AND valor_visitante_num IS NOT NULL
+      GROUP BY 1`,
+    [p.id, nombres]
+  );
+  for (const r of s.rows) {
+    const k = Object.keys(MERCADOS_STATS).find((kk) => MERCADOS_STATS[kk] === r.nombre);
+    if (k) out[k] = { l: r.l, v: r.v };
+  }
+  return out;
+}
+
+// Fila de un mercado: predicho (L/V) vs real (L/V) + clasificación por lado y total.
+function armarMercado(predM, realM) {
+  const pl = predM ? predM.local ?? null : null;
+  const pv = predM ? predM.visitante ?? null : null;
+  const rl = realM ? realM.l ?? null : null;
+  const rv = realM ? realM.v ?? null : null;
+  const suma = (a, b) => (a === null || a === undefined || b === null || b === undefined ? null : Math.round((a + b) * 100) / 100);
+  return {
+    predL: pl ?? null,
+    predV: pv ?? null,
+    realL: rl,
+    realV: rv,
+    clL: clasificar(pl, rl),
+    clV: clasificar(pv, rv),
+    clT: clasificar(suma(pl, pv), suma(rl, rv)),
+  };
+}
+
+// 'pre' → acierto del 1X2 + aciertos por mercado (goles, corners, remates,
+// tarjetas) contra los datos reales del partido vinculado.
+async function evaluarPre(row, p) {
   const real = resultadoReal(p);
   if (!real) return { tieneReal: false };
   const probs = row.payload.probabilities || {};
   const predicho = row.payload.prediction && row.payload.prediction.main;
+
+  // Predicción por mercado: la guardada al predecir; si es una fila antigua
+  // (se creó antes de guardar mercados) se recalcula con su fecha de corte.
+  let predMercados = row.payload.mercados || null;
+  if (!predMercados && row.payload.lambdas) {
+    try {
+      predMercados = await mercadosDePrediccion({
+        local: row.local,
+        visitante: row.visitante,
+        fechaCorte: row.fecha,
+        lambdas: row.payload.lambdas,
+      });
+    } catch (e) {
+      console.warn(`[historial] no se pudieron recalcular mercados: ${e.message}`);
+    }
+  }
+  const reales = await realesMercados(p);
+  const mercados = {
+    goles: armarMercado(predMercados && predMercados.goles, { l: p.goles_local, v: p.goles_visitante }),
+    corners: armarMercado(predMercados && predMercados.corners, reales.corners),
+    remates: armarMercado(predMercados && predMercados.remates, reales.remates),
+    tarjetas: armarMercado(predMercados && predMercados.tarjetas, reales.tarjetas),
+  };
+
   return {
     tieneReal: true,
     estado: p.estado,
@@ -251,6 +318,7 @@ function evaluarPre(row, p) {
     acierto: real === predicho,
     probReal: probs[real] ?? null,
     probPredicho: probs[predicho] ?? null,
+    mercados,
   };
 }
 
@@ -348,8 +416,26 @@ async function evaluar2T(row, p) {
       visita1T: p.goles_visitante_1t,
     },
     goles: golesReal,
+    resultado: real,
+    resultado1x2: evaluar1x2(row, real),
     filas,
     resumen,
+  };
+}
+
+// 1X2 del payload 2T (si la fila es antigua se deriva de sus propias filas).
+function evaluar1x2(row, real) {
+  let r1 = row.payload.resultado1x2 || null;
+  if (!r1) {
+    try { r1 = resultado1x2De(row.payload.filas); } catch { r1 = null; }
+  }
+  if (!r1) return null;
+  return {
+    predicho: r1.prediccion,
+    real,
+    acierto: r1.prediccion === real,
+    probReal: r1.probabilidades ? (r1.probabilidades[real] ?? null) : null,
+    probabilidades: r1.probabilidades || null,
   };
 }
 
@@ -381,7 +467,7 @@ async function detalle(id, usuarioId) {
         golesLocal: p.goles_local,
         golesVisitante: p.goles_visitante,
       };
-      evaluacion = row.tipo === "pre" ? evaluarPre(row, p) : await evaluar2T(row, p);
+      evaluacion = row.tipo === "pre" ? await evaluarPre(row, p) : await evaluar2T(row, p);
       if (evaluacion.tieneReal) {
         evaluacion.partidoId = String(p.id);
         evaluacion.fecha = p.fecha;

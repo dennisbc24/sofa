@@ -8,6 +8,7 @@ const MAX_ARCHIVOS = 20
 
 const fmt = (v) => (v === null || v === undefined ? "—" : Number(v).toFixed(2))
 const pct = (v) => (v === null || v === undefined ? null : `${v > 0 ? "+" : ""}${v.toFixed(1)}%`)
+const ETIQUETA_1X2 = { home: "Local", draw: "Empate", away: "Visita" }
 
 // Lectura ligera del JSON para previsualizar (sin tocar el backend).
 const previsualizar = (contenido) => {
@@ -320,6 +321,22 @@ export const Prediccion2T = () => {
 
               {activo.advertencias && activo.advertencias.length > 0 && (
                 <p className="tabla-status">{activo.advertencias.join(" ")}</p>
+              )}
+
+              {activo.resultado1x2 && (
+                <div className="result-row">
+                  <span className="result-label">Resultado final (1X2)</span>
+                  <span className="result-value">
+                    <span className="resultado-chip resultado-e">
+                      {ETIQUETA_1X2[activo.resultado1x2.prediccion]} ({activo.resultado1x2.probabilidad}%)
+                    </span>{" "}
+                    Local {activo.resultado1x2.probabilidades.home}% · Empate{" "}
+                    {activo.resultado1x2.probabilidades.draw}% · Visita{" "}
+                    {activo.resultado1x2.probabilidades.away}% · goles esperados{" "}
+                    {activo.resultado1x2.golesEsperados.local}-
+                    {activo.resultado1x2.golesEsperados.visita}
+                  </span>
+                </div>
               )}
 
               <div className="tabla-scroll">

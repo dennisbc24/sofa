@@ -48,6 +48,33 @@ const METRICAS = [
 
 const redondear = (v, dec) => (v === null || v === undefined ? null : Math.round(v * 10 ** dec) / 10 ** dec);
 
+// ---------------------------------------------------------------------------
+// MERCADOS DE LA PREDICCIÓN PRE (goles, corners, remates, tarjetas): valores
+// esperados por equipo al momento de predecir. Goles = lambdas del Poisson;
+// el resto = promedio histórico del equipo en la condición del partido.
+// ---------------------------------------------------------------------------
+function calcularMercados(perfilLocal, perfilVisita, lambdas) {
+  const sL = statsParaPerfil(perfilLocal, "local").stats;
+  const sV = statsParaPerfil(perfilVisita, "visita").stats;
+  const r2 = (v) => (v === null || v === undefined ? null : Math.round(v * 100) / 100);
+  return {
+    goles: { local: lambdas.home, visitante: lambdas.away },
+    corners: { local: r2(sL.corners), visitante: r2(sV.corners) },
+    remates: { local: r2(sL.remates), visitante: r2(sV.remates) },
+    tarjetas: { local: r2(sL.amarillas), visitante: r2(sV.amarillas) },
+  };
+}
+
+// Recalcula los mercados para predicciones antiguas guardadas sin ellos
+// (los perfiles sólo dependen de la fecha de corte, que está en la fila).
+async function mercadosDePrediccion({ local, visitante, fechaCorte, lambdas }) {
+  const [perfilLocal, perfilVisita] = await Promise.all([
+    getPerfilEquipo(local, fechaCorte),
+    getPerfilEquipo(visitante, fechaCorte),
+  ]);
+  return calcularMercados(perfilLocal, perfilVisita, lambdas);
+}
+
 // Predicción principal = mayor probabilidad (mismo criterio de desempate que
 // el backtest: empates a favor del orden home > draw > away).
 const ETIQUETAS = { home: "Local", draw: "Empate", away: "Visita" };
@@ -196,6 +223,8 @@ async function analizarPartido({ localTeam, awayTeam, date, league }) {
 
   const comparison = construirComparacion(fuenteLocal.stats, fuenteVisita.stats);
   const principal = prediccionPrincipal(pred.probabilities);
+  const lambdas = { home: pred.internos.lambdaHome, away: pred.internos.lambdaAway };
+  const mercados = calcularMercados(perfilLocal, perfilVisita, lambdas);
 
   // Registro en BD (beta): solo acumula datos para futura evaluación.
   // No entrena, no recalibra y nunca interrumpe la respuesta.
@@ -224,7 +253,8 @@ async function analizarPartido({ localTeam, awayTeam, date, league }) {
       mainTeam: principal === "home" ? nombreLocal : principal === "away" ? nombreVisita : null,
       probability: pred.probabilities[principal],
     },
-    lambdas: { home: pred.internos.lambdaHome, away: pred.internos.lambdaAway },
+    lambdas,
+    mercados,
     homeFeatures: {
       ...perfilLocal,
       statsComparadas: redondearStats(fuenteLocal.stats),
@@ -284,4 +314,7 @@ async function analizarPartido({ localTeam, awayTeam, date, league }) {
   };
 }
 
-module.exports = { analizarPartido, ModeloNoEntrenadoError, EquipoNoEncontradoError };
+module.exports = {
+  analizarPartido, calcularMercados, mercadosDePrediccion,
+  ModeloNoEntrenadoError, EquipoNoEncontradoError,
+};

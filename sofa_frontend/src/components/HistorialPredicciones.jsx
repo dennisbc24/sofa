@@ -12,6 +12,14 @@ const RESULTADOS = { home: "Local", draw: "Empate", away: "Visita" }
 const CLASE_CELDA = { exacto: "celda-exacto", cercano: "celda-cercano", lejos: "celda-lejos" }
 
 const etiquetaTipo = (t) => (t === "pre" ? "Pre-partido" : "Proyección 2T")
+const MERCADOS = [
+  { key: "goles", etiqueta: "Goles" },
+  { key: "corners", etiqueta: "Corners" },
+  { key: "remates", etiqueta: "Remates" },
+  { key: "tarjetas", etiqueta: "Tarjetas amarillas" },
+]
+const ETIQUETA_CLASE = { exacto: "exacto", cercano: "cerca", lejos: "lejos" }
+const claseCelda = (cl) => (cl ? CLASE_CELDA[cl] || "" : "")
 
 export const HistorialPredicciones = () => {
   const [filtro, setFiltro] = useState("todos")
@@ -424,6 +432,51 @@ const PreDetalle = ({ payload, ev }) => {
           {payload.lambdas?.home} (local) · {payload.lambdas?.away} (visita)
         </span>
       </div>
+      {ev?.mercados && (
+        <>
+          <div className="card-header">Acierto por mercado</div>
+          <div className="tabla-scroll">
+            <table className="tabla">
+              <thead>
+                <tr>
+                  <th>Mercado</th>
+                  <th>Pred L</th>
+                  <th>Pred V</th>
+                  <th>Real L</th>
+                  <th>Real V</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MERCADOS.map((m) => {
+                  const e = ev.mercados[m.key]
+                  if (!e) return null
+                  return (
+                    <tr key={m.key}>
+                      <td>{m.etiqueta}</td>
+                      <td className="tabla-num">{fmt(e.predL)}</td>
+                      <td className="tabla-num">{fmt(e.predV)}</td>
+                      <td className={`tabla-num ${claseCelda(e.clL)}`}>{fmt(e.realL)}</td>
+                      <td className={`tabla-num ${claseCelda(e.clV)}`}>{fmt(e.realV)}</td>
+                      <td className="tabla-num">
+                        <span className={`resultado-chip ${CLASE_CELDA[e.clT] || ""}`}>
+                          {ETIQUETA_CLASE[e.clT] || "—"}
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+          <p className="tabla-status">
+            Predicho: goles = lambdas del Poisson; corners/remates/tarjetas = promedio histórico de
+            cada equipo al corte. Total: <span className="celda-exacto">exacto</span> (|Δ|&lt;0.5) ·{" "}
+            <span className="celda-cercano">cerca</span> (≤1 o 15%) ·{" "}
+            <span className="celda-lejos">lejos</span>.
+          </p>
+        </>
+      )}
       {payload.advertencias?.length > 0 && (
         <p className="tabla-status">{payload.advertencias.join(" ")}</p>
       )}
@@ -445,6 +498,10 @@ const DosTDetalle = ({ payload, ev }) => {
   if (!payload) return null
   const conReal = ev?.tieneReal
   const evalPorStat = new Map((conReal ? ev.filas : []).map((f) => [f.stat, f]))
+  const r1 = payload.resultado1x2
+  const e1 = ev?.resultado1x2
+  const pred1x2 = r1?.prediccion ?? e1?.predicho
+  const probs1x2 = r1?.probabilidades ?? e1?.probabilidades
 
   const clase = (cl) => (cl ? CLASE_CELDA[cl] || "" : "")
   const realTxt = (r, lado) => (r && r[lado] !== null && r[lado] !== undefined ? fmt(r[lado]) : "—")
@@ -466,6 +523,27 @@ const DosTDetalle = ({ payload, ev }) => {
       </div>
       {payload.advertencias?.length > 0 && (
         <p className="tabla-status">{payload.advertencias.join(" ")}</p>
+      )}
+      {pred1x2 && (
+        <div className="result-row">
+          <span className="result-label">Resultado final (1X2)</span>
+          <span className="result-value">
+            Predicho: <strong>{RESULTADOS[pred1x2]}</strong>
+            {r1?.probabilidad != null && ` (${r1.probabilidad}%)`}
+            {probs1x2 &&
+              ` · Local ${probs1x2.home}% / Empate ${probs1x2.draw}% / Visita ${probs1x2.away}%`}
+            {e1 ? (
+              <>
+                {" "}· real: <strong>{RESULTADOS[e1.real]}</strong>{" "}
+                <span className={`resultado-chip ${e1.acierto ? "resultado-v" : "resultado-d"}`}>
+                  {e1.acierto ? "✓ acertó" : "✗ falló"}
+                </span>
+              </>
+            ) : (
+              " · aún sin resultado"
+            )}
+          </span>
+        </div>
       )}
       {conReal && (
         <p className="tabla-status">

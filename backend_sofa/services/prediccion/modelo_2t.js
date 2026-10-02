@@ -409,6 +409,7 @@ async function predecirArchivo({ nombre, contenido }) {
       jornada: evento.jornada, estado: evento.estado,
     },
     goles1T: { local: gHL, visita: gHA },
+    resultado1x2: resultado1x2De(filasPred),
     historial: {
       local: ctx.nHistorial.local,
       visitante: ctx.nHistorial.visitante,
@@ -431,6 +432,46 @@ function ligaFallback(ctx) {
   const cuenta = {};
   for (const m of ctx.objs) if (m.liga) cuenta[m.liga] = (cuenta[m.liga] || 0) + 1;
   return Object.entries(cuenta).sort((a, b) => b[1] - a[1])[0]?.[0] || "General";
+}
+
+// ---------------------------------------------------------------------------
+// RESULTADO FINAL 1X2 (local/empate/visita) — derivado de los goles FT que
+// predice el modelo: Poisson con esas medias predichas por equipo (el modelo
+// 2T no tiene cabeza 1X2 propia; esto la calcula a partir de sus goles).
+// ---------------------------------------------------------------------------
+function resultado1x2De(filas) {
+  const g = (filas || []).find((f) => f.stat === GOLES);
+  if (!g || g.ftLocal === null || g.ftLocal === undefined || g.ftVisita === null || g.ftVisita === undefined)
+    return null;
+  const pmf = (k, l) => {
+    let f = 1;
+    for (let i = 2; i <= k; i++) f *= i;
+    return (Math.exp(-l) * l ** k) / f;
+  };
+  let h = 0, d = 0, a = 0;
+  for (let i = 0; i <= 20; i++) {
+    const pi = pmf(i, g.ftLocal);
+    if (pi < 1e-12) continue;
+    for (let j = 0; j <= 20; j++) {
+      const pj = pmf(j, g.ftVisita);
+      if (pj < 1e-12) continue;
+      const pr = pi * pj;
+      if (i > j) h += pr;
+      else if (i === j) d += pr;
+      else a += pr;
+    }
+  }
+  const total = h + d + a || 1;
+  const pct = (x) => Math.round((x / total) * 1000) / 10;
+  const probabilidades = { home: pct(h), draw: pct(d), away: pct(a) };
+  const prediccion =
+    h >= d && h >= a ? "home" : d >= a ? "draw" : "away";
+  return {
+    prediccion,
+    probabilidad: probabilidades[prediccion],
+    probabilidades,
+    golesEsperados: { local: g.ftLocal, visita: g.ftVisita },
+  };
 }
 
 // files: [{nombre, contenido}] — procesa todos; nunca lanza por archivo.
@@ -457,4 +498,4 @@ async function predecirLote2T(files) {
   };
 }
 
-module.exports = { predecirLote2T, predecirArchivo, cargarModelo2T, rutaModelo2T };
+module.exports = { predecirLote2T, predecirArchivo, cargarModelo2T, rutaModelo2T, resultado1x2De };
