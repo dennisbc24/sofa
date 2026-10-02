@@ -17,18 +17,6 @@
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
-.analisis2 {
-  --accent: #38bdf8;
-  --accent-hover: #0ea5e9;
-  --accent-rgb: 56, 189, 248;
-}
-
-.analisis3 {
-  --accent: #e879f9;
-  --accent-hover: #d946ef;
-  --accent-rgb: 232, 121, 249;
-}
-
 * {
   box-sizing: border-box;
 }
