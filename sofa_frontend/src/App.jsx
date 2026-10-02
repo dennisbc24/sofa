@@ -20,6 +20,7 @@ import { TablaProbabilidades } from './components/TablaProbabilidades.jsx'
 import { TablaProbabilidadesOver } from './components/TablaProbabilidadesOver.jsx'
 import { AnalisisPredictivo } from './components/AnalisisPredictivo.jsx'
 import { Prediccion2T } from './components/Prediccion2T.jsx'
+import { HistorialPredicciones } from './components/HistorialPredicciones.jsx'
 import { SubirEstadisticas } from './components/SubirEstadisticas.jsx'
 
 function App() {
@@ -171,6 +172,8 @@ function App() {
         <AnalisisPredictivo />
       ) : vista === "prediccion2t" ? (
         <Prediccion2T />
+      ) : vista === "historial" ? (
+        <HistorialPredicciones />
       ) : vista === "usuarios" ? (
         <Usuarios sesion={sesion} />
       ) : vista === "subir" ? (

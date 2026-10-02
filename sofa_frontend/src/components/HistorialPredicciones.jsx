@@ -1,0 +1,363 @@
+import { useCallback, useEffect, useState } from "react"
+import axios from "axios"
+import { API_URL } from "../config.js"
+import { formatearFecha, formatearFechaHora } from "../utils.js"
+
+// Historial de predicciones del usuario: se guardan SOLAS cada vez que se
+// analiza un partido (1X2 o proyección 2T). Si se repite exactamente la misma
+// predicción sólo sube el contador "veces". Al ver una predicción pasada, si el
+// partido ya tiene datos reales, se marcan en verde/ámbar/rojo los aciertos.
+const fmt = (v) => (v === null || v === undefined ? "—" : Number(v).toFixed(2))
+const RESULTADOS = { home: "Local", draw: "Empate", away: "Visita" }
+const CLASE_CELDA = { exacto: "celda-exacto", cercano: "celda-cercano", lejos: "celda-lejos" }
+
+const etiquetaTipo = (t) => (t === "pre" ? "Pre-partido" : "Proyección 2T")
+
+export const HistorialPredicciones = () => {
+  const [filtro, setFiltro] = useState("todos")
+  const [lista, setLista] = useState(null)
+  const [error, setError] = useState(null)
+  const [detalle, setDetalle] = useState(null)
+  const [cargandoDetalle, setCargandoDetalle] = useState(false)
+
+  const cargar = useCallback(async (tipo) => {
+    setError(null)
+    setDetalle(null)
+    try {
+      const r = await axios.get(`${API_URL}/api/predictions/historial`, {
+        params: tipo === "todos" ? {} : { tipo },
+      })
+      setLista(r.data.predicciones)
+    } catch (err) {
+      setError(err.response?.data?.message || "Error al cargar el historial.")
+      setLista([])
+    }
+  }, [])
+
+  useEffect(() => {
+    cargar(filtro)
+  }, [cargar, filtro])
+
+  const ver = async (id) => {
+    setCargandoDetalle(true)
+    setError(null)
+    try {
+      const r = await axios.get(`${API_URL}/api/predictions/historial/${id}`)
+      setDetalle(r.data)
+    } catch (err) {
+      setError(err.response?.data?.message || "Error al cargar la predicción.")
+      setDetalle(null)
+    } finally {
+      setCargandoDetalle(false)
+    }
+  }
+
+  const ev = detalle?.evaluacion
+  const payload = detalle?.payload
+
+  return (
+    <section className="historial-vista">
+      <h2 className="view-title">Historial de predicciones</h2>
+
+      <section className="card">
+        <div className="card-header">Mis predicciones</div>
+        <p className="tabla-status">
+          Se guardan solas al analizar un partido. Si repites exactamente la misma predicción, sólo
+          sube el contador de veces hecha. Cada usuario ve las suyas.
+        </p>
+        <div className="tabs">
+          {[
+            { key: "todos", etiqueta: "Todas" },
+            { key: "pre", etiqueta: "Pre-partido (1X2)" },
+            { key: "2t", etiqueta: "Proyección 2T" },
+          ].map((t) => (
+            <button
+              key={t.key}
+              className={`tab ${filtro === t.key ? "tab-active" : ""}`}
+              onClick={() => setFiltro(t.key)}
+            >
+              {t.etiqueta}
+            </button>
+          ))}
+        </div>
+
+        {error && <p className="tabla-status tabla-status-error">{error}</p>}
+
+        {lista && lista.length === 0 && (
+          <p className="tabla-status">
+            Aún no hay predicciones guardadas con este filtro. Se guardan al usar "Analizar"
+            (1X2) o "Predecir 2T".
+          </p>
+        )}
+
+        {lista && lista.length > 0 && (
+          <div className="tabla-scroll">
+            <table className="tabla">
+              <thead>
+                <tr>
+                  <th>Tipo</th>
+                  <th>Partido</th>
+                  <th>Fecha</th>
+                  <th>Modelo</th>
+                  <th>Veces</th>
+                  <th>Última vez</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {lista.map((p) => (
+                  <tr key={p.id} className={detalle?.id === p.id ? "fila-activa" : ""}>
+                    <td>
+                      <span className={`resultado-chip ${p.tipo === "pre" ? "resultado-v" : "resultado-e"}`}>
+                        {etiquetaTipo(p.tipo)}
+                      </span>
+                    </td>
+                    <td>{p.local} vs {p.visitante}</td>
+                    <td className="tabla-num">{formatearFecha(p.fecha)}</td>
+                    <td>{p.modelo || "—"}</td>
+                    <td className="tabla-num">
+                      <span className="resultado-chip resultado-e">×{p.veces}</span>
+                    </td>
+                    <td className="tabla-num">
+                      {new Date(p.ultima_vez).toLocaleString("es-ES")}
+                    </td>
+                    <td>
+                      <button className="btn btn-secondary" onClick={() => ver(p.id)}>
+                        Ver
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {cargandoDetalle && <p className="tabla-status">Cargando predicción…</p>}
+
+      {detalle && (
+        <>
+          <section className="card">
+            <div className="card-header">
+              {detalle.local} vs {detalle.visitante} — {formatearFecha(detalle.fecha)}
+              <span className={`resultado-chip ${detalle.tipo === "pre" ? "resultado-v" : "resultado-e"}`}>
+                {etiquetaTipo(detalle.tipo)}
+              </span>
+              <span className="modelo-chip">hecha ×{detalle.veces}</span>
+              <span className="modelo-chip">
+                {etiquetaTipo(detalle.tipo)} · {formatearFechaHora(detalle.primera_vez)}
+                {detalle.veces > 1 ? ` → ${formatearFechaHora(detalle.ultima_vez)}` : ""}
+              </span>
+            </div>
+
+            {ev?.tieneReal ? (
+              detalle.tipo === "pre" ? (
+                <div className="evaluacion-cabecera">
+                  <span className={`resultado-chip ${ev.acierto ? "resultado-v" : "resultado-d"}`}>
+                    {ev.acierto ? "✓ Predicción correcta" : "✗ Predicción fallida"}
+                  </span>
+                  <span className="evaluacion-texto">
+                    Resultado real: <strong>{RESULTADOS[ev.resultado]}</strong> ·{" "}
+                    {ev.marcador.local}-{ev.marcador.visita}
+                    {ev.probReal !== null && ev.probReal !== undefined && (
+                      <> · probabilidad del resultado real en tu predicción: <strong>{ev.probReal}%</strong></>
+                    )}
+                  </span>
+                </div>
+              ) : (
+                <div className="evaluacion-cabecera">
+                  <span className="resultado-chip resultado-e">Datos reales disponibles</span>
+                  <span className="evaluacion-texto">
+                    Marcador real: <strong>{ev.marcador.local}-{ev.marcador.visita}</strong>
+                    {ev.marcador.local1T !== null && ev.marcador.local1T !== undefined && (
+                      <> (1T {ev.marcador.local1T}-{ev.marcador.visita1T})</>
+                    )}
+                  </span>
+                  <span className="evaluacion-resumen">
+                    <span className="resultado-chip celda-exacto">{ev.resumen.exactos} exactos</span>{" "}
+                    <span className="resultado-chip celda-cercano">{ev.resumen.cercanos} cercanos</span>{" "}
+                    <span className="resultado-chip celda-lejos">{ev.resumen.lejos} lejos</span>
+                    <span className="evaluacion-texto"> ({ev.resumen.comparaciones} comparaciones)</span>
+                  </span>
+                </div>
+              )
+            ) : (
+              <p className="tabla-status">
+                El partido aún no tiene datos reales en la base: cuando entre el resultado se
+                marcarán los aciertos aquí.
+              </p>
+            )}
+
+            {detalle.tipo === "pre" ? (
+              <PreDetalle payload={payload} ev={ev} />
+            ) : (
+              <DosTDetalle payload={payload} ev={ev} />
+            )}
+          </section>
+
+          <div className="actions">
+            <button className="btn btn-secondary" onClick={() => setDetalle(null)}>
+              Volver a la lista
+            </button>
+          </div>
+        </>
+      )}
+    </section>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Detalle de una predicción PRE-PARTIDO (1X2)
+// ---------------------------------------------------------------------------
+const PreDetalle = ({ payload, ev }) => {
+  if (!payload) return null
+  const probs = [
+    { key: "home", etiqueta: "Local", valor: payload.probabilities?.home },
+    { key: "draw", etiqueta: "Empate", valor: payload.probabilities?.draw },
+    { key: "away", etiqueta: "Visita", valor: payload.probabilities?.away },
+  ]
+  const predicho = payload.prediction?.main
+  const real = ev?.tieneReal ? ev.resultado : null
+  return (
+    <>
+      <div className="prob-grid">
+        {probs.map((p) => (
+          <div
+            key={p.key}
+            className={[
+              "prob-item",
+              p.key === predicho ? "prob-item-fav" : "",
+              p.key === real ? "prob-item-real" : "",
+            ].join(" ").trim()}
+          >
+            <div className="prob-etiqueta">
+              {p.etiqueta}
+              {p.key === predicho ? " (predicha)" : ""}
+              {p.key === real ? " (real)" : ""}
+            </div>
+            <div className="prob-valor">{p.valor}%</div>
+            <div className="prob-barra">
+              <span style={{ width: `${p.valor}%` }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="result-row">
+        <span className="result-label">Predicción principal</span>
+        <span className="result-value">
+          {RESULTADOS[predicho] || "—"}
+          {payload.prediction?.probability !== undefined && ` (${payload.prediction.probability}%)`}
+        </span>
+      </div>
+      <div className="result-row">
+        <span className="result-label">Goles esperados</span>
+        <span className="result-value">
+          {payload.lambdas?.home} (local) · {payload.lambdas?.away} (visita)
+        </span>
+      </div>
+      {payload.advertencias?.length > 0 && (
+        <p className="tabla-status">{payload.advertencias.join(" ")}</p>
+      )}
+      {payload.explanation?.length > 0 && (
+        <ul className="explicacion">
+          {payload.explanation.map((f) => (
+            <li key={f}>{f}</li>
+          ))}
+        </ul>
+      )}
+    </>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Detalle de una PROYECCIÓN 2T (tabla con énfasis vs datos reales)
+// ---------------------------------------------------------------------------
+const DosTDetalle = ({ payload, ev }) => {
+  if (!payload) return null
+  const conReal = ev?.tieneReal
+  const evalPorStat = new Map((conReal ? ev.filas : []).map((f) => [f.stat, f]))
+
+  const clase = (cl) => (cl ? CLASE_CELDA[cl] || "" : "")
+  const realTxt = (r, lado) => (r && r[lado] !== null && r[lado] !== undefined ? fmt(r[lado]) : "—")
+  const realPar = (r) => (r ? `${realTxt(r, "l")}-${realTxt(r, "a")}` : "—")
+
+  return (
+    <>
+      <div className="result-row">
+        <span className="result-label">Modelo</span>
+        <span className="result-value">
+          <span className={`resultado-chip ${payload.modelo?.estado === "BETA" ? "resultado-e" : "resultado-v"}`}>
+            {payload.modelo?.id} {payload.modelo?.estado ? `(${payload.modelo.estado})` : ""}
+          </span>{" "}
+          {payload.goles1T ? `1T ${payload.goles1T.local}-${payload.goles1T.visita}` : ""}
+          {payload.historial
+            ? ` · historial ${payload.historial.local}/${payload.historial.visitante} partidos`
+            : ""}
+        </span>
+      </div>
+      {payload.advertencias?.length > 0 && (
+        <p className="tabla-status">{payload.advertencias.join(" ")}</p>
+      )}
+      {conReal && (
+        <p className="tabla-status">
+          Énfasis: <span className="celda-exacto">verde = exacto</span> ·{" "}
+          <span className="celda-cercano">ámbar = cerca</span> (≤1 o 15% del real) ·{" "}
+          <span className="celda-lejos">rojo = lejos</span>. Sólo se comparan las celdas con datos
+          reales.
+        </p>
+      )}
+      <div className="tabla-scroll">
+        <table className="tabla">
+          <thead>
+            <tr>
+              <th>Stat</th>
+              <th>1T</th>
+              <th>Pred 2T L</th>
+              <th>Pred 2T V</th>
+              {conReal && <th>Real 2T</th>}
+              <th>FT Local</th>
+              <th>FT Visita</th>
+              <th>FT Total</th>
+              {conReal && <th>Real FT</th>}
+              <th>Fuente</th>
+            </tr>
+          </thead>
+          <tbody>
+            {payload.filas.map((f) => {
+              const e = evalPorStat.get(f.stat)
+              return (
+                <tr key={f.stat}>
+                  <td>{f.etiqueta}</td>
+                  <td className="tabla-num">
+                    {f.local1T === null || f.local1T === undefined
+                      ? "—"
+                      : `${fmt(f.local1T)}-${fmt(f.visita1T)}`}
+                  </td>
+                  <td className={`tabla-num ${clase(e?.cl?.pred2TL)}`}>{fmt(f.predLocal2T)}</td>
+                  <td className={`tabla-num ${clase(e?.cl?.pred2TV)}`}>{fmt(f.predVisita2T)}</td>
+                  {conReal && <td className="tabla-num">{realPar(e?.real2T)}</td>}
+                  <td className={`tabla-num ${clase(e?.cl?.ftL)}`}>
+                    {f.ftLocal !== undefined ? fmt(f.ftLocal) : "—"}
+                  </td>
+                  <td className={`tabla-num ${clase(e?.cl?.ftV)}`}>
+                    {f.ftVisita !== undefined ? fmt(f.ftVisita) : "—"}
+                  </td>
+                  <td className={`tabla-num ${clase(e?.cl?.ftT)}`}>
+                    {f.ftTotal !== undefined ? fmt(f.ftTotal) : "—"}
+                  </td>
+                  {conReal && <td className="tabla-num">{realPar(e?.realFT)}</td>}
+                  <td>
+                    <span className={`resultado-chip ${f.fuente === "historial" ? "resultado-e" : "resultado-v"}`}>
+                      {f.fuente === "historial" ? "Historial" : f.fuente}
+                    </span>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )
+}

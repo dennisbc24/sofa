@@ -672,6 +672,69 @@
   font-size: 13px;
   opacity: 0.75;
 }
+.reset-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+}
+.reset-inline .field-input {
+  width: 150px;
+  display: inline-block;
+}
+
+/* ---- Historial de predicciones: pestañas y énfasis vs datos reales ---- */
+.tabs-pestanas .tab {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.celda-exacto {
+  background: rgba(52, 211, 153, 0.16);
+  color: #6ee7b7;
+  font-weight: 700;
+}
+.celda-cercano {
+  background: rgba(251, 191, 36, 0.14);
+  color: #fbbf24;
+  font-weight: 600;
+}
+.celda-lejos {
+  background: rgba(255, 84, 112, 0.14);
+  color: var(--danger);
+  font-weight: 600;
+}
+.prob-item-real {
+  border-color: #34d399;
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.3);
+}
+.prob-item-fav.prob-item-real {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 2px rgba(var(--accent-rgb), 0.18),
+    0 0 0 4px rgba(52, 211, 153, 0.3);
+}
+.evaluacion-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0;
+}
+.evaluacion-texto {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.evaluacion-resumen {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.fila-activa td {
+  background: rgba(var(--accent-rgb), 0.08);
+}
 .login-vista,
 .usuarios-vista {
   max-width: 720px;

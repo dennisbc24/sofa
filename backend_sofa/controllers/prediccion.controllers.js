@@ -3,12 +3,18 @@ const { cargarModelo, rutaModelo } = require("../services/prediccion/modelo");
 const { CURRENT_PREDICTION_MODEL, modeloActivo } = require("../services/prediccion/modelo_config");
 const { predecirLote2T, cargarModelo2T, rutaModelo2T } = require("../services/prediccion/modelo_2t");
 const { modeloActivo2T } = require("../services/prediccion/modelo_2t_config");
+const historial = require("../services/prediccion/historial_usuario");
 
 // GET /api/predictions/match?localTeam=&awayTeam=&date=&league=
+// Guarda la predicción en el historial del usuario (dedup: misma predicción
+// repetida sólo sube el contador `veces`).
 const getPrediction = async (req, res, next) => {
   try {
     const { localTeam, awayTeam, date, league } = req.query;
     const resultado = await analizarPartido({ localTeam, awayTeam, date, league });
+    if (req.usuario && req.usuario.uid) {
+      await historial.guardarPre(req.usuario.uid, resultado);
+    }
     res.json(resultado);
   } catch (error) {
     if (error.statusCode) return res.status(error.statusCode).json({ message: error.message });
@@ -66,6 +72,12 @@ const postProyeccion2T = async (req, res, next) => {
       });
     }
     const { resultados, resumen } = await predecirLote2T(files);
+    // Guarda cada proyección en el historial del usuario (dedup por hash).
+    if (req.usuario && req.usuario.uid) {
+      for (const r of resultados) {
+        if (r.accion === "ok") await historial.guardar2T(req.usuario.uid, r);
+      }
+    }
     res.json({ resultados, resumen });
   } catch (error) {
     next(error);
@@ -110,4 +122,28 @@ const getModelo2TInfo = async (req, res) => {
   });
 };
 
-module.exports = { getPrediction, getModelInfo, postProyeccion2T, getModelo2TInfo };
+// GET /api/predictions/historial?tipo=pre|2t — predicciones del usuario.
+const getHistorial = async (req, res, next) => {
+  try {
+    const tipo = req.query.tipo === "pre" || req.query.tipo === "2t" ? req.query.tipo : null;
+    res.json({ predicciones: await historial.listar(req.usuario.uid, tipo) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/predictions/historial/:id — detalle + evaluación vs datos reales.
+const getHistorialDetalle = async (req, res, next) => {
+  try {
+    const d = await historial.detalle(Number(req.params.id), req.usuario.uid);
+    if (!d) return res.status(404).json({ message: "Predicción no encontrada." });
+    res.json(d);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getPrediction, getModelInfo, postProyeccion2T, getModelo2TInfo,
+  getHistorial, getHistorialDetalle,
+};

@@ -46,11 +46,15 @@ function verificarPassword(password, salt, hash) {
 const firmar = (payload) =>
   crypto.createHmac("sha256", secreto()).update(payload).digest("base64url");
 
-function crearToken(uid, rol) {
+// sv = session_version del usuario: se guarda en el token y se compara con la
+// BD en cada request; al cambiar la contraseña la versión sube y los tokens
+// antiguos (incluidos los robados) quedan invalidados.
+function crearToken(uid, rol, sv = 0) {
   const payload = Buffer.from(
     JSON.stringify({
       uid,
       rol,
+      sv,
       exp: Date.now() + TOKEN_DIAS * 24 * 60 * 60 * 1000,
       nonce: crypto.randomBytes(8).toString("hex"),
     })

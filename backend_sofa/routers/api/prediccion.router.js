@@ -2,11 +2,16 @@ const express = require('express');
 const router = express.Router();
 const {
   getPrediction, getModelInfo, postProyeccion2T, getModelo2TInfo,
+  getHistorial, getHistorialDetalle,
 } = require('../../controllers/prediccion.controllers');
 
 // Predicción pre-partido (modelo ya entrenado; nunca entrena en el request)
 // GET /api/predictions/match?localTeam=X&awayTeam=Y&date=YYYY-MM-DD&league=Liga
 router.get('/match', getPrediction);
+
+// Historial de predicciones del usuario (dedup + evaluación vs datos reales)
+router.get('/historial', getHistorial);
+router.get('/historial/:id', getHistorialDetalle);
 
 // Estado del modelo entrenado + métricas del backtest
 router.get('/model', getModelInfo);

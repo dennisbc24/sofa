@@ -85,7 +85,7 @@ const login = async (req, res, next) => {
     }
     limpiarIntentos(clave);
     await usuarios.marcarAcceso(u.id);
-    res.setHeader("Set-Cookie", cookieSesion(crearToken(u.id, u.rol), cookieSegura(req)));
+    res.setHeader("Set-Cookie", cookieSesion(crearToken(u.id, u.rol, u.session_version), cookieSegura(req)));
     res.json({ usuario: publico(u) });
   } catch (e) {
     next(e);
@@ -98,7 +98,9 @@ const sesion = async (req, res) => {
   const datos = verificarToken(leerCookie(req));
   if (!datos) return res.json({ autenticado: false });
   const u = await usuarios.porId(datos.uid);
-  if (!u || u.estado !== "activo") return res.json({ autenticado: false });
+  if (!u || u.estado !== "activo" || (datos.sv ?? 0) !== u.session_version) {
+    return res.json({ autenticado: false });
+  }
   res.json({ autenticado: true, usuario: publico(u) });
 };
 
@@ -123,7 +125,10 @@ const cambiarPassword = async (req, res, next) => {
       return res.status(401).json({ message: "Contraseña actual incorrecta." });
     }
     const { salt, hash } = hashPassword(nueva);
-    await usuarios.actualizarPassword(u.id, hash, salt);
+    const n = await usuarios.actualizarPassword(u.id, hash, salt);
+    // La versión de sesión subió: reemitimos la cookie con el sv nuevo para
+    // que quien hizo el cambio siga dentro (las demás cookies quedan inválidas).
+    res.setHeader("Set-Cookie", cookieSesion(crearToken(n.id, n.rol, n.session_version), cookieSegura(req)));
     res.json({ ok: true, message: "Contraseña actualizada." });
   } catch (e) {
     next(e);
@@ -163,7 +168,30 @@ const rechazar = async (req, res, next) => {
   }
 };
 
+// POST /api/auth/usuarios/:id/password — pone contraseña nueva a cualquier
+// cuenta (admin). Sube session_version: todas las sesiones abiertas de esa
+// cuenta quedan inválidas (si el id es el del admin, se reemite su cookie).
+const resetPassword = async (req, res, next) => {
+  try {
+    const { password } = req.body || {};
+    if (typeof password !== "string" || password.length < 8 || password.length > 200) {
+      return res.status(400).json({ message: "La contraseña debe tener entre 8 y 200 caracteres." });
+    }
+    const id = Number(req.params.id);
+    const u = await usuarios.porId(id);
+    if (!u) return res.status(404).json({ message: "Usuario no encontrado." });
+    const { salt, hash } = hashPassword(password);
+    const n = await usuarios.actualizarPassword(id, hash, salt);
+    if (id === req.usuario.uid) {
+      res.setHeader("Set-Cookie", cookieSesion(crearToken(n.id, n.rol, n.session_version), cookieSegura(req)));
+    }
+    res.json({ ok: true, message: `Contraseña nueva puesta para ${u.usuario}.` });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   registro, login, sesion, logout, cambiarPassword,
-  listarUsuarios, aprobar, rechazar,
+  listarUsuarios, aprobar, rechazar, resetPassword,
 };

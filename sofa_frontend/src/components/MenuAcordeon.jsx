@@ -21,6 +21,7 @@ const SECCIONES = [
     items: [
       { id: "predictivo", etiqueta: "Análisis pre-partido (1X2)" },
       { id: "prediccion2t", etiqueta: "Proyección 2T (modelo)" },
+      { id: "historial", etiqueta: "Historial de predicciones" },
     ],
   },
   {

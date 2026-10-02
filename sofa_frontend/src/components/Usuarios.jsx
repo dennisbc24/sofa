@@ -15,6 +15,7 @@ export const Usuarios = ({ sesion }) => {
   const [error, setError] = useState(null)
   const [aviso, setAviso] = useState(null)
   const [pass, setPass] = useState({ actual: "", nueva: "" })
+  const [reset, setReset] = useState({ id: null, valor: "" })
 
   const cargar = useCallback(async () => {
     setError(null)
@@ -42,6 +43,23 @@ export const Usuarios = ({ sesion }) => {
       await cargar()
     } catch (err) {
       setError(err.response?.data?.message || "Error al actualizar el usuario.")
+    }
+  }
+
+  // Admin: pone contraseña nueva a una cuenta → invalida sus sesiones abiertas.
+  const guardarReset = async (u) => {
+    setError(null)
+    setAviso(null)
+    try {
+      await axios.post(`/api/auth/usuarios/${u.id}/password`, { password: reset.valor })
+      setAviso(
+        u.id === sesion?.id
+          ? "Tu contraseña se ha cambiado: sigues dentro con la nueva."
+          : `Contraseña puesta a ${u.usuario}. Comunícasela y pídele que la cambie al entrar.`
+      )
+      setReset({ id: null, valor: "" })
+    } catch (err) {
+      setError(err.response?.data?.message || "Error al poner la contraseña.")
     }
   }
 
@@ -135,6 +153,7 @@ export const Usuarios = ({ sesion }) => {
                     <th>Estado</th>
                     <th>Creado</th>
                     <th>Último acceso</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -154,6 +173,40 @@ export const Usuarios = ({ sesion }) => {
                         {u.ultimo_acceso
                           ? new Date(u.ultimo_acceso).toLocaleString("es-ES")
                           : "—"}
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-secondary"
+                          onClick={() => setReset({ id: u.id, valor: "" })}
+                        >
+                          Poner contraseña
+                        </button>
+                        {reset.id === u.id && (
+                          <span className="reset-inline">
+                            <input
+                              className="field-input"
+                              type="password"
+                              autoComplete="new-password"
+                              placeholder="nueva (mín. 8)"
+                              autoFocus
+                              value={reset.valor}
+                              onChange={(e) => setReset({ ...reset, valor: e.target.value })}
+                            />
+                            <button
+                              className="btn btn-primary"
+                              disabled={reset.valor.length < 8}
+                              onClick={() => guardarReset(u)}
+                            >
+                              Guardar
+                            </button>
+                            <button
+                              className="btn btn-secondary"
+                              onClick={() => setReset({ id: null, valor: "" })}
+                            >
+                              Cancelar
+                            </button>
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}

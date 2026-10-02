@@ -18,8 +18,14 @@ async function asegurarTabla() {
       rol           varchar(20) NOT NULL DEFAULT 'usuario',
       estado        varchar(20) NOT NULL DEFAULT 'pendiente',
       creado_en     timestamptz NOT NULL DEFAULT now(),
-      ultimo_acceso timestamptz
+      ultimo_acceso timestamptz,
+      session_version int NOT NULL DEFAULT 0
     )`);
+  // Migración de tablas creadas antes de añadir session_version: al cambiar
+  // la contraseña se incrementa y todas las cookies anteriores quedan inválidas.
+  await pool.query(
+    `ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS session_version int NOT NULL DEFAULT 0`
+  );
   tablaCreada = true;
 }
 
@@ -68,9 +74,14 @@ async function marcarAcceso(id) {
 }
 
 async function actualizarPassword(id, passwordHash, salt) {
-  await pool.query(`UPDATE usuarios SET password_hash = $2, salt = $3 WHERE id = $1`, [
-    id, passwordHash, salt,
-  ]);
+  // Cambia hash+salt y sube session_version: invalida todas las cookies
+  // emitidas antes del cambio (tokens con sv antiguo dejan de servir).
+  const r = await pool.query(
+    `UPDATE usuarios SET password_hash = $2, salt = $3, session_version = session_version + 1
+     WHERE id = $1 RETURNING id, usuario, rol, session_version`,
+    [id, passwordHash, salt]
+  );
+  return r.rows[0] || null;
 }
 
 module.exports = {

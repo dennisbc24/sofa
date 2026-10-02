@@ -36,6 +36,7 @@ export const Prediccion2T = () => {
   const [progreso, setProgreso] = useState("")
   const [resultados, setResultados] = useState(null)
   const [error, setError] = useState(null)
+  const [pestana, setPestana] = useState(0)
   const carpetaRef = useRef(null)
   const sueltosRef = useRef(null)
 
@@ -45,6 +46,7 @@ export const Prediccion2T = () => {
     setResultados(null)
     setError(null)
     setProgreso("")
+    setPestana(0)
     if (carpetaRef.current) carpetaRef.current.value = ""
     if (sueltosRef.current) sueltosRef.current.value = ""
   }
@@ -86,6 +88,7 @@ export const Prediccion2T = () => {
     setCargando(true)
     setError(null)
     setResultados(null)
+    setPestana(0)
 
     const lotes = []
     let actual = []
@@ -135,6 +138,10 @@ export const Prediccion2T = () => {
   }
 
   const validos = archivos.filter((a) => a.vista.valido).length
+
+  const total = resultados?.resultados?.length || 0
+  const idxActiva = total ? Math.min(pestana, total - 1) : 0
+  const activo = total ? resultados.resultados[idxActiva] : null
 
   return (
     <section className="prediccion-2t">
@@ -249,93 +256,112 @@ export const Prediccion2T = () => {
             </div>
           </section>
 
-          {resultados.resultados.map((r) =>
-            r.accion === "error" ? (
-              <section className="card" key={r.archivo}>
-                <div className="card-header">{r.archivo}</div>
-                <p className="tabla-status tabla-status-error">{r.message}</p>
-              </section>
-            ) : (
-              <section className="card" key={r.archivo || r.partido?.partidoId || r.partido?.fecha}>
-                <div className="card-header">
-                  {r.partido.local} vs {r.partido.visitante} — {r.partido.fecha}
-                  {r.partido.liga ? ` — ${r.partido.liga}` : ""}
-                </div>
+          <div className="tabs tabs-pestanas" role="tablist">
+            {resultados.resultados.map((r, i) => (
+              <button
+                key={r.archivo || r.partido?.id || i}
+                role="tab"
+                aria-selected={i === idxActiva}
+                className={`tab ${i === idxActiva ? "tab-active" : ""}`}
+                onClick={() => setPestana(i)}
+                title={
+                  r.accion === "error"
+                    ? r.archivo
+                    : `${r.partido.local} vs ${r.partido.visitante} — ${r.partido.fecha}`
+                }
+              >
+                {r.accion === "error"
+                  ? `⚠ ${String(r.archivo || "").split("/").pop()}`
+                  : `${r.partido.local} vs ${r.partido.visitante}`}
+              </button>
+            ))}
+          </div>
 
-                <div className="result-row">
-                  <span className="result-label">Modelo</span>
-                  <span className="result-value">
-                    <span className={`resultado-chip ${r.modelo.estado === "BETA" ? "resultado-e" : "resultado-v"}`}>
-                      {r.modelo.id || r.modelo.name} {r.modelo.estado ? `(${r.modelo.estado})` : ""}
-                    </span>{" "}
-                    {r.historial.local} partidos de {r.partido.local}, {r.historial.visitante} de{" "}
-                    {r.partido.visitante} (cutoff)
-                  </span>
-                </div>
-                <div className="result-row">
-                  <span className="result-label">Backtest (MAE TEST)</span>
-                  <span className="result-value">
-                    {["Goles", "Total shots", "Corner kicks", "Yellow cards"]
-                      .map((k) => {
-                        const bt = r.modelo.backtestPrincipales?.[k]
-                        if (!bt) return null
-                        const label = { Goles: "Goles", "Total shots": "Remates", "Corner kicks": "Corners", "Yellow cards": "Amarillas" }[k]
-                        if (bt.mae_proyeccion2T_TEST) {
-                          const d = ((bt.mae_proyeccion2T_TEST - bt.mae_modelo_TEST) / bt.mae_proyeccion2T_TEST) * 100
-                          return `${label} ${pct(d)}`
-                        }
-                        return `${label} vs peor baseline ${pct(((bt.mae_mejor_baseline_TEST - bt.mae_modelo_TEST) / bt.mae_mejor_baseline_TEST) * 100)}`
-                      })
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </span>
-                </div>
+          {activo?.accion === "error" ? (
+            <section className="card" key={activo.archivo}>
+              <div className="card-header">{activo.archivo}</div>
+              <p className="tabla-status tabla-status-error">{activo.message}</p>
+            </section>
+          ) : activo ? (
+            <section className="card" key={activo.archivo || activo.partido?.id || activo.partido?.fecha}>
+              <div className="card-header">
+                {activo.partido.local} vs {activo.partido.visitante} — {activo.partido.fecha}
+                {activo.partido.liga ? ` — ${activo.partido.liga}` : ""}
+              </div>
 
-                {r.advertencias && r.advertencias.length > 0 && (
-                  <p className="tabla-status">{r.advertencias.join(" ")}</p>
-                )}
+              <div className="result-row">
+                <span className="result-label">Modelo</span>
+                <span className="result-value">
+                  <span className={`resultado-chip ${activo.modelo.estado === "BETA" ? "resultado-e" : "resultado-v"}`}>
+                    {activo.modelo.id || activo.modelo.name} {activo.modelo.estado ? `(${activo.modelo.estado})` : ""}
+                  </span>{" "}
+                  {activo.historial.local} partidos de {activo.partido.local}, {activo.historial.visitante} de{" "}
+                  {activo.partido.visitante} (cutoff)
+                </span>
+              </div>
+              <div className="result-row">
+                <span className="result-label">Backtest (MAE TEST)</span>
+                <span className="result-value">
+                  {["Goles", "Total shots", "Corner kicks", "Yellow cards"]
+                    .map((k) => {
+                      const bt = activo.modelo.backtestPrincipales?.[k]
+                      if (!bt) return null
+                      const label = { Goles: "Goles", "Total shots": "Remates", "Corner kicks": "Corners", "Yellow cards": "Amarillas" }[k]
+                      if (bt.mae_proyeccion2T_TEST) {
+                        const d = ((bt.mae_proyeccion2T_TEST - bt.mae_modelo_TEST) / bt.mae_proyeccion2T_TEST) * 100
+                        return `${label} ${pct(d)}`
+                      }
+                      return `${label} vs peor baseline ${pct(((bt.mae_mejor_baseline_TEST - bt.mae_modelo_TEST) / bt.mae_mejor_baseline_TEST) * 100)}`
+                    })
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
+              </div>
 
-                <div className="tabla-scroll">
-                  <table className="tabla">
-                    <thead>
-                      <tr>
-                        <th>Stat</th>
-                        <th>1T</th>
-                        <th>Local</th>
-                        <th>Visita</th>
-                        <th>FT Local</th>
-                        <th>FT Visita</th>
-                        <th>FT Total</th>
-                        <th>Fuente</th>
+              {activo.advertencias && activo.advertencias.length > 0 && (
+                <p className="tabla-status">{activo.advertencias.join(" ")}</p>
+              )}
+
+              <div className="tabla-scroll">
+                <table className="tabla">
+                  <thead>
+                    <tr>
+                      <th>Stat</th>
+                      <th>1T</th>
+                      <th>Local</th>
+                      <th>Visita</th>
+                      <th>FT Local</th>
+                      <th>FT Visita</th>
+                      <th>FT Total</th>
+                      <th>Fuente</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {activo.filas.map((f) => (
+                      <tr key={f.stat}>
+                        <td>{f.etiqueta}</td>
+                        <td className="tabla-num">
+                          {f.local1T === null || f.local1T === undefined
+                            ? "—"
+                            : `${fmt(f.local1T)}-${fmt(f.visita1T)}`}
+                        </td>
+                        <td className="tabla-num">{fmt(f.predLocal2T)}</td>
+                        <td className="tabla-num">{fmt(f.predVisita2T)}</td>
+                        <td className="tabla-num">{f.ftLocal !== undefined ? fmt(f.ftLocal) : "—"}</td>
+                        <td className="tabla-num">{f.ftVisita !== undefined ? fmt(f.ftVisita) : "—"}</td>
+                        <td className="tabla-num">{f.ftTotal !== undefined ? fmt(f.ftTotal) : "—"}</td>
+                        <td>
+                          <span className={`resultado-chip ${f.fuente === "historial" ? "resultado-e" : "resultado-v"}`}>
+                            {f.fuente === "historial" ? "Historial" : f.fuente}
+                          </span>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {r.filas.map((f) => (
-                        <tr key={f.stat}>
-                          <td>{f.etiqueta}</td>
-                          <td className="tabla-num">
-                            {f.local1T === null || f.local1T === undefined
-                              ? "—"
-                              : `${fmt(f.local1T)}-${fmt(f.visita1T)}`}
-                          </td>
-                          <td className="tabla-num">{fmt(f.predLocal2T)}</td>
-                          <td className="tabla-num">{fmt(f.predVisita2T)}</td>
-                          <td className="tabla-num">{f.ftLocal !== undefined ? fmt(f.ftLocal) : "—"}</td>
-                          <td className="tabla-num">{f.ftVisita !== undefined ? fmt(f.ftVisita) : "—"}</td>
-                          <td className="tabla-num">{f.ftTotal !== undefined ? fmt(f.ftTotal) : "—"}</td>
-                          <td>
-                            <span className={`resultado-chip ${f.fuente === "historial" ? "resultado-e" : "resultado-v"}`}>
-                              {f.fuente === "historial" ? "Historial" : f.fuente}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
-            )
-          )}
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          ) : null}
         </>
       )}
     </section>

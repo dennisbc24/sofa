@@ -16,5 +16,6 @@ router.post("/cambiar-password", ctl.cambiarPassword);
 router.get("/usuarios", requiereAdmin, ctl.listarUsuarios);
 router.post("/usuarios/:id/aprobar", requiereAdmin, ctl.aprobar);
 router.post("/usuarios/:id/rechazar", requiereAdmin, ctl.rechazar);
+router.post("/usuarios/:id/password", requiereAdmin, ctl.resetPassword);
 
 module.exports = router;
