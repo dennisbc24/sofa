@@ -735,6 +735,28 @@
 .fila-activa td {
   background: rgba(var(--accent-rgb), 0.08);
 }
+
+/* ---- Campos de contraseña con Ver/Ocultar ---- */
+.password-wrap {
+  position: relative;
+  display: block;
+}
+.password-wrap .field-input {
+  width: 100%;
+  padding-right: 70px;
+}
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+.password-wrap-compacto {
+  width: 200px;
+}
 .login-vista,
 .usuarios-vista {
   max-width: 720px;

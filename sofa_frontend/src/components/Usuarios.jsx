@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import axios from "axios"
+import { CampoPassword } from "./CampoPassword.jsx"
 
 const ESTADOS = {
   activo: "resultado-v",
@@ -183,14 +184,13 @@ export const Usuarios = ({ sesion }) => {
                         </button>
                         {reset.id === u.id && (
                           <span className="reset-inline">
-                            <input
-                              className="field-input"
-                              type="password"
+                            <CampoPassword
+                              compacto
                               autoComplete="new-password"
                               placeholder="nueva (mín. 8)"
                               autoFocus
                               value={reset.valor}
-                              onChange={(e) => setReset({ ...reset, valor: e.target.value })}
+                              onChange={(v) => setReset({ ...reset, valor: v })}
                             />
                             <button
                               className="btn btn-primary"
@@ -220,26 +220,18 @@ export const Usuarios = ({ sesion }) => {
       <section className="card">
         <div className="card-header">Mi contraseña ({sesion?.usuario})</div>
         <form onSubmit={cambiarPassword}>
-          <label className="field">
-            <span className="field-label">Contraseña actual</span>
-            <input
-              className="field-input"
-              type="password"
-              autoComplete="current-password"
-              value={pass.actual}
-              onChange={(e) => setPass({ ...pass, actual: e.target.value })}
-            />
-          </label>
-          <label className="field">
-            <span className="field-label">Nueva contraseña (mínimo 8)</span>
-            <input
-              className="field-input"
-              type="password"
-              autoComplete="new-password"
-              value={pass.nueva}
-              onChange={(e) => setPass({ ...pass, nueva: e.target.value })}
-            />
-          </label>
+          <CampoPassword
+            label="Contraseña actual"
+            autoComplete="current-password"
+            value={pass.actual}
+            onChange={(v) => setPass({ ...pass, actual: v })}
+          />
+          <CampoPassword
+            label="Nueva contraseña (mínimo 8)"
+            autoComplete="new-password"
+            value={pass.nueva}
+            onChange={(v) => setPass({ ...pass, nueva: v })}
+          />
           <div className="actions">
             <button
               className="btn btn-primary"

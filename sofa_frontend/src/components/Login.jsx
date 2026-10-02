@@ -1,5 +1,6 @@
 import { useState } from "react"
 import axios from "axios"
+import { CampoPassword } from "./CampoPassword.jsx"
 
 // Login + registro (el registro queda PENDIENTE hasta aprobación del admin).
 export const Login = ({ onSesion }) => {
@@ -76,16 +77,12 @@ export const Login = ({ onSesion }) => {
               autoFocus
             />
           </label>
-          <label className="field">
-            <span className="field-label">Contraseña (mínimo 8 caracteres)</span>
-            <input
-              className="field-input"
-              type="password"
-              autoComplete={modo === "login" ? "current-password" : "new-password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
+          <CampoPassword
+            label="Contraseña (mínimo 8 caracteres)"
+            value={password}
+            onChange={setPassword}
+            autoComplete={modo === "login" ? "current-password" : "new-password"}
+          />
 
           {mensaje && (
             <p className={`tabla-status ${mensaje.tipo === "error" ? "tabla-status-error" : ""}`}>
