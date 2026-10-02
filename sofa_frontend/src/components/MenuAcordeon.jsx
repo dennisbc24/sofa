@@ -37,6 +37,11 @@ const SECCIONES = [
     titulo: "Equipos",
     items: [{ id: "equipos", etiqueta: "Promedios por equipo" }],
   },
+  {
+    id: "sistema",
+    titulo: "Sistema",
+    items: [{ id: "usuarios", etiqueta: "Usuarios y acceso" }],
+  },
 ]
 
 export const MenuAcordeon = ({ vista, onVista }) => {

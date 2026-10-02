@@ -6,9 +6,11 @@ const apiProbabilidades = require("./api/probabilidades.router");
 const apiEquipos = require("./api/equipos.router");
 const apiPrediccion = require("./api/prediccion.router");
 const apiEstadisticas = require("./api/estadisticas.router");
+const apiAuth = require("./api/auth.router");
 
 function routerApi(app) {
   const router = express.Router();
+  app.use("/api/auth", apiAuth);
   app.use("/api/partidos", apiPartidos);
   app.use("/api/leagues", apiLeagues);
   app.use("/api/probabilidades", apiProbabilidades);

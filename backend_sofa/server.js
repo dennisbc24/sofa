@@ -5,6 +5,7 @@ const path = require("path");
 const { config } = require("./config/config");
 const { routerApi } = require("./routers/index_router");
 const { notFoundHandler, errorHandler } = require("./middlewares/errorHandler");
+const { protegerApi } = require("./services/auth/middleware");
 
 const app = express();
 
@@ -21,6 +22,11 @@ app.use(express.static(path.join(__dirname, "dist")));
 app.get("/", (req, res) => {
   res.json({ message: "Servidor funcionando correctamente" });
 });
+
+// Toda la API exige cookie de sesión válida (las rutas públicas de /api/auth
+// las decide el propio middleware). Los estáticos quedan abiertos para que la
+// página de login cargue; los datos reales sólo salen autenticados.
+app.use("/api", protegerApi);
 
 routerApi(app);
 

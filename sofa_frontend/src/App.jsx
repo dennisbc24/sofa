@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import './App.css'
 import { API_URL } from './config.js'
 import { MenuAcordeon } from './components/MenuAcordeon.jsx'
+import { Login } from './components/Login.jsx'
+import { Usuarios } from './components/Usuarios.jsx'
 import { Desplegable } from './components/Desplegable.jsx'
 import { UltimosPartidos } from './components/UltimosPartidos.jsx'
 import { StatsPartido } from './components/StatsPartido.jsx'
@@ -22,6 +24,8 @@ import { SubirEstadisticas } from './components/SubirEstadisticas.jsx'
 
 function App() {
   const [vista, setVista] = useState("analisis1")
+  const [sesion, setSesion] = useState(null)
+  const [sesionCargando, setSesionCargando] = useState(true)
   const [probaTab, setProbaTab] = useState("resultados")
   const [ligas, setLigas] = useState([])
   const [jornada, setJornada] = useState("")
@@ -32,6 +36,41 @@ function App() {
   const [golesProb, setGolesProb] = useState(null)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState(null)
+
+  // Estado de sesión al cargar la página.
+  useEffect(() => {
+    axios
+      .get("/api/auth/sesion")
+      .then((r) => setSesion(r.data.autenticado ? r.data.usuario : null))
+      .catch(() => setSesion(null))
+      .finally(() => setSesionCargando(false))
+  }, [])
+
+  // Si cualquier llamada responde 401 (sesión caducada), volvemos al login.
+  useEffect(() => {
+    const id = axios.interceptors.response.use(
+      (r) => r,
+      (err) => {
+        if (
+          err.response?.status === 401 &&
+          !String(err.config?.url || "").includes("/api/auth/")
+        ) {
+          setSesion(null)
+        }
+        return Promise.reject(err)
+      }
+    )
+    return () => axios.interceptors.response.eject(id)
+  }, [])
+
+  const salir = async () => {
+    try {
+      await axios.post("/api/auth/logout")
+    } finally {
+      setSesion(null)
+      setVista("analisis1")
+    }
+  }
 
   const handleLigaChange = (e) => {
     const liga = e.target.value
@@ -75,9 +114,36 @@ function App() {
     }
   }
 
+  if (sesionCargando) {
+    return (
+      <main className="app">
+        <h1 className="app-title">Analytics</h1>
+        <p className="view-title">Cargando…</p>
+      </main>
+    )
+  }
+
+  if (!sesion) {
+    return (
+      <main className="app">
+        <h1 className="app-title">Analytics</h1>
+        <Login onSesion={setSesion} />
+      </main>
+    )
+  }
+
   return (
     <main className="app">
       <h1 className="app-title">Analytics</h1>
+
+      <div className="sesion-barra">
+        <span className="sesion-usuario">
+          {sesion.usuario} · {sesion.rol}
+        </span>
+        <button className="btn btn-secondary" onClick={salir}>
+          Salir
+        </button>
+      </div>
 
       <MenuAcordeon vista={vista} onVista={setVista} />
 
@@ -105,6 +171,8 @@ function App() {
         <AnalisisPredictivo />
       ) : vista === "prediccion2t" ? (
         <Prediccion2T />
+      ) : vista === "usuarios" ? (
+        <Usuarios sesion={sesion} />
       ) : vista === "subir" ? (
         <SubirEstadisticas />
       ) : (
