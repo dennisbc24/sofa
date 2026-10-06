@@ -152,22 +152,31 @@ async function guardar2T(usuarioId, r) {
 }
 
 // Lista (sin payload) para el usuario; tipo opcional 'pre' | '2t'.
-async function listar(usuarioId, tipo) {
+// Paginada: máximo `porPagina` filas por página (default 10, tope 50).
+async function listar(usuarioId, tipo, pagina = 1, porPagina = 10) {
   await asegurarTabla();
+  const pp = Math.min(50, Math.max(1, Number(porPagina) || 10));
+  const pg = Math.max(1, Number(pagina) || 1);
   const params = [usuarioId];
   let where = "usuario_id = $1";
   if (tipo === "pre" || tipo === "2t") {
     params.push(tipo);
     where += " AND tipo = $2";
   }
+  const c = await pool.query(`SELECT count(*)::int AS n FROM ${TABLA} WHERE ${where}`, params);
+  const total = c.rows[0].n;
+  const paginas = Math.max(1, Math.ceil(total / pp));
+  const pgn = Math.min(pg, paginas);
+  params.push(pp, (pgn - 1) * pp);
   const r = await pool.query(
     `SELECT id, tipo, fecha_partido::text AS fecha, local, visitante, liga, modelo,
             veces, primera_vez, ultima_vez
        FROM ${TABLA} WHERE ${where}
-      ORDER BY ultima_vez DESC LIMIT 200`,
+      ORDER BY ultima_vez DESC
+      LIMIT $${params.length - 1} OFFSET $${params.length}`,
     params
   );
-  return r.rows;
+  return { predicciones: r.rows, total, pagina: pgn, porPagina: pp, paginas };
 }
 
 // ---------------------------------------------------------------------------

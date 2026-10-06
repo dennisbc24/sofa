@@ -789,6 +789,44 @@
   margin-top: 8px;
   max-height: 320px;
 }
+
+/* ---- Paginación del historial (10 por página) ---- */
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+.paginacion-info {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ---- Historial: lista (izq.) + detalle (der.) en PC ---- */
+.historial-detalle {
+  min-width: 0;
+}
+.historial-panel-vacio {
+  display: none;
+}
+.fila-clic {
+  cursor: pointer;
+}
+.fila-clic:hover td {
+  background: rgba(var(--accent-rgb), 0.06);
+}
+@media (min-width: 900px) {
+  .historial-split {
+    display: grid;
+    grid-template-columns: minmax(340px, 44%) 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .historial-panel-vacio {
+    display: block;
+  }
+}
 .login-vista,
 .usuarios-vista {
   max-width: 720px;

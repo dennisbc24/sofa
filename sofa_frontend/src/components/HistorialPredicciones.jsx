@@ -27,24 +27,33 @@ export const HistorialPredicciones = () => {
   const [error, setError] = useState(null)
   const [detalle, setDetalle] = useState(null)
   const [cargandoDetalle, setCargandoDetalle] = useState(false)
+  const [pagina, setPagina] = useState(1)
+  const [meta, setMeta] = useState(null)
 
-  const cargar = useCallback(async (tipo) => {
+  const cargar = useCallback(async (tipo, pg) => {
     setError(null)
     setDetalle(null)
     try {
-      const r = await axios.get(`${API_URL}/api/predictions/historial`, {
-        params: tipo === "todos" ? {} : { tipo },
-      })
+      const params = { pagina: pg }
+      if (tipo !== "todos") params.tipo = tipo
+      const r = await axios.get(`${API_URL}/api/predictions/historial`, { params })
       setLista(r.data.predicciones)
+      setMeta({ total: r.data.total, pagina: r.data.pagina, paginas: r.data.paginas })
     } catch (err) {
       setError(err.response?.data?.message || "Error al cargar el historial.")
       setLista([])
+      setMeta(null)
     }
   }, [])
 
   useEffect(() => {
-    cargar(filtro)
-  }, [cargar, filtro])
+    cargar(filtro, pagina)
+  }, [cargar, filtro, pagina])
+
+  const cambiarFiltro = (k) => {
+    setFiltro(k)
+    setPagina(1)
+  }
 
   const ver = async (id) => {
     setCargandoDetalle(true)
@@ -67,6 +76,7 @@ export const HistorialPredicciones = () => {
     <section className="historial-vista">
       <h2 className="view-title">Historial de predicciones</h2>
 
+      <div className="historial-split">
       <section className="card">
         <div className="card-header">Mis predicciones</div>
         <p className="tabla-status">
@@ -82,7 +92,7 @@ export const HistorialPredicciones = () => {
             <button
               key={t.key}
               className={`tab ${filtro === t.key ? "tab-active" : ""}`}
-              onClick={() => setFiltro(t.key)}
+              onClick={() => cambiarFiltro(t.key)}
             >
               {t.etiqueta}
             </button>
@@ -109,12 +119,22 @@ export const HistorialPredicciones = () => {
                   <th>Modelo</th>
                   <th>Veces</th>
                   <th>Última vez</th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {lista.map((p) => (
-                  <tr key={p.id} className={detalle?.id === p.id ? "fila-activa" : ""}>
+                  <tr
+                    key={p.id}
+                    className={`fila-clic ${detalle?.id === p.id ? "fila-activa" : ""}`}
+                    onClick={() => ver(p.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        ver(p.id)
+                      }
+                    }}
+                    tabIndex={0}
+                  >
                     <td>
                       <span className={`resultado-chip ${p.tipo === "pre" ? "resultado-v" : "resultado-e"}`}>
                         {etiquetaTipo(p.tipo)}
@@ -129,20 +149,48 @@ export const HistorialPredicciones = () => {
                     <td className="tabla-num">
                       {new Date(p.ultima_vez).toLocaleString("es-ES")}
                     </td>
-                    <td>
-                      <button className="btn btn-secondary" onClick={() => ver(p.id)}>
-                        Ver
-                      </button>
-                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         )}
+
+        {meta && meta.total > 0 && (
+          <div className="paginacion">
+            <button
+              className="btn btn-secondary"
+              disabled={meta.pagina <= 1}
+              onClick={() => setPagina(meta.pagina - 1)}
+            >
+              ← Anterior
+            </button>
+            <span className="paginacion-info">
+              Página {meta.pagina} de {meta.paginas} · {meta.total} predicciones
+            </span>
+            <button
+              className="btn btn-secondary"
+              disabled={meta.pagina >= meta.paginas}
+              onClick={() => setPagina(meta.pagina + 1)}
+            >
+              Siguiente →
+            </button>
+          </div>
+        )}
       </section>
 
+      <div className="historial-detalle">
       {cargandoDetalle && <p className="tabla-status">Cargando predicción…</p>}
+
+      {!cargandoDetalle && !detalle && (
+        <section className="card historial-panel-vacio">
+          <div className="card-header">Detalle</div>
+          <p className="tabla-status">
+            Haz clic en una predicción de la lista para ver aquí su detalle: partido real
+            vinculado, acierto 1X2 y aciertos por mercado.
+          </p>
+        </section>
+      )}
 
       {detalle && (
         <>
@@ -214,6 +262,8 @@ export const HistorialPredicciones = () => {
           </div>
         </>
       )}
+      </div>
+      </div>
     </section>
   )
 }

@@ -122,11 +122,13 @@ const getModelo2TInfo = async (req, res) => {
   });
 };
 
-// GET /api/predictions/historial?tipo=pre|2t — predicciones del usuario.
+// GET /api/predictions/historial?tipo=pre|2t&pagina=N — predicciones del
+// usuario (paginado, 10 por página).
 const getHistorial = async (req, res, next) => {
   try {
     const tipo = req.query.tipo === "pre" || req.query.tipo === "2t" ? req.query.tipo : null;
-    res.json({ predicciones: await historial.listar(req.usuario.uid, tipo) });
+    const pagina = Number(req.query.pagina) || 1;
+    res.json(await historial.listar(req.usuario.uid, tipo, pagina, 10));
   } catch (error) {
     next(error);
   }
