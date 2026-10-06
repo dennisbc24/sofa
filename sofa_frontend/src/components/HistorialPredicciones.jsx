@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
 import { formatearFecha, formatearFechaHora } from "../utils.js"
+import { SeccionesAnalisis } from "./PrediccionSecciones.jsx"
 
 // Historial de predicciones del usuario: se guardan SOLAS cada vez que se
 // analiza un partido (1X2 o proyección 2T). Si se repite exactamente la misma
@@ -255,6 +256,8 @@ export const HistorialPredicciones = () => {
             )}
           </section>
 
+          {detalle.tipo === "pre" && <SeccionesAnalisis datos={payload} />}
+
           <div className="actions">
             <button className="btn btn-secondary" onClick={() => setDetalle(null)}>
               Volver a la lista
@@ -482,6 +485,15 @@ const PreDetalle = ({ payload, ev }) => {
           {payload.lambdas?.home} (local) · {payload.lambdas?.away} (visita)
         </span>
       </div>
+      {payload.model && (
+        <div className="result-row">
+          <span className="result-label">Modelo</span>
+          <span className="result-value">
+            {payload.model} (v{payload.modelVersion})
+            {payload.modelInfo?.entrenadoEn && ` · entrenado ${formatearFechaHora(payload.modelInfo.entrenadoEn)}`}
+          </span>
+        </div>
+      )}
       {ev?.mercados && (
         <>
           <div className="card-header">Acierto por mercado</div>
@@ -529,13 +541,6 @@ const PreDetalle = ({ payload, ev }) => {
       )}
       {payload.advertencias?.length > 0 && (
         <p className="tabla-status">{payload.advertencias.join(" ")}</p>
-      )}
-      {payload.explanation?.length > 0 && (
-        <ul className="explicacion">
-          {payload.explanation.map((f) => (
-            <li key={f}>{f}</li>
-          ))}
-        </ul>
       )}
     </>
   )

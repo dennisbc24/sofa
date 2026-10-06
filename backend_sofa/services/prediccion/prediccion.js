@@ -172,7 +172,9 @@ function construirExplicacion({ home, away, modelo, pred, homeFuente, awayFuente
   return frases;
 }
 
-async function analizarPartido({ localTeam, awayTeam, date, league }) {
+// `registrar: false` omite el registro en predicciones_beta (útil al
+// recomputar una predicción guardada para el historial: no ensuciar el log).
+async function analizarPartido({ localTeam, awayTeam, date, league, registrar = true }) {
   if (!localTeam || !awayTeam) {
     const e = new Error("Se requieren los parámetros localTeam y awayTeam (date y league son opcionales)");
     e.statusCode = 400;
@@ -228,16 +230,18 @@ async function analizarPartido({ localTeam, awayTeam, date, league }) {
 
   // Registro en BD (beta): solo acumula datos para futura evaluación.
   // No entrena, no recalibra y nunca interrumpe la respuesta.
-  await registrarPrediccion({
-    fechaPartido: fechaCorte,
-    local: nombreLocal,
-    visitante: nombreVisita,
-    liga: league || null,
-    probabilities: pred.probabilities,
-    principal,
-    model: activo.id,
-    modelVersion: activo.version,
-  });
+  if (registrar) {
+    await registrarPrediccion({
+      fechaPartido: fechaCorte,
+      local: nombreLocal,
+      visitante: nombreVisita,
+      liga: league || null,
+      probabilities: pred.probabilities,
+      principal,
+      model: activo.id,
+      modelVersion: activo.version,
+    });
+  }
 
   return {
     match: {

@@ -15,7 +15,7 @@
 const crypto = require("crypto");
 const pool = require("../../db");
 const { GOLES } = require("../../experimentos_fase2t/comun2t");
-const { mercadosDePrediccion } = require("./prediccion");
+const { mercadosDePrediccion, analizarPartido } = require("./prediccion");
 const { resultado1x2De } = require("./modelo_2t");
 
 const TABLA = "predicciones_usuario";
@@ -72,7 +72,8 @@ async function guardar({ usuarioId, tipo, fechaPartido, local, visitante, liga, 
        (usuario_id, tipo, fecha_partido, local, visitante, liga, modelo, payload, payload_hash)
      VALUES ($1, $2, $3::date, $4, $5, $6, $7, $8::jsonb, $9)
      ON CONFLICT (usuario_id, tipo, fecha_partido, local, visitante, payload_hash)
-     DO UPDATE SET veces = ${TABLA}.veces + 1, ultima_vez = now()
+     DO UPDATE SET veces = ${TABLA}.veces + 1, ultima_vez = now(),
+                   payload = EXCLUDED.payload
      RETURNING veces`,
     [usuarioId, tipo, fechaPartido, local, visitante, liga || null, modelo || null, JSON.stringify(payload), hash]
   );
@@ -82,17 +83,10 @@ async function guardar({ usuarioId, tipo, fechaPartido, local, visitante, liga, 
 // Guarda una predicción pre-partido (jamás lanza).
 async function guardarPre(usuarioId, r) {
   try {
-    const payload = {
-      match: r.match,
-      probabilities: r.probabilities,
-      prediction: r.prediction,
-      lambdas: r.lambdas,
-      mercados: r.mercados || null,
-      model: r.model,
-      modelVersion: r.modelVersion,
-      advertencias: r.advertencias,
-      explanation: r.explanation,
-    };
+    // Payload COMPLETO: se guarda tal cual lo que devolvió /match (features,
+    // comparación, forma, H2H, datosUtilizados, modelInfo…) para que el
+    // historial muestre exactamente los mismos datos que la predicción original.
+    const payload = { ...r };
     const hash = hashPayload({
       probabilities: r.probabilities,
       principal: r.prediction.main,
@@ -121,6 +115,7 @@ async function guardarPre(usuarioId, r) {
 async function guardar2T(usuarioId, r) {
   try {
     const payload = {
+      archivo: r.archivo || null,
       partido: r.partido,
       goles1T: r.goles1T,
       resultado1x2: r.resultado1x2 || null,
@@ -459,6 +454,27 @@ async function detalle(id, usuarioId) {
   );
   const row = r.rows[0];
   if (!row) return null;
+
+  // Fila antigua (payload parcial de versiones anteriores): se regenera la
+  // predicción COMPLETA una sola vez y se persiste para las siguientes vistas.
+  if (row.tipo === "pre" && row.payload && !row.payload.homeFeatures) {
+    try {
+      const completo = await analizarPartido({
+        localTeam: row.local,
+        awayTeam: row.visitante,
+        date: row.fecha,
+        league: row.liga || undefined,
+        registrar: false, // no ensuciar el log de predicciones_beta
+      });
+      row.payload = completo;
+      await pool.query(
+        `UPDATE ${TABLA} SET payload = $1::jsonb WHERE id = $2 AND usuario_id = $3`,
+        [JSON.stringify(completo), id, usuarioId]
+      );
+    } catch (e) {
+      console.warn(`[historial] no se pudo completar el payload de la predicción ${id}: ${e.message}`);
+    }
+  }
 
   let evaluacion = { tieneReal: false };
   let vinculo = { manual: !!row.partido_id, partido: null };
