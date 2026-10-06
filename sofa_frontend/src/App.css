@@ -3,6 +3,12 @@
   margin: 0 auto;
   padding: 40px 20px;
 }
+@media (min-width: 900px) {
+  .app {
+    max-width: 1400px;
+    padding: 32px 40px;
+  }
+}
 
 .app-title {
   margin: 0 0 24px;
