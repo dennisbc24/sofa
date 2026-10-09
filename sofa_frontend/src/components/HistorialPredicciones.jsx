@@ -3,6 +3,7 @@ import axios from "axios"
 import { API_URL } from "../config.js"
 import { formatearFecha, formatearFechaHora } from "../utils.js"
 import { SeccionesAnalisis } from "./PrediccionSecciones.jsx"
+import { MercadosGoles2T } from "./Prediccion2T.jsx"
 
 // Historial de predicciones del usuario: se guardan SOLAS cada vez que se
 // analiza un partido (1X2 o proyección 2T). Si se repite exactamente la misma
@@ -600,6 +601,7 @@ const DosTDetalle = ({ payload, ev }) => {
           </span>
         </div>
       )}
+      <MercadosGoles2T filas={payload.filas} />
       {conReal && (
         <p className="tabla-status">
           Énfasis: <span className="celda-exacto">verde = exacto</span> ·{" "}

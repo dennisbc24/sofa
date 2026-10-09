@@ -76,9 +76,129 @@ export const SeccionesAnalisis = ({ datos }) => {
   const hayTiempo = hf?.statsComparadas && af?.statsComparadas
   const hayH2H = datos.headToHead?.resumen
   const hayDatos = datos.datosUtilizados && datos.modelInfo
+  const mx = datos.mercadosExtras
 
   return (
     <>
+      {mx && (
+        <section className="card">
+          <div className="card-header">Mercados adicionales</div>
+          <div className="mercados-grid">
+            <div className="mercado-bloque">
+              <div className="mercado-titulo">Ambos marcan</div>
+              <div className="tabla-scroll">
+                <table className="tabla">
+                  <thead>
+                    <tr>
+                      <th>Ambato</th>
+                      <th>Sí</th>
+                      <th>No</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Partido</td>
+                      <td className="tabla-num">
+                        <strong>{mx.ambosMarcan?.si}%</strong>
+                      </td>
+                      <td className="tabla-num">{mx.ambosMarcan?.no}%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="mercado-bloque">
+              <div className="mercado-titulo">Goles (esperados)</div>
+              <div className="tabla-scroll">
+                <table className="tabla">
+                  <thead>
+                    <tr>
+                      <th>Tiempo</th>
+                      <th>Local</th>
+                      <th>Visita</th>
+                      <th>Total</th>
+                      <th>+0.5</th>
+                      <th>+1.5</th>
+                      <th>+2.5</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[["1T", mx.goles1T], ["2T", mx.goles2T]].map(([t, g]) => (
+                      <tr key={t}>
+                        <td>{t}</td>
+                        <td className="tabla-num">{g?.local}</td>
+                        <td className="tabla-num">{g?.visita}</td>
+                        <td className="tabla-num">{g?.esperados}</td>
+                        <td className="tabla-num">{g?.o05}%</td>
+                        <td className="tabla-num">{g?.o15}%</td>
+                        <td className="tabla-num">{g?.o25}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="mercado-bloque">
+              <div className="mercado-titulo">Quién gana</div>
+              <div className="tabla-scroll">
+                <table className="tabla">
+                  <thead>
+                    <tr>
+                      <th>Tiempo</th>
+                      <th>Local</th>
+                      <th>Empate</th>
+                      <th>Visita</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[["1T", mx.quienGana1T], ["2T", mx.quienGana2T]].map(([t, q]) => (
+                      <tr key={t}>
+                        <td>{t}</td>
+                        <td className="tabla-num">{q?.home}%</td>
+                        <td className="tabla-num">{q?.draw}%</td>
+                        <td className="tabla-num">{q?.away}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="mercado-bloque">
+              <div className="mercado-titulo">Corners (esperados)</div>
+              <div className="tabla-scroll">
+                <table className="tabla">
+                  <thead>
+                    <tr>
+                      <th>Tiempo</th>
+                      <th>Local</th>
+                      <th>Visita</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[["1T", mx.corners1T], ["2T", mx.corners2T]].map(([t, c]) => (
+                      <tr key={t}>
+                        <td>{t}</td>
+                        <td className="tabla-num">{c?.local}</td>
+                        <td className="tabla-num">{c?.visita}</td>
+                        <td className="tabla-num">{c?.esperados}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <p className="tabla-status">
+            Derivados de las lambdas del modelo, repartidas por tiempo con el promedio histórico de
+            cada equipo (share 1T de goles y corners).
+          </p>
+        </section>
+      )}
+
       {hayComparacion && (
         <section className="card">
           <div className="card-header">

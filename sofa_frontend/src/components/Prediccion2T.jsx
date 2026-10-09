@@ -1,6 +1,8 @@
 import { useRef, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
+import { combinar2Partes } from "../dosPartes.js"
+import { ambosMarcan, overLines } from "../mercados.js"
 
 // Mismo límite que SubirEstadisticas: express admite 15mb.
 const LOTE_MAX_BYTES = 6 * 1024 * 1024
@@ -9,6 +11,97 @@ const MAX_ARCHIVOS = 20
 const fmt = (v) => (v === null || v === undefined ? "—" : Number(v).toFixed(2))
 const pct = (v) => (v === null || v === undefined ? null : `${v > 0 ? "+" : ""}${v.toFixed(1)}%`)
 const ETIQUETA_1X2 = { home: "Local", draw: "Empate", away: "Visita" }
+
+// Mercados derivados de las goles predichas (ambos marcan y cantidad de
+// goles, para el 2T y para el partido completo). Se comparten con el
+// historial (DosTDetalle).
+export const MercadosGoles2T = ({ filas }) => {
+  const g = (filas || []).find((f) => f.stat === "Goles")
+  if (!g) return null
+  const b2t = ambosMarcan(g.predLocal2T, g.predVisita2T)
+  const hayFT = g.ftLocal != null && g.ftVisita != null
+  const bft = hayFT ? ambosMarcan(g.ftLocal, g.ftVisita) : null
+  const o2t = overLines((g.predLocal2T || 0) + (g.predVisita2T || 0))
+  const oft = g.ftTotal != null ? overLines(g.ftTotal) : null
+  if (!b2t && !bft && !o2t && !oft) return null
+  const goles = [
+    o2t && { t: "2T", local: fmt(g.predLocal2T), visita: fmt(g.predVisita2T), o: o2t },
+    oft && { t: "Partido", local: fmt(g.ftLocal), visita: fmt(g.ftVisita), o: oft },
+  ].filter(Boolean)
+  return (
+    <div className="mercados-grid">
+      {(b2t || bft) && (
+        <div className="mercado-bloque">
+          <div className="mercado-titulo">Ambos marcan</div>
+          <div className="tabla-scroll">
+            <table className="tabla">
+              <thead>
+                <tr>
+                  <th>Ambato</th>
+                  <th>Sí</th>
+                  <th>No</th>
+                </tr>
+              </thead>
+              <tbody>
+                {b2t && (
+                  <tr>
+                    <td>2T</td>
+                    <td className="tabla-num">
+                      <strong>{b2t.si}%</strong>
+                    </td>
+                    <td className="tabla-num">{b2t.no}%</td>
+                  </tr>
+                )}
+                {bft && (
+                  <tr>
+                    <td>Partido</td>
+                    <td className="tabla-num">
+                      <strong>{bft.si}%</strong>
+                    </td>
+                    <td className="tabla-num">{bft.no}%</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      {goles.length > 0 && (
+        <div className="mercado-bloque">
+          <div className="mercado-titulo">Goles (esperados)</div>
+          <div className="tabla-scroll">
+            <table className="tabla">
+              <thead>
+                <tr>
+                  <th>Tiempo</th>
+                  <th>Local</th>
+                  <th>Visita</th>
+                  <th>Total</th>
+                  <th>+0.5</th>
+                  <th>+1.5</th>
+                  <th>+2.5</th>
+                </tr>
+              </thead>
+              <tbody>
+                {goles.map((row) => (
+                  <tr key={row.t}>
+                    <td>{row.t}</td>
+                    <td className="tabla-num">{row.local}</td>
+                    <td className="tabla-num">{row.visita}</td>
+                    <td className="tabla-num">{row.o.esperados}</td>
+                    <td className="tabla-num">{row.o.o05}%</td>
+                    <td className="tabla-num">{row.o.o15}%</td>
+                    <td className="tabla-num">{row.o.o25}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 // Lectura ligera del JSON para previsualizar (sin tocar el backend).
 const previsualizar = (contenido) => {
@@ -38,8 +131,19 @@ export const Prediccion2T = () => {
   const [resultados, setResultados] = useState(null)
   const [error, setError] = useState(null)
   const [pestana, setPestana] = useState(0)
+  const [parteInfo, setParteInfo] = useState(null)
+  const [parteStats, setParteStats] = useState(null)
   const carpetaRef = useRef(null)
   const sueltosRef = useRef(null)
+  const infoRef = useRef(null)
+  const statsRef = useRef(null)
+
+  const limpiarPartes = () => {
+    setParteInfo(null)
+    setParteStats(null)
+    if (infoRef.current) infoRef.current.value = ""
+    if (statsRef.current) statsRef.current.value = ""
+  }
 
   const limpiar = () => {
     setCarpeta("")
@@ -48,6 +152,7 @@ export const Prediccion2T = () => {
     setError(null)
     setProgreso("")
     setPestana(0)
+    limpiarPartes()
     if (carpetaRef.current) carpetaRef.current.value = ""
     if (sueltosRef.current) sueltosRef.current.value = ""
   }
@@ -55,6 +160,7 @@ export const Prediccion2T = () => {
   const cargar = async (lista, origen) => {
     setResultados(null)
     setError(null)
+    limpiarPartes()
     const jsons = lista.filter((f) => f.name.toLowerCase().endsWith(".json"))
     if (!jsons.length) {
       setArchivos([])
@@ -83,6 +189,43 @@ export const Prediccion2T = () => {
 
   const seleccionarCarpeta = (e) => cargar(Array.from(e.target.files || []), "carpeta")
   const seleccionarSueltos = (e) => cargar(Array.from(e.target.files || []), "archivos sueltos")
+
+  // Subida en 2 partes (extracto del celular): info.json + stats.json se
+  // combinan en un único dump y se agrega como UN archivo a predecir.
+  const seleccionarParte = (cual) => async (e) => {
+    const f = (e.target.files || [])[0]
+    setResultados(null)
+    const nuevo = f ? { nombre: f.name, contenido: await f.text() } : null
+    const info = cual === "info" ? nuevo : parteInfo
+    const stats = cual === "stats" ? nuevo : parteStats
+    if (cual === "info") setParteInfo(nuevo)
+    else setParteStats(nuevo)
+
+    if (!info || !stats) {
+      setArchivos([])
+      setCarpeta("")
+      setError(info || stats ? "Faltan las 2 partes: selecciona info.json y stats.json." : null)
+      return
+    }
+    const r = combinar2Partes(info.contenido, stats.contenido)
+    if (!r.ok) {
+      setArchivos([])
+      setCarpeta("")
+      setError(r.error)
+      return
+    }
+    const contenido = r.contenido
+    setArchivos([
+      {
+        nombre: `2partes_${r.partido.id}.json`,
+        tam: contenido.length,
+        contenido,
+        vista: previsualizar(contenido),
+      },
+    ])
+    setCarpeta("2 partes (info.json + stats.json)")
+    setError(null)
+  }
 
   const predecir = async () => {
     if (!archivos.length || cargando) return
@@ -178,10 +321,35 @@ export const Prediccion2T = () => {
             disabled={cargando}
           />
         </label>
+        <label className="field">
+          <span className="field-label">
+            …o desde el celular en 2 partes — parte 1: info.json (evento del partido)
+          </span>
+          <input
+            ref={infoRef}
+            className="field-input"
+            type="file"
+            accept=".json,application/json"
+            onChange={seleccionarParte("info")}
+            disabled={cargando}
+          />
+        </label>
+        <label className="field">
+          <span className="field-label">…parte 2: stats.json (estadísticas del 1T)</span>
+          <input
+            ref={statsRef}
+            className="field-input"
+            type="file"
+            accept=".json,application/json"
+            onChange={seleccionarParte("stats")}
+            disabled={cargando}
+          />
+        </label>
         <ul className="explicacion">
           <li>El modelo estima el 2T con las estadísticas del 1T del JSON + el historial de la base de datos.</li>
           <li>Predice goles, remates, corners, amarillas y 37 stats más (41 en total).</li>
           <li>Sólo lectura: los archivos NO se guardan en la base de datos.</li>
+          <li>Desde el celular: sube info.json y stats.json por separado — se combinan automáticamente.</li>
         </ul>
         {carpeta && (
           <p className="tabla-status">
@@ -338,6 +506,8 @@ export const Prediccion2T = () => {
                   </span>
                 </div>
               )}
+
+              <MercadosGoles2T filas={activo.filas} />
 
               <div className="tabla-scroll">
                 <table className="tabla">

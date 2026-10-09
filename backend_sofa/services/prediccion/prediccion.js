@@ -75,6 +75,75 @@ async function mercadosDePrediccion({ local, visitante, fechaCorte, lambdas }) {
   return calcularMercados(perfilLocal, perfilVisita, lambdas);
 }
 
+// ---------------------------------------------------------------------------
+// MERCADOS ADICIONALES: ambos marcan, goles por tiempo (1T/2T), quién gana
+// cada tiempo y corners por tiempo. Derivados de las lambdas del Poisson,
+// repartidas por tiempo con el promedio histórico de cada equipo (share 1T
+// de goles y de corners; fallback 45% / 50% cuando no hay datos).
+// ---------------------------------------------------------------------------
+const pmfPoisson = (k, lambda) => {
+  let f = 1;
+  for (let i = 2; i <= k; i++) f *= i;
+  return (Math.exp(-lambda) * lambda ** k) / f;
+};
+const pNoMasDe = (max, lambda) => {
+  let s = 0;
+  for (let i = 0; i <= max; i++) s += pmfPoisson(i, lambda);
+  return s;
+};
+const pct1 = (x) => Math.round(x * 1000) / 10;
+const x1x2Poisson = (lh, la) => {
+  let h = 0, d = 0, a = 0;
+  for (let i = 0; i <= 15; i++) {
+    const pi = pmfPoisson(i, lh);
+    if (pi < 1e-12) continue;
+    for (let j = 0; j <= 15; j++) {
+      const pj = pmfPoisson(j, la);
+      if (pj < 1e-12) continue;
+      const pr = pi * pj;
+      if (i > j) h += pr;
+      else if (i === j) d += pr;
+      else a += pr;
+    }
+  }
+  const t = h + d + a || 1;
+  return { home: pct1(h / t), draw: pct1(d / t), away: pct1(a / t) };
+};
+const share1T = (t1, total, fallback) => {
+  const a = Number(t1), b = Number(total);
+  if (!Number.isFinite(a) || !Number.isFinite(b) || b <= 0) return fallback;
+  return Math.min(0.85, Math.max(0.15, a / b));
+};
+const overLines = (l) => ({
+  o05: pct1(1 - pNoMasDe(0, l)),
+  o15: pct1(1 - pNoMasDe(1, l)),
+  o25: pct1(1 - pNoMasDe(2, l)),
+});
+
+function calcularMercadosExtras(sL, sV, lambdas) {
+  const r2 = (v) => Math.round(v * 100) / 100;
+  const shH = share1T(sL.gf_t1, (sL.gf_t1 || 0) + (sL.gf_t2 || 0), 0.45);
+  const shA = share1T(sV.gf_t1, (sV.gf_t1 || 0) + (sV.gf_t2 || 0), 0.45);
+  const lh1 = lambdas.home * shH, lh2 = lambdas.home - lh1;
+  const la1 = lambdas.away * shA, la2 = lambdas.away - la1;
+  const shCH = share1T(sL.corners_t1, sL.corners, 0.5);
+  const shCV = share1T(sV.corners_t1, sV.corners, 0.5);
+  const cH1 = (sL.corners || 0) * shCH, cH2 = (sL.corners || 0) - cH1;
+  const cV1 = (sV.corners || 0) * shCV, cV2 = (sV.corners || 0) - cV1;
+  const p0h = pmfPoisson(0, lambdas.home), p0a = pmfPoisson(0, lambdas.away);
+  const si = (1 - p0h) * (1 - p0a);
+  const lt1 = lh1 + la1, lt2 = lh2 + la2;
+  return {
+    ambosMarcan: { si: pct1(si), no: pct1(1 - si) },
+    goles1T: { local: r2(lh1), visita: r2(la1), esperados: r2(lt1), ...overLines(lt1) },
+    goles2T: { local: r2(lh2), visita: r2(la2), esperados: r2(lt2), ...overLines(lt2) },
+    quienGana1T: x1x2Poisson(lh1, la1),
+    quienGana2T: x1x2Poisson(lh2, la2),
+    corners1T: { local: r2(cH1), visita: r2(cV1), esperados: r2(cH1 + cV1) },
+    corners2T: { local: r2(cH2), visita: r2(cV2), esperados: r2(cH2 + cV2) },
+  };
+}
+
 // Predicción principal = mayor probabilidad (mismo criterio de desempate que
 // el backtest: empates a favor del orden home > draw > away).
 const ETIQUETAS = { home: "Local", draw: "Empate", away: "Visita" };
@@ -227,6 +296,7 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
   const principal = prediccionPrincipal(pred.probabilities);
   const lambdas = { home: pred.internos.lambdaHome, away: pred.internos.lambdaAway };
   const mercados = calcularMercados(perfilLocal, perfilVisita, lambdas);
+  const mercadosExtras = calcularMercadosExtras(fuenteLocal.stats, fuenteVisita.stats, lambdas);
 
   // Registro en BD (beta): solo acumula datos para futura evaluación.
   // No entrena, no recalibra y nunca interrumpe la respuesta.
@@ -259,6 +329,7 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
     },
     lambdas,
     mercados,
+    mercadosExtras,
     homeFeatures: {
       ...perfilLocal,
       statsComparadas: redondearStats(fuenteLocal.stats),

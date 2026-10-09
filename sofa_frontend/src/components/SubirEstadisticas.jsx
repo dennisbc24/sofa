@@ -2,6 +2,7 @@ import { useRef, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
 import useFetch from "../hooks/useFetch.jsx"
+import { combinar2Partes } from "../dosPartes.js"
 
 // ~6MB por request: express admite 15mb y nginx 20M en prod.
 const LOTE_MAX_BYTES = 6 * 1024 * 1024
@@ -57,8 +58,20 @@ export const SubirEstadisticas = () => {
   const [progreso, setProgreso] = useState("")
   const [resultados, setResultados] = useState(null)
   const [error, setError] = useState(null)
-  const inputRef = useRef(null)
+  const [parteInfo, setParteInfo] = useState(null)
+  const [parteStats, setParteStats] = useState(null)
+  const carpetaRef = useRef(null)
+  const sueltosRef = useRef(null)
+  const infoRef = useRef(null)
+  const statsRef = useRef(null)
   const { data: ligasDisponibles } = useFetch("/api/leagues")
+
+  const limpiarPartes = () => {
+    setParteInfo(null)
+    setParteStats(null)
+    if (infoRef.current) infoRef.current.value = ""
+    if (statsRef.current) statsRef.current.value = ""
+  }
 
   const limpiar = () => {
     setCarpeta("")
@@ -68,24 +81,24 @@ export const SubirEstadisticas = () => {
     setResultados(null)
     setError(null)
     setProgreso("")
-    if (inputRef.current) inputRef.current.value = ""
+    limpiarPartes()
+    if (carpetaRef.current) carpetaRef.current.value = ""
+    if (sueltosRef.current) sueltosRef.current.value = ""
   }
 
-  const seleccionarCarpeta = async (e) => {
-    const lista = Array.from(e.target.files || []).filter((f) =>
-      f.name.toLowerCase().endsWith(".json")
-    )
-    const ruta = lista[0]?.webkitRelativePath || ""
-    setCarpeta(ruta ? ruta.split("/")[0] : "")
+  const cargar = async (lista, origen) => {
+    const jsons = lista.filter((f) => f.name.toLowerCase().endsWith(".json"))
+    const ruta = jsons[0]?.webkitRelativePath || ""
+    setCarpeta(origen === "carpeta" && ruta ? ruta.split("/")[0] : origen)
     setResultados(null)
     setError(null)
-    if (!lista.length) {
+    if (!jsons.length) {
       setArchivos([])
-      setError("La carpeta seleccionada no contiene archivos .json")
+      setError("La selección no contiene archivos .json")
       return
     }
     const leidos = await Promise.all(
-      lista.map(async (f) => {
+      jsons.map(async (f) => {
         const contenido = await f.text()
         return {
           nombre: f.webkitRelativePath || f.name,
@@ -96,6 +109,52 @@ export const SubirEstadisticas = () => {
       })
     )
     setArchivos(leidos)
+  }
+
+  const seleccionarCarpeta = (e) => {
+    limpiarPartes()
+    return cargar(Array.from(e.target.files || []), "carpeta")
+  }
+  const seleccionarSueltos = (e) => {
+    limpiarPartes()
+    return cargar(Array.from(e.target.files || []), "archivos sueltos")
+  }
+
+  // Subida en 2 partes (extracto del celular): info.json + stats.json se
+  // combinan en un único dump y se agrega como UN archivo a subir.
+  const seleccionarParte = (cual) => async (e) => {
+    const f = (e.target.files || [])[0]
+    setResultados(null)
+    const nuevo = f ? { nombre: f.name, contenido: await f.text() } : null
+    const info = cual === "info" ? nuevo : parteInfo
+    const stats = cual === "stats" ? nuevo : parteStats
+    if (cual === "info") setParteInfo(nuevo)
+    else setParteStats(nuevo)
+
+    if (!info || !stats) {
+      setArchivos([])
+      setCarpeta("")
+      setError(info || stats ? "Faltan las 2 partes: selecciona info.json y stats.json." : null)
+      return
+    }
+    const r = combinar2Partes(info.contenido, stats.contenido)
+    if (!r.ok) {
+      setArchivos([])
+      setCarpeta("")
+      setError(r.error)
+      return
+    }
+    const contenido = r.contenido
+    setArchivos([
+      {
+        nombre: `2partes_${r.partido.id}.json`,
+        tam: contenido.length,
+        contenido,
+        vista: previsualizar(contenido),
+      },
+    ])
+    setCarpeta("2 partes (info.json + stats.json)")
+    setError(null)
   }
 
   const subir = async () => {
@@ -159,13 +218,13 @@ export const SubirEstadisticas = () => {
       <h2 className="view-title">Subir estadísticas (JSON por partido)</h2>
 
       <section className="card">
-        <div className="card-header">Carpeta de origen</div>
+        <div className="card-header">Origen de los JSON</div>
         <label className="field">
           <span className="field-label">
             Carpeta con los JSON (1 archivo por partido, formato Sofascore)
           </span>
           <input
-            ref={inputRef}
+            ref={carpetaRef}
             className="field-input"
             type="file"
             webkitdirectory=""
@@ -176,14 +235,51 @@ export const SubirEstadisticas = () => {
             disabled={subiendo}
           />
         </label>
+        <label className="field">
+          <span className="field-label">…o archivos .json sueltos</span>
+          <input
+            ref={sueltosRef}
+            className="field-input"
+            type="file"
+            multiple
+            accept=".json,application/json"
+            onChange={seleccionarSueltos}
+            disabled={subiendo}
+          />
+        </label>
+        <label className="field">
+          <span className="field-label">
+            …o desde el celular en 2 partes — parte 1: info.json (evento del partido)
+          </span>
+          <input
+            ref={infoRef}
+            className="field-input"
+            type="file"
+            accept=".json,application/json"
+            onChange={seleccionarParte("info")}
+            disabled={subiendo}
+          />
+        </label>
+        <label className="field">
+          <span className="field-label">…parte 2: stats.json (estadísticas)</span>
+          <input
+            ref={statsRef}
+            className="field-input"
+            type="file"
+            accept=".json,application/json"
+            onChange={seleccionarParte("stats")}
+            disabled={subiendo}
+          />
+        </label>
         <ul className="explicacion">
           <li>Si el partido no existe, se crea en la base de datos con los datos del JSON.</li>
           <li>Si el partido ya tiene estadísticas, se salta (nada se pisa; subir dos veces es seguro).</li>
           <li>Si existe pero le faltan datos en la cabecera, solo se completan los vacíos.</li>
+          <li>Desde el celular: sube info.json y stats.json por separado — se combinan automáticamente.</li>
         </ul>
         {carpeta && (
           <p className="tabla-status">
-            Carpeta: {carpeta} — {archivos.length} archivo(s) .json detectado(s)
+            Origen: {carpeta} — {archivos.length} archivo(s) .json detectado(s)
             {archivos.length !== validos ? ` (${archivos.length - validos} inválido(s))` : ""}
           </p>
         )}
