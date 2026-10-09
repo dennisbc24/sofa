@@ -459,8 +459,12 @@
 
 .mercados-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
+}
+
+.mercado-bloque {
+  min-width: 0;
 }
 
 .mercado-titulo {
@@ -474,7 +478,7 @@
 
 @media (min-width: 900px) {
   .mercados-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 
