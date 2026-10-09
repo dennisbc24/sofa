@@ -65,33 +65,17 @@ export const AnalisisPredictivo = () => {
       <h2 className="view-title">Análisis predictivo (1X2)</h2>
 
       <section className="card">
-        <div className="card-header">Selección</div>
-        <div className="result-row">
-          <span className="result-label">Local</span>
-          <span className="result-value">{local || "—"}</span>
-        </div>
-        <div className="result-row">
-          <span className="result-label">Visitante</span>
-          <span className="result-value">{visita || "—"}</span>
-        </div>
-        <div className="result-row">
-          <span className="result-label">Fecha del partido</span>
-          <span className="result-value">{fecha ? formatearFecha(fecha) : "—"}</span>
-        </div>
-        <div className="result-row">
-          <span className="result-label">Liga (opcional)</span>
-          <span className="result-value">{liga || "General"}</span>
-        </div>
-      </section>
-
-      <section className="card">
         <div className="card-header">Equipos y fecha</div>
         <label className="field">
-          <span className="field-label">Equipo local</span>
+          <span className="field-label">
+            Equipo local {local && <span className="modelo-chip">{local}</span>}
+          </span>
           <BuscadorEquipo onSelect={setLocal} />
         </label>
         <label className="field">
-          <span className="field-label">Equipo visitante</span>
+          <span className="field-label">
+            Equipo visitante {visita && <span className="modelo-chip">{visita}</span>}
+          </span>
           <BuscadorEquipo onSelect={setVisita} />
         </label>
         <label className="field">

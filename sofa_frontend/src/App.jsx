@@ -14,6 +14,16 @@ import { SubirEstadisticas } from './components/SubirEstadisticas.jsx'
 
 const VISTA_INICIAL = "predictivo"
 
+// Atajos del footer estático (funciones más usadas).
+const FOOTER = [
+  { id: "predictivo", etiqueta: "Análisis 1X2" },
+  { id: "prediccion2t", etiqueta: "Proyección 2T" },
+  { id: "historial", etiqueta: "Historial" },
+  { id: "subir", etiqueta: "Subir stats" },
+  { id: "ultimos", etiqueta: "Partidos" },
+  { id: "equipos", etiqueta: "Equipos" },
+]
+
 function App() {
   const [vista, setVista] = useState(VISTA_INICIAL)
   const [sesion, setSesion] = useState(null)
@@ -76,14 +86,13 @@ function App() {
     <main className="app">
       <h1 className="app-title">Analytics</h1>
 
-      <div className="sesion-barra">
-        <span className="sesion-usuario">
-          {sesion.usuario} · {sesion.rol}
-        </span>
-        <button className="btn btn-secondary" onClick={salir}>
-          Salir
-        </button>
-      </div>
+      <button
+        className="sesion-salir"
+        onClick={salir}
+        title={`${sesion.usuario} · ${sesion.rol} — cerrar sesión`}
+      >
+        ⏻ Salir
+      </button>
 
       <MenuAcordeon vista={vista} onVista={setVista} />
 
@@ -104,6 +113,18 @@ function App() {
       ) : (
         <AnalisisPredictivo />
       )}
+
+      <footer className="app-footer">
+        {FOOTER.map((f) => (
+          <button
+            key={f.id}
+            className={`footer-item ${vista === f.id ? "footer-item-active" : ""}`}
+            onClick={() => setVista(f.id)}
+          >
+            {f.etiqueta}
+          </button>
+        ))}
+      </footer>
     </main>
   )
 }
