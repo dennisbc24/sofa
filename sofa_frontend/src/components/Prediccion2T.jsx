@@ -2,7 +2,8 @@ import { useRef, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
 import { combinar2Partes } from "../dosPartes.js"
-import { ambosMarcan, overLines } from "../mercados.js"
+import { ambosMarcan, masMenos, overDinamicas, overLines, textoMasMenos, textoOver } from "../mercados.js"
+import { BloqueNoPierde, BloquePrevisibilidad } from "./PrediccionSecciones.jsx"
 
 // Mismo límite que SubirEstadisticas: express admite 15mb.
 const LOTE_MAX_BYTES = 6 * 1024 * 1024
@@ -12,22 +13,68 @@ const fmt = (v) => (v === null || v === undefined ? "—" : Number(v).toFixed(2)
 const pct = (v) => (v === null || v === undefined ? null : `${v > 0 ? "+" : ""}${v.toFixed(1)}%`)
 const ETIQUETA_1X2 = { home: "Local", draw: "Empate", away: "Visita" }
 
-// Mercados derivados de las goles predichas (ambos marcan y cantidad de
-// goles, para el 2T y para el partido completo). Se comparten con el
-// historial (DosTDetalle).
+// Mercados derivados de la proyección 2T (ambos marcan y cantidad de goles,
+// corners y remates, para el 2T y para el partido completo). Se comparten
+// con el historial (DosTDetalle).
 export const MercadosGoles2T = ({ filas }) => {
-  const g = (filas || []).find((f) => f.stat === "Goles")
+  const fila = (nombre) => (filas || []).find((f) => f.stat === nombre)
+  const g = fila("Goles")
   if (!g) return null
   const b2t = ambosMarcan(g.predLocal2T, g.predVisita2T)
   const hayFT = g.ftLocal != null && g.ftVisita != null
   const bft = hayFT ? ambosMarcan(g.ftLocal, g.ftVisita) : null
   const o2t = overLines((g.predLocal2T || 0) + (g.predVisita2T || 0))
   const oft = g.ftTotal != null ? overLines(g.ftTotal) : null
-  if (!b2t && !bft && !o2t && !oft) return null
   const goles = [
     o2t && { t: "2T", local: fmt(g.predLocal2T), visita: fmt(g.predVisita2T), o: o2t },
     oft && { t: "Partido", local: fmt(g.ftLocal), visita: fmt(g.ftVisita), o: oft },
   ].filter(Boolean)
+  // Corners y remates: mismos campos de la fila (pred 2T + FT del whitelist).
+  const statRows = (nombre) => {
+    const f = fila(nombre)
+    if (!f || f.predLocal2T == null || f.predVisita2T == null) return []
+    const t2 = (f.predLocal2T || 0) + (f.predVisita2T || 0)
+    const rows = [{ t: "2T", local: fmt(f.predLocal2T), visita: fmt(f.predVisita2T), total: fmt(t2), totalNum: t2, over: overDinamicas(t2) }]
+    if (f.ftLocal != null && f.ftVisita != null && f.ftTotal != null) {
+      rows.push({ t: "Partido", local: fmt(f.ftLocal), visita: fmt(f.ftVisita), total: fmt(f.ftTotal), totalNum: f.ftTotal, over: overDinamicas(f.ftTotal) })
+    }
+    return rows
+  }
+  const corners = statRows("Corner kicks")
+  const remates = statRows("Total shots")
+  const BloqueCantidad = ({ titulo, rows }) =>
+    rows.length > 0 ? (
+      <div className="mercado-bloque">
+        <div className="mercado-titulo">{titulo}</div>
+        <div className="tabla-scroll">
+          <table className="tabla">
+            <thead>
+                <tr>
+                  <th>Tiempo</th>
+                  <th>Local</th>
+                  <th>Visita</th>
+                  <th className="col-total">Total</th>
+                  <th>Over</th>
+                  <th>Más/Menos</th>
+                </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.t} className={row.t === "Partido" ? "fila-total" : undefined}>
+                  <td>{row.t}</td>
+                  <td className="tabla-num">{row.local}</td>
+                  <td className="tabla-num">{row.visita}</td>
+                  <td className="tabla-num col-total">{row.total}</td>
+                  <td className="tabla-num">{textoOver(row.over)}</td>
+                  <td className="tabla-num">{textoMasMenos(masMenos(row.totalNum))}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ) : null
+  if (!b2t && !bft && goles.length === 0 && corners.length === 0 && remates.length === 0) return null
   return (
     <div className="mercados-grid">
       {(b2t || bft) && (
@@ -76,22 +123,26 @@ export const MercadosGoles2T = ({ filas }) => {
                   <th>Tiempo</th>
                   <th>Local</th>
                   <th>Visita</th>
-                  <th>Total</th>
+                  <th className="col-total">Total</th>
                   <th>+0.5</th>
                   <th>+1.5</th>
                   <th>+2.5</th>
+                  <th>+3.5</th>
+                  <th>Más/Menos</th>
                 </tr>
               </thead>
               <tbody>
                 {goles.map((row) => (
-                  <tr key={row.t}>
+                  <tr key={row.t} className={row.t === "Partido" ? "fila-total" : undefined}>
                     <td>{row.t}</td>
                     <td className="tabla-num">{row.local}</td>
                     <td className="tabla-num">{row.visita}</td>
-                    <td className="tabla-num">{row.o.esperados}</td>
+                    <td className="tabla-num col-total">{row.o.esperados}</td>
                     <td className="tabla-num">{row.o.o05}%</td>
                     <td className="tabla-num">{row.o.o15}%</td>
                     <td className="tabla-num">{row.o.o25}%</td>
+                    <td className="tabla-num">{row.o.o35}%</td>
+                    <td className="tabla-num">{textoMasMenos(masMenos(row.o.esperados))}</td>
                   </tr>
                 ))}
               </tbody>
@@ -99,6 +150,8 @@ export const MercadosGoles2T = ({ filas }) => {
           </div>
         </div>
       )}
+      <BloqueCantidad titulo="Corners (esperados)" rows={corners} />
+      <BloqueCantidad titulo="Remates (esperados)" rows={remates} />
     </div>
   )
 }
@@ -508,6 +561,18 @@ export const Prediccion2T = () => {
               )}
 
               <MercadosGoles2T filas={activo.filas} />
+              <div className="mercados-grid">
+                <BloquePrevisibilidad
+                  previsibilidad={activo.previsibilidad}
+                  local={activo.partido?.local}
+                  visita={activo.partido?.visitante}
+                />
+                <BloqueNoPierde
+                  fuente={activo}
+                  local={activo.partido?.local}
+                  visita={activo.partido?.visitante}
+                />
+              </div>
 
               <div className="tabla-scroll">
                 <table className="tabla">

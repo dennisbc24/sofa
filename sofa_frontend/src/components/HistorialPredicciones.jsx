@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
 import { formatearFecha, formatearFechaHora } from "../utils.js"
-import { SeccionesAnalisis } from "./PrediccionSecciones.jsx"
+import { SeccionesAnalisis, BloqueNoPierde, BloquePrevisibilidad } from "./PrediccionSecciones.jsx"
 import { MercadosGoles2T } from "./Prediccion2T.jsx"
 
 // Historial de predicciones del usuario: se guardan SOLAS cada vez que se
@@ -602,6 +602,18 @@ const DosTDetalle = ({ payload, ev }) => {
         </div>
       )}
       <MercadosGoles2T filas={payload.filas} />
+      <div className="mercados-grid">
+        <BloquePrevisibilidad
+          previsibilidad={payload.previsibilidad}
+          local={payload.partido?.local}
+          visita={payload.partido?.visitante}
+        />
+        <BloqueNoPierde
+          fuente={{ ...payload, resultado1x2: payload.resultado1x2 || (probs1x2 ? { probabilidades: probs1x2 } : undefined) }}
+          local={payload.partido?.local}
+          visita={payload.partido?.visitante}
+        />
+      </div>
       {conReal && (
         <p className="tabla-status">
           Énfasis: <span className="celda-exacto">verde = exacto</span> ·{" "}

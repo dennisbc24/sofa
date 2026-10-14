@@ -1,4 +1,5 @@
 import { formatearFecha } from "../utils.js"
+import { noPierdeDe, textoMasMenos, textoOver } from "../mercados.js"
 
 const FILAS_TIEMPO = [
   { key: "gf_t1", etiqueta: "Goles a favor 1T" },
@@ -12,6 +13,88 @@ const FILAS_TIEMPO = [
 ]
 
 const redondear = (v) => (v === null || v === undefined ? "—" : Math.round(v * 100) / 100)
+
+export const BloqueNoPierde = ({ fuente, local, visita }) => {
+  const np = noPierdeDe(fuente)
+  if (!np) return null
+  return (
+    <div className="mercado-bloque">
+      <div className="mercado-titulo">Probabilidad de perder</div>
+      <div className="tabla-scroll">
+        <table className="tabla">
+          <thead>
+            <tr>
+              <th>Equipo</th>
+              <th>Pierde</th>
+              <th>No pierde</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{local ?? "Local"}</td>
+              <td className="tabla-num">{np.local.pierde}%</td>
+              <td className="tabla-num">
+                <strong>{np.local.noPierde}%</strong>
+              </td>
+            </tr>
+            <tr>
+              <td>{visita ?? "Visita"}</td>
+              <td className="tabla-num">{np.visita.pierde}%</td>
+              <td className="tabla-num">
+                <strong>{np.visita.noPierde}%</strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+// Previsibilidad por equipo: % de acierto esperado en cada mercado foco
+// según la dispersión de sus últimos 10 partidos (equipos muy variables =
+// impredecibles). Tolerancias: goles tot ±1, corners tot ±2, remates tot ±3,
+// remates del equipo ±2.
+export const BloquePrevisibilidad = ({ previsibilidad, local, visita }) => {
+  const pv = previsibilidad
+  if (!pv?.local || !pv?.visita) return null
+  const filas = [
+    ["Goles total", "golesTotal"],
+    ["Corners total", "cornersTotal"],
+    ["Remates total", "rematesTotal"],
+    ["Remates equipo", "rematesEquipo"],
+  ]
+  const fmtP = (v) => (v == null ? "—" : `${v}%`)
+  return (
+    <div className="mercado-bloque">
+      <div className="mercado-titulo">Previsibilidad por equipo (% acierto esperado)</div>
+      <div className="tabla-scroll">
+        <table className="tabla">
+          <thead>
+            <tr>
+              <th>Mercado</th>
+              <th>{local ?? "Local"}</th>
+              <th>{visita ?? "Visita"}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filas.map(([etiqueta, k]) => (
+              <tr key={k}>
+                <td>{etiqueta}</td>
+                <td className="tabla-num">{fmtP(pv.local[k])}</td>
+                <td className="tabla-num">{fmtP(pv.visita[k])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="tabla-status">
+        n={pv.local.n ?? "—"}/{pv.visita.n ?? "—"} partidos previos · tolerancias ±1 gol, ±2
+        corners, ±3 remates (±2 por equipo).
+      </p>
+    </div>
+  )
+}
 
 export const FormaEquipo = ({ titulo, perfil }) => {
   const f = perfil.forma
@@ -84,6 +167,8 @@ export const SeccionesAnalisis = ({ datos }) => {
         <section className="card">
           <div className="card-header">Mercados adicionales</div>
           <div className="mercados-grid">
+            <BloquePrevisibilidad previsibilidad={datos.previsibilidad} local={hf?.equipo} visita={af?.equipo} />
+            <BloqueNoPierde fuente={datos} local={hf?.equipo} visita={af?.equipo} />
             <div className="mercado-bloque">
               <div className="mercado-titulo">Ambos marcan</div>
               <div className="tabla-scroll">
@@ -117,22 +202,26 @@ export const SeccionesAnalisis = ({ datos }) => {
                       <th>Tiempo</th>
                       <th>Local</th>
                       <th>Visita</th>
-                      <th>Total</th>
+                      <th className="col-total">Total</th>
                       <th>+0.5</th>
                       <th>+1.5</th>
                       <th>+2.5</th>
+                      <th>+3.5</th>
+                      <th>Más/Menos</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {[["1T", mx.goles1T], ["2T", mx.goles2T]].map(([t, g]) => (
-                      <tr key={t}>
+                    {[["1T", mx.goles1T], ["2T", mx.goles2T], ["Partido", mx.golesPartido]].map(([t, g]) => (
+                      <tr key={t} className={t === "Partido" ? "fila-total" : undefined}>
                         <td>{t}</td>
                         <td className="tabla-num">{g?.local}</td>
                         <td className="tabla-num">{g?.visita}</td>
-                        <td className="tabla-num">{g?.esperados}</td>
+                        <td className="tabla-num col-total">{g?.esperados}</td>
                         <td className="tabla-num">{g?.o05}%</td>
                         <td className="tabla-num">{g?.o15}%</td>
                         <td className="tabla-num">{g?.o25}%</td>
+                        <td className="tabla-num">{g?.o35}%</td>
+                        <td className="tabla-num">{textoMasMenos(g?.mm)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -175,26 +264,62 @@ export const SeccionesAnalisis = ({ datos }) => {
                       <th>Tiempo</th>
                       <th>Local</th>
                       <th>Visita</th>
-                      <th>Total</th>
+                      <th className="col-total">Total</th>
+                      <th>Over</th>
+                      <th>Más/Menos</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {[["1T", mx.corners1T], ["2T", mx.corners2T]].map(([t, c]) => (
-                      <tr key={t}>
+                    {[["1T", mx.corners1T], ["2T", mx.corners2T], ["Partido", mx.cornersPartido]].map(([t, c]) => (
+                      <tr key={t} className={t === "Partido" ? "fila-total" : undefined}>
                         <td>{t}</td>
                         <td className="tabla-num">{c?.local}</td>
                         <td className="tabla-num">{c?.visita}</td>
-                        <td className="tabla-num">{c?.esperados}</td>
+                        <td className="tabla-num col-total">{c?.esperados}</td>
+                        <td className="tabla-num">{textoOver(c?.over)}</td>
+                        <td className="tabla-num">{textoMasMenos(c?.mm)}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
+
+            {mx.rematesPartido?.esperados > 0 && (
+              <div className="mercado-bloque">
+                <div className="mercado-titulo">Remates (esperados)</div>
+                <div className="tabla-scroll">
+                  <table className="tabla">
+                    <thead>
+                      <tr>
+                        <th>Tiempo</th>
+                        <th>Local</th>
+                        <th>Visita</th>
+                        <th className="col-total">Total</th>
+                        <th>Over</th>
+                        <th>Más/Menos</th>
+                      </tr>
+                    </thead>
+                  <tbody>
+                      {[["1T", mx.remates1T], ["2T", mx.remates2T], ["Partido", mx.rematesPartido]].map(([t, r]) => (
+                      <tr key={t} className={t === "Partido" ? "fila-total" : undefined}>
+                        <td>{t}</td>
+                        <td className="tabla-num">{r?.local}</td>
+                          <td className="tabla-num">{r?.visita}</td>
+                          <td className="tabla-num col-total">{r?.esperados}</td>
+                        <td className="tabla-num">{textoOver(r?.over)}</td>
+                        <td className="tabla-num">{textoMasMenos(r?.mm)}</td>
+                      </tr>
+                    ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
           <p className="tabla-status">
-            Derivados de las lambdas del modelo, repartidas por tiempo con el promedio histórico de
-            cada equipo (share 1T de goles y corners).
+            Derivados de las lambdas del modelo y de los promedios históricos por equipo, repartidos
+            por tiempo con el share 1T de cada métrica (goles, corners y remates).
           </p>
         </section>
       )}

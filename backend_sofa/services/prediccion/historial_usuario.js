@@ -455,9 +455,10 @@ async function detalle(id, usuarioId) {
   const row = r.rows[0];
   if (!row) return null;
 
-  // Fila antigua (payload parcial de versiones anteriores): se regenera la
-  // predicción COMPLETA una sola vez y se persiste para las siguientes vistas.
-  if (row.tipo === "pre" && row.payload && !row.payload.homeFeatures) {
+  // Fila antigua (payload parcial de versiones anteriores, o sin los bloques
+  // nuevos previsibilidad/noPierde): se regenera la predicción COMPLETA una
+  // sola vez y se persiste para las siguientes vistas.
+  if (row.tipo === "pre" && row.payload && (!row.payload.homeFeatures || !row.payload.previsibilidad)) {
     try {
       const completo = await analizarPartido({
         localTeam: row.local,

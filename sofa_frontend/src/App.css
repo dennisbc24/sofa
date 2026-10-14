@@ -455,6 +455,26 @@
   background: rgba(255, 255, 255, 0.03);
 }
 
+/* Fila de total (Partido) en las tablas de mercados: fondo distintivo. */
+.tabla tbody tr.fila-total {
+  background: rgba(var(--accent-rgb), 0.12);
+  font-weight: 600;
+}
+
+.tabla tbody tr.fila-total:hover {
+  background: rgba(var(--accent-rgb), 0.2);
+}
+
+/* Columna de total en las tablas de mercados. */
+.tabla th.col-total,
+.tabla td.col-total {
+  background: rgba(var(--accent-rgb), 0.08);
+}
+
+.tabla tbody tr.fila-total td.col-total {
+  background: rgba(var(--accent-rgb), 0.22);
+}
+
 /* ---- Mercados adicionales (bloques compactos) ---- */
 
 .mercados-grid {

@@ -25,6 +25,7 @@ const {
   ridgePredecir, registro, registroVisita, predecirH, featuresLado,
 } = require("../../experimentos_fase2t/comun2t");
 const { modeloActivo2T } = require("./modelo_2t_config");
+const { calcularPrevisibilidad } = require("./previsibilidad");
 
 // FT (= 1T + pred 2T) sólo para stats donde sumar tiene sentido de flujo.
 const FT_WHITELIST = new Set([GOLES, "Total shots", "Corner kicks", "Yellow cards"]);
@@ -410,6 +411,7 @@ async function predecirArchivo({ nombre, contenido }) {
     },
     goles1T: { local: gHL, visita: gHA },
     resultado1x2: resultado1x2De(filasPred),
+    previsibilidad: await calcularPrevisibilidad(local, visitante, fecha),
     historial: {
       local: ctx.nHistorial.local,
       visitante: ctx.nHistorial.visitante,

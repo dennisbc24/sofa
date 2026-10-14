@@ -3,6 +3,7 @@ const { cargarModelo } = require("./modelo");
 const { predecir } = require("./modelo_poisson");
 const { modeloActivo } = require("./modelo_config");
 const { registrarPrediccion } = require("./registro");
+const { calcularPrevisibilidad } = require("./previsibilidad");
 
 // ---------------------------------------------------------------------------
 // Orquestador del análisis pre-partido (FASE 1).
@@ -118,7 +119,27 @@ const overLines = (l) => ({
   o05: pct1(1 - pNoMasDe(0, l)),
   o15: pct1(1 - pNoMasDe(1, l)),
   o25: pct1(1 - pNoMasDe(2, l)),
+  o35: pct1(1 - pNoMasDe(3, l)),
 });
+// Más/menos del total redondeado predicho: con N = round(λ), P(más) = P(X>N),
+// P(menos) = P(X<N) y P(exacto) = P(X=N) (suman 100). Ej: si se predicen 3
+// goles en un partido del Barcelona, el Poisson da más peso al over que al
+// under porque su λ real empuja hacia arriba.
+const masMenos = (l) => {
+  const n = Math.round(l);
+  return {
+    n,
+    mas: pct1(1 - pNoMasDe(n, l)),
+    menos: pct1(n > 0 ? pNoMasDe(n - 1, l) : 0),
+    exacto: pct1(pmfPoisson(n, l)),
+  };
+};
+const overFijas = (l, lineas) =>
+  lineas.map((x) => ({ l: x.toFixed(1), p: pct1(1 - pNoMasDe(Math.floor(x), l)) }));
+const overDinamicas = (l) => {
+  const m = Math.round(l);
+  return overFijas(l, [m - 1.5, m - 0.5, m + 0.5].filter((x) => x >= 0.5));
+};
 
 function calcularMercadosExtras(sL, sV, lambdas) {
   const r2 = (v) => Math.round(v * 100) / 100;
@@ -130,17 +151,50 @@ function calcularMercadosExtras(sL, sV, lambdas) {
   const shCV = share1T(sV.corners_t1, sV.corners, 0.5);
   const cH1 = (sL.corners || 0) * shCH, cH2 = (sL.corners || 0) - cH1;
   const cV1 = (sV.corners || 0) * shCV, cV2 = (sV.corners || 0) - cV1;
+  const shRH = share1T(sL.remates_t1, sL.remates, 0.5);
+  const shRV = share1T(sV.remates_t1, sV.remates, 0.5);
+  const rH1 = (sL.remates || 0) * shRH, rH2 = (sL.remates || 0) - rH1;
+  const rV1 = (sV.remates || 0) * shRV, rV2 = (sV.remates || 0) - rV1;
   const p0h = pmfPoisson(0, lambdas.home), p0a = pmfPoisson(0, lambdas.away);
   const si = (1 - p0h) * (1 - p0a);
-  const lt1 = lh1 + la1, lt2 = lh2 + la2;
+  const lt1 = lh1 + la1, lt2 = lh2 + la2, lt = lambdas.home + lambdas.away;
+  const ct1 = cH1 + cV1, ct2 = cH2 + cV2, ct = ct1 + ct2;
+  const rt1 = rH1 + rV1, rt2 = rH2 + rV2, rt = rt1 + rt2;
   return {
     ambosMarcan: { si: pct1(si), no: pct1(1 - si) },
-    goles1T: { local: r2(lh1), visita: r2(la1), esperados: r2(lt1), ...overLines(lt1) },
-    goles2T: { local: r2(lh2), visita: r2(la2), esperados: r2(lt2), ...overLines(lt2) },
+    goles1T: { local: r2(lh1), visita: r2(la1), esperados: r2(lt1), ...overLines(lt1), mm: masMenos(lt1) },
+    goles2T: { local: r2(lh2), visita: r2(la2), esperados: r2(lt2), ...overLines(lt2), mm: masMenos(lt2) },
+    golesPartido: {
+      local: r2(lambdas.home), visita: r2(lambdas.away),
+      esperados: r2(lt), ...overLines(lt), mm: masMenos(lt),
+    },
     quienGana1T: x1x2Poisson(lh1, la1),
     quienGana2T: x1x2Poisson(lh2, la2),
-    corners1T: { local: r2(cH1), visita: r2(cV1), esperados: r2(cH1 + cV1) },
-    corners2T: { local: r2(cH2), visita: r2(cV2), esperados: r2(cH2 + cV2) },
+    corners1T: { local: r2(cH1), visita: r2(cV1), esperados: r2(ct1), over: overFijas(ct1, [3.5, 4.5, 5.5]), mm: masMenos(ct1) },
+    corners2T: { local: r2(cH2), visita: r2(cV2), esperados: r2(ct2), over: overFijas(ct2, [3.5, 4.5, 5.5]), mm: masMenos(ct2) },
+    cornersPartido: {
+      local: r2(sL.corners || 0), visita: r2(sV.corners || 0),
+      esperados: r2(ct), over: overFijas(ct, [8.5, 9.5, 10.5, 11.5]), mm: masMenos(ct),
+    },
+    remates1T: { local: r2(rH1), visita: r2(rV1), esperados: r2(rt1), over: overDinamicas(rt1), mm: masMenos(rt1) },
+    remates2T: { local: r2(rH2), visita: r2(rV2), esperados: r2(rt2), over: overDinamicas(rt2), mm: masMenos(rt2) },
+    rematesPartido: {
+      local: r2(sL.remates || 0), visita: r2(sV.remates || 0),
+      esperados: r2(rt), over: overDinamicas(rt), mm: masMenos(rt),
+    },
+  };
+}
+
+// Probabilidad de PERDER por equipo (en vez del 1X2 exacto): que el local
+// pierda = P(gana visita) y viceversa. "No pierde" = gana o empata, así los
+// empates no castigan el acierto. Va en % con 1 decimal como probabilities.
+function calcularNoPierde(probs) {
+  const r1 = (v) => Math.round(v * 10) / 10;
+  const pierdeLocal = probs.away ?? 0;
+  const pierdeVisita = probs.home ?? 0;
+  return {
+    local: { pierde: r1(pierdeLocal), noPierde: r1(100 - pierdeLocal) },
+    visita: { pierde: r1(pierdeVisita), noPierde: r1(100 - pierdeVisita) },
   };
 }
 
@@ -297,6 +351,8 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
   const lambdas = { home: pred.internos.lambdaHome, away: pred.internos.lambdaAway };
   const mercados = calcularMercados(perfilLocal, perfilVisita, lambdas);
   const mercadosExtras = calcularMercadosExtras(fuenteLocal.stats, fuenteVisita.stats, lambdas);
+  const noPierde = calcularNoPierde(pred.probabilities);
+  const previsibilidad = await calcularPrevisibilidad(nombreLocal, nombreVisita, fechaCorte);
 
   // Registro en BD (beta): solo acumula datos para futura evaluación.
   // No entrena, no recalibra y nunca interrumpe la respuesta.
@@ -330,6 +386,8 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
     lambdas,
     mercados,
     mercadosExtras,
+    noPierde,
+    previsibilidad,
     homeFeatures: {
       ...perfilLocal,
       statsComparadas: redondearStats(fuenteLocal.stats),
