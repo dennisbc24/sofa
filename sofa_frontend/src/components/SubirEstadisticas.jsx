@@ -34,16 +34,28 @@ const previsualizar = (contenido) => {
   try {
     const j = JSON.parse(contenido)
     const ev = j && j.info && j.info.event
-    if (!ev || !ev.id) return { valido: false, texto: "no es un dump de partido" }
-    return {
-      valido: true,
-      id: ev.id,
-      partido: `${ev.homeTeam?.name ?? "?"} vs ${ev.awayTeam?.name ?? "?"}`,
-      fecha: ev.startTimestamp
-        ? new Date(ev.startTimestamp * 1000).toISOString().slice(0, 10)
-        : "—",
-      liga: ev.tournament?.name || "—",
+    if (ev && ev.id) {
+      return {
+        valido: true,
+        id: ev.id,
+        partido: `${ev.homeTeam?.name ?? "?"} vs ${ev.awayTeam?.name ?? "?"}`,
+        fecha: ev.startTimestamp
+          ? new Date(ev.startTimestamp * 1000).toISOString().slice(0, 10)
+          : "—",
+        liga: ev.tournament?.name || "—",
+      }
     }
+    const info = j && j.info
+    if (info && (info.home || info.away)) {
+      return {
+        valido: true,
+        id: j.match_id != null ? String(j.match_id) : null,
+        partido: `${info.home ?? "?"} vs ${info.away ?? "?"}`,
+        fecha: info.fecha || "—",
+        liga: info.torneo || "—",
+      }
+    }
+    return { valido: false, texto: "no es un dump de partido" }
   } catch {
     return { valido: false, texto: "JSON inválido" }
   }
