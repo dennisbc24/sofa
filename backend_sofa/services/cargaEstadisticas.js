@@ -1,15 +1,23 @@
 // ---------------------------------------------------------------------------
 // CARGA DE ESTADISTICAS POR LOTE (JSON estilo Sofascore, uno por partido).
 //
+// Formatos aceptados:
+//  - VIEJO: info.event + stats.statistics (dump crudo de Sofascore).
+//  - NUEVO: info (home/away/goles/fecha/torneo/ronda) + estadisticas (filas
+//    planas) + jugadores (stats por jugador). Secciones independientes:
+//    un partido ya en DB puede recibir despues solo la parte que falta
+//    (info+stats primero, jugadores despues).
+//
 // Reglas (confirmadas con el usuario):
-//  - Partido inexistente  -> se CREA desde el JSON (id = info.event.id).
-//  - Partido existente CON estadisticas -> se SALTA (no se toca nada).
-//  - Partido existente SIN estadisticas -> se rellenan SOLO los campos
-//    vacios de la cabecera; nunca se pisan datos existentes.
-//  - En estadisticas se respeta el indice UNIQUE (partido_id, periodo,
-//    grupo, nombre) con ON CONFLICT DO NOTHING (subir 2 veces = idempotente).
+//  - Partido inexistente  -> se CREA desde el JSON (id = info.event.id,
+//    match_id, #id: de la url o partido_<id>_ del nombre de archivo).
+//  - Cada seccion (cabecera/stats/jugadores) se inserta si falta y NUNCA se
+//    pisa si ya existe. Partido con todas las secciones -> se SALTA.
+//  - En estadisticas y jugadores se respeta el indice UNIQUE con
+//    ON CONFLICT DO NOTHING (subir 2 veces = idempotente).
 //  - Transaccion por archivo: si un archivo falla, no deja datos a medias.
-//  - Solo escribe en partidos/estadisticas; jamas toca otros modelos/tablas.
+//  - Solo escribe en partidos/estadisticas/jugadores; jamas toca otros
+//    modelos/tablas.
 // ---------------------------------------------------------------------------
 const pool = require("../db");
 
@@ -18,13 +26,32 @@ const COLS_STATS = [
   "valor_local", "valor_visitante", "valor_local_num", "valor_visitante_num",
 ];
 
+const COLS_JUGADORES = [
+  "partido_id", "equipo", "player_id", "nombre", "posicion", "dorsal",
+  "titular", "capitan", "jugo", "minutos", "rating", "goles", "asistencias",
+  "xg", "xa", "tiros", "tiros_puerta", "pases", "pases_acertados",
+  "pases_clave", "entradas", "duelos_ganados", "duelos_perdidos",
+  "recuperaciones", "despejes", "aereos_ganados", "faltas", "paradas",
+  "km", "toques", "valor_pase", "valor_regate", "valor_defensa",
+  "valor_portero", "valor_porteria_cero", "stats",
+];
+
 function aNumero(v) {
   if (v === null || v === undefined) return null;
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 }
 
-// Extrae cabecera + filas de stats de un JSON de Sofascore.
+// id del partido en el nuevo formato: match_id, #id: de la url o
+// partido_<id>_ del nombre de archivo.
+function idNuevo(json, nombre) {
+  if (json && json.match_id != null) return String(json.match_id);
+  const url = json && typeof json.url === "string" ? json.url : "";
+  const m = url.match(/#id:(\d+)/) || /^partido_(\d+)/.exec(nombre || "");
+  return m ? m[1] : null;
+}
+
+// Extrae cabecera + filas de stats de un JSON de Sofascore (formato VIEJO).
 function transformar(json) {
   const ev = json && json.info && json.info.event;
   if (!ev || !ev.id) throw new Error("JSON sin info.event.id (no parece un dump de partido)");
@@ -72,10 +99,93 @@ function transformar(json) {
   return { evento, filas };
 }
 
+// Extrae cabecera + stats + jugadores del formato NUEVO. Las secciones son
+// independientes: filas/jugadores llegan vacios si el archivo no los trae.
+function transformarNuevo(json, nombre) {
+  const info = json && json.info;
+  const id = idNuevo(json, nombre);
+  if (!info && !id) throw new Error("JSON nuevo sin info ni match_id");
+
+  const evento = {
+    id,
+    local: (info && info.home) || null,
+    visitante: (info && info.away) || null,
+    fecha: (info && info.fecha) || null,
+    liga: (info && info.torneo) || null,
+    jornada: (info && aNumero(info.ronda)) || null,
+    golesLocal: (info && aNumero(info.goles_h)) || null,
+    golesVisitante: (info && aNumero(info.goles_a)) || null,
+    golesLocal1T: (info && aNumero(info.goles_h_1T)) || null,
+    golesVisitante1T: (info && aNumero(info.goles_a_1T)) || null,
+    estado: (info && info.estado) || null,
+    url: (json && typeof json.url === "string" && json.url) || null,
+  };
+
+  const filas = [];
+  for (const s of json.estadisticas || []) {
+    if (!s || !s.nombre) continue;
+    filas.push({
+      periodo: s.periodo,
+      grupo: s.grupo || "General",
+      nombre: s.nombre,
+      clave: s.clave || null,
+      valor_local: s.home != null ? String(s.home) : null,
+      valor_visitante: s.away != null ? String(s.away) : null,
+      valor_local_num: s.home_num != null ? aNumero(s.home_num) : aNumero(String(s.home || "").replace("%", "")),
+      valor_visitante_num: s.away_num != null ? aNumero(s.away_num) : aNumero(String(s.away || "").replace("%", "")),
+    });
+  }
+
+  const jugadores = [];
+  for (const p of json.jugadores || []) {
+    if (!p || !p.equipo || !p.nombre) continue;
+    jugadores.push({
+      equipo: p.equipo,
+      player_id: p.player_id != null ? String(p.player_id) : `nombre:${p.nombre}`,
+      nombre: p.nombre || null,
+      posicion: p.posicion || null,
+      dorsal: aNumero(p.dorsal),
+      titular: Boolean(p.titular),
+      capitan: Boolean(p.capitan),
+      jugo: Boolean(p.jugo),
+      minutos: aNumero(p.minutesPlayed),
+      rating: aNumero(p.rating),
+      goles: aNumero(p.goals),
+      asistencias: aNumero(p.goalAssist),
+      xg: aNumero(p.expectedGoals),
+      xa: aNumero(p.expectedAssists),
+      tiros: aNumero(p.totalShots),
+      tiros_puerta: aNumero(p.onTargetScoringAttempt),
+      pases: aNumero(p.totalPass),
+      pases_acertados: aNumero(p.accuratePass),
+      pases_clave: aNumero(p.keyPass),
+      entradas: aNumero(p.totalTackle),
+      duelos_ganados: aNumero(p.duelWon),
+      duelos_perdidos: aNumero(p.duelLost),
+      recuperaciones: aNumero(p.ballRecovery),
+      despejes: aNumero(p.totalClearance),
+      aereos_ganados: aNumero(p.aerialWon),
+      faltas: aNumero(p.fouls),
+      paradas: aNumero(p.saves),
+      km: aNumero(p.kilometersCovered),
+      toques: aNumero(p.touches),
+      valor_pase: aNumero(p.passValueNormalized),
+      valor_regate: aNumero(p.dribbleValueNormalized),
+      valor_defensa: aNumero(p.defensiveValueNormalized),
+      valor_portero: aNumero(p.goalkeeperValueNormalized),
+      valor_porteria_cero: aNumero(p.keeperSaveValue),
+      stats: JSON.stringify(p),
+    });
+  }
+  return { evento, filas, jugadores };
+}
+
 async function buscarPartido(ev, client) {
   // 1) Identificador exacto de Sofascore (mismo esquema que el scraper).
-  let r = await client.query("SELECT id FROM partidos WHERE id = $1", [ev.id]);
-  if (r.rows.length) return { id: String(r.rows[0].id), por: "id" };
+  if (ev.id) {
+    let r = await client.query("SELECT id FROM partidos WHERE id = $1", [ev.id]);
+    if (r.rows.length) return { id: String(r.rows[0].id), por: "id" };
+  }
   // 2) Pareja equipos + fecha (con tolerancia de +-1 dia por diferencias de zona).
   if (ev.local && ev.visitante && ev.fecha) {
     r = await client.query(
@@ -138,6 +248,23 @@ async function insertarStats(partidoId, filas, client) {
   return insertadas;
 }
 
+async function insertarJugadores(partidoId, jugadores, client) {
+  const cols = COLS_JUGADORES.join(",");
+  const placeholders = COLS_JUGADORES.map((_, i) => `$${i + 1}`).join(",");
+  const valoresBase = COLS_JUGADORES.slice(1);
+  let insertados = 0;
+  for (const j of jugadores) {
+    const r = await client.query(
+      `INSERT INTO jugadores (${cols})
+       VALUES (${placeholders})
+       ON CONFLICT (partido_id, equipo, player_id) DO NOTHING`,
+      [partidoId, ...valoresBase.map((c) => j[c])]
+    );
+    insertados += r.rowCount;
+  }
+  return insertados;
+}
+
 // Asignación manual del lote: si el usuario eligió liga/jornada, sustituye a
 // lo que traiga el JSON (solo cambia lo que se vaya a crear/completar; un
 // partido existente con datos rellenados nunca se pisa — manda COALESCE).
@@ -159,44 +286,75 @@ async function procesarArchivo({ nombre, contenido }, opciones = {}) {
     } catch {
       throw new Error("no es JSON valido");
     }
-    const { evento, filas } = transformar(json);
+    const esViejo = !!(json && json.info && json.info.event);
+    const esNuevo = !!(
+      json && !esViejo &&
+      ((json.info && (json.info.home || json.info.away)) ||
+        Array.isArray(json.estadisticas) || Array.isArray(json.jugadores))
+    );
+    if (!esViejo && !esNuevo) {
+      throw new Error("formato no reconocido (ni info.event viejo ni info/estadisticas/jugadores nuevo)");
+    }
+
+    const { evento, filas, jugadores } = esViejo
+      ? { ...transformar(json), jugadores: [] }
+      : transformarNuevo(json, nombre);
     aplicarAsignacion(evento, opciones);
 
     client = await pool.connect();
     const partido = await buscarPartido(evento, client);
 
     if (partido) {
-      const prev = await client.query(
-        "SELECT EXISTS(SELECT 1 FROM estadisticas WHERE partido_id = $1) AS hay",
+      const pres = await client.query(
+        `SELECT
+           EXISTS(SELECT 1 FROM estadisticas WHERE partido_id = $1) AS hay_stats,
+           EXISTS(SELECT 1 FROM jugadores WHERE partido_id = $1) AS hay_jugadores`,
         [partido.id]
       );
-      if (prev.rows[0].hay) {
-        // Regla: si ya tiene stats, no se toca nada.
+      const hayStats = pres.rows[0].hay_stats;
+      const hayJugadores = pres.rows[0].hay_jugadores;
+      const partes = [];
+      let n = 0;
+      let nJ = 0;
+      await client.query("BEGIN");
+      if (!hayStats && filas.length) {
+        await completarCabecera(evento, partido.id, client);
+        n += await insertarStats(partido.id, filas, client);
+        partes.push(`stats ${n}`);
+      }
+      if (!hayJugadores && jugadores.length) {
+        await completarCabecera(evento, partido.id, client);
+        nJ += await insertarJugadores(partido.id, jugadores, client);
+        partes.push(`jugadores ${nJ}`);
+      }
+      await client.query("COMMIT");
+      if (!partes.length) {
         return { ...base, partido_id: partido.id, partido: `${evento.local} vs ${evento.visitante}`,
                  liga: evento.liga, jornada: evento.jornada,
-                 accion: "saltado", stats: 0, motivo: "el partido ya tiene estadisticas" };
+                 accion: "saltado", stats: 0, jugadores: 0, motivo: "ya tiene stats y jugadores" };
       }
-      await client.query("BEGIN");
-      await completarCabecera(evento, partido.id, client);
-      const n = await insertarStats(partido.id, filas, client);
-      await client.query("COMMIT");
       return { ...base, partido_id: partido.id, partido: `${evento.local} vs ${evento.visitante}`,
                liga: evento.liga, jornada: evento.jornada,
-               accion: "actualizado", stats: n, motivo: "cabecera existente completada" };
+               accion: "actualizado", stats: n, jugadores: nJ, motivo: partes.join(" + ") };
     }
 
+    if (!evento.local || !evento.visitante || !evento.id)
+      throw new Error("partido nuevo sin info completa (falta info.home/info.away/match_id)");
     await client.query("BEGIN");
     const id = await crearPartido(evento, client);
-    const n = await insertarStats(id, filas, client);
+    let n = 0;
+    if (filas.length) n += await insertarStats(id, filas, client);
+    let nJ = 0;
+    if (jugadores.length) nJ += await insertarJugadores(id, jugadores, client);
     await client.query("COMMIT");
     return { ...base, partido_id: id, partido: `${evento.local} vs ${evento.visitante}`,
              liga: evento.liga, jornada: evento.jornada,
-             accion: "creado", stats: n };
+             accion: "creado", stats: n, jugadores: nJ };
   } catch (e) {
     if (client) {
       try { await client.query("ROLLBACK"); } catch { /* noop */ }
     }
-    return { ...base, accion: "error", stats: 0, motivo: e.message };
+    return { ...base, accion: "error", stats: 0, jugadores: 0, motivo: e.message };
   } finally {
     if (client) client.release();
   }
@@ -220,8 +378,9 @@ async function procesarLote(files, opciones = {}) {
       saltados: cuenta("saltado"),
       errores: cuenta("error"),
       filas_insertadas: resultados.reduce((s, r) => s + (r.stats || 0), 0),
+      jugadores_insertados: resultados.reduce((s, r) => s + (r.jugadores || 0), 0),
     },
   };
 }
 
-module.exports = { procesarLote, transformar, aplicarAsignacion };
+module.exports = { procesarLote, transformar, transformarNuevo, aplicarAsignacion };

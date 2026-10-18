@@ -73,6 +73,7 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             . "$NVM_DIR/nvm.sh"
             cd ${{ secrets.DEPLOY_PATH }}/backend_sofa
+            node scripts/crear_tabla_jugadores.js
             npm ci
             NODE_ENV=production pm2 restart sofa --update-env || NODE_ENV=production pm2 start server.js --name sofa --update-env
             pm2 save
