@@ -19,7 +19,8 @@
 // ---------------------------------------------------------------------------
 const pool = require("../../db");
 const path = require("path");
-const { transformar } = require("../cargaEstadisticas");
+const { transformar, transformarNuevo } = require("../cargaEstadisticas");
+const { tasasPor90, potencialXI, potencialTipicoEquipo, defaultsPorPosicion } = require("./alineacion");
 const {
   TODOS, STATS, GOLES, etiqueta, familiaLiga, baseLiga,
   ridgePredecir, registro, registroVisita, predecirH, featuresLado,
@@ -29,6 +30,65 @@ const { calcularPrevisibilidad } = require("./previsibilidad");
 
 // FT (= 1T + pred 2T) sólo para stats donde sumar tiene sentido de flujo.
 const FT_WHITELIST = new Set([GOLES, "Total shots", "Corner kicks", "Yellow cards"]);
+
+// ---------------------------------------------------------------------------
+// AJUSTE POR XI EN EL 2T: al descanso el XI ya se conoce (viene en el JSON).
+// Se compara el "potencial" del XI en cancha contra el XI tipico del equipo:
+// si juega el XI habitual -> ratio ~1 (no cambia nada); si sale un XI mas
+// fuerte -> sube la proyeccion del 2T; si son suplentes -> baja.
+// Peso por mercado (el xG y los tiros individual valen mas que los corners).
+// ---------------------------------------------------------------------------
+const PESOS_XI = { [GOLES]: 0.5, "Total shots": 0.6, "Corner kicks": 0.25 };
+const LIMITES_XI = { [GOLES]: [0.85, 1.15], "Total shots": [0.85, 1.15], "Corner kicks": [0.9, 1.1] };
+
+// Extrae el XI de cada equipo del array `jugadores` del JSON.
+function xiDeJugadores(jugadores) {
+  const lados = { home: [], away: [] };
+  for (const j of jugadores || []) {
+    const lado = j.equipo === "away" ? "away" : j.equipo === "home" ? "home" : null;
+    if (!lado) continue;
+    // Titulares + los que entraron de recambio (los que no jugaron, fuera).
+    if (!j.titular && !j.jugo) continue;
+    lados[lado].push({ player_id: j.player_id, titular: Boolean(j.titular), posicion: j.posicion || null });
+  }
+  return lados;
+}
+
+// Ratios XI/-tipico por mercado y lado. null si no hay datos suficientes.
+async function calcularRatiosXI(jugadores, local, visitante) {
+  if (!Array.isArray(jugadores) || !jugadores.length) return null;
+  const xi = xiDeJugadores(jugadores);
+  if (xi.home.length < 7 || xi.away.length < 7) return null;
+  const tasas = await tasasPor90();
+  if (!tasas.size) return null;
+  const defaults = defaultsPorPosicion(tasas);
+  if (!defaults || defaults.xg90 == null) return null;
+
+  const salida = { home: {}, away: {}, detalle: {} };
+  for (const [lado, nombre] of [["home", local], ["away", visitante]]) {
+    const pot = potencialXI(xi[lado], tasas, defaults);
+    const tip = await potencialTipicoEquipo(nombre, tasas, defaults);
+    if (!tip) return null;
+    salida[lado].goles = pot.goles / tip.goles;
+    salida[lado].remates = pot.remates / tip.remates;
+    salida[lado].corners = pot.corners / tip.corners;
+    salida.detalle[lado] = {
+      xi: { goles: r2(pot.goles), remates: r2(pot.remates), corners: r2(pot.corners) },
+      tipico: { goles: r2(tip.goles), remates: r2(tip.remates), corners: r2(tip.corners) },
+      ratio: { goles: r2(salida[lado].goles), remates: r2(salida[lado].remates), corners: r2(salida[lado].corners) },
+    };
+  }
+  return salida;
+}
+
+// Aplica el ratio al valor proyectado (exponente fraccionario = peso).
+function ajustarPorXI(valor, ratio, stat) {
+  const peso = PESOS_XI[stat];
+  if (!peso || !ratio || !Number.isFinite(ratio) || !Number.isFinite(valor)) return valor;
+  const [min, max] = LIMITES_XI[stat];
+  const factor = Math.min(Math.max(1 + peso * (ratio - 1), min), max);
+  return clamp0(valor * factor);
+}
 
 let cache = null;
 function cargarModelo2T() {
@@ -219,7 +279,13 @@ async function cargarContexto({ local, visitante, fecha, liga }) {
 }
 
 // Predicción completa de un JSON de partido al descanso.
-async function predecirArchivo({ nombre, contenido }) {
+// El ajuste por XI en el 2T queda DESACTIVADO por defecto: el backtest sobre
+// 494 partidos dio MAE peor en todos los mercados y todos los pesos
+// (goles +0.33% a +2.71%, remates +1.04% a +7.46%). Razon: al descanso las
+// stats del 1T YA son la produccion de ese XI, asi que la XI no aporta nada
+// nuevo. El codigo queda disponible (flag aplicarXI) y el informe en
+// experiments_fase2t/informes/fase2t_2_ajuste_xi.json.
+async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
   const modelo = cargarModelo2T();
   if (!modelo) {
     const e = new Error("Modelo 2T no entrenado (ejecuta: node scripts/entrenar_modelo_2t.js)");
@@ -233,7 +299,12 @@ async function predecirArchivo({ nombre, contenido }) {
   } catch {
     throw Object.assign(new Error(`no es JSON valido: ${nombre}`), { statusCode: 400 });
   }
-  const { evento, filas } = transformar(json); // lanza si no es dump de partido
+  // Formatos aceptados: viejo (info.event + stats.statistics) y nuevo
+  // (info + estadisticas planas + jugadores). El 2T solo usa info + stats.
+  const esNuevo = !!(json && json.info && !json.info.event && (json.info.home || json.info.away || Array.isArray(json.estadisticas)));
+  const { evento, filas } = esNuevo
+    ? transformarNuevo(json, nombre)
+    : transformar(json); // lanza si no es dump de partido
 
   const fecha = evento.fecha;
   const local = evento.local, visitante = evento.visitante;
@@ -245,8 +316,10 @@ async function predecirArchivo({ nombre, contenido }) {
   if (gHL === null || gHA === null) {
     advertencias.push("El JSON no trae goles del 1T (homeScore.period1); se usan 0 en features de goles.");
   }
-  const estadoTipo = (json.info.event.status && json.info.event.status.type) || "";
-  if (estadoTipo === "finished" || estadoTipo === "aftertime" || estadoTipo === "penalties") {
+  const estadoTipo = esNuevo
+    ? String((json.info && json.info.estado) || "")
+    : String((json.info.event.status && json.info.event.status.type) || "");
+  if (["finished", "ended", "aftertime", "penalties"].includes(estadoTipo.toLowerCase())) {
     advertencias.push("El partido parece finalizado: la proyección es sólo informativa (el 2T ya se jugó).");
   }
 
@@ -299,6 +372,21 @@ async function predecirArchivo({ nombre, contenido }) {
   const Hkey = { [GOLES]: "goles", "Total shots": "remates", "Corner kicks": "corners" };
 
   const filasPred = [];
+  // Ajuste por XI (si el JSON trae jugadores). Nunca rompe la proyeccion.
+  let ratiosXI = null;
+  try {
+    if (aplicarXI) ratiosXI = await calcularRatiosXI(json.jugadores, local, visitante);
+    if (ratiosXI) {
+      advertencias.push(
+        `Ajuste por XI aplicado (2T): local xG ${ratiosXI.detalle.home.ratio.goles} / remates ${ratiosXI.detalle.home.ratio.remates} · ` +
+        `visita xG ${ratiosXI.detalle.away.ratio.goles} / remates ${ratiosXI.detalle.away.ratio.remates} (1 = XI habitual).`
+      );
+    }
+  } catch (e) {
+    ratiosXI = null;
+    advertencias.push(`No se pudo calcular el ajuste por XI: ${e.message}`);
+  }
+  const statAMercado = { [GOLES]: "goles", "Total shots": "remates", "Corner kicks": "corners" };
   const orden = [
     GOLES, "Total shots", "Corner kicks", "Yellow cards",
     ...TODOS.filter((s) => ![GOLES, "Total shots", "Corner kicks", "Yellow cards"].includes(s)),
@@ -315,6 +403,7 @@ async function predecirArchivo({ nombre, contenido }) {
     const l1T = mediaLiga(ctx.sums[stat], familia, base, "s1");
 
     const pred = {};
+    let predBase = null;
     let fuente = info.elegido;
     if (!hay1T) {
       fuente = "historial";
@@ -363,6 +452,16 @@ async function predecirArchivo({ nombre, contenido }) {
       }
     }
 
+    // Ajuste por XI (2T): el XI en cancha modifica la proyeccion del 2T.
+    if (ratiosXI) {
+      const merc = statAMercado[stat];
+      if (merc) {
+        predBase = { home: pred.home, away: pred.away };
+        pred.home = ajustarPorXI(pred.home, ratiosXI.home[merc], stat);
+        pred.away = ajustarPorXI(pred.away, ratiosXI.away[merc], stat);
+      }
+    }
+
     const l1 = hay1T ? lado0.l : null, a1 = hay1T ? lado0.a : null;
     const fila = {
       stat,
@@ -373,6 +472,10 @@ async function predecirArchivo({ nombre, contenido }) {
       predVisita2T: r2(pred.away),
       fuente,
     };
+    if (predBase) {
+      fila.baseLocal2T = r2(predBase.home);
+      fila.baseVisita2T = r2(predBase.away);
+    }
     if (FT_WHITELIST.has(stat) && hay1T) {
       fila.ftLocal = r2(l1 + pred.home);
       fila.ftVisita = r2(a1 + pred.away);
@@ -417,6 +520,11 @@ async function predecirArchivo({ nombre, contenido }) {
       visitante: ctx.nHistorial.visitante,
     },
     filas: filasPred,
+    ajusteXI: ratiosXI ? {
+      local: ratiosXI.detalle.home,
+      visitante: ratiosXI.detalle.away,
+      nota: "1 = XI habitual; >1 = XI más fuerte de lo normal; <1 = más flojo. Se aplica con peso (goles 0.5, remates 0.6, corners 0.25).",
+    } : null,
     advertencias,
     modelo: {
       id: modeloActivo2T().id,

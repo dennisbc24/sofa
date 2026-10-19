@@ -1,0 +1,47 @@
+{
+  "partidos": 536,
+  "generated_at": "2026-10-19T21:50:56.475Z",
+  "nota": "Ajuste XI pre-partido: barrido de pesos. Negativo = el ajuste empeora.",
+  "porPeso": {
+    "0": {
+      "maeGoles": 1.63,
+      "maeLocal": 0.84,
+      "maeVisita": 0.79,
+      "accuracy1x2": 59.89,
+      "noPierde": 79.85,
+      "n": 536
+    },
+    "1": {
+      "maeGoles": 1.66,
+      "maeLocal": 0.85,
+      "maeVisita": 0.81,
+      "accuracy1x2": 58.96,
+      "noPierde": 78.36,
+      "n": 536
+    },
+    "0.1": {
+      "maeGoles": 1.63,
+      "maeLocal": 0.84,
+      "maeVisita": 0.79,
+      "accuracy1x2": 60.07,
+      "noPierde": 80.04,
+      "n": 536
+    },
+    "0.25": {
+      "maeGoles": 1.64,
+      "maeLocal": 0.84,
+      "maeVisita": 0.79,
+      "accuracy1x2": 59.89,
+      "noPierde": 80.04,
+      "n": 536
+    },
+    "0.5": {
+      "maeGoles": 1.64,
+      "maeLocal": 0.84,
+      "maeVisita": 0.8,
+      "accuracy1x2": 59.7,
+      "noPierde": 79.48,
+      "n": 536
+    }
+  }
+}

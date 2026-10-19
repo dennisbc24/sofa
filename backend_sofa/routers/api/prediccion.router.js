@@ -3,11 +3,20 @@ const router = express.Router();
 const {
   getPrediction, getModelInfo, postProyeccion2T, getModelo2TInfo,
   getHistorial, getHistorialDetalle, putHistorialPartido, getBuscarPartidos,
+  getAlineacion, postMatchConAlineacion,
 } = require('../../controllers/prediccion.controllers');
 
-// Predicción pre-partido (modelo ya entrenado; nunca entrena en el request)
+// Predicci��n pre-partido (modelo ya entrenado; nunca entrena en el request)
 // GET /api/predictions/match?localTeam=X&awayTeam=Y&date=YYYY-MM-DD&league=Liga
 router.get('/match', getPrediction);
+
+// Predicci��n pre-partido CON alineaci��n declarada (XI).
+// POST /api/predictions/match  body: { localTeam, awayTeam, date, league, alineacion }
+router.post('/match', postMatchConAlineacion);
+
+// Squad de un equipo (dorsal, nombre, posici��n y tasas hist��ricas).
+// GET /api/predictions/alineacion/:equipo
+router.get('/alineacion/:equipo', getAlineacion);
 
 // Historial de predicciones del usuario (dedup + evaluación vs datos reales)
 router.get('/historial', getHistorial);

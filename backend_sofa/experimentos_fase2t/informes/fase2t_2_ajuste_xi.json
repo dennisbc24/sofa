@@ -1,0 +1,98 @@
+{
+  "partidos": 494,
+  "errores": 0,
+  "generated_at": "2026-10-19T21:44:18.812Z",
+  "nota": "MAE del 2T (goles/remates) por peso del ajuste por XI. Negativo = el ajuste empeora.",
+  "metricas": {
+    "Goles": {
+      "0": {
+        "mae": 1.43,
+        "deltaPct": 0
+      },
+      "1": {
+        "mae": 1.47,
+        "deltaPct": 2.71
+      },
+      "0.1": {
+        "mae": 1.43,
+        "deltaPct": 0.33
+      },
+      "0.25": {
+        "mae": 1.44,
+        "deltaPct": 0.99
+      },
+      "0.5": {
+        "mae": 1.46,
+        "deltaPct": 2.18
+      }
+    },
+    "Total shots": {
+      "0": {
+        "mae": 5.26,
+        "deltaPct": 0
+      },
+      "1": {
+        "mae": 5.65,
+        "deltaPct": 7.46
+      },
+      "0.1": {
+        "mae": 5.31,
+        "deltaPct": 1.04
+      },
+      "0.25": {
+        "mae": 5.43,
+        "deltaPct": 3.21
+      },
+      "0.5": {
+        "mae": 5.59,
+        "deltaPct": 6.25
+      }
+    }
+  },
+  "detallePorLado": {
+    "Goles": {
+      "0": {
+        "local": 0.76,
+        "visita": 0.67
+      },
+      "1": {
+        "local": 0.79,
+        "visita": 0.67
+      },
+      "0.1": {
+        "local": 0.76,
+        "visita": 0.67
+      },
+      "0.25": {
+        "local": 0.77,
+        "visita": 0.67
+      },
+      "0.5": {
+        "local": 0.79,
+        "visita": 0.67
+      }
+    },
+    "Total shots": {
+      "0": {
+        "local": 2.9,
+        "visita": 2.36
+      },
+      "1": {
+        "local": 3.17,
+        "visita": 2.48
+      },
+      "0.1": {
+        "local": 2.94,
+        "visita": 2.37
+      },
+      "0.25": {
+        "local": 3.02,
+        "visita": 2.4
+      },
+      "0.5": {
+        "local": 3.13,
+        "visita": 2.46
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ const { cargarModelo, rutaModelo } = require("../services/prediccion/modelo");
 const { CURRENT_PREDICTION_MODEL, modeloActivo } = require("../services/prediccion/modelo_config");
 const { predecirLote2T, cargarModelo2T, rutaModelo2T } = require("../services/prediccion/modelo_2t");
 const { modeloActivo2T } = require("../services/prediccion/modelo_2t_config");
+const { getSquad } = require("../services/prediccion/alineacion");
 const historial = require("../services/prediccion/historial_usuario");
 
 // GET /api/predictions/match?localTeam=&awayTeam=&date=&league=
@@ -18,6 +19,33 @@ const getPrediction = async (req, res, next) => {
     res.json(resultado);
   } catch (error) {
     if (error.statusCode) return res.status(error.statusCode).json({ message: error.message });
+    next(error);
+  }
+};
+
+// POST /api/predictions/match — predicci��n con alineaci��n declarada (XI).
+const postMatchConAlineacion = async (req, res, next) => {
+  try {
+    const { localTeam, awayTeam, date, league, alineacion } = req.body || {};
+    const resultado = await analizarPartido({ localTeam, awayTeam, date, league, alineacion });
+    if (req.usuario && req.usuario.uid) {
+      await historial.guardarPre(req.usuario.uid, resultado);
+    }
+    res.json(resultado);
+  } catch (error) {
+    if (error.statusCode) return res.status(error.statusCode).json({ message: error.message });
+    next(error);
+  }
+};
+
+// GET /api/predictions/alineacion/:equipo → squad con dorsal/posici��n/tasas
+// + formaci��n t��pica del equipo (derivada de sus XIs hist��ricos).
+const getAlineacion = async (req, res, next) => {
+  try {
+    const equipo = req.params.equipo;
+    const { jugadores, formacion } = await getSquad(equipo);
+    res.json({ equipo, jugadores, formacion });
+  } catch (error) {
     next(error);
   }
 };
@@ -180,4 +208,5 @@ const getBuscarPartidos = async (req, res, next) => {
 module.exports = {
   getPrediction, getModelInfo, postProyeccion2T, getModelo2TInfo,
   getHistorial, getHistorialDetalle, putHistorialPartido, getBuscarPartidos,
+  getAlineacion, postMatchConAlineacion,
 };

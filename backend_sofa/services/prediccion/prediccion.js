@@ -1,9 +1,10 @@
 const { resolverEquipo, getPerfilEquipo, getH2H } = require("./features");
 const { cargarModelo } = require("./modelo");
-const { predecir } = require("./modelo_poisson");
+const { predecir, probsDesdeLambdas, aPorcentajes } = require("./modelo_poisson");
 const { modeloActivo } = require("./modelo_config");
 const { registrarPrediccion } = require("./registro");
 const { calcularPrevisibilidad } = require("./previsibilidad");
+const { estimarRematesXI } = require("./alineacion");
 
 // ---------------------------------------------------------------------------
 // Orquestador del análisis pre-partido (FASE 1).
@@ -54,9 +55,9 @@ const redondear = (v, dec) => (v === null || v === undefined ? null : Math.round
 // esperados por equipo al momento de predecir. Goles = lambdas del Poisson;
 // el resto = promedio histórico del equipo en la condición del partido.
 // ---------------------------------------------------------------------------
-function calcularMercados(perfilLocal, perfilVisita, lambdas) {
-  const sL = statsParaPerfil(perfilLocal, "local").stats;
-  const sV = statsParaPerfil(perfilVisita, "visita").stats;
+function calcularMercados(perfilLocal, perfilVisita, lambdas, statsOverride) {
+  const sL = statsOverride ? statsOverride.local : statsParaPerfil(perfilLocal, "local").stats;
+  const sV = statsOverride ? statsOverride.visitante : statsParaPerfil(perfilVisita, "visita").stats;
   const r2 = (v) => (v === null || v === undefined ? null : Math.round(v * 100) / 100);
   return {
     goles: { local: lambdas.home, visitante: lambdas.away },
@@ -297,7 +298,7 @@ function construirExplicacion({ home, away, modelo, pred, homeFuente, awayFuente
 
 // `registrar: false` omite el registro en predicciones_beta (útil al
 // recomputar una predicción guardada para el historial: no ensuciar el log).
-async function analizarPartido({ localTeam, awayTeam, date, league, registrar = true }) {
+async function analizarPartido({ localTeam, awayTeam, date, league, registrar = true, alineacion = null }) {
   if (!localTeam || !awayTeam) {
     const e = new Error("Se requieren los parámetros localTeam y awayTeam (date y league son opcionales)");
     e.statusCode = 400;
@@ -346,12 +347,44 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
   if (pred.internos.lambdaCapped)
     advertencias.push("Media de goles limitada a 8 por el guardrail antidegenerado (ataque/defensa con poca historia).");
 
-  const comparison = construirComparacion(fuenteLocal.stats, fuenteVisita.stats);
-  const principal = prediccionPrincipal(pred.probabilities);
+  // Alineacion declarada (XI): la XI solo refina el mercado de REMATES
+  // (unico mercado donde el backtest muestra mejora: MAE 5.01 vs 5.59). El
+  // 1X2/goles se queda con el modelo v1: la XI no aporta informacion residual
+  // (correlacion con el residuo 0.05/0.01) y ajustarlo solo anade ruido.
   const lambdas = { home: pred.internos.lambdaHome, away: pred.internos.lambdaAway };
-  const mercados = calcularMercados(perfilLocal, perfilVisita, lambdas);
-  const mercadosExtras = calcularMercadosExtras(fuenteLocal.stats, fuenteVisita.stats, lambdas);
-  const noPierde = calcularNoPierde(pred.probabilities);
+  const probs = pred.probabilities;
+  let ajusteAlineacion = null;
+  let statsLocal = fuenteLocal.stats;
+  let statsVisita = fuenteVisita.stats;
+
+  if (alineacion) {
+    const [xh, xv] = await Promise.all([
+      estimarRematesXI(alineacion.local.titulares || []),
+      estimarRematesXI(alineacion.visitante.titulares || []),
+    ]);
+    if (xh && xv) {
+      // Mezcla: 70% XI + 30% promedio del equipo (el XI es mejor, pero no
+      // se descarta el historial del equipo).
+      const remLocal = Math.round((0.7 * xh + 0.3 * (statsLocal.remates || 0)) * 100) / 100;
+      const remVisita = Math.round((0.7 * xv + 0.3 * (statsVisita.remates || 0)) * 100) / 100;
+      statsLocal = { ...statsLocal, remates: remLocal };
+      statsVisita = { ...statsVisita, remates: remVisita };
+      ajusteAlineacion = {
+        rematesXI: { local: xh, visitante: xv },
+        rematesUsados: { local: remLocal, visitante: remVisita },
+        nota: "El XI refina sólo el mercado de remates; el 1X2 sigue el modelo v1.",
+      };
+      advertencias.push(`Remates ajustados por la alineación (XI): local ${xh} · visita ${xv}.`);
+    } else {
+      advertencias.push("Alineación sin historial de XI suficiente; los remates se estiman con el promedio del equipo.");
+    }
+  }
+
+  const comparison = construirComparacion(fuenteLocal.stats, fuenteVisita.stats);
+  const principal = prediccionPrincipal(probs);
+  const mercados = calcularMercados(perfilLocal, perfilVisita, lambdas, { local: statsLocal, visitante: statsVisita });
+  const mercadosExtras = calcularMercadosExtras(statsLocal, statsVisita, lambdas);
+  const noPierde = calcularNoPierde(probs);
   const previsibilidad = await calcularPrevisibilidad(nombreLocal, nombreVisita, fechaCorte);
 
   // Registro en BD (beta): solo acumula datos para futura evaluación.
@@ -362,10 +395,15 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
       local: nombreLocal,
       visitante: nombreVisita,
       liga: league || null,
-      probabilities: pred.probabilities,
+      probabilities: probs,
       principal,
       model: activo.id,
       modelVersion: activo.version,
+      alineacion: alineacion ? {
+        local: { titulares: alineacion.local.titulares, suplentes: alineacion.local.suplentes, suspendidos: alineacion.local.suspendidos },
+        visitante: { titulares: alineacion.visitante.titulares, suplentes: alineacion.visitante.suplentes, suspendidos: alineacion.visitante.suspendidos },
+        ajuste: ajusteAlineacion,
+      } : null,
     });
   }
 
@@ -376,12 +414,12 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
       date: fechaCorte,
       league: league || null,
     },
-    probabilities: pred.probabilities,
+    probabilities: probs,
     prediction: {
       main: principal,
       mainLabel: ETIQUETAS[principal],
       mainTeam: principal === "home" ? nombreLocal : principal === "away" ? nombreVisita : null,
-      probability: pred.probabilities[principal],
+      probability: probs[principal],
     },
     lambdas,
     mercados,
@@ -399,6 +437,11 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
       fuenteStats: fuenteVisita.fuente,
     },
     comparison,
+    alineacion: alineacion ? {
+      local: alineacion.local,
+      visitante: alineacion.visitante,
+      ajuste: ajusteAlineacion,
+    } : null,
     recentForm: {
       home: perfilLocal.recientes,
       away: perfilVisita.recientes,

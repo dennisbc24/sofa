@@ -968,3 +968,347 @@
 .usuarios-vista {
   max-width: 720px;
 }
+
+/* ---------- LineupBuilder (constructor de alineaciones) ---------- */
+.lineup-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lineup-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.lineup-tab {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.lineup-tab.activo {
+  background: rgba(var(--accent-rgb), 0.18);
+  border-color: rgb(var(--accent-rgb));
+}
+
+.lineup-pitch {
+  background: linear-gradient(180deg, #1e7a34 0%, #16632a 100%);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 320px;
+}
+
+.lineup-fila {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lineup-fila-etiqueta {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: 56px;
+  flex-shrink: 0;
+}
+
+.lineup-fila-jugadores {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.lineup-vacio {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.lineup-contador {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lineup-zonas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.lineup-suspendidos,
+.lineup-plantilla {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.lineup-suspendidos {
+  border-style: dashed;
+}
+
+.lineup-zona-etiqueta {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lineup-zona-jugadores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 40px;
+}
+
+.jugador-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  cursor: grab;
+  user-select: none;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+}
+
+.jugador-chip:active {
+  cursor: grabbing;
+}
+
+.jugador-dorsal {
+  font-weight: 700;
+  background: rgba(var(--accent-rgb), 0.2);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.jugador-nombre {
+  color: var(--text);
+}
+
+.jugador-titular {
+  background: rgba(var(--accent-rgb), 0.22);
+  border-color: rgb(var(--accent-rgb));
+}
+
+.jugador-titular:hover {
+  background: rgba(255, 120, 120, 0.25);
+  border-color: #e05555;
+}
+
+.jugador-suspendido {
+  opacity: 0.55;
+  border-style: dashed;
+  text-decoration: line-through;
+}
+
+.lineup-plantilla-fila {
+  margin-bottom: 8px;
+}
+
+.lineup-plantilla-pos {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lineup-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+}
+
+.lineup-menu {
+  position: fixed;
+  z-index: 1000;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.lineup-menu-op {
+  background: none;
+  border: none;
+  color: var(--text);
+  text-align: left;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.lineup-menu-op:hover {
+  background: rgba(var(--accent-rgb), 0.15);
+}
+
+.lineup-busqueda {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.lineup-busqueda::placeholder {
+  color: var(--muted);
+}
+
+/* ---------- LineupBuilder v2 (estilo FotMob: puestos + formacion) ---------- */
+.lineup-formacion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lineup-formacion .lineup-zona-etiqueta {
+  margin-bottom: 0;
+}
+
+.lineup-select {
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.lineup-contador-inline {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.lineup-pitch {
+  position: relative;
+  height: 560px;
+  background:
+    repeating-linear-gradient(90deg, #1f7a37 0 8.33%, #1b7132 8.33% 16.66%);
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.lineup-pitch::before,
+.lineup-pitch::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  width: 26%;
+  height: 22%;
+}
+
+.lineup-pitch::before {
+  top: 39%;
+}
+
+.lineup-pitch::after {
+  display: none;
+}
+
+.lineup-slot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+}
+
+.lineup-slot-dorsal {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #12281c;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.lineup-slot-nombre {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+  text-align: center;
+  line-height: 1.15;
+  max-width: 78px;
+}
+
+.lineup-slot-vacio {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lineup-slot:hover .lineup-slot-vacio {
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.lineup-slot.ocupado:hover .lineup-slot-dorsal {
+  background: #ff8a8a;
+}
+
+.lineup-slot-g .lineup-slot-dorsal {
+  background: #ffd75e;
+  color: #3a2c00;
+}
+
+.lineup-slot-g .lineup-slot-vacio {
+  border-color: rgba(255, 215, 94, 0.7);
+  color: rgba(255, 215, 94, 0.85);
+}
+
+.lineup-aviso {
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+}

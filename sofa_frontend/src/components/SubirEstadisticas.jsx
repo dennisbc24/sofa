@@ -2,7 +2,7 @@ import { useRef, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
 import useFetch from "../hooks/useFetch.jsx"
-import { combinar2Partes } from "../dosPartes.js"
+import { combinar2Partes, combinar3Partes } from "../dosPartes.js"
 
 // ~6MB por request: express admite 15mb y nginx 20M en prod.
 const LOTE_MAX_BYTES = 6 * 1024 * 1024
@@ -72,17 +72,21 @@ export const SubirEstadisticas = () => {
   const [error, setError] = useState(null)
   const [parteInfo, setParteInfo] = useState(null)
   const [parteStats, setParteStats] = useState(null)
+  const [partePlayers, setPartePlayers] = useState(null)
   const carpetaRef = useRef(null)
   const sueltosRef = useRef(null)
   const infoRef = useRef(null)
   const statsRef = useRef(null)
+  const playersRef = useRef(null)
   const { data: ligasDisponibles } = useFetch("/api/leagues")
 
   const limpiarPartes = () => {
     setParteInfo(null)
     setParteStats(null)
+    setPartePlayers(null)
     if (infoRef.current) infoRef.current.value = ""
     if (statsRef.current) statsRef.current.value = ""
+    if (playersRef.current) playersRef.current.value = ""
   }
 
   const limpiar = () => {
@@ -132,16 +136,19 @@ export const SubirEstadisticas = () => {
     return cargar(Array.from(e.target.files || []), "archivos sueltos")
   }
 
-  // Subida en 2 partes (extracto del celular): info.json + stats.json se
-  // combinan en un único dump y se agrega como UN archivo a subir.
+  // Subida en partes (extracto del celular): info.json + stats.json (+
+  // players.json opcional) se combinan en un único dump y se agrega como UN
+  // archivo a subir.
   const seleccionarParte = (cual) => async (e) => {
     const f = (e.target.files || [])[0]
     setResultados(null)
     const nuevo = f ? { nombre: f.name, contenido: await f.text() } : null
     const info = cual === "info" ? nuevo : parteInfo
     const stats = cual === "stats" ? nuevo : parteStats
+    const players = cual === "players" ? nuevo : partePlayers
     if (cual === "info") setParteInfo(nuevo)
-    else setParteStats(nuevo)
+    else if (cual === "stats") setParteStats(nuevo)
+    else setPartePlayers(nuevo)
 
     if (!info || !stats) {
       setArchivos([])
@@ -149,7 +156,9 @@ export const SubirEstadisticas = () => {
       setError(info || stats ? "Faltan las 2 partes: selecciona info.json y stats.json." : null)
       return
     }
-    const r = combinar2Partes(info.contenido, stats.contenido)
+    const r = players
+      ? combinar3Partes(info.contenido, stats.contenido, players.contenido)
+      : combinar2Partes(info.contenido, stats.contenido)
     if (!r.ok) {
       setArchivos([])
       setCarpeta("")
@@ -159,13 +168,17 @@ export const SubirEstadisticas = () => {
     const contenido = r.contenido
     setArchivos([
       {
-        nombre: `2partes_${r.partido.id}.json`,
+        nombre: `partes_${r.partido.id}.json`,
         tam: contenido.length,
         contenido,
         vista: previsualizar(contenido),
       },
     ])
-    setCarpeta("2 partes (info.json + stats.json)")
+    setCarpeta(
+      players
+        ? `3 partes (info.json + stats.json + players.json, ${r.partido.jugadores} jugadores)`
+        : "2 partes (info.json + stats.json)"
+    )
     setError(null)
   }
 
@@ -280,6 +293,19 @@ export const SubirEstadisticas = () => {
             type="file"
             accept=".json,application/json"
             onChange={seleccionarParte("stats")}
+            disabled={subiendo}
+          />
+        </label>
+        <label className="field">
+          <span className="field-label">
+            …parte 3 (opcional): players.json (stats y alineación por jugador)
+          </span>
+          <input
+            ref={playersRef}
+            className="field-input"
+            type="file"
+            accept=".json,application/json"
+            onChange={seleccionarParte("players")}
             disabled={subiendo}
           />
         </label>

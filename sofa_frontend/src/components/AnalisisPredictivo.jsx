@@ -4,6 +4,7 @@ import { API_URL } from "../config.js"
 import { BuscadorEquipo } from "./BuscadorEquipo.jsx"
 import { Desplegable } from "./Desplegable.jsx"
 import { SeccionesAnalisis } from "./PrediccionSecciones.jsx"
+import { LineupBuilder } from "./LineupBuilder.jsx"
 import { formatearFecha, formatearFechaHora } from "../utils.js"
 
 const hoy = () => new Date().toISOString().slice(0, 10)
@@ -16,6 +17,8 @@ export const AnalisisPredictivo = () => {
   const [datos, setDatos] = useState(null)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState(null)
+  const [conAlineacion, setConAlineacion] = useState(false)
+  const [alineacion, setAlineacion] = useState(null)
 
   const limpiar = () => {
     setLocal("")
@@ -24,6 +27,7 @@ export const AnalisisPredictivo = () => {
     setFecha(hoy())
     setDatos(null)
     setError(null)
+    setAlineacion(null)
   }
 
   const analizar = async () => {
@@ -31,12 +35,27 @@ export const AnalisisPredictivo = () => {
       setError("Selecciona el equipo local y el visitante.")
       return
     }
+    if (conAlineacion && !alineacion) {
+      setError("Primero arma la alineación de ambos equipos.")
+      return
+    }
     setCargando(true)
     setError(null)
     try {
-      const res = await axios.get(`${API_URL}/api/predictions/match`, {
-        params: { localTeam: local, awayTeam: visita, date: fecha, league: liga },
-      })
+      let res
+      if (conAlineacion) {
+        res = await axios.post(`${API_URL}/api/predictions/match`, {
+          localTeam: local,
+          awayTeam: visita,
+          date: fecha,
+          league: liga,
+          alineacion,
+        })
+      } else {
+        res = await axios.get(`${API_URL}/api/predictions/match`, {
+          params: { localTeam: local, awayTeam: visita, date: fecha, league: liga },
+        })
+      }
       setDatos(res.data)
     } catch (err) {
       console.error("Error al consultar el análisis predictivo:", err)
@@ -94,7 +113,31 @@ export const AnalisisPredictivo = () => {
             <button className="btn-link" onClick={() => setLiga("")}>quitar</button>
           </p>
         )}
+        <div className="lineup-toggle">
+          <span className="lineup-toggle-label">Modo de predicción</span>
+          <div className="lineup-toggle-opciones">
+            <button
+              className={`lineup-tab ${!conAlineacion ? "activo" : ""}`}
+              onClick={() => setConAlineacion(false)}
+            >
+              Sin alineación (modelo v1)
+            </button>
+            <button
+              className={`lineup-tab ${conAlineacion ? "activo" : ""}`}
+              onClick={() => setConAlineacion(true)}
+            >
+              Con alineación (XI)
+            </button>
+          </div>
+        </div>
       </section>
+
+      {conAlineacion && local && visita && (
+        <section className="card">
+          <div className="card-header">Alineación (arrastra titulares y aparta suspendidos)</div>
+          <LineupBuilder local={local} visita={visita} onChange={setAlineacion} />
+        </section>
+      )}
 
       <div className="actions">
         <button className="btn btn-secondary" onClick={limpiar}>Limpiar</button>

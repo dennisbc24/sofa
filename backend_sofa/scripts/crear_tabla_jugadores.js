@@ -30,6 +30,7 @@ async function main() {
       xa           NUMERIC,
       tiros        INTEGER,
       tiros_puerta INTEGER,
+      crosses      INTEGER,
       pases        INTEGER,
       pases_acertados INTEGER,
       pases_clave  INTEGER,

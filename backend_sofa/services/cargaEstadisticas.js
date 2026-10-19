@@ -112,11 +112,13 @@ function transformarNuevo(json, nombre) {
     visitante: (info && info.away) || null,
     fecha: (info && info.fecha) || null,
     liga: (info && info.torneo) || null,
-    jornada: (info && aNumero(info.ronda)) || null,
-    golesLocal: (info && aNumero(info.goles_h)) || null,
-    golesVisitante: (info && aNumero(info.goles_a)) || null,
-    golesLocal1T: (info && aNumero(info.goles_h_1T)) || null,
-    golesVisitante1T: (info && aNumero(info.goles_a_1T)) || null,
+    jornada: info ? aNumero(info.ronda) : null,
+    // OJO: sin "|| null" — un 0 de goles es un valor válido (aNumero ya
+    // devuelve null cuando no hay dato).
+    golesLocal: info ? aNumero(info.goles_h) : null,
+    golesVisitante: info ? aNumero(info.goles_a) : null,
+    golesLocal1T: info ? aNumero(info.goles_h_1T) : null,
+    golesVisitante1T: info ? aNumero(info.goles_a_1T) : null,
     estado: (info && info.estado) || null,
     url: (json && typeof json.url === "string" && json.url) || null,
   };
@@ -156,6 +158,7 @@ function transformarNuevo(json, nombre) {
       xa: aNumero(p.expectedAssists),
       tiros: aNumero(p.totalShots),
       tiros_puerta: aNumero(p.onTargetScoringAttempt),
+      crosses: aNumero(p.totalCross),
       pases: aNumero(p.totalPass),
       pases_acertados: aNumero(p.accuratePass),
       pases_clave: aNumero(p.keyPass),
@@ -317,13 +320,14 @@ async function procesarArchivo({ nombre, contenido }, opciones = {}) {
       let n = 0;
       let nJ = 0;
       await client.query("BEGIN");
+      // La cabecera se completa siempre (idempotente: COALESCE sólo rellena
+      // nulos), así re-subir un partido corrige campos vacíos sin pisar nada.
+      await completarCabecera(evento, partido.id, client);
       if (!hayStats && filas.length) {
-        await completarCabecera(evento, partido.id, client);
         n += await insertarStats(partido.id, filas, client);
         partes.push(`stats ${n}`);
       }
       if (!hayJugadores && jugadores.length) {
-        await completarCabecera(evento, partido.id, client);
         nJ += await insertarJugadores(partido.id, jugadores, client);
         partes.push(`jugadores ${nJ}`);
       }

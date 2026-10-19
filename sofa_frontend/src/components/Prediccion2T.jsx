@@ -1,7 +1,7 @@
 import { useRef, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
-import { combinar2Partes } from "../dosPartes.js"
+import { combinar2Partes, combinar3Partes } from "../dosPartes.js"
 import { ambosMarcan, masMenos, overDinamicas, overLines, textoMasMenos, textoOver } from "../mercados.js"
 import { BloqueNoPierde, BloquePrevisibilidad } from "./PrediccionSecciones.jsx"
 
@@ -157,20 +157,34 @@ export const MercadosGoles2T = ({ filas }) => {
 }
 
 // Lectura ligera del JSON para previsualizar (sin tocar el backend).
+// Acepta el formato viejo (info.event) y el nuevo (info + estadisticas +
+// jugadores). El 2T solo usa info + stats.
 const previsualizar = (contenido) => {
   try {
     const j = JSON.parse(contenido)
     const ev = j && j.info && j.info.event
-    if (!ev || !ev.id) return { valido: false, texto: "no es un dump de partido" }
-    return {
-      valido: true,
-      partido: `${ev.homeTeam?.name ?? "?"} vs ${ev.awayTeam?.name ?? "?"}`,
-      fecha: ev.startTimestamp
-        ? new Date(ev.startTimestamp * 1000).toISOString().slice(0, 10)
-        : "—",
-      liga: ev.tournament?.name || "—",
-      alDescanso: ev.status?.description || "—",
+    if (ev && ev.id) {
+      return {
+        valido: true,
+        partido: `${ev.homeTeam?.name ?? "?"} vs ${ev.awayTeam?.name ?? "?"}`,
+        fecha: ev.startTimestamp
+          ? new Date(ev.startTimestamp * 1000).toISOString().slice(0, 10)
+          : "—",
+        liga: ev.tournament?.name || "—",
+        alDescanso: ev.status?.description || "—",
+      }
     }
+    const info = j && j.info
+    if (info && (info.home || info.away)) {
+      return {
+        valido: true,
+        partido: `${info.home ?? "?"} vs ${info.away ?? "?"}`,
+        fecha: info.fecha || "—",
+        liga: info.torneo || "—",
+        alDescanso: info.estado || "—",
+      }
+    }
+    return { valido: false, texto: "no es un dump de partido" }
   } catch {
     return { valido: false, texto: "JSON inválido" }
   }
@@ -186,16 +200,20 @@ export const Prediccion2T = () => {
   const [pestana, setPestana] = useState(0)
   const [parteInfo, setParteInfo] = useState(null)
   const [parteStats, setParteStats] = useState(null)
+  const [partePlayers, setPartePlayers] = useState(null)
   const carpetaRef = useRef(null)
   const sueltosRef = useRef(null)
   const infoRef = useRef(null)
   const statsRef = useRef(null)
+  const playersRef = useRef(null)
 
   const limpiarPartes = () => {
     setParteInfo(null)
     setParteStats(null)
+    setPartePlayers(null)
     if (infoRef.current) infoRef.current.value = ""
     if (statsRef.current) statsRef.current.value = ""
+    if (playersRef.current) playersRef.current.value = ""
   }
 
   const limpiar = () => {
@@ -243,16 +261,19 @@ export const Prediccion2T = () => {
   const seleccionarCarpeta = (e) => cargar(Array.from(e.target.files || []), "carpeta")
   const seleccionarSueltos = (e) => cargar(Array.from(e.target.files || []), "archivos sueltos")
 
-  // Subida en 2 partes (extracto del celular): info.json + stats.json se
-  // combinan en un único dump y se agrega como UN archivo a predecir.
+  // Subida en partes (extracto del celular): info.json + stats.json (+
+  // players.json opcional) se combinan en un único dump y se agrega como UN
+  // archivo a predecir.
   const seleccionarParte = (cual) => async (e) => {
     const f = (e.target.files || [])[0]
     setResultados(null)
     const nuevo = f ? { nombre: f.name, contenido: await f.text() } : null
     const info = cual === "info" ? nuevo : parteInfo
     const stats = cual === "stats" ? nuevo : parteStats
+    const players = cual === "players" ? nuevo : partePlayers
     if (cual === "info") setParteInfo(nuevo)
-    else setParteStats(nuevo)
+    else if (cual === "stats") setParteStats(nuevo)
+    else setPartePlayers(nuevo)
 
     if (!info || !stats) {
       setArchivos([])
@@ -260,7 +281,9 @@ export const Prediccion2T = () => {
       setError(info || stats ? "Faltan las 2 partes: selecciona info.json y stats.json." : null)
       return
     }
-    const r = combinar2Partes(info.contenido, stats.contenido)
+    const r = players
+      ? combinar3Partes(info.contenido, stats.contenido, players.contenido)
+      : combinar2Partes(info.contenido, stats.contenido)
     if (!r.ok) {
       setArchivos([])
       setCarpeta("")
@@ -270,13 +293,17 @@ export const Prediccion2T = () => {
     const contenido = r.contenido
     setArchivos([
       {
-        nombre: `2partes_${r.partido.id}.json`,
+        nombre: `partes_${r.partido.id}.json`,
         tam: contenido.length,
         contenido,
         vista: previsualizar(contenido),
       },
     ])
-    setCarpeta("2 partes (info.json + stats.json)")
+    setCarpeta(
+      players
+        ? `3 partes (info.json + stats.json + players.json, ${r.partido.jugadores} jugadores)`
+        : "2 partes (info.json + stats.json)"
+    )
     setError(null)
   }
 
@@ -398,11 +425,24 @@ export const Prediccion2T = () => {
             disabled={cargando}
           />
         </label>
+        <label className="field">
+          <span className="field-label">
+            …parte 3 (opcional): players.json (stats y alineación por jugador)
+          </span>
+          <input
+            ref={playersRef}
+            className="field-input"
+            type="file"
+            accept=".json,application/json"
+            onChange={seleccionarParte("players")}
+            disabled={cargando}
+          />
+        </label>
         <ul className="explicacion">
           <li>El modelo estima el 2T con las estadísticas del 1T del JSON + el historial de la base de datos.</li>
           <li>Predice goles, remates, corners, amarillas y 37 stats más (41 en total).</li>
           <li>Sólo lectura: los archivos NO se guardan en la base de datos.</li>
-          <li>Desde el celular: sube info.json y stats.json por separado — se combinan automáticamente.</li>
+          <li>Desde el celular: sube info.json y stats.json por separado — se combinan automáticamente. Si también subes players.json, se incluye la alineación y los datos por jugador.</li>
         </ul>
         {carpeta && (
           <p className="tabla-status">

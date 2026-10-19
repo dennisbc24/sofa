@@ -36,12 +36,17 @@ async function asegurarTabla() {
       goles_visitante INT,
       resultado_real TEXT,
       acierto BOOLEAN,
+      con_alineacion BOOLEAN NOT NULL DEFAULT FALSE,
+      alineacion JSONB,
       creado_en TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
+  await pool.query(`ALTER TABLE ${TABLA} ADD COLUMN IF NOT EXISTS con_alineacion BOOLEAN NOT NULL DEFAULT FALSE`);
+  await pool.query(`ALTER TABLE ${TABLA} ADD COLUMN IF NOT EXISTS alineacion JSONB`);
+  await pool.query(`DROP INDEX IF EXISTS ${TABLA}_unico`);
   await pool.query(`
     CREATE UNIQUE INDEX IF NOT EXISTS ${TABLA}_unico
-      ON ${TABLA} (fecha_prediccion, fecha_partido, local, visitante, model);
+      ON ${TABLA} (fecha_prediccion, fecha_partido, local, visitante, model, con_alineacion);
   `);
   tablaAsegurada = true;
 }
@@ -82,16 +87,18 @@ async function registrarPrediccion({
   principal,
   model,
   modelVersion,
+  alineacion = null,
 }) {
   try {
     await asegurarTabla();
     await actualizarResultadosPendientes();
+    const conAlineacion = Boolean(alineacion);
     await pool.query(
       `INSERT INTO ${TABLA}
         (fecha_partido, local, visitante, liga, p_local, p_empate, p_visitante,
-         prediccion_principal, model, model_version)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-       ON CONFLICT (fecha_prediccion, fecha_partido, local, visitante, model) DO NOTHING`,
+         prediccion_principal, model, model_version, con_alineacion, alineacion)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+       ON CONFLICT (fecha_prediccion, fecha_partido, local, visitante, model, con_alineacion) DO NOTHING`,
       [
         fechaPartido,
         local,
@@ -103,6 +110,8 @@ async function registrarPrediccion({
         principal,
         model,
         modelVersion,
+        conAlineacion,
+        alineacion ? JSON.stringify(alineacion) : null,
       ]
     );
   } catch (e) {
