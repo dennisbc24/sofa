@@ -68,9 +68,9 @@ export const AnalisisPredictivo = () => {
 
   const probs = datos
     ? [
-        { etiqueta: "Local", valor: datos.probabilities.home },
+        { etiqueta: datos.match?.homeTeam || "Local", valor: datos.probabilities.home },
         { etiqueta: "Empate", valor: datos.probabilities.draw },
-        { etiqueta: "Visita", valor: datos.probabilities.away },
+        { etiqueta: datos.match?.awayTeam || "Visita", valor: datos.probabilities.away },
       ]
     : []
   const favorito = probs.length ? probs.reduce((a, b) => (a.valor >= b.valor ? a : b)) : null
@@ -201,7 +201,7 @@ export const AnalisisPredictivo = () => {
             )}
           </section>
 
-          <SeccionesAnalisis datos={datos} />
+          <SeccionesAnalisis datos={datos} reales={datos.reales} />
         </>
       )}
     </section>

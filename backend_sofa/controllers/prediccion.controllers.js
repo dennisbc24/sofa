@@ -39,12 +39,12 @@ const postMatchConAlineacion = async (req, res, next) => {
 };
 
 // GET /api/predictions/alineacion/:equipo → squad con dorsal/posici��n/tasas
-// + formaci��n t��pica del equipo (derivada de sus XIs hist��ricos).
+// + formaci��n t��pica, ultima alineaci��n conocida y arquero habitual.
 const getAlineacion = async (req, res, next) => {
   try {
     const equipo = req.params.equipo;
-    const { jugadores, formacion } = await getSquad(equipo);
-    res.json({ equipo, jugadores, formacion });
+    const { jugadores, formacion, ultimaXI, arqueroHabitual } = await getSquad(equipo);
+    res.json({ equipo, jugadores, formacion, ultimaXI, arqueroHabitual });
   } catch (error) {
     next(error);
   }

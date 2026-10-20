@@ -2,8 +2,11 @@ import { useRef, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
 import { combinar2Partes, combinar3Partes } from "../dosPartes.js"
-import { ambosMarcan, masMenos, overDinamicas, overLines, textoMasMenos, textoOver } from "../mercados.js"
+import { ambosMarcan, masMenos, overDinamicas, overLines, textoOver } from "../mercados.js"
 import { BloqueNoPierde, BloquePrevisibilidad } from "./PrediccionSecciones.jsx"
+import { CeldaMasMenos } from "./CeldaMasMenos.jsx"
+import { CardPrediccion1x2 } from "./CardPrediccion1x2.jsx"
+import { formatearFecha } from "../utils.js"
 
 // Mismo límite que SubirEstadisticas: express admite 15mb.
 const LOTE_MAX_BYTES = 6 * 1024 * 1024
@@ -11,12 +14,13 @@ const MAX_ARCHIVOS = 20
 
 const fmt = (v) => (v === null || v === undefined ? "—" : Number(v).toFixed(2))
 const pct = (v) => (v === null || v === undefined ? null : `${v > 0 ? "+" : ""}${v.toFixed(1)}%`)
-const ETIQUETA_1X2 = { home: "Local", draw: "Empate", away: "Visita" }
 
 // Mercados derivados de la proyección 2T (ambos marcan y cantidad de goles,
 // corners y remates, para el 2T y para el partido completo). Se comparten
 // con el historial (DosTDetalle).
-export const MercadosGoles2T = ({ filas }) => {
+// `reales`: valores reales del partido (si ya está en la base) para pintar
+// la columna Más/Menos en verde (acierto) / rojo (fallo).
+export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilidad, noPierde }) => {
   const fila = (nombre) => (filas || []).find((f) => f.stat === nombre)
   const g = fila("Goles")
   if (!g) return null
@@ -25,18 +29,22 @@ export const MercadosGoles2T = ({ filas }) => {
   const bft = hayFT ? ambosMarcan(g.ftLocal, g.ftVisita) : null
   const o2t = overLines((g.predLocal2T || 0) + (g.predVisita2T || 0))
   const oft = g.ftTotal != null ? overLines(g.ftTotal) : null
+  const realG2T = reales?.goles?.["2T"]
+  const realGFT = reales?.goles?.["Partido"]
   const goles = [
-    o2t && { t: "2T", local: fmt(g.predLocal2T), visita: fmt(g.predVisita2T), o: o2t },
-    oft && { t: "Partido", local: fmt(g.ftLocal), visita: fmt(g.ftVisita), o: oft },
+    o2t && { t: "2T", local: fmt(g.predLocal2T), visita: fmt(g.predVisita2T), o: o2t, real: realG2T },
+    oft && { t: "Partido", local: fmt(g.ftLocal), visita: fmt(g.ftVisita), o: oft, real: realGFT },
   ].filter(Boolean)
   // Corners y remates: mismos campos de la fila (pred 2T + FT del whitelist).
   const statRows = (nombre) => {
     const f = fila(nombre)
     if (!f || f.predLocal2T == null || f.predVisita2T == null) return []
     const t2 = (f.predLocal2T || 0) + (f.predVisita2T || 0)
-    const rows = [{ t: "2T", local: fmt(f.predLocal2T), visita: fmt(f.predVisita2T), total: fmt(t2), totalNum: t2, over: overDinamicas(t2) }]
+    const real2T = reales?.[nombre === "Corner kicks" ? "corners" : "remates"]?.["2T"]
+    const realFT = reales?.[nombre === "Corner kicks" ? "corners" : "remates"]?.["Partido"]
+    const rows = [{ t: "2T", local: fmt(f.predLocal2T), visita: fmt(f.predVisita2T), total: fmt(t2), totalNum: t2, over: overDinamicas(t2), real: real2T }]
     if (f.ftLocal != null && f.ftVisita != null && f.ftTotal != null) {
-      rows.push({ t: "Partido", local: fmt(f.ftLocal), visita: fmt(f.ftVisita), total: fmt(f.ftTotal), totalNum: f.ftTotal, over: overDinamicas(f.ftTotal) })
+      rows.push({ t: "Partido", local: fmt(f.ftLocal), visita: fmt(f.ftVisita), total: fmt(f.ftTotal), totalNum: f.ftTotal, over: overDinamicas(f.ftTotal), real: realFT })
     }
     return rows
   }
@@ -51,8 +59,8 @@ export const MercadosGoles2T = ({ filas }) => {
             <thead>
                 <tr>
                   <th>Tiempo</th>
-                  <th>Local</th>
-                  <th>Visita</th>
+                  <th className="th-equipo">{local || "Local"}</th>
+                  <th className="th-equipo">{visitante || "Visita"}</th>
                   <th className="col-total">Total</th>
                   <th>Over</th>
                   <th>Más/Menos</th>
@@ -66,7 +74,7 @@ export const MercadosGoles2T = ({ filas }) => {
                   <td className="tabla-num">{row.visita}</td>
                   <td className="tabla-num col-total">{row.total}</td>
                   <td className="tabla-num">{textoOver(row.over)}</td>
-                  <td className="tabla-num">{textoMasMenos(masMenos(row.totalNum))}</td>
+                  <td className="tabla-num"><CeldaMasMenos mm={masMenos(row.totalNum)} real={row.real} /></td>
                 </tr>
               ))}
             </tbody>
@@ -74,9 +82,64 @@ export const MercadosGoles2T = ({ filas }) => {
         </div>
       </div>
     ) : null
-  if (!b2t && !bft && goles.length === 0 && corners.length === 0 && remates.length === 0) return null
+  if (!b2t && !bft && goles.length === 0 && corners.length === 0 && remates.length === 0
+    && !previsibilidad && !noPierde) return null
   return (
-    <div className="mercados-grid">
+    <>
+      <section className="card">
+        <div className="card-header">Goles, remates y corners esperados (2T)</div>
+        <div className="mercados-grid">
+      {goles.length > 0 && (
+        <div className="mercado-bloque">
+          <div className="mercado-titulo">Goles (esperados)</div>
+          <div className="tabla-scroll">
+            <table className="tabla">
+              <thead>
+                <tr>
+                  <th>Tiempo</th>
+                  <th className="th-equipo">{local || "Local"}</th>
+                  <th className="th-equipo">{visitante || "Visita"}</th>
+                  <th className="col-total">Total</th>
+                  <th>+0.5</th>
+                  <th>+1.5</th>
+                  <th>+2.5</th>
+                  <th>+3.5</th>
+                  <th>Más/Menos</th>
+                </tr>
+              </thead>
+              <tbody>
+                {goles.map((row) => (
+                  <tr key={row.t} className={row.t === "Partido" ? "fila-total" : undefined}>
+                    <td>{row.t}</td>
+                    <td className="tabla-num">{row.local}</td>
+                    <td className="tabla-num">{row.visita}</td>
+                    <td className="tabla-num col-total">{row.o.esperados}</td>
+                    <td className="tabla-num">{row.o.o05}%</td>
+                    <td className="tabla-num">{row.o.o15}%</td>
+                    <td className="tabla-num">{row.o.o25}%</td>
+                    <td className="tabla-num">{row.o.o35}%</td>
+                    <td className="tabla-num"><CeldaMasMenos mm={masMenos(row.o.esperados)} real={row.real} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      <BloqueCantidad titulo="Corners (esperados)" rows={corners} />
+      <BloqueCantidad titulo="Remates (esperados)" rows={remates} />
+        </div>
+      </section>
+
+      <section className="card">
+        <div className="card-header">Mercados adicionales (2T)</div>
+        <div className="mercados-grid">
+      {(previsibilidad || noPierde) && (
+        <>
+          <BloquePrevisibilidad previsibilidad={previsibilidad} local={local} visita={visitante} />
+          <BloqueNoPierde fuente={noPierde} local={local} visita={visitante} />
+        </>
+      )}
       {(b2t || bft) && (
         <div className="mercado-bloque">
           <div className="mercado-titulo">Ambos marcan</div>
@@ -113,46 +176,9 @@ export const MercadosGoles2T = ({ filas }) => {
           </div>
         </div>
       )}
-      {goles.length > 0 && (
-        <div className="mercado-bloque">
-          <div className="mercado-titulo">Goles (esperados)</div>
-          <div className="tabla-scroll">
-            <table className="tabla">
-              <thead>
-                <tr>
-                  <th>Tiempo</th>
-                  <th>Local</th>
-                  <th>Visita</th>
-                  <th className="col-total">Total</th>
-                  <th>+0.5</th>
-                  <th>+1.5</th>
-                  <th>+2.5</th>
-                  <th>+3.5</th>
-                  <th>Más/Menos</th>
-                </tr>
-              </thead>
-              <tbody>
-                {goles.map((row) => (
-                  <tr key={row.t} className={row.t === "Partido" ? "fila-total" : undefined}>
-                    <td>{row.t}</td>
-                    <td className="tabla-num">{row.local}</td>
-                    <td className="tabla-num">{row.visita}</td>
-                    <td className="tabla-num col-total">{row.o.esperados}</td>
-                    <td className="tabla-num">{row.o.o05}%</td>
-                    <td className="tabla-num">{row.o.o15}%</td>
-                    <td className="tabla-num">{row.o.o25}%</td>
-                    <td className="tabla-num">{row.o.o35}%</td>
-                    <td className="tabla-num">{textoMasMenos(masMenos(row.o.esperados))}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </div>
-      )}
-      <BloqueCantidad titulo="Corners (esperados)" rows={corners} />
-      <BloqueCantidad titulo="Remates (esperados)" rows={remates} />
-    </div>
+      </section>
+    </>
   )
 }
 
@@ -401,10 +427,27 @@ export const Prediccion2T = () => {
             disabled={cargando}
           />
         </label>
+        <ul className="explicacion">
+          <li>El modelo estima el 2T con las estadísticas del 1T del JSON + el historial de la base de datos.</li>
+          <li>Predice goles, remates, corners, amarillas y 37 stats más (41 en total).</li>
+          <li>Sólo lectura: los archivos NO se guardan en la base de datos.</li>
+        </ul>
+        {carpeta && (
+          <p className="tabla-status">
+            {carpeta} — {archivos.length} archivo(s) .json detectado(s)
+            {archivos.length !== validos ? ` (${archivos.length - validos} inválido(s))` : ""}
+          </p>
+        )}
+      </section>
+
+      <section className="card card-celular">
+        <div className="card-header">Carga desde el celular (por partes)</div>
+        <p className="tabla-status">
+          Si tu extractor sólo puede guardar los archivos por separado, súbelos aquí: se combinan
+          automáticamente en un solo dump.
+        </p>
         <label className="field">
-          <span className="field-label">
-            …o desde el celular en 2 partes — parte 1: info.json (evento del partido)
-          </span>
+          <span className="field-label">Parte 1: info.json (evento del partido)</span>
           <input
             ref={infoRef}
             className="field-input"
@@ -415,7 +458,7 @@ export const Prediccion2T = () => {
           />
         </label>
         <label className="field">
-          <span className="field-label">…parte 2: stats.json (estadísticas del 1T)</span>
+          <span className="field-label">Parte 2: stats.json (estadísticas del 1T)</span>
           <input
             ref={statsRef}
             className="field-input"
@@ -427,7 +470,7 @@ export const Prediccion2T = () => {
         </label>
         <label className="field">
           <span className="field-label">
-            …parte 3 (opcional): players.json (stats y alineación por jugador)
+            Parte 3 (opcional): players.json (stats y alineación por jugador)
           </span>
           <input
             ref={playersRef}
@@ -439,17 +482,9 @@ export const Prediccion2T = () => {
           />
         </label>
         <ul className="explicacion">
-          <li>El modelo estima el 2T con las estadísticas del 1T del JSON + el historial de la base de datos.</li>
-          <li>Predice goles, remates, corners, amarillas y 37 stats más (41 en total).</li>
-          <li>Sólo lectura: los archivos NO se guardan en la base de datos.</li>
-          <li>Desde el celular: sube info.json y stats.json por separado — se combinan automáticamente. Si también subes players.json, se incluye la alineación y los datos por jugador.</li>
+          <li>Con info.json + stats.json basta para proyectar el 2T (el modelo usa info + stats).</li>
+          <li>Si también subes players.json, se incluye la alineación y los datos por jugador.</li>
         </ul>
-        {carpeta && (
-          <p className="tabla-status">
-            {carpeta} — {archivos.length} archivo(s) .json detectado(s)
-            {archivos.length !== validos ? ` (${archivos.length - validos} inválido(s))` : ""}
-          </p>
-        )}
       </section>
 
       {archivos.length > 0 && (
@@ -584,35 +619,40 @@ export const Prediccion2T = () => {
                 <p className="tabla-status">{activo.advertencias.join(" ")}</p>
               )}
 
-              {activo.resultado1x2 && (
-                <div className="result-row">
-                  <span className="result-label">Resultado final (1X2)</span>
-                  <span className="result-value">
-                    <span className="resultado-chip resultado-e">
-                      {ETIQUETA_1X2[activo.resultado1x2.prediccion]} ({activo.resultado1x2.probabilidad}%)
-                    </span>{" "}
-                    Local {activo.resultado1x2.probabilidades.home}% · Empate{" "}
-                    {activo.resultado1x2.probabilidades.draw}% · Visita{" "}
-                    {activo.resultado1x2.probabilidades.away}% · goles esperados{" "}
-                    {activo.resultado1x2.golesEsperados.local}-
-                    {activo.resultado1x2.golesEsperados.visita}
-                  </span>
-                </div>
-              )}
+              {activo.resultado1x2 && (() => {
+                const r1 = activo.resultado1x2
+                // Resultado real (si el partido ya está en la base).
+                const gp = activo.reales?.goles?.["Partido"]
+                const real = gp ? (gp.l > gp.v ? "home" : gp.l < gp.v ? "away" : "draw") : null
+                return (
+                  <CardPrediccion1x2
+                    titulo="Predicción final (2T)"
+                    local={activo.partido?.local}
+                    visitante={activo.partido?.visitante}
+                    fecha={activo.partido?.fecha ? formatearFecha(activo.partido.fecha) : null}
+                    probabilidades={r1.probabilidades}
+                    predicho={r1.prediccion}
+                    probabilidad={r1.probabilidad}
+                    real={real}
+                    marcador={gp}
+                    chip={
+                      <span className="modelo-chip">
+                        {activo.modelo?.id || activo.modelo?.name}
+                      </span>
+                    }
+                    nota={`Proyección estadística del 2T con fines analíticos: estima probabilidades, no garantiza resultados. Goles esperados final: ${r1.golesEsperados?.local}-${r1.golesEsperados?.visita}.`}
+                  />
+                )
+              })()}
 
-              <MercadosGoles2T filas={activo.filas} />
-              <div className="mercados-grid">
-                <BloquePrevisibilidad
-                  previsibilidad={activo.previsibilidad}
-                  local={activo.partido?.local}
-                  visita={activo.partido?.visitante}
-                />
-                <BloqueNoPierde
-                  fuente={activo}
-                  local={activo.partido?.local}
-                  visita={activo.partido?.visitante}
-                />
-              </div>
+      <MercadosGoles2T
+        filas={activo.filas}
+        reales={activo.reales}
+        local={activo.partido?.local}
+        visitante={activo.partido?.visitante}
+        previsibilidad={activo.previsibilidad}
+        noPierde={activo}
+      />
 
               <div className="tabla-scroll">
                 <table className="tabla">
@@ -620,10 +660,10 @@ export const Prediccion2T = () => {
                     <tr>
                       <th>Stat</th>
                       <th>1T</th>
-                      <th>Local</th>
-                      <th>Visita</th>
-                      <th>FT Local</th>
-                      <th>FT Visita</th>
+                      <th className="th-equipo">{activo.partido?.local || "Local"}</th>
+                      <th className="th-equipo">{activo.partido?.visitante || "Visita"}</th>
+                      <th>FT {activo.partido?.local || "Local"}</th>
+                      <th>FT {activo.partido?.visitante || "Visita"}</th>
                       <th>FT Total</th>
                       <th>Fuente</th>
                     </tr>

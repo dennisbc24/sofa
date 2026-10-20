@@ -11,6 +11,7 @@ import { AnalisisPredictivo } from './components/AnalisisPredictivo.jsx'
 import { Prediccion2T } from './components/Prediccion2T.jsx'
 import { HistorialPredicciones } from './components/HistorialPredicciones.jsx'
 import { SubirEstadisticas } from './components/SubirEstadisticas.jsx'
+import { aplicarTema, TEMA_2T, TEMA_PRED } from './tema.js'
 
 const VISTA_INICIAL = "predictivo"
 
@@ -37,6 +38,14 @@ function App() {
       .catch(() => setSesion(null))
       .finally(() => setSesionCargando(false))
   }, [])
+
+  // Tema de la pagina: el 2T invierte la paleta (claro) frente al 1X2 (oscuro).
+  // El historial gestiona su propio theme (segun el tipo de la prediccion
+  // que se este viendo), asi que aqui no lo pisamos.
+  useEffect(() => {
+    if (vista === "historial") return
+    aplicarTema(vista === "prediccion2t" ? TEMA_2T : TEMA_PRED)
+  }, [vista])
 
   // Si cualquier llamada responde 401 (sesión caducada), volvemos al login.
   useEffect(() => {
@@ -82,8 +91,12 @@ function App() {
     )
   }
 
+  // Tema por vista: la prediccion pre-partido y la proyeccion 2T usan
+  // acentos distintos para no confundirlas.
+  const tema = vista === "prediccion2t" ? "tema-2t" : "tema-pred"
+
   return (
-    <main className="app">
+    <main className={`app ${tema}`}>
       <h1 className="app-title">Analytics</h1>
 
       <button

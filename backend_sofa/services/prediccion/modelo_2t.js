@@ -21,6 +21,7 @@ const pool = require("../../db");
 const path = require("path");
 const { transformar, transformarNuevo } = require("../cargaEstadisticas");
 const { tasasPor90, potencialXI, potencialTipicoEquipo, defaultsPorPosicion } = require("./alineacion");
+const { realesDePartido } = require("./reales");
 const {
   TODOS, STATS, GOLES, etiqueta, familiaLiga, baseLiga,
   ridgePredecir, registro, registroVisita, predecirH, featuresLado,
@@ -372,6 +373,15 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
   const Hkey = { [GOLES]: "goles", "Total shots": "remates", "Corner kicks": "corners" };
 
   const filasPred = [];
+  // Reales del partido (si ya esta en la base) para el color de Mas/Menos.
+  let realesDelPartido = null;
+  try {
+    realesDelPartido = await realesDePartido({
+      id: evento.id, local, visitante, fecha,
+    });
+  } catch (e) {
+    realesDelPartido = null;
+  }
   // Ajuste por XI (si el JSON trae jugadores). Nunca rompe la proyeccion.
   let ratiosXI = null;
   try {
@@ -520,6 +530,9 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
       visitante: ctx.nHistorial.visitante,
     },
     filas: filasPred,
+    // Reales del partido (si ya esta en la base): permiten pintar la columna
+    // "Mas/Menos" en verde (acierto) / rojo (fallo) en la proyeccion 2T.
+    reales: realesDelPartido,
     ajusteXI: ratiosXI ? {
       local: ratiosXI.detalle.home,
       visitante: ratiosXI.detalle.away,

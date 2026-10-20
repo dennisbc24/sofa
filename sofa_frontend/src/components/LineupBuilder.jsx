@@ -91,12 +91,48 @@ const FORMACIONES = {
 
 const ETIQUETA_POS = { G: "Portero", D: "Defensa", M: "Medio", F: "Ataque" }
 
+// Coloca a los jugadores en los puestos de la formacion: primero el arquero
+// (habitual o el de la ultima XI) y luego el resto por posicion.
+const colocarXI = (datos, formacion) => {
+  const slots = FORMACIONES[formacion] || FORMACIONES["4-3-3"]
+  const p = {}
+  const xi = datos.ultimaXI?.titulares || []
+  // 1) Arquero: el de la ultima XI o, si no hay, el habitual del equipo.
+  const gk = xi.find((j) => j.posicion === "G")
+    || (datos.arqueroHabitual ? { ...datos.arqueroHabitual, posicion: "G" } : null)
+  if (gk) {
+    const i = slots.findIndex((s) => s.pos === "G")
+    if (i !== -1) p[i] = gk.player_id
+  }
+  // 2) El resto de la ultima XI, por posicion.
+  for (const j of xi) {
+    if (j.posicion === "G") continue
+    const i = slots.findIndex((s, k) => !p[k] && s.pos === j.posicion)
+    if (i !== -1) p[i] = j.player_id
+  }
+  return p
+}
+
+// Arma el lado de la alineacion (titulares / suplentes / suspendidos).
+const armarPayload = (puestos, suspendidos, jugadores) => {
+  const tit = Object.values(puestos || {})
+  const enTit = new Set(tit)
+  const enSusp = new Set(suspendidos || [])
+  return {
+    titulares: tit,
+    suplentes: (jugadores || []).map((j) => j.player_id).filter((id) => !enTit.has(id) && !enSusp.has(id)),
+    suspendidos: suspendidos || [],
+  }
+}
+
 export const LineupBuilder = ({ local, visita, onChange }) => {
   const [equipoActivo, setEquipoActivo] = useState("local")
   const [squads, setSquads] = useState({ local: [], visitante: [] })
+  const [datosPorLado, setDatosPorLado] = useState({ local: null, visitante: null })
   const [formaciones, setFormaciones] = useState({ local: "4-3-3", visitante: "4-3-3" })
   const [puestos, setPuestos] = useState({ local: {}, visitante: {} })
   const [suspendidos, setSuspendidos] = useState({ local: [], visitante: [] })
+  const [ultimasXI, setUltimasXI] = useState({ local: null, visitante: null })
   const [cargando, setCargando] = useState(false)
   const [menu, setMenu] = useState(null)
   const [busqueda, setBusqueda] = useState("")
@@ -144,18 +180,24 @@ export const LineupBuilder = ({ local, visita, onChange }) => {
     ]).then(([rl, rv]) => {
       if (!vivo) return
       setSquads({ local: rl.data.jugadores, visitante: rv.data.jugadores })
+      setDatosPorLado({ local: rl.data, visitante: rv.data })
       const fL = rl.data.formacion?.forma && FORMACIONES[rl.data.formacion.forma]
         ? rl.data.formacion.forma : "4-3-3"
       const fV = rv.data.formacion?.forma && FORMACIONES[rv.data.formacion.forma]
         ? rv.data.formacion.forma : "4-3-3"
       setFormaciones({ local: fL, visitante: fV })
-      const puestos0 = { local: {}, visitante: {} }
+      setUltimasXI({ local: rl.data.ultimaXI || null, visitante: rv.data.ultimaXI || null })
+      // Precarga: la ultima alineacion conocida + el arquero habitual.
+      const puestos0 = {
+        local: colocarXI(rl.data, fL),
+        visitante: colocarXI(rv.data, fV),
+      }
       const susp0 = { local: [], visitante: [] }
       setPuestos(puestos0)
       setSuspendidos(susp0)
       const payload = {
-        local: { titulares: [], suplentes: rl.data.jugadores.map((j) => j.player_id), suspendidos: [] },
-        visitante: { titulares: [], suplentes: rv.data.jugadores.map((j) => j.player_id), suspendidos: [] },
+        local: armarPayload(puestos0.local, [], rl.data.jugadores),
+        visitante: armarPayload(puestos0.visitante, [], rv.data.jugadores),
       }
       if (onChange) onChange(payload)
     }).catch(() => {}).finally(() => vivo && setCargando(false))
@@ -352,6 +394,25 @@ export const LineupBuilder = ({ local, visita, onChange }) => {
 
       {cargando && <p className="tabla-status">Cargando plantilla…</p>}
       {aviso && <p className="tabla-status tabla-status-error lineup-aviso">{aviso}</p>}
+      {!cargando && ultimasXI?.[equipoActivo] && (
+        <p className="tabla-status lineup-precarga">
+          Precargado con la última alineación conocida ({ultimasXI[equipoActivo].fecha}) — modifícala o déjala
+          tal cual.{" "}
+          <button
+            className="btn-link"
+            onClick={() => {
+              const f = formaciones[equipoActivo]
+              const datos = datosPorLado[equipoActivo]
+              if (!datos) return
+              const nuevos = { ...puestos, [equipoActivo]: colocarXI(datos, f) }
+              setPuestos(nuevos)
+              setTimeout(() => publicar(nuevos, suspendidos), 0)
+            }}
+          >
+            recargar
+          </button>
+        </p>
+      )}
 
       {!cargando && (
         <>

@@ -146,7 +146,7 @@
 .card {
   margin-bottom: 24px;
   padding: 20px;
-  background: linear-gradient(180deg, #141b66 0%, #0e1448 100%);
+  background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 14px;
   box-shadow: var(--shadow);
@@ -1311,4 +1311,211 @@
   margin: 0;
   padding: 6px 10px;
   border-radius: 8px;
+}
+
+/* Acierto/Desacierto en la columna Mas/Menos del historial */
+.mm-acierto {
+  color: #3ddc84;
+  font-weight: 700;
+}
+
+.mm-fallo {
+  color: #e05555;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* Cabeceras con el nombre del equipo (mejor identificacion que Local/Visitante) */
+.th-equipo {
+  max-width: 150px;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.15;
+  font-size: 12px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.lineup-precarga {
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(var(--accent-rgb), 0.1);
+}
+
+
+/* ---------- Temas por vista ---------- */
+/* Pre-partido (1X2): acento cyan (el de por defecto).
+   Proyeccion 2T: acento violeta, para que no se confundan. */
+/* Proyeccion 2T: tema calido (morado + ambar) frente al 1X2 (azul + cyan).
+   Aplica al body (fondo de pagina) y a cualquier contenedor anidado. */
+/* Proyeccion 2T: tema CLARO (inversion de paleta) frente al 1X2 oscuro
+   (azul + cyan). Contraste inmediato entre las dos pantallas. */
+body.tema-2t,
+.app.tema-2t,
+.tema-2t {
+  --card-bg: #ffffff;
+  --bg: #efe8f6;
+  --card: #ffffff;
+  --card-border: #cbb6e0;
+  --text: #241433;
+  --text-muted: #4e3f63;
+  --accent: #9c1aa8;
+  --accent-hover: #7d1387;
+  --accent-rgb: 156, 26, 168;
+  --accent2: #ea580c;
+  --input-bg: #ffffff;
+  --shadow: 0 10px 26px rgba(60, 20, 80, 0.16);
+  --danger: #d61f4b;
+}
+
+body.tema-2t {
+  background: radial-gradient(ellipse at top, #fbf7ff 0%, var(--bg) 68%);
+  background-color: var(--bg);
+}
+
+/* En tema claro los velos blancos sutiles se invierten a oscuros */
+body.tema-2t .acordeon-item:hover,
+body.tema-2t .tabla tbody tr:hover,
+body.tema-2t .btn-secondary:hover {
+  background: rgba(40, 10, 60, 0.05);
+}
+
+/* Tema claro (2T): los acentos claros del tema oscuro se oscurecen */
+body.tema-2t .celda-exacto { color: #047857; }
+body.tema-2t .celda-cercano { color: #b45309; }
+body.tema-2t .celda-lejos { color: #b91c1c; }
+body.tema-2t .mm-acierto { color: #047857; }
+body.tema-2t .mm-fallo { color: #b91c1c; }
+body.tema-2t .resultado-e { background: rgba(40, 10, 60, 0.06); color: var(--text-muted); }
+body.tema-2t .resultado-d { color: #b91c1c; }
+body.tema-2t .evaluacion-cabecera { background: rgba(40, 10, 60, 0.05); }
+body.tema-2t .lineup-slot-dorsal { background: #ffffff; color: #241433; }
+body.tema-2t .lineup-precarga { background: rgba(156, 26, 168, 0.1); }
+body.tema-2t .card-celular { background: linear-gradient(180deg, rgba(156, 26, 168, 0.08), transparent 120px); }
+body.tema-2t .btn-link { color: var(--accent); }
+
+body.tema-2t .prob-barra,
+body.tema-2t .tabla th,
+body.tema-2t .tabla td,
+body.tema-2t .card,
+body.tema-2t .input,
+body.tema-2t .field-input,
+body.tema-2t .btn,
+body.tema-2t .tab,
+body.tema-2t .resultado-chip,
+body.tema-2t .modelo-chip {
+  border-color: var(--card-border);
+}
+
+/* El campo de la can��a (alineaciones) usa el fondo del tema */
+body.tema-2t .lineup-pitch {
+  background: repeating-linear-gradient(90deg, #2f6b3a 0 8.33%, #2a6034 8.33% 16.66%);
+}
+
+.app.tema-2t .view-title::after {
+  content: " \00b7 2T";
+  font-size: 11px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 1px 8px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.app.tema-pred .view-title::after {
+  content: " \00b7 1X2";
+  font-size: 11px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 1px 8px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Card de carga desde el celular: se distingue del resto */
+.card-celular {
+  border-color: rgba(var(--accent-rgb), 0.45);
+  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.07), transparent 120px);
+}
+
+.card-celular .card-header {
+  color: var(--accent);
+}
+
+/* Card de prediccion colapsable (historial) */
+.card-toggle {
+  margin-left: auto;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.card-toggle:hover {
+  background: rgba(var(--accent-rgb), 0.12);
+}
+
+.card-colapsada .result-row {
+  margin-bottom: 0;
+}
+
+.card-colapsada .card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* El detalle del historial lleva su propio tema (1X2 cyan / 2T violeta) */
+.historial-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* La card clara de "Datos y backtest" se adapta al theme claro del 2T */
+body.tema-2t .card-clara {
+  background: #fbf8ff;
+  border-color: var(--card-border);
+  color: var(--text);
+}
+
+body.tema-2t .card-clara .card-header {
+  border-bottom-color: var(--card-border);
+  color: var(--accent);
+}
+
+body.tema-2t .card-clara .tabla th,
+body.tema-2t .card-clara .tabla td {
+  border-bottom-color: #e6dcf1;
+  color: var(--text);
+}
+
+body.tema-2t .card-clara .tabla thead th {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #ffffff;
+}
+
+body.tema-2t .card-clara .tabla tbody tr:hover {
+  background: rgba(156, 26, 168, 0.06);
+}
+
+body.tema-2t .card-clara .tabla-metrica {
+  color: var(--accent);
+}
+
+body.tema-2t .card-clara .tabla-ft {
+  background: rgba(156, 26, 168, 0.1);
+  color: var(--text);
+}
+
+body.tema-2t .card-clara .tabla-total {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #ffffff;
 }

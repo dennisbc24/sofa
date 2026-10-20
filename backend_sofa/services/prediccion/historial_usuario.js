@@ -264,6 +264,12 @@ async function realesMercados(p) {
   return out;
 }
 
+// Reales por periodo (1T / 2T / Partido) de goles, corners y remates.
+// Se usa para pintar la columna "Mas/Menos" del historial en verde (acierto)
+// o rojo (fallo) cuando el partido ya tiene datos reales.
+// (Implementación compartida en services/prediccion/reales.js)
+const { realesPorTiempo } = require("./reales");
+
 // Fila de un mercado: predicho (L/V) vs real (L/V) + clasificación por lado y total.
 function armarMercado(predM, realM) {
   const pl = predM ? predM.local ?? null : null;
@@ -312,6 +318,7 @@ async function evaluarPre(row, p) {
     remates: armarMercado(predMercados && predMercados.remates, reales.remates),
     tarjetas: armarMercado(predMercados && predMercados.tarjetas, reales.tarjetas),
   };
+  const realesPorPeriodo = await realesPorTiempo(p);
 
   return {
     tieneReal: true,
@@ -323,6 +330,7 @@ async function evaluarPre(row, p) {
     probReal: probs[real] ?? null,
     probPredicho: probs[predicho] ?? null,
     mercados,
+    realesPorPeriodo,
   };
 }
 
@@ -422,6 +430,8 @@ async function evaluar2T(row, p) {
     goles: golesReal,
     resultado: real,
     resultado1x2: evaluar1x2(row, real),
+    // Reales por periodo (para el color de la columna Mas/Menos).
+    realesPorPeriodo: await realesPorTiempo(p),
     filas,
     resumen,
   };

@@ -49,6 +49,76 @@ async function formacionTipica(equipo) {
   return { forma: `${d}-${m}-${f}`, completa: mejor, partidos: n, variantes: conteo.size };
 }
 
+// Ultima alineacion conocida del equipo (su ultimo XI de 11 titulares).
+// Se usa para pre-cargar el constructor de alineaciones del pre-partido.
+async function ultimaXI(equipo) {
+  const r = await pool.query(
+    `SELECT j.partido_id, p.fecha_partido::text AS fecha
+     FROM jugadores j
+     JOIN partidos p ON p.id = j.partido_id
+     WHERE ((p.equipo_local = $1 AND j.equipo = 'home')
+         OR (p.equipo_visitante = $1 AND j.equipo = 'away'))
+       AND j.titular = true
+     GROUP BY j.partido_id, p.fecha_partido
+     HAVING COUNT(*) >= 11
+     ORDER BY p.fecha_partido DESC, j.partido_id DESC
+     LIMIT 1`,
+    [equipo]
+  );
+  if (!r.rows.length) return null;
+  const { partido_id, fecha } = r.rows[0];
+  const xi = await pool.query(
+    `SELECT j.player_id, j.posicion, j.dorsal
+     FROM jugadores j
+     JOIN partidos p ON p.id = j.partido_id
+     WHERE j.partido_id = $1 AND j.titular = true
+       AND ((p.equipo_local = $2 AND j.equipo = 'home')
+         OR (p.equipo_visitante = $2 AND j.equipo = 'away'))
+     ORDER BY j.posicion, j.dorsal`,
+    [partido_id, equipo]
+  );
+  if (xi.rows.length < 11) return null;
+  return {
+    partido_id: String(partido_id),
+    fecha,
+    titulares: xi.rows.map((x) => ({
+      player_id: String(x.player_id),
+      posicion: x.posicion,
+      dorsal: x.dorsal,
+    })),
+  };
+}
+
+// Arquero habitual: el portero que mas veces titulariza (para no tener que
+// ponerlo a mano cada vez que se arma la alineacion).
+async function arqueroHabitual(equipo) {
+  const r = await pool.query(
+    `SELECT j.player_id,
+       mode() WITHIN GROUP (ORDER BY j.nombre) AS nombre,
+       mode() WITHIN GROUP (ORDER BY j.dorsal) AS dorsal,
+       COUNT(*) FILTER (WHERE j.titular)::int AS titularidades,
+       COUNT(*)::int AS partidos
+     FROM jugadores j
+     JOIN partidos p ON p.id = j.partido_id
+     WHERE j.posicion = 'G'
+       AND ((p.equipo_local = $1 AND j.equipo = 'home')
+         OR (p.equipo_visitante = $1 AND j.equipo = 'away'))
+     GROUP BY j.player_id
+     ORDER BY titularidades DESC, partidos DESC
+     LIMIT 1`,
+    [equipo]
+  );
+  if (!r.rows.length) return null;
+  const x = r.rows[0];
+  return {
+    player_id: String(x.player_id),
+    nombre: x.nombre,
+    dorsal: x.dorsal,
+    titularidades: x.titularidades,
+    partidos: x.partidos,
+  };
+}
+
 // Squad de un equipo: jugadores distintos con posicion, dorsal y tasas.
 // Un mismo player_id puede aparecer con dorsal/nombre distinto entre
 // partidos: se agrupa solo por player_id y se toma el valor mas frecuente.
@@ -71,7 +141,9 @@ async function getSquad(equipo) {
   );
   const jugadores = r.rows.map((p) => ({ ...p, player_id: String(p.player_id) }));
   const formacion = await formacionTipica(equipo);
-  return { jugadores, formacion };
+  const xi = await ultimaXI(equipo);
+  const portero = await arqueroHabitual(equipo);
+  return { jugadores, formacion, ultimaXI: xi, arqueroHabitual: portero };
 }
 
 // Mapa player_id -> xg_prom (tasa historica del jugador, cualquier equipo).

@@ -2,8 +2,10 @@ import { useCallback, useEffect, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
 import { formatearFecha, formatearFechaHora } from "../utils.js"
-import { SeccionesAnalisis, BloqueNoPierde, BloquePrevisibilidad } from "./PrediccionSecciones.jsx"
+import { SeccionesAnalisis } from "./PrediccionSecciones.jsx"
 import { MercadosGoles2T } from "./Prediccion2T.jsx"
+import { CardPrediccion1x2 } from "./CardPrediccion1x2.jsx"
+import { aplicarTema, temaDeTipo, TEMA_PRED } from "../tema.js"
 
 // Historial de predicciones del usuario: se guardan SOLAS cada vez que se
 // analiza un partido (1X2 o proyección 2T). Si se repite exactamente la misma
@@ -31,6 +33,9 @@ export const HistorialPredicciones = () => {
   const [cargandoDetalle, setCargandoDetalle] = useState(false)
   const [pagina, setPagina] = useState(1)
   const [meta, setMeta] = useState(null)
+  // La lista de "mis predicciones" ocupa mucha pantalla: se colapsa al
+  // elegir una prediccion (se puede volver a abrir con el boton).
+  const [listaAbierta, setListaAbierta] = useState(true)
 
   const cargar = useCallback(async (tipo, pg) => {
     setError(null)
@@ -52,14 +57,22 @@ export const HistorialPredicciones = () => {
     cargar(filtro, pagina)
   }, [cargar, filtro, pagina])
 
+  // El historial aplica su propio theme: el detalle de una prediccion 2T se ve
+  // con la paleta clara del 2T y el de una 1X2 con la oscura.
+  useEffect(() => {
+    aplicarTema(detalle ? temaDeTipo(detalle.tipo) : TEMA_PRED)
+  }, [detalle])
+
   const cambiarFiltro = (k) => {
     setFiltro(k)
     setPagina(1)
+    setListaAbierta(true)
   }
 
   const ver = async (id) => {
     setCargandoDetalle(true)
     setError(null)
+    setListaAbierta(false)
     try {
       const r = await axios.get(`${API_URL}/api/predictions/historial/${id}`)
       setDetalle(r.data)
@@ -80,11 +93,16 @@ export const HistorialPredicciones = () => {
 
       <div className="historial-split">
       <section className="card">
-        <div className="card-header">Mis predicciones</div>
-        <p className="tabla-status">
-          Se guardan solas al analizar un partido. Si repites exactamente la misma predicción, sólo
-          sube el contador de veces hecha. Cada usuario ve las suyas.
-        </p>
+        <div className="card-header">
+          Mis predicciones
+          <span className="modelo-chip">
+            {lista ? `${lista.length} en pantalla` : "…"}
+            {meta ? ` · ${meta.total} en total` : ""}
+          </span>
+          <button className="btn-link card-toggle" onClick={() => setListaAbierta((v) => !v)}>
+            {listaAbierta ? "▾ ocultar lista" : "▸ ver lista"}
+          </button>
+        </div>
         <div className="tabs">
           {[
             { key: "todos", etiqueta: "Todas" },
@@ -103,14 +121,21 @@ export const HistorialPredicciones = () => {
 
         {error && <p className="tabla-status tabla-status-error">{error}</p>}
 
-        {lista && lista.length === 0 && (
+        {listaAbierta && (
+          <p className="tabla-status">
+            Se guardan solas al analizar un partido. Si repites exactamente la misma predicción, sólo
+            sube el contador de veces hecha. Cada usuario ve las suyas.
+          </p>
+        )}
+
+        {listaAbierta && lista && lista.length === 0 && (
           <p className="tabla-status">
             Aún no hay predicciones guardadas con este filtro. Se guardan al usar "Analizar"
             (1X2) o "Predecir 2T".
           </p>
         )}
 
-        {lista && lista.length > 0 && (
+        {listaAbierta && lista && lista.length > 0 && (
           <div className="tabla-scroll">
             <table className="tabla">
               <thead>
@@ -141,8 +166,7 @@ export const HistorialPredicciones = () => {
                       <span className={`resultado-chip ${p.tipo === "pre" ? "resultado-v" : "resultado-e"}`}>
                         {etiquetaTipo(p.tipo)}
                       </span>
-                    </td>
-                    <td>{p.local} vs {p.visitante}</td>
+                    </td>                    <td>{p.local} vs {p.visitante}</td>
                     <td className="tabla-num">{formatearFecha(p.fecha)}</td>
                     <td>{p.modelo || "—"}</td>
                     <td className="tabla-num">
@@ -195,7 +219,7 @@ export const HistorialPredicciones = () => {
       )}
 
       {detalle && (
-        <>
+        <div className={`historial-detalle ${detalle.tipo === "2t" ? "tema-2t" : "tema-pred"}`}>
           <section className="card">
             <div className="card-header">
               {detalle.local} vs {detalle.visitante} — {formatearFecha(detalle.fecha)}
@@ -257,14 +281,16 @@ export const HistorialPredicciones = () => {
             )}
           </section>
 
-          {detalle.tipo === "pre" && <SeccionesAnalisis datos={payload} />}
+          {detalle.tipo === "pre" && (
+            <SeccionesAnalisis datos={payload} reales={ev?.realesPorPeriodo} />
+          )}
 
           <div className="actions">
             <button className="btn btn-secondary" onClick={() => setDetalle(null)}>
               Volver a la lista
             </button>
           </div>
-        </>
+        </div>
       )}
       </div>
       </div>
@@ -442,44 +468,22 @@ const Vinculo = ({ detalle, setDetalle }) => {
 // ---------------------------------------------------------------------------
 const PreDetalle = ({ payload, ev }) => {
   if (!payload) return null
-  const probs = [
-    { key: "home", etiqueta: "Local", valor: payload.probabilities?.home },
-    { key: "draw", etiqueta: "Empate", valor: payload.probabilities?.draw },
-    { key: "away", etiqueta: "Visita", valor: payload.probabilities?.away },
-  ]
   const predicho = payload.prediction?.main
   const real = ev?.tieneReal ? ev.resultado : null
   return (
     <>
-      <div className="prob-grid">
-        {probs.map((p) => (
-          <div
-            key={p.key}
-            className={[
-              "prob-item",
-              p.key === predicho ? "prob-item-fav" : "",
-              p.key === real ? "prob-item-real" : "",
-            ].join(" ").trim()}
-          >
-            <div className="prob-etiqueta">
-              {p.etiqueta}
-              {p.key === predicho ? " (predicha)" : ""}
-              {p.key === real ? " (real)" : ""}
-            </div>
-            <div className="prob-valor">{p.valor}%</div>
-            <div className="prob-barra">
-              <span style={{ width: `${p.valor}%` }} />
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="result-row">
-        <span className="result-label">Predicción principal</span>
-        <span className="result-value">
-          {RESULTADOS[predicho] || "—"}
-          {payload.prediction?.probability !== undefined && ` (${payload.prediction.probability}%)`}
-        </span>
-      </div>
+      <CardPrediccion1x2
+        titulo="Predicción"
+        local={payload.match?.homeTeam}
+        visitante={payload.match?.awayTeam}
+        fecha={payload.match?.date ? formatearFecha(payload.match.date) : null}
+        probabilidades={payload.probabilities}
+        predicho={predicho}
+        probabilidad={payload.prediction?.probability}
+        real={real}
+        marcador={ev?.marcador}
+        chip={payload.model ? <span className="modelo-chip">{payload.model}</span> : null}
+      />
       <div className="result-row">
         <span className="result-label">Goles esperados</span>
         <span className="result-value">
@@ -503,10 +507,10 @@ const PreDetalle = ({ payload, ev }) => {
               <thead>
                 <tr>
                   <th>Mercado</th>
-                  <th>Pred L</th>
-                  <th>Pred V</th>
-                  <th>Real L</th>
-                  <th>Real V</th>
+                  <th className="th-equipo">Pred {payload.match?.homeTeam || "Local"}</th>
+                  <th className="th-equipo">Pred {payload.match?.awayTeam || "Visita"}</th>
+                  <th className="th-equipo">Real {payload.match?.homeTeam || "Local"}</th>
+                  <th className="th-equipo">Real {payload.match?.awayTeam || "Visita"}</th>
                   <th>Total</th>
                 </tr>
               </thead>
@@ -581,39 +585,32 @@ const DosTDetalle = ({ payload, ev }) => {
         <p className="tabla-status">{payload.advertencias.join(" ")}</p>
       )}
       {pred1x2 && (
-        <div className="result-row">
-          <span className="result-label">Resultado final (1X2)</span>
-          <span className="result-value">
-            Predicho: <strong>{RESULTADOS[pred1x2]}</strong>
-            {r1?.probabilidad != null && ` (${r1.probabilidad}%)`}
-            {probs1x2 &&
-              ` · Local ${probs1x2.home}% / Empate ${probs1x2.draw}% / Visita ${probs1x2.away}%`}
-            {e1 ? (
-              <>
-                {" "}· real: <strong>{RESULTADOS[e1.real]}</strong>{" "}
-                <span className={`resultado-chip ${e1.acierto ? "resultado-v" : "resultado-d"}`}>
-                  {e1.acierto ? "✓ acertó" : "✗ falló"}
-                </span>
-              </>
-            ) : (
-              " · aún sin resultado"
-            )}
-          </span>
-        </div>
+        <CardPrediccion1x2
+          titulo="Predicción final (2T)"
+          local={payload.partido?.local}
+          visitante={payload.partido?.visitante}
+          fecha={payload.partido?.fecha ? formatearFecha(payload.partido.fecha) : null}
+          probabilidades={probs1x2}
+          predicho={pred1x2}
+          probabilidad={r1?.probabilidad ?? e1?.probReal}
+          real={e1?.real || null}
+          marcador={e1 ? ev?.marcador : null}
+          chip={
+            <span className="modelo-chip">
+              {payload.modelo?.id} {payload.modelo?.estado ? `(${payload.modelo.estado})` : ""}
+            </span>
+          }
+          nota="Proyección estadística del 2T con fines analíticos: estima probabilidades, no garantiza resultados."
+        />
       )}
-      <MercadosGoles2T filas={payload.filas} />
-      <div className="mercados-grid">
-        <BloquePrevisibilidad
-          previsibilidad={payload.previsibilidad}
-          local={payload.partido?.local}
-          visita={payload.partido?.visitante}
-        />
-        <BloqueNoPierde
-          fuente={{ ...payload, resultado1x2: payload.resultado1x2 || (probs1x2 ? { probabilidades: probs1x2 } : undefined) }}
-          local={payload.partido?.local}
-          visita={payload.partido?.visitante}
-        />
-      </div>
+      <MercadosGoles2T
+        filas={payload.filas}
+        reales={ev?.realesPorPeriodo}
+        local={payload.partido?.local}
+        visitante={payload.partido?.visitante}
+        previsibilidad={payload.previsibilidad}
+        noPierde={{ ...payload, resultado1x2: payload.resultado1x2 || (probs1x2 ? { probabilidades: probs1x2 } : undefined) }}
+      />
       {conReal && (
         <p className="tabla-status">
           Énfasis: <span className="celda-exacto">verde = exacto</span> ·{" "}

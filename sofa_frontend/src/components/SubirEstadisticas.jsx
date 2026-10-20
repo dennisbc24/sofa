@@ -272,10 +272,27 @@ export const SubirEstadisticas = () => {
             disabled={subiendo}
           />
         </label>
+        <ul className="explicacion">
+          <li>Si el partido no existe, se crea en la base de datos con los datos del JSON.</li>
+          <li>Si el partido ya tiene estadísticas, se salta (nada se pisa; subir dos veces es seguro).</li>
+          <li>Si existe pero le faltan datos en la cabecera, solo se completan los vacíos.</li>
+        </ul>
+        {carpeta && (
+          <p className="tabla-status">
+            Origen: {carpeta} — {archivos.length} archivo(s) .json detectado(s)
+            {archivos.length !== validos ? ` (${archivos.length - validos} inválido(s))` : ""}
+          </p>
+        )}
+      </section>
+
+      <section className="card card-celular">
+        <div className="card-header">Carga desde el celular (por partes)</div>
+        <p className="tabla-status">
+          Si tu extractor sólo puede guardar los archivos por separado, súbelos aquí: se combinan
+          automáticamente en un solo dump.
+        </p>
         <label className="field">
-          <span className="field-label">
-            …o desde el celular en 2 partes — parte 1: info.json (evento del partido)
-          </span>
+          <span className="field-label">Parte 1: info.json (evento del partido)</span>
           <input
             ref={infoRef}
             className="field-input"
@@ -286,7 +303,7 @@ export const SubirEstadisticas = () => {
           />
         </label>
         <label className="field">
-          <span className="field-label">…parte 2: stats.json (estadísticas)</span>
+          <span className="field-label">Parte 2: stats.json (estadísticas)</span>
           <input
             ref={statsRef}
             className="field-input"
@@ -298,7 +315,7 @@ export const SubirEstadisticas = () => {
         </label>
         <label className="field">
           <span className="field-label">
-            …parte 3 (opcional): players.json (stats y alineación por jugador)
+            Parte 3 (opcional): players.json (stats y alineación por jugador)
           </span>
           <input
             ref={playersRef}
@@ -310,17 +327,9 @@ export const SubirEstadisticas = () => {
           />
         </label>
         <ul className="explicacion">
-          <li>Si el partido no existe, se crea en la base de datos con los datos del JSON.</li>
-          <li>Si el partido ya tiene estadísticas, se salta (nada se pisa; subir dos veces es seguro).</li>
-          <li>Si existe pero le faltan datos en la cabecera, solo se completan los vacíos.</li>
-          <li>Desde el celular: sube info.json y stats.json por separado — se combinan automáticamente.</li>
+          <li>Con info.json + stats.json se sube el partido completo (igual que el formato de escritorio).</li>
+          <li>Si también subes players.json, se guardan las estadísticas y la alineación por jugador.</li>
         </ul>
-        {carpeta && (
-          <p className="tabla-status">
-            Origen: {carpeta} — {archivos.length} archivo(s) .json detectado(s)
-            {archivos.length !== validos ? ` (${archivos.length - validos} inválido(s))` : ""}
-          </p>
-        )}
       </section>
 
       <section className="card">

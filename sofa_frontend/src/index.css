@@ -5,6 +5,7 @@
 
   --bg: #060a28;
   --card: #10165a;
+  --card-bg: linear-gradient(180deg, #141b66 0%, #0e1448 100%);
   --card-border: #2b3591;
   --text: #f2f5ff;
   --text-muted: #9aa3d6;

@@ -5,6 +5,7 @@ const { modeloActivo } = require("./modelo_config");
 const { registrarPrediccion } = require("./registro");
 const { calcularPrevisibilidad } = require("./previsibilidad");
 const { estimarRematesXI } = require("./alineacion");
+const { realesDePartido } = require("./reales");
 
 // ---------------------------------------------------------------------------
 // Orquestador del análisis pre-partido (FASE 1).
@@ -386,6 +387,15 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
   const mercadosExtras = calcularMercadosExtras(statsLocal, statsVisita, lambdas);
   const noPierde = calcularNoPierde(probs);
   const previsibilidad = await calcularPrevisibilidad(nombreLocal, nombreVisita, fechaCorte);
+  // Reales del partido (si ya esta en la base): permiten pintar la columna
+  // "Mas/Menos" en verde (acierto) / rojo (fallo) tambien en la prediccion
+  // en vivo de un partido ya disputado.
+  let reales = null;
+  try {
+    reales = await realesDePartido({ local: nombreLocal, visitante: nombreVisita, fecha: fechaCorte });
+  } catch (e) {
+    reales = null;
+  }
 
   // Registro en BD (beta): solo acumula datos para futura evaluación.
   // No entrena, no recalibra y nunca interrumpe la respuesta.
@@ -437,6 +447,7 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
       fuenteStats: fuenteVisita.fuente,
     },
     comparison,
+    reales,
     alineacion: alineacion ? {
       local: alineacion.local,
       visitante: alineacion.visitante,
