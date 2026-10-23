@@ -45,12 +45,22 @@ export const StatsPartido = () => {
   )
 
   const estadisticas = useMemo(() => detalle?.estadisticas || [], [detalle])
+  const jugadores = useMemo(() => detalle?.jugadores || [], [detalle])
+  const golesDetalle = useMemo(() => detalle?.goles || [], [detalle])
+  const tarjetas = useMemo(() => detalle?.tarjetas || [], [detalle])
+  const cambiosDetalle = useMemo(() => detalle?.cambios || [], [detalle])
+  const remates = useMemo(() => detalle?.remates || [], [detalle])
+  const descuento = useMemo(() => detalle?.descuento || null, [detalle])
   const periodos = useMemo(() => [...new Set(estadisticas.map((s) => s.periodo))], [estadisticas])
   const statsFiltradas = useMemo(
     () => estadisticas.filter((s) => s.periodo === periodo),
     [estadisticas, periodo]
   )
   const grupos = useMemo(() => [...new Set(statsFiltradas.map((s) => s.grupo))], [statsFiltradas])
+
+  const golesJugador = useMemo(() => jugadores.filter((j) => j.goles && j.goles > 0), [jugadores])
+  const asistencias = useMemo(() => jugadores.filter((j) => j.asistencias && j.asistencias > 0), [jugadores])
+  const titularesNoCompletos = useMemo(() => jugadores.filter((j) => j.titular && j.jugo && (j.minutos || 0) < 90), [jugadores])
 
   return (
     <section>
@@ -133,6 +143,177 @@ export const StatsPartido = () => {
               </span>
             </div>
           )}
+        </section>
+      )}
+
+      {partidoId && (golesDetalle.length > 0 || tarjetas.length > 0 || cambiosDetalle.length > 0 || remates.length > 0) && (
+        <section className="card">
+          <div className="card-header">Incidencias del partido</div>
+
+          {golesDetalle.length > 0 && (
+            <>
+              <div className="card-header">⚽ Goles</div>
+              <div className="tabla-scroll">
+                <table className="tabla">
+                  <thead>
+                    <tr>
+                      <th>Minuto</th>
+                      <th>Equipo</th>
+                      <th>Jugador</th>
+                      <th>Asistente</th>
+                      <th>Marcador</th>
+                      <th>Tipo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {golesDetalle.map((g) => (
+                      <tr key={g.minuto + g.jugador_id}>
+                        <td className="tabla-num">{g.minuto_texto}{g.minuto_extra ? "+" + g.minuto_extra : ""}'</td>
+                        <td>{g.equipo === "home" ? partidoSeleccionado?.equipo_local : partidoSeleccionado?.equipo_visitante}</td>
+                        <td>{g.jugador}</td>
+                        <td>{g.asistente || "—"}</td>
+                        <td className="tabla-num">{g.marcador_h} - {g.marcador_a}</td>
+                        <td>{g.tipo}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+
+          {tarjetas.length > 0 && (
+            <>
+              <div className="card-header">🟨🟥 Tarjetas</div>
+              <div className="tabla-scroll">
+                <table className="tabla">
+                  <thead>
+                    <tr>
+                      <th>Minuto</th>
+                      <th>Equipo</th>
+                      <th>Jugador</th>
+                      <th>Tarjeta</th>
+                      <th>Motivo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tarjetas.map((t) => (
+                      <tr key={t.minuto + t.jugador_id}>
+                        <td className="tabla-num">{t.minuto_texto}{t.minuto_extra ? "+" + t.minuto_extra : ""}'</td>
+                        <td>{t.equipo === "home" ? partidoSeleccionado?.equipo_local : partidoSeleccionado?.equipo_visitante}</td>
+                        <td>{t.jugador}</td>
+                        <td className={`tarjeta-${t.tarjeta}`}>{t.tarjeta === "yellow" ? "🟨 Amarilla" : "🟥 Roja"}</td>
+                        <td>{t.motivo || "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+
+          {cambiosDetalle.length > 0 && (
+            <>
+              <div className="card-header">🔄 Cambios</div>
+              <div className="tabla-scroll">
+                <table className="tabla">
+                  <thead>
+                    <tr>
+                      <th>Minuto</th>
+                      <th>Equipo</th>
+                      <th>Entra</th>
+                      <th>Sale</th>
+                      {cambiosDetalle.some((c) => c.lesion) && <th>Lesión</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cambiosDetalle.map((c) => (
+                      <tr key={c.minuto + c.entra_id + c.sale_id}>
+                        <td className="tabla-num">{c.minuto_texto}{c.minuto_extra ? "+" + c.minuto_extra : ""}'</td>
+                        <td>{c.equipo === "home" ? partidoSeleccionado?.equipo_local : partidoSeleccionado?.equipo_visitante}</td>
+                        <td>{c.entra}</td>
+                        <td>{c.sale}</td>
+                        {cambiosDetalle.some((c2) => c2.lesion) && <td>{c.lesion ? "⚠️" : "—"}</td>}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+
+          {remates.length > 0 && (
+            <>
+              <div className="card-header">🎯 Remates ({remates.length})</div>
+              <div className="tabla-scroll">
+                <table className="tabla">
+                  <thead>
+                    <tr>
+                      <th>Minuto</th>
+                      <th>Equipo</th>
+                      <th>Jugador</th>
+                      <th>Resultado</th>
+                      <th>xG</th>
+                      <th>Ubicación</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {remates.map((r) => (
+                      <tr key={r.minuto + r.jugador_id}>
+                        <td className="tabla-num">{r.minuto_texto}{r.minuto_extra ? "+" + r.minuto_extra : ""}'</td>
+                        <td>{r.equipo === "home" ? partidoSeleccionado?.equipo_local : partidoSeleccionado?.equipo_visitante}</td>
+                        <td>{r.jugador}</td>
+                        <td className={`resultado-${r.resultado}`}>{r.resultado}</td>
+                        <td className="tabla-num">{r.xg != null ? Number(r.xg).toFixed(2) : "—"}</td>
+                        <td>{r.ubicacion_arco || "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+
+          {descuento && (
+            <>
+              <div className="result-row">
+                <span className="result-label">Descuento</span>
+                <span className="result-value">
+                  1T: +{descuento.descuento_1t}' · 2T: +{descuento.descuento_2t}'
+                </span>
+              </div>
+            </>
+          )}
+        </section>
+      )}
+
+      {partidoId && jugadores.length > 0 && (
+        <section className="card">
+          <div className="card-header">Jugadores</div>
+          <div className="result-row">
+            <span className="result-label">Goles por jugador</span>
+            <span className="result-value">
+              {golesJugador.length > 0
+                ? golesJugador.map((g) => `${g.nombre} (${g.goles})`).join(" · ")
+                : "—"}
+            </span>
+          </div>
+          <div className="result-row">
+            <span className="result-label">Asistencias por jugador</span>
+            <span className="result-value">
+              {asistencias.length > 0
+                ? asistencias.map((a) => `${a.nombre} (${a.asistencias})`).join(" · ")
+                : "—"}
+            </span>
+          </div>
+          <div className="result-row">
+            <span className="result-label">Titulares sustituidos</span>
+            <span className="result-value">
+              {titularesNoCompletos.length > 0
+                ? titularesNoCompletos.map((t) => `${t.nombre} (${t.minutos}')`).join(" · ")
+                : "—"}
+            </span>
+          </div>
         </section>
       )}
 

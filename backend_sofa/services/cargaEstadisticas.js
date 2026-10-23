@@ -36,6 +36,30 @@ const COLS_JUGADORES = [
   "valor_portero", "valor_porteria_cero", "stats",
 ];
 
+const COLS_GOLES = [
+  "partido_id", "minuto", "minuto_extra", "minuto_texto", "equipo",
+  "jugador_id", "jugador", "asistente_id", "asistente", "tipo",
+  "marcador_h", "marcador_a", "parte_cuerpo", "situacion", "ubicacion_arco",
+];
+
+const COLS_TARJETAS = [
+  "partido_id", "minuto", "minuto_extra", "minuto_texto", "equipo",
+  "jugador_id", "jugador", "tarjeta", "motivo", "anulada",
+];
+
+const COLS_CAMBIOS = [
+  "partido_id", "minuto", "minuto_extra", "minuto_texto", "equipo",
+  "entra_id", "entra", "sale_id", "sale", "lesion",
+];
+
+const COLS_REMITES = [
+  "partido_id", "minuto", "minuto_extra", "minuto_texto", "equipo",
+  "jugador_id", "jugador", "resultado", "situacion", "parte_cuerpo",
+  "xg", "xgot", "x", "y", "ubicacion_arco", "arco_y", "arco_z",
+];
+
+const COLS_DESCUENTO = ["partido_id", "descuento_1t", "descuento_2t"];
+
 function aNumero(v) {
   if (v === null || v === undefined) return null;
   const n = Number(v);
@@ -180,7 +204,14 @@ function transformarNuevo(json, nombre) {
       stats: JSON.stringify(p),
     });
   }
-  return { evento, filas, jugadores };
+
+  const incidentes = json.incidentes || {};
+  const goles = Array.isArray(incidentes.goles) ? incidentes.goles : [];
+  const tarjetas = Array.isArray(incidentes.tarjetas) ? incidentes.tarjetas : [];
+  const cambios = Array.isArray(incidentes.cambios) ? incidentes.cambios : [];
+  const remates = Array.isArray(json.remates) ? json.remates : [];
+
+  return { evento, filas, jugadores, incidentes: { goles, tarjetas, cambios }, remates, descuento: incidentes.descuento };
 }
 
 async function buscarPartido(ev, client) {
@@ -268,6 +299,86 @@ async function insertarJugadores(partidoId, jugadores, client) {
   return insertados;
 }
 
+async function insertarGoles(partidoId, goles, client) {
+  const cols = COLS_GOLES.join(",");
+  const placeholders = COLS_GOLES.map((_, i) => `$${i + 1}`).join(",");
+  const valoresBase = COLS_GOLES.slice(1);
+  let insertados = 0;
+  for (const g of goles) {
+    const r = await client.query(
+      `INSERT INTO incidentes_goles (${cols})
+       VALUES (${placeholders})
+       ON CONFLICT (partido_id, minuto, minuto_extra, equipo, jugador_id) DO NOTHING`,
+      [partidoId, ...valoresBase.map((c) => g[c])]
+    );
+    insertados += r.rowCount;
+  }
+  return insertados;
+}
+
+async function insertarTarjetas(partidoId, tarjetas, client) {
+  const cols = COLS_TARJETAS.join(",");
+  const placeholders = COLS_TARJETAS.map((_, i) => `$${i + 1}`).join(",");
+  const valoresBase = COLS_TARJETAS.slice(1);
+  let insertados = 0;
+  for (const t of tarjetas) {
+    const r = await client.query(
+      `INSERT INTO incidentes_tarjetas (${cols})
+       VALUES (${placeholders})
+       ON CONFLICT (partido_id, minuto, minuto_extra, jugador_id) DO NOTHING`,
+      [partidoId, ...valoresBase.map((c) => t[c])]
+    );
+    insertados += r.rowCount;
+  }
+  return insertados;
+}
+
+async function insertarCambios(partidoId, cambios, client) {
+  const cols = COLS_CAMBIOS.join(",");
+  const placeholders = COLS_CAMBIOS.map((_, i) => `$${i + 1}`).join(",");
+  const valoresBase = COLS_CAMBIOS.slice(1);
+  let insertados = 0;
+  for (const c of cambios) {
+    const r = await client.query(
+      `INSERT INTO incidentes_cambios (${cols})
+       VALUES (${placeholders})
+       ON CONFLICT (partido_id, minuto, minuto_extra, entra_id, sale_id) DO NOTHING`,
+      [partidoId, ...valoresBase.map((c2) => c[c2])]
+    );
+    insertados += r.rowCount;
+  }
+  return insertados;
+}
+
+async function insertarRemates(partidoId, remates, client) {
+  const cols = COLS_REMITES.join(",");
+  const placeholders = COLS_REMITES.map((_, i) => `$${i + 1}`).join(",");
+  const valoresBase = COLS_REMITES.slice(1);
+  let insertados = 0;
+  for (const r of remates) {
+    const rr = await client.query(
+      `INSERT INTO remates (${cols})
+       VALUES (${placeholders})
+       ON CONFLICT (partido_id, minuto, minuto_extra, jugador_id) DO NOTHING`,
+      [partidoId, ...valoresBase.map((c) => r[c])]
+    );
+    insertados += rr.rowCount;
+  }
+  return insertados;
+}
+
+async function insertarDescuento(partidoId, descuento, client) {
+  const r = await client.query(
+    `INSERT INTO incidentes_descuento (${COLS_DESCUENTO.join(",")})
+     VALUES ($1,$2,$3)
+     ON CONFLICT (partido_id) DO UPDATE SET
+       descuento_1t = EXCLUDED.descuento_1t,
+       descuento_2t = EXCLUDED.descuento_2t`,
+    [partidoId, descuento?.["1T"] ?? null, descuento?.["2T"] ?? null]
+  );
+  return r.rowCount;
+}
+
 // Asignación manual del lote: si el usuario eligió liga/jornada, sustituye a
 // lo que traiga el JSON (solo cambia lo que se vaya a crear/completar; un
 // partido existente con datos rellenados nunca se pisa — manda COALESCE).
@@ -299,8 +410,8 @@ async function procesarArchivo({ nombre, contenido }, opciones = {}) {
       throw new Error("formato no reconocido (ni info.event viejo ni info/estadisticas/jugadores nuevo)");
     }
 
-    const { evento, filas, jugadores } = esViejo
-      ? { ...transformar(json), jugadores: [] }
+    const { evento, filas, jugadores, incidentes, remates, descuento } = esViejo
+      ? { ...transformar(json), jugadores: [], incidentes: { goles: [], tarjetas: [], cambios: [] }, remates: [], descuento: null }
       : transformarNuevo(json, nombre);
     aplicarAsignacion(evento, opciones);
 
@@ -308,38 +419,57 @@ async function procesarArchivo({ nombre, contenido }, opciones = {}) {
     const partido = await buscarPartido(evento, client);
 
     if (partido) {
-      const pres = await client.query(
-        `SELECT
-           EXISTS(SELECT 1 FROM estadisticas WHERE partido_id = $1) AS hay_stats,
-           EXISTS(SELECT 1 FROM jugadores WHERE partido_id = $1) AS hay_jugadores`,
-        [partido.id]
-      );
-      const hayStats = pres.rows[0].hay_stats;
-      const hayJugadores = pres.rows[0].hay_jugadores;
       const partes = [];
       let n = 0;
       let nJ = 0;
+      let nG = 0;
+      let nT = 0;
+      let nC = 0;
+      let nR = 0;
       await client.query("BEGIN");
       // La cabecera se completa siempre (idempotente: COALESCE sólo rellena
       // nulos), así re-subir un partido corrige campos vacíos sin pisar nada.
       await completarCabecera(evento, partido.id, client);
-      if (!hayStats && filas.length) {
+      // Siempre intenta insertar lo que falte; ON CONFLICT DO NOTHING
+      // ignora duplicados sin error.
+      if (filas.length) {
         n += await insertarStats(partido.id, filas, client);
         partes.push(`stats ${n}`);
       }
-      if (!hayJugadores && jugadores.length) {
+      if (jugadores.length) {
         nJ += await insertarJugadores(partido.id, jugadores, client);
         partes.push(`jugadores ${nJ}`);
+      }
+      if (incidentes.goles.length) {
+        nG += await insertarGoles(partido.id, incidentes.goles, client);
+        partes.push(`goles ${nG}`);
+      }
+      if (incidentes.tarjetas.length) {
+        nT += await insertarTarjetas(partido.id, incidentes.tarjetas, client);
+        partes.push(`tarjetas ${nT}`);
+      }
+      if (incidentes.cambios.length) {
+        nC += await insertarCambios(partido.id, incidentes.cambios, client);
+        partes.push(`cambios ${nC}`);
+      }
+      if (remates.length) {
+        nR += await insertarRemates(partido.id, remates, client);
+        partes.push(`remates ${nR}`);
+      }
+      if (descuento) {
+        await insertarDescuento(partido.id, descuento, client);
+        partes.push("descuento");
       }
       await client.query("COMMIT");
       if (!partes.length) {
         return { ...base, partido_id: partido.id, partido: `${evento.local} vs ${evento.visitante}`,
                  liga: evento.liga, jornada: evento.jornada,
-                 accion: "saltado", stats: 0, jugadores: 0, motivo: "ya tiene stats y jugadores" };
+                 accion: "saltado", stats: 0, jugadores: 0, motivo: "sin datos para insertar" };
       }
       return { ...base, partido_id: partido.id, partido: `${evento.local} vs ${evento.visitante}`,
                liga: evento.liga, jornada: evento.jornada,
-               accion: "actualizado", stats: n, jugadores: nJ, motivo: partes.join(" + ") };
+               accion: "actualizado", stats: n, jugadores: nJ, goles: nG, tarjetas: nT, cambios: nC, remates: nR,
+               motivo: partes.join(" + ") };
     }
 
     if (!evento.local || !evento.visitante || !evento.id)
@@ -350,10 +480,19 @@ async function procesarArchivo({ nombre, contenido }, opciones = {}) {
     if (filas.length) n += await insertarStats(id, filas, client);
     let nJ = 0;
     if (jugadores.length) nJ += await insertarJugadores(id, jugadores, client);
+    let nG = 0;
+    if (incidentes.goles.length) nG += await insertarGoles(id, incidentes.goles, client);
+    let nT = 0;
+    if (incidentes.tarjetas.length) nT += await insertarTarjetas(id, incidentes.tarjetas, client);
+    let nC = 0;
+    if (incidentes.cambios.length) nC += await insertarCambios(id, incidentes.cambios, client);
+    let nR = 0;
+    if (remates.length) nR += await insertarRemates(id, remates, client);
+    if (descuento) await insertarDescuento(id, descuento, client);
     await client.query("COMMIT");
     return { ...base, partido_id: id, partido: `${evento.local} vs ${evento.visitante}`,
              liga: evento.liga, jornada: evento.jornada,
-             accion: "creado", stats: n, jugadores: nJ };
+             accion: "creado", stats: n, jugadores: nJ, goles: nG, tarjetas: nT, cambios: nC, remates: nR };
   } catch (e) {
     if (client) {
       try { await client.query("ROLLBACK"); } catch { /* noop */ }

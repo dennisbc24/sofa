@@ -24,6 +24,80 @@ class PartidosService {
     const { rows } = await pool.query(query, [id]);
     return rows;
   }
+
+  async getJugadoresByPartido(id) {
+    const query = `
+      SELECT equipo, nombre, posicion, dorsal, titular, capitan, jugo, minutos, rating,
+             goles, asistencias, tiros, tiros_puerta, pases, pases_acertados, pases_clave,
+             entradas, duelos_ganados, duelos_perdidos, recuperaciones, despejes, faltas, paradas,
+             stats
+      FROM jugadores
+      WHERE partido_id = $1
+      ORDER BY equipo, dorsal
+    `;
+    const { rows } = await pool.query(query, [id]);
+    return rows;
+  }
+
+  async getGolesByPartido(id) {
+    const query = `
+      SELECT minuto, minuto_extra, minuto_texto, equipo, jugador_id, jugador,
+             asistente_id, asistente, tipo, marcador_h, marcador_a, parte_cuerpo,
+             situacion, ubicacion_arco
+      FROM incidentes_goles
+      WHERE partido_id = $1
+      ORDER BY minuto
+    `;
+    const { rows } = await pool.query(query, [id]);
+    return rows;
+  }
+
+  async getTarjetasByPartido(id) {
+    const query = `
+      SELECT minuto, minuto_extra, minuto_texto, equipo, jugador_id, jugador,
+             tarjeta, motivo, anulada
+      FROM incidentes_tarjetas
+      WHERE partido_id = $1
+      ORDER BY minuto
+    `;
+    const { rows } = await pool.query(query, [id]);
+    return rows;
+  }
+
+  async getCambiosByPartido(id) {
+    const query = `
+      SELECT minuto, minuto_extra, minuto_texto, equipo, entra_id, entra,
+             sale_id, sale, lesion
+      FROM incidentes_cambios
+      WHERE partido_id = $1
+      ORDER BY minuto
+    `;
+    const { rows } = await pool.query(query, [id]);
+    return rows;
+  }
+
+  async getRematesByPartido(id) {
+    const query = `
+      SELECT minuto, minuto_extra, minuto_texto, equipo, jugador_id, jugador,
+             resultado, situacion, parte_cuerpo, xg, xgot, x, y,
+             ubicacion_arco, arco_y, arco_z
+      FROM remates
+      WHERE partido_id = $1
+      ORDER BY minuto
+    `;
+    const { rows } = await pool.query(query, [id]);
+    return rows;
+  }
+
+  async getDescuentoByPartido(id) {
+    const query = `
+      SELECT descuento_1t, descuento_2t
+      FROM incidentes_descuento
+      WHERE partido_id = $1
+    `;
+    const { rows } = await pool.query(query, [id]);
+    return rows[0] || null;
+  }
 }
 
 module.exports = { PartidosService };

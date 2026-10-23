@@ -31,7 +31,13 @@ const getPartidoDetalle = async (req, res, next) => {
       return res.status(404).json({ message: "Partido no encontrado" });
     }
     const estadisticas = await partidosService.getEstadisticasByPartido(id);
-    res.json({ partido, estadisticas });
+    const jugadores = await partidosService.getJugadoresByPartido(id);
+    const goles = await partidosService.getGolesByPartido(id);
+    const tarjetas = await partidosService.getTarjetasByPartido(id);
+    const cambios = await partidosService.getCambiosByPartido(id);
+    const remates = await partidosService.getRematesByPartido(id);
+    const descuento = await partidosService.getDescuentoByPartido(id);
+    res.json({ partido, estadisticas, jugadores, goles, tarjetas, cambios, remates, descuento });
   } catch (error) {
     next(error);
   }
