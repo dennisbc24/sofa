@@ -1,59 +1,144 @@
-// Test de dosPartes.js: combinar 2 y 3 partes con las formas reales.
-import { combinar2Partes, combinar3Partes, infoNuevaDe, filasPlanasDe, jugadoresDe } from "../src/dosPartes.js"
-import fs from "fs"
+import test from "node:test"
+import assert from "node:assert/strict"
+import {
+  combinar2Partes,
+  combinar3Partes,
+  infoNuevaDe,
+  filasPlanasDe,
+  jugadoresDe,
+} from "../src/dosPartes.js"
 
-const dir = "C:/Users/LENOVO/Documents/proyects/sofa/muestra/"
-const f = fs.readdirSync(dir)[0]
-const j = JSON.parse(fs.readFileSync(dir + f, "utf8"))
-
-console.log("== 3 partes con un dump real partido en info/stats/players ==")
-const infoC = JSON.stringify({ match_id: j.match_id, url: j.url, info: j.info })
-const statsC = JSON.stringify({ estadisticas: j.estadisticas })
-const playersC = JSON.stringify({ jugadores: j.jugadores })
-const r3 = combinar3Partes(infoC, statsC, playersC)
-console.log("ok:", r3.ok, "| partido:", JSON.stringify(r3.partido))
-const out = JSON.parse(r3.contenido)
-console.log("claves:", Object.keys(out))
-console.log("info:", JSON.stringify(out.info).slice(0, 130))
-console.log("filas:", out.estadisticas.length, "| jugadores:", out.jugadores.length)
-console.log("1T preservado:", out.info.goles_h_1T, "-", out.info.goles_a_1T)
-
-console.log("\n== 2 partes (info + stats) ==")
-const r2 = combinar2Partes(infoC, statsC)
-console.log("ok:", r2.ok, "| partido:", JSON.stringify(r2.partido))
-const out2 = JSON.parse(r2.contenido)
-console.log("claves:", Object.keys(out2), "| jugadores:", out2.jugadores.length)
-
-console.log("\n== formato viejo: info.event + statistics agrupadas ==")
-const evento = {
-  id: 15534026, startTimestamp: 1750000000,
-  homeTeam: { name: "France" }, awayTeam: { name: "Italy" },
-  homeScore: { current: 2, period1: 1 }, awayScore: { current: 1, period1: 0 },
-  status: { type: "finished", description: "Ended" },
-  tournament: { name: "UEFA Nations League" }, roundInfo: { round: 3 },
-  venue: { name: "Parc des Princes" }, referee: { name: "Pepe" },
-}
-const infoViejo = JSON.stringify({ info: { event: evento } })
-const statsViejo = JSON.stringify({
-  statistics: [{ period: "1ST", groups: [{ groupName: "Match overview", statisticsItems: [
-    { name: "Total shots", key: "totalShotsOnGoal", home: "5", away: "3", homeValue: 5, awayValue: 3 },
-    { name: "Ball possession", key: "ballPossession", home: "55%", away: "45%" },
-  ] }] }],
+const infoNueva = JSON.stringify({
+  match_id: 123456,
+  url: "https://www.sofascore.com/france-italy#id:123456",
+  info: {
+    home: "France",
+    away: "Italy",
+    goles_h: 2,
+    goles_a: 1,
+    goles_h_1T: 1,
+    goles_a_1T: 0,
+    fecha: "2025-06-15",
+    estado: "Ended",
+    torneo: "UEFA Nations League",
+    ronda: 3,
+    estadio: "Parc des Princes",
+    arbitro: "Pepe",
+  },
 })
-const rViejo = combinar2Partes(infoViejo, statsViejo)
-console.log("ok:", rViejo.ok, "| partido:", JSON.stringify(rViejo.partido))
-const outV = JSON.parse(rViejo.contenido)
-console.log("info normalizada:", JSON.stringify(outV.info))
-console.log("filas:", JSON.stringify(outV.estadisticas))
 
-console.log("\n== lineups de Sofascore (home.players / away.players) ==")
-console.log("jugadores:", jugadoresDe({ home: { players: [{ player_id: 1, nombre: "A" }] }, away: { players: [{ player_id: 2, nombre: "B" }] } }))
+const statsNuevas = JSON.stringify({
+  estadisticas: [
+    { periodo: "ALL", grupo: "General", nombre: "Total shots", home: "5", away: "3", home_num: 5, away_num: 3 },
+    { periodo: "ALL", grupo: "General", nombre: "Corner kicks", home: "4", away: "6", home_num: 4, away_num: 6 },
+  ],
+})
 
-console.log("\n== helpers directos ==")
-console.log("infoNuevaDe(info nueva):", JSON.stringify(infoNuevaDe({ info: j.info })).slice(0, 90))
-console.log("filasPlanasDe(info nueva):", filasPlanasDe({ estadisticas: j.estadisticas }).length, "filas")
-console.log("filasPlanasDe(stats viejas):", filasPlanasDe(JSON.parse(statsViejo)).length, "filas")
+const players = JSON.stringify({
+  jugadores: [
+    { player_id: 1, nombre: "A", equipo: "home" },
+    { player_id: 2, nombre: "B", equipo: "away" },
+  ],
+})
 
-console.log("\n== errores ==")
-console.log(JSON.stringify(combinar2Partes("no json", statsC)))
-console.log(JSON.stringify(combinar3Partes(infoC, statsC, "{}")))
+test("combinar3Partes genera un dump nuevo completo", () => {
+  const r = combinar3Partes(infoNueva, statsNuevas, players)
+  assert.equal(r.ok, true)
+  assert.equal(r.partido.local, "France")
+  assert.equal(r.partido.visitante, "Italy")
+  assert.equal(r.partido.liga, "UEFA Nations League")
+  assert.equal(r.partido.jugadores, 2)
+
+  const out = JSON.parse(r.contenido)
+  assert.equal(out.match_id, "123456")
+  assert.equal(out.info.goles_h_1T, 1, "el marcador del 1T debe conservarse")
+  assert.equal(out.estadisticas.length, 2)
+  assert.equal(out.jugadores.length, 2)
+})
+
+test("combinar2Partes acepta el formato viejo (info.event + statistics)", () => {
+  const infoVieja = JSON.stringify({
+    info: {
+      event: {
+        id: 15534026,
+        startTimestamp: 1750000000,
+        homeTeam: { name: "France" },
+        awayTeam: { name: "Italy" },
+        homeScore: { current: 2, period1: 1 },
+        awayScore: { current: 1, period1: 0 },
+        status: { description: "Ended" },
+        tournament: { name: "UEFA Nations League" },
+        roundInfo: { round: 3 },
+        venue: { name: "Parc des Princes" },
+        referee: { name: "Pepe" },
+      },
+    },
+  })
+  const statsViejas = JSON.stringify({
+    statistics: [
+      {
+        period: "1ST",
+        groups: [
+          {
+            groupName: "Match overview",
+            statisticsItems: [
+              { name: "Total shots", home: "5", away: "3", homeValue: 5, awayValue: 3 },
+              { name: "Ball possession", home: "55%", away: "45%" },
+            ],
+          },
+        ],
+      },
+    ],
+  })
+
+  const r = combinar2Partes(infoVieja, statsViejas)
+  assert.equal(r.ok, true)
+  const out = JSON.parse(r.contenido)
+  assert.equal(out.match_id, "15534026")
+  assert.equal(out.info.home, "France")
+  assert.equal(out.info.goles_h_1T, 1)
+  assert.equal(out.info.estado, "Ended")
+  assert.equal(out.estadisticas.length, 2)
+  assert.equal(out.estadisticas[1].home_num, 55, "los porcentajes se convierten a número")
+  assert.equal(out.estadisticas[0].periodo, "1ST")
+})
+
+test("combinar2Partes rechaza JSON inválido y stats vacías", () => {
+  const malo = combinar2Partes("no json", statsNuevas)
+  assert.equal(malo.ok, false)
+  assert.match(malo.error, /no es JSON válido/)
+
+  const sinStats = combinar2Partes(infoNueva, JSON.stringify({ estadisticas: [] }))
+  assert.equal(sinStats.ok, false)
+  assert.match(sinStats.error, /estadísticas/)
+
+  const sinEquipos = combinar2Partes(JSON.stringify({ info: {} }), statsNuevas)
+  assert.equal(sinEquipos.ok, false)
+  assert.match(sinEquipos.error, /equipos/)
+})
+
+test("combinar3Partes rechaza players vacíos", () => {
+  const r = combinar3Partes(infoNueva, statsNuevas, "{}")
+  assert.equal(r.ok, false)
+  assert.match(r.error, /jugadores/)
+})
+
+test("helpers normalizan info, filas y lineups de Sofascore", () => {
+  const info = infoNuevaDe(JSON.parse(infoNueva))
+  assert.equal(info.home, "France")
+  assert.equal(info.goles_a, 1)
+
+  assert.equal(filasPlanasDe(JSON.parse(statsNuevas)).length, 2)
+  assert.equal(filasPlanasDe(null).length, 0)
+
+  const lineups = jugadoresDe({
+    home: { players: [{ player_id: 1, nombre: "A" }] },
+    away: { players: [{ player_id: 2, nombre: "B" }] },
+  })
+  assert.deepEqual(
+    lineups.map((p) => p.equipo),
+    ["home", "away"]
+  )
+  assert.equal(jugadoresDe({ jugadores: [{ nombre: "C" }] }).length, 1)
+  assert.equal(jugadoresDe(null).length, 0)
+})

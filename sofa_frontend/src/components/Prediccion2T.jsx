@@ -2,7 +2,7 @@ import { useRef, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
 import { combinar2Partes, combinar3Partes } from "../dosPartes.js"
-import { ambosMarcan, masMenos, overDinamicas, overLines, textoOver } from "../mercados.js"
+import { ambosMarcan, fondoPrevisibilidad, masMenos, overDinamicas, overLines, previsibilidadConjunta, textoOver } from "../mercados.js"
 import { BloqueNoPierde, BloquePrevisibilidad } from "./PrediccionSecciones.jsx"
 import { CeldaMasMenos } from "./CeldaMasMenos.jsx"
 import { CardPrediccion1x2 } from "./CardPrediccion1x2.jsx"
@@ -24,6 +24,9 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
   const fila = (nombre) => (filas || []).find((f) => f.stat === nombre)
   const g = fila("Goles")
   if (!g) return null
+  const pctLocal = (k) => previsibilidad?.local?.[k]
+  const pctVisita = (k) => previsibilidad?.visita?.[k]
+  const pctConjunto = (k) => previsibilidadConjunta(previsibilidad, k)
   const b2t = ambosMarcan(g.predLocal2T, g.predVisita2T)
   const hayFT = g.ftLocal != null && g.ftVisita != null
   const bft = hayFT ? ambosMarcan(g.ftLocal, g.ftVisita) : null
@@ -50,7 +53,7 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
   }
   const corners = statRows("Corner kicks")
   const remates = statRows("Total shots")
-  const BloqueCantidad = ({ titulo, rows }) =>
+  const BloqueCantidad = ({ titulo, rows, equipoKey, totalKey }) =>
     rows.length > 0 ? (
       <div className="mercado-bloque">
         <div className="mercado-titulo">{titulo}</div>
@@ -70,9 +73,9 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
               {rows.map((row) => (
                 <tr key={row.t} className={row.t === "Partido" ? "fila-total" : undefined}>
                   <td>{row.t}</td>
-                  <td className="tabla-num">{row.local}</td>
-                  <td className="tabla-num">{row.visita}</td>
-                  <td className="tabla-num col-total">{row.total}</td>
+                  <td className="tabla-num" style={fondoPrevisibilidad(pctLocal(equipoKey))}>{row.local}</td>
+                  <td className="tabla-num" style={fondoPrevisibilidad(pctVisita(equipoKey))}>{row.visita}</td>
+                  <td className="tabla-num col-total" style={fondoPrevisibilidad(pctConjunto(totalKey))}>{row.total}</td>
                   <td className="tabla-num">{textoOver(row.over)}</td>
                   <td className="tabla-num"><CeldaMasMenos mm={masMenos(row.totalNum)} real={row.real} /></td>
                 </tr>
@@ -111,9 +114,9 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
                 {goles.map((row) => (
                   <tr key={row.t} className={row.t === "Partido" ? "fila-total" : undefined}>
                     <td>{row.t}</td>
-                    <td className="tabla-num">{row.local}</td>
-                    <td className="tabla-num">{row.visita}</td>
-                    <td className="tabla-num col-total">{row.o.esperados}</td>
+                    <td className="tabla-num" style={fondoPrevisibilidad(pctLocal("golesTotal"))}>{row.local}</td>
+                    <td className="tabla-num" style={fondoPrevisibilidad(pctVisita("golesTotal"))}>{row.visita}</td>
+                    <td className="tabla-num col-total" style={fondoPrevisibilidad(pctConjunto("golesTotal"))}>{row.o.esperados}</td>
                     <td className="tabla-num">{row.o.o05}%</td>
                     <td className="tabla-num">{row.o.o15}%</td>
                     <td className="tabla-num">{row.o.o25}%</td>
@@ -126,8 +129,8 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
           </div>
         </div>
       )}
-      <BloqueCantidad titulo="Corners (esperados)" rows={corners} />
-      <BloqueCantidad titulo="Remates (esperados)" rows={remates} />
+      <BloqueCantidad titulo="Corners (esperados)" rows={corners} equipoKey="cornersTotal" totalKey="cornersTotal" />
+      <BloqueCantidad titulo="Remates (esperados)" rows={remates} equipoKey="rematesEquipo" totalKey="rematesTotal" />
         </div>
       </section>
 

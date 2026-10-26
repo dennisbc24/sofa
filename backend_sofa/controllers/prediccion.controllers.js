@@ -23,7 +23,7 @@ const getPrediction = async (req, res, next) => {
   }
 };
 
-// POST /api/predictions/match — predicci��n con alineaci��n declarada (XI).
+// POST /api/predictions/match — predicción con alineación declarada (XI).
 const postMatchConAlineacion = async (req, res, next) => {
   try {
     const { localTeam, awayTeam, date, league, alineacion } = req.body || {};
@@ -38,8 +38,8 @@ const postMatchConAlineacion = async (req, res, next) => {
   }
 };
 
-// GET /api/predictions/alineacion/:equipo → squad con dorsal/posici��n/tasas
-// + formaci��n t��pica, ultima alineaci��n conocida y arquero habitual.
+// GET /api/predictions/alineacion/:equipo → squad con dorsal/posición/tasas
+// + formación típica, ultima alineación conocida y arquero habitual.
 const getAlineacion = async (req, res, next) => {
   try {
     const equipo = req.params.equipo;

@@ -67,6 +67,31 @@ export const masMenos = (l) => {
 export const textoMasMenos = (mm) =>
   mm == null || mm.n == null ? "—" : `+${mm.n} ${mm.mas}% · -${mm.n} ${mm.menos}%`
 
+// Fondo de énfasis para los mercados según el % de acierto esperado de la
+// previsibilidad: a mayor porcentaje, más intenso y más verde; a menor,
+// más tenue y tirando a rojo. Semántica: verde = predecible, ámbar = medio,
+// rojo = impredecible.
+export const fondoPrevisibilidad = (pct) => {
+  if (pct === null || pct === undefined) return undefined
+  const p = Number(pct)
+  if (Number.isNaN(p)) return undefined
+  const fuerza = Math.max(0, Math.min(1, (p - 25) / 65))
+  const alfa = (0.1 + fuerza * 0.3).toFixed(2)
+  const color = p >= 60 ? "34, 197, 94" : p >= 40 ? "234, 179, 8" : "239, 68, 68"
+  return { backgroundColor: `rgba(${color}, ${alfa})` }
+}
+
+// Porcentaje conjunto (media) de un mercado para el partido; usa el de cada
+// equipo si existe y devuelve null cuando no hay previsibilidad.
+export const previsibilidadConjunta = (previsibilidad, clave) => {
+  const l = previsibilidad?.local?.[clave]
+  const v = previsibilidad?.visita?.[clave]
+  if (l == null && v == null) return null
+  if (l == null) return v
+  if (v == null) return l
+  return Math.round(((l + v) / 2) * 10) / 10
+}
+
 // Probabilidad de PERDER por equipo derivada del 1X2 en % (local pierde =
 // P(gana visita) y viceversa). Lee `noPierde` si existe y si no lo deriva de
 // `probabilities` o de `resultado1x2.probabilidades` (proyección 2T).

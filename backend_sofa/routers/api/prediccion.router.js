@@ -6,15 +6,15 @@ const {
   getAlineacion, postMatchConAlineacion,
 } = require('../../controllers/prediccion.controllers');
 
-// Predicci��n pre-partido (modelo ya entrenado; nunca entrena en el request)
+// Predicción pre-partido (modelo ya entrenado; nunca entrena en el request)
 // GET /api/predictions/match?localTeam=X&awayTeam=Y&date=YYYY-MM-DD&league=Liga
 router.get('/match', getPrediction);
 
-// Predicci��n pre-partido CON alineaci��n declarada (XI).
+// Predicción pre-partido CON alineación declarada (XI).
 // POST /api/predictions/match  body: { localTeam, awayTeam, date, league, alineacion }
 router.post('/match', postMatchConAlineacion);
 
-// Squad de un equipo (dorsal, nombre, posici��n y tasas hist��ricas).
+// Squad de un equipo (dorsal, nombre, posición y tasas históricas).
 // GET /api/predictions/alineacion/:equipo
 router.get('/alineacion/:equipo', getAlineacion);
 
