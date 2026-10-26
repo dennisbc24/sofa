@@ -188,6 +188,12 @@ function clasificar(pred, real) {
   return "lejos";
 }
 
+// Ventana máxima para asociar AUTOMÁTICAMENTE un partido real: si el partido
+// más cercano está a más de 7 días de la fecha de la predicción, se asume que
+// no corresponde (evita comparar una predicción con un partido de hace meses).
+// El vínculo manual (partido_id) no pasa por esta ventana.
+const VENTANA_AUTO_DIAS = 7;
+
 // Partido real: por id Sofascore si lo hay; si no, equipos + fecha (±1 día,
 // misma tolerancia que cargaEstadisticas). `fecha` viene ya alias de la fila.
 async function buscarPartido(row, partidoId) {
@@ -217,22 +223,24 @@ async function buscarPartido(row, partidoId) {
   );
   if (r.rows[0]) return r.rows[0];
   // La fecha guardada es la de CORTE (no la del partido), así que si la
-  // ventana ±1 no la acierta se busca por equipos sin ventana: el partido
+  // ventana ±1 no la acierta se busca por equipos dentro de +/-7 dias: el partido
   // más cercano a la fecha de corte (con empate, el finalizado primero).
   r = await pool.query(
     `SELECT ${cols} FROM partidos
       WHERE equipo_local = $1 AND equipo_visitante = $2
+        AND ABS(fecha_partido - $3::date) <= $4::int
       ORDER BY ABS(fecha_partido - $3::date) ASC, (goles_local IS NULL) ASC
       LIMIT 1`,
-    [row.local, row.visitante, fecha]
+    [row.local, row.visitante, fecha, VENTANA_AUTO_DIAS]
   );
   if (r.rows[0]) return r.rows[0];
   r = await pool.query(
     `SELECT ${cols} FROM partidos
       WHERE equipo_local ILIKE '%' || $1 || '%' AND equipo_visitante ILIKE '%' || $2 || '%'
+        AND ABS(fecha_partido - $3::date) <= $4::int
       ORDER BY ABS(fecha_partido - $3::date) ASC, (goles_local IS NULL) ASC
       LIMIT 1`,
-    [row.local, row.visitante, fecha]
+    [row.local, row.visitante, fecha, VENTANA_AUTO_DIAS]
   );
   return r.rows[0] || null;
 }
