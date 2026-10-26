@@ -1,5 +1,5 @@
 import { formatearFecha } from "../utils.js"
-import { fondoPrevisibilidad, noPierdeDe, previsibilidadConjunta, textoOver } from "../mercados.js"
+import { clasePrevisibilidad, fondoPrevisibilidad, noPierdeDe, previsibilidadConjunta, textoOver } from "../mercados.js"
 import { CeldaMasMenos } from "./CeldaMasMenos.jsx"
 
 const FILAS_TIEMPO = [
@@ -82,8 +82,8 @@ export const BloquePrevisibilidad = ({ previsibilidad, local, visita }) => {
             {filas.map(([etiqueta, k]) => (
               <tr key={k}>
                 <td>{etiqueta}</td>
-                <td className="tabla-num" style={fondoPrevisibilidad(pv.local[k])}>{fmtP(pv.local[k])}</td>
-                <td className="tabla-num" style={fondoPrevisibilidad(pv.visita[k])}>{fmtP(pv.visita[k])}</td>
+                <td className={`tabla-num ${clasePrevisibilidad(pv.local[k])}`} style={fondoPrevisibilidad(pv.local[k])}>{fmtP(pv.local[k])}</td>
+                <td className={`tabla-num ${clasePrevisibilidad(pv.visita[k])}`} style={fondoPrevisibilidad(pv.visita[k])}>{fmtP(pv.visita[k])}</td>
               </tr>
             ))}
           </tbody>
@@ -202,9 +202,9 @@ export const SeccionesAnalisis = ({ datos, reales }) => {
                     {[["1T", mx.goles1T], ["2T", mx.goles2T], ["Partido", mx.golesPartido]].map(([t, g]) => (
                       <tr key={t} className={t === "Partido" ? "fila-total" : undefined}>
                         <td>{t}</td>
-                        <td className="tabla-num" style={fondoPrevisibilidad(pctLocal("golesTotal"))}>{g?.local}</td>
-                        <td className="tabla-num" style={fondoPrevisibilidad(pctVisita("golesTotal"))}>{g?.visita}</td>
-                        <td className="tabla-num col-total" style={fondoPrevisibilidad(pctConjunto("golesTotal"))}>{g?.esperados}</td>
+                        <td className={`tabla-num ${clasePrevisibilidad(pctLocal("golesTotal"))}`} style={fondoPrevisibilidad(pctLocal("golesTotal"))}>{g?.local}</td>
+                        <td className={`tabla-num ${clasePrevisibilidad(pctVisita("golesTotal"))}`} style={fondoPrevisibilidad(pctVisita("golesTotal"))}>{g?.visita}</td>
+                        <td className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto("golesTotal"))}`} style={fondoPrevisibilidad(pctConjunto("golesTotal"))}>{g?.esperados}</td>
                         <td className="tabla-num">{g?.o05}%</td>
                         <td className="tabla-num">{g?.o15}%</td>
                         <td className="tabla-num">{g?.o25}%</td>
@@ -235,9 +235,9 @@ export const SeccionesAnalisis = ({ datos, reales }) => {
                     {[["1T", mx.corners1T], ["2T", mx.corners2T], ["Partido", mx.cornersPartido]].map(([t, c]) => (
                       <tr key={t} className={t === "Partido" ? "fila-total" : undefined}>
                         <td>{t}</td>
-                        <td className="tabla-num" style={fondoPrevisibilidad(pctLocal("cornersTotal"))}>{c?.local}</td>
-                        <td className="tabla-num" style={fondoPrevisibilidad(pctVisita("cornersTotal"))}>{c?.visita}</td>
-                        <td className="tabla-num col-total" style={fondoPrevisibilidad(pctConjunto("cornersTotal"))}>{c?.esperados}</td>
+                        <td className={`tabla-num ${clasePrevisibilidad(pctLocal("cornersTotal"))}`} style={fondoPrevisibilidad(pctLocal("cornersTotal"))}>{c?.local}</td>
+                        <td className={`tabla-num ${clasePrevisibilidad(pctVisita("cornersTotal"))}`} style={fondoPrevisibilidad(pctVisita("cornersTotal"))}>{c?.visita}</td>
+                        <td className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto("cornersTotal"))}`} style={fondoPrevisibilidad(pctConjunto("cornersTotal"))}>{c?.esperados}</td>
                         <td className="tabla-num">{textoOver(c?.over)}</td>
                         <td className="tabla-num"><CeldaMasMenos mm={c?.mm} real={reales?.corners?.[t]} /></td>
                       </tr>
@@ -266,9 +266,9 @@ export const SeccionesAnalisis = ({ datos, reales }) => {
                       {[["1T", mx.remates1T], ["2T", mx.remates2T], ["Partido", mx.rematesPartido]].map(([t, r]) => (
                         <tr key={t} className={t === "Partido" ? "fila-total" : undefined}>
                           <td>{t}</td>
-                          <td className="tabla-num" style={fondoPrevisibilidad(pctLocal("rematesEquipo"))}>{r?.local}</td>
-                          <td className="tabla-num" style={fondoPrevisibilidad(pctVisita("rematesEquipo"))}>{r?.visita}</td>
-                          <td className="tabla-num col-total" style={fondoPrevisibilidad(pctConjunto("rematesTotal"))}>{r?.esperados}</td>
+                          <td className={`tabla-num ${clasePrevisibilidad(pctLocal("rematesEquipo"))}`} style={fondoPrevisibilidad(pctLocal("rematesEquipo"))}>{r?.local}</td>
+                          <td className={`tabla-num ${clasePrevisibilidad(pctVisita("rematesEquipo"))}`} style={fondoPrevisibilidad(pctVisita("rematesEquipo"))}>{r?.visita}</td>
+                          <td className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto("rematesTotal"))}`} style={fondoPrevisibilidad(pctConjunto("rematesTotal"))}>{r?.esperados}</td>
                           <td className="tabla-num">{textoOver(r?.over)}</td>
                           <td className="tabla-num"><CeldaMasMenos mm={r?.mm} real={reales?.remates?.[t]} /></td>
                         </tr>

@@ -475,6 +475,30 @@
   background: rgba(var(--accent-rgb), 0.22);
 }
 
+/* Énfasis por previsibilidad (% de acierto esperado). Va con prioridad para
+   que no lo tapen los fondos de fila/columna total de los mercados. */
+.tabla td.previs-alto {
+  background-color: rgba(34, 197, 94, var(--previs-alfa, 0.22)) !important;
+}
+.tabla td.previs-medio {
+  background-color: rgba(234, 179, 8, var(--previs-alfa, 0.18)) !important;
+}
+.tabla td.previs-bajo {
+  background-color: rgba(239, 68, 68, var(--previs-alfa, 0.16)) !important;
+}
+
+/* En el tema claro del 2T los velos al 10-40% quedan lavados sobre blanco:
+   subimos solo ahí la intensidad para que el color se lea bien. */
+.tema-2t .tabla td.previs-alto {
+  background-color: rgba(34, 197, 94, calc(var(--previs-alfa, 0.22) + 0.22)) !important;
+}
+.tema-2t .tabla td.previs-medio {
+  background-color: rgba(234, 179, 8, calc(var(--previs-alfa, 0.18) + 0.24)) !important;
+}
+.tema-2t .tabla td.previs-bajo {
+  background-color: rgba(239, 68, 68, calc(var(--previs-alfa, 0.16) + 0.24)) !important;
+}
+
 /* ---- Mercados adicionales (bloques compactos) ---- */
 
 .mercados-grid {

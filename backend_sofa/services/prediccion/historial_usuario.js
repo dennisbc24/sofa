@@ -17,6 +17,7 @@ const pool = require("../../db");
 const { GOLES } = require("../../experimentos_fase2t/comun2t");
 const { mercadosDePrediccion, analizarPartido } = require("./prediccion");
 const { resultado1x2De } = require("./modelo_2t");
+const { calcularPrevisibilidad } = require("./previsibilidad");
 
 const TABLA = "predicciones_usuario";
 let asegurada = false;
@@ -119,6 +120,7 @@ async function guardar2T(usuarioId, r) {
       partido: r.partido,
       goles1T: r.goles1T,
       resultado1x2: r.resultado1x2 || null,
+      previsibilidad: r.previsibilidad || null,
       historial: r.historial,
       filas: r.filas,
       advertencias: r.advertencias,
@@ -492,6 +494,26 @@ async function detalle(id, usuarioId) {
       );
     } catch (e) {
       console.warn(`[historial] no se pudo completar el payload de la predicción ${id}: ${e.message}`);
+    }
+  }
+
+  // Proyecciones 2T antiguas: no guardaban la previsibilidad, así que se
+  // calcula una vez con la fecha del partido y se persiste para que los
+  // mercados muestren su énfasis también en el historial.
+  if (row.tipo === "2t" && row.payload && !row.payload.previsibilidad) {
+    try {
+      const pv = await calcularPrevisibilidad(
+        row.local,
+        row.visitante,
+        row.fecha || row.payload?.partido?.fecha
+      );
+      row.payload = { ...row.payload, previsibilidad: pv };
+      await pool.query(
+        `UPDATE ${TABLA} SET payload = $1::jsonb WHERE id = $2 AND usuario_id = $3`,
+        [JSON.stringify(row.payload), id, usuarioId]
+      );
+    } catch (e) {
+      console.warn(`[historial] no se pudo calcular la previsibilidad 2T de ${id}: ${e.message}`);
     }
   }
 

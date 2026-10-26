@@ -2,7 +2,7 @@ import { useRef, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
 import { combinar2Partes, combinar3Partes } from "../dosPartes.js"
-import { ambosMarcan, fondoPrevisibilidad, masMenos, overDinamicas, overLines, previsibilidadConjunta, textoOver } from "../mercados.js"
+import { ambosMarcan, clasePrevisibilidad, fondoPrevisibilidad, masMenos, overDinamicas, overLines, previsibilidadConjunta, textoOver } from "../mercados.js"
 import { BloqueNoPierde, BloquePrevisibilidad } from "./PrediccionSecciones.jsx"
 import { CeldaMasMenos } from "./CeldaMasMenos.jsx"
 import { CardPrediccion1x2 } from "./CardPrediccion1x2.jsx"
@@ -73,9 +73,9 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
               {rows.map((row) => (
                 <tr key={row.t} className={row.t === "Partido" ? "fila-total" : undefined}>
                   <td>{row.t}</td>
-                  <td className="tabla-num" style={fondoPrevisibilidad(pctLocal(equipoKey))}>{row.local}</td>
-                  <td className="tabla-num" style={fondoPrevisibilidad(pctVisita(equipoKey))}>{row.visita}</td>
-                  <td className="tabla-num col-total" style={fondoPrevisibilidad(pctConjunto(totalKey))}>{row.total}</td>
+                  <td className={`tabla-num ${clasePrevisibilidad(pctLocal(equipoKey))}`} style={fondoPrevisibilidad(pctLocal(equipoKey))}>{row.local}</td>
+                  <td className={`tabla-num ${clasePrevisibilidad(pctVisita(equipoKey))}`} style={fondoPrevisibilidad(pctVisita(equipoKey))}>{row.visita}</td>
+                  <td className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto(totalKey))}`} style={fondoPrevisibilidad(pctConjunto(totalKey))}>{row.total}</td>
                   <td className="tabla-num">{textoOver(row.over)}</td>
                   <td className="tabla-num"><CeldaMasMenos mm={masMenos(row.totalNum)} real={row.real} /></td>
                 </tr>
@@ -114,9 +114,9 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
                 {goles.map((row) => (
                   <tr key={row.t} className={row.t === "Partido" ? "fila-total" : undefined}>
                     <td>{row.t}</td>
-                    <td className="tabla-num" style={fondoPrevisibilidad(pctLocal("golesTotal"))}>{row.local}</td>
-                    <td className="tabla-num" style={fondoPrevisibilidad(pctVisita("golesTotal"))}>{row.visita}</td>
-                    <td className="tabla-num col-total" style={fondoPrevisibilidad(pctConjunto("golesTotal"))}>{row.o.esperados}</td>
+                    <td className={`tabla-num ${clasePrevisibilidad(pctLocal("golesTotal"))}`} style={fondoPrevisibilidad(pctLocal("golesTotal"))}>{row.local}</td>
+                    <td className={`tabla-num ${clasePrevisibilidad(pctVisita("golesTotal"))}`} style={fondoPrevisibilidad(pctVisita("golesTotal"))}>{row.visita}</td>
+                    <td className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto("golesTotal"))}`} style={fondoPrevisibilidad(pctConjunto("golesTotal"))}>{row.o.esperados}</td>
                     <td className="tabla-num">{row.o.o05}%</td>
                     <td className="tabla-num">{row.o.o15}%</td>
                     <td className="tabla-num">{row.o.o25}%</td>

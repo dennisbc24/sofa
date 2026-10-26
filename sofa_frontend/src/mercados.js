@@ -67,18 +67,26 @@ export const masMenos = (l) => {
 export const textoMasMenos = (mm) =>
   mm == null || mm.n == null ? "—" : `+${mm.n} ${mm.mas}% · -${mm.n} ${mm.menos}%`
 
-// Fondo de énfasis para los mercados según el % de acierto esperado de la
-// previsibilidad: a mayor porcentaje, más intenso y más verde; a menor,
+// Clase y fondo de énfasis para los mercados según el % de acierto esperado
+// de la previsibilidad: a mayor porcentaje, más intenso y más verde; a menor,
 // más tenue y tirando a rojo. Semántica: verde = predecible, ámbar = medio,
-// rojo = impredecible.
+// rojo = impredecible. El color va en CSS (con prioridad sobre los fondos de
+// fila/columna total) y la intensidad se pasa como variable CSS.
+export const clasePrevisibilidad = (pct) => {
+  if (pct === null || pct === undefined) return ""
+  const p = Number(pct)
+  if (Number.isNaN(p)) return ""
+  if (p >= 60) return "previs-alto"
+  if (p >= 40) return "previs-medio"
+  return "previs-bajo"
+}
+
 export const fondoPrevisibilidad = (pct) => {
   if (pct === null || pct === undefined) return undefined
   const p = Number(pct)
   if (Number.isNaN(p)) return undefined
   const fuerza = Math.max(0, Math.min(1, (p - 25) / 65))
-  const alfa = (0.1 + fuerza * 0.3).toFixed(2)
-  const color = p >= 60 ? "34, 197, 94" : p >= 40 ? "234, 179, 8" : "239, 68, 68"
-  return { backgroundColor: `rgba(${color}, ${alfa})` }
+  return { "--previs-alfa": (0.1 + fuerza * 0.3).toFixed(2) }
 }
 
 // Porcentaje conjunto (media) de un mercado para el partido; usa el de cada
