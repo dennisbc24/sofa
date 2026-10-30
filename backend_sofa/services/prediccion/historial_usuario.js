@@ -316,6 +316,7 @@ async function evaluarPre(row, p) {
         visitante: row.visitante,
         fechaCorte: row.fecha,
         lambdas: row.payload.lambdas,
+        liga: row.liga || p.liga || null,
       });
     } catch (e) {
       console.warn(`[historial] no se pudieron recalcular mercados: ${e.message}`);

@@ -121,13 +121,19 @@ async function getHistorial(equipo, fechaCorte, limite = 40) {
       xg_r: sum(num(r.xg_t1_r), num(r.xg_t2_r)),
       remates: sum(num(r.remates_t1), num(r.remates_t2)),
       remates_t1: num(r.remates_t1),
+      remates_t2: num(r.remates_t2),
       remates_r: sum(num(r.remates_t1_r), num(r.remates_t2_r)),
+      remates_t1_r: num(r.remates_t1_r),
+      remates_t2_r: num(r.remates_t2_r),
       al_arco: sum(num(r.al_arco_t1), num(r.al_arco_t2)),
       al_arco_t1: num(r.al_arco_t1),
       al_arco_r: sum(num(r.al_arco_t1_r), num(r.al_arco_t2_r)),
       corners: sum(num(r.corners_t1), num(r.corners_t2)),
       corners_t1: num(r.corners_t1),
+      corners_t2: num(r.corners_t2),
       corners_r: sum(num(r.corners_t1_r), num(r.corners_t2_r)),
+      corners_t1_r: num(r.corners_t1_r),
+      corners_t2_r: num(r.corners_t2_r),
       posesion: num(r.posesion),
       faltas: num(r.faltas_t1) !== null || num(r.faltas_t2) !== null ? sum(num(r.faltas_t1), num(r.faltas_t2)) : null,
       amarillas:
@@ -136,7 +142,6 @@ async function getHistorial(equipo, fechaCorte, limite = 40) {
           : null,
       xg_t1_r: num(r.xg_t1_r),
       al_arco_t1_r: num(r.al_arco_t1_r),
-      corners_t1_r: num(r.corners_t1_r),
     };
   });
 }
@@ -186,17 +191,163 @@ function promedios(filas) {
     xg_t1: m((f) => f.xg_t1),
     remates: m((f) => f.remates),
     remates_t1: m((f) => f.remates_t1),
+    remates_t2: m((f) => f.remates_t2),
     rematesRecibidos: m((f) => f.remates_r),
+    remates_t1_r: m((f) => f.remates_t1_r),
+    remates_t2_r: m((f) => f.remates_t2_r),
     al_arco: m((f) => f.al_arco),
     al_arco_t1: m((f) => f.al_arco_t1),
     al_arcoRecibidos: m((f) => f.al_arco_r),
     corners: m((f) => f.corners),
     corners_t1: m((f) => f.corners_t1),
+    corners_t2: m((f) => f.corners_t2),
     cornersConcedidos: m((f) => f.corners_r),
+    corners_t1_r: m((f) => f.corners_t1_r),
+    corners_t2_r: m((f) => f.corners_t2_r),
     posesion: m((f) => f.posesion),
     faltas: m((f) => f.faltas),
     amarillas: m((f) => f.amarillas),
   };
+}
+
+// ---------------------------------------------------------------------------
+// Referencias medias por equipo de una liga (para ajustar por fuerza del rival).
+// Se cachean por liga + fecha de corte: el ajuste sólo necesita una lectura por
+// liga/día aunque se analicen varios partidos.
+// ---------------------------------------------------------------------------
+const REF_CACHE = new Map();
+const REF_TTL_MS = 60 * 60 * 1000;
+const REF_FALLBACK = {
+  shots: { total: 12.8, first: 5.8, second: 7 },
+  corners: { total: 4.6, first: 2.1, second: 2.5 },
+  goals: { total: 1.35, first: 0.6, second: 0.75 },
+};
+
+const REF_QUERY = `
+WITH base AS (
+  SELECT p.id,
+    MAX(CASE WHEN e.nombre = 'Total shots' AND e.periodo = '1ST' THEN e.valor_local_num END) AS sh_l1,
+    MAX(CASE WHEN e.nombre = 'Total shots' AND e.periodo = '1ST' THEN e.valor_visitante_num END) AS sh_v1,
+    MAX(CASE WHEN e.nombre = 'Total shots' AND e.periodo = '2ND' THEN e.valor_local_num END) AS sh_l2,
+    MAX(CASE WHEN e.nombre = 'Total shots' AND e.periodo = '2ND' THEN e.valor_visitante_num END) AS sh_v2,
+    MAX(CASE WHEN e.nombre = 'Corner kicks' AND e.periodo = '1ST' THEN e.valor_local_num END) AS co_l1,
+    MAX(CASE WHEN e.nombre = 'Corner kicks' AND e.periodo = '1ST' THEN e.valor_visitante_num END) AS co_v1,
+    MAX(CASE WHEN e.nombre = 'Corner kicks' AND e.periodo = '2ND' THEN e.valor_local_num END) AS co_l2,
+    MAX(CASE WHEN e.nombre = 'Corner kicks' AND e.periodo = '2ND' THEN e.valor_visitante_num END) AS co_v2,
+    p.goles_local AS g_l,
+    p.goles_visitante AS g_v,
+    p.goles_local_1t AS g_l1,
+    p.goles_visitante_1t AS g_v1
+  FROM partidos p
+  LEFT JOIN estadisticas e
+    ON e.partido_id = p.id
+   AND e.nombre IN ('Total shots','Corner kicks')
+   AND e.periodo IN ('1ST','2ND')
+  WHERE p.estado = 'Ended'
+    AND p.fecha_partido IS NOT NULL
+    AND p.fecha_partido < $2::date
+    AND p.liga = $1
+  GROUP BY p.id, p.goles_local, p.goles_visitante, p.goles_local_1t, p.goles_visitante_1t
+),
+calc AS (
+  SELECT *,
+    CASE WHEN sh_l1 IS NOT NULL AND sh_v1 IS NOT NULL AND sh_l2 IS NOT NULL AND sh_v2 IS NOT NULL
+      THEN (sh_l1 + sh_v1 + sh_l2 + sh_v2) / 2.0 END AS sh_total,
+    CASE WHEN sh_l1 IS NOT NULL AND sh_v1 IS NOT NULL
+      THEN (sh_l1 + sh_v1) / 2.0 END AS sh_first,
+    CASE WHEN sh_l2 IS NOT NULL AND sh_v2 IS NOT NULL
+      THEN (sh_l2 + sh_v2) / 2.0 END AS sh_second,
+    CASE WHEN co_l1 IS NOT NULL AND co_v1 IS NOT NULL AND co_l2 IS NOT NULL AND co_v2 IS NOT NULL
+      THEN (co_l1 + co_v1 + co_l2 + co_v2) / 2.0 END AS co_total,
+    CASE WHEN co_l1 IS NOT NULL AND co_v1 IS NOT NULL
+      THEN (co_l1 + co_v1) / 2.0 END AS co_first,
+    CASE WHEN co_l2 IS NOT NULL AND co_v2 IS NOT NULL
+      THEN (co_l2 + co_v2) / 2.0 END AS co_second,
+    CASE WHEN g_l IS NOT NULL AND g_v IS NOT NULL
+      THEN (g_l + g_v) / 2.0 END AS g_total,
+    CASE WHEN g_l1 IS NOT NULL AND g_v1 IS NOT NULL
+      THEN (g_l1 + g_v1) / 2.0 END AS g_first,
+    CASE WHEN g_l1 IS NOT NULL AND g_v1 IS NOT NULL
+      THEN ((g_l - g_l1) + (g_v - g_v1)) / 2.0 END AS g_second
+  FROM base
+)
+SELECT
+  COUNT(sh_total) AS n_shots,
+  AVG(sh_total) AS shots_total,
+  AVG(sh_first) AS shots_first,
+  AVG(sh_second) AS shots_second,
+  COUNT(co_total) AS n_corners,
+  AVG(co_total) AS corners_total,
+  AVG(co_first) AS corners_first,
+  AVG(co_second) AS corners_second,
+  COUNT(g_total) AS n_goals,
+  AVG(g_total) AS goals_total,
+  AVG(g_first) AS goals_first,
+  AVG(g_second) AS goals_second
+FROM calc;`;
+
+function refsDeFila(r) {
+  const pick = (campo, fallback) => {
+    const v = num(r[campo]);
+    return v === null ? fallback : v;
+  };
+  const nShots = Number(r.n_shots) || 0;
+  const nCorners = Number(r.n_corners) || 0;
+  const nGoals = Number(r.n_goals) || 0;
+  return {
+    shots:
+      nShots >= 5
+        ? {
+            total: pick("shots_total", REF_FALLBACK.shots.total),
+            first: pick("shots_first", REF_FALLBACK.shots.first),
+            second: pick("shots_second", REF_FALLBACK.shots.second),
+          }
+        : { ...REF_FALLBACK.shots },
+    corners:
+      nCorners >= 5
+        ? {
+            total: pick("corners_total", REF_FALLBACK.corners.total),
+            first: pick("corners_first", REF_FALLBACK.corners.first),
+            second: pick("corners_second", REF_FALLBACK.corners.second),
+          }
+        : { ...REF_FALLBACK.corners },
+    goals:
+      nGoals >= 5
+        ? {
+            total: pick("goals_total", REF_FALLBACK.goals.total),
+            first: pick("goals_first", REF_FALLBACK.goals.first),
+            second: pick("goals_second", REF_FALLBACK.goals.second),
+          }
+        : { ...REF_FALLBACK.goals },
+    fuente: {
+      shots: nShots >= 5 ? "liga" : "global",
+      corners: nCorners >= 5 ? "liga" : "global",
+      goals: nGoals >= 5 ? "liga" : "global",
+    },
+  };
+}
+
+const refsGlobales = () => ({
+  shots: { ...REF_FALLBACK.shots },
+  corners: { ...REF_FALLBACK.corners },
+  goals: { ...REF_FALLBACK.goals },
+  fuente: { shots: "global", corners: "global", goals: "global" },
+});
+
+async function getReferenciasLiga(liga, fechaCorte) {
+  if (!liga) return refsGlobales();
+  const key = `${liga}|${fechaCorte}`;
+  const now = Date.now();
+  const cached = REF_CACHE.get(key);
+  if (cached && now - cached.ts < REF_TTL_MS) return cached.value;
+  try {
+    const { rows } = await pool.query(REF_QUERY, [liga, fechaCorte]);
+    const value = refsDeFila(rows[0] || {});
+    REF_CACHE.set(key, { ts: now, value });
+    return value;
+  } catch (e) {
+    return refsGlobales();
+  }
 }
 
 // Perfil completo del equipo a una fecha de corte.
@@ -308,6 +459,7 @@ module.exports = {
   getHistorial,
   getPerfilEquipo,
   getH2H,
+  getReferenciasLiga,
   forma,
   promedios,
 };

@@ -1,4 +1,4 @@
-const { resolverEquipo, getPerfilEquipo, getH2H } = require("./features");
+const { resolverEquipo, getPerfilEquipo, getH2H, getReferenciasLiga } = require("./features");
 const { cargarModelo } = require("./modelo");
 const { predecir, probsDesdeLambdas, aPorcentajes } = require("./modelo_poisson");
 const { modeloActivo } = require("./modelo_config");
@@ -70,12 +70,20 @@ function calcularMercados(perfilLocal, perfilVisita, lambdas, statsOverride) {
 
 // Recalcula los mercados para predicciones antiguas guardadas sin ellos
 // (los perfiles sólo dependen de la fecha de corte, que está en la fila).
-async function mercadosDePrediccion({ local, visitante, fechaCorte, lambdas }) {
-  const [perfilLocal, perfilVisita] = await Promise.all([
+async function mercadosDePrediccion({ local, visitante, fechaCorte, lambdas, liga = null }) {
+  const [perfilLocal, perfilVisita, refs] = await Promise.all([
     getPerfilEquipo(local, fechaCorte),
     getPerfilEquipo(visitante, fechaCorte),
+    getReferenciasLiga(liga, fechaCorte),
   ]);
-  return calcularMercados(perfilLocal, perfilVisita, lambdas);
+  const ajustes = ajustesRival(perfilLocal, perfilVisita, refs);
+  const statsLocal = { ...statsParaPerfil(perfilLocal, "local").stats, ...ajustes.statsLocal };
+  const statsVisita = { ...statsParaPerfil(perfilVisita, "visita").stats, ...ajustes.statsVisita };
+  const lambdasMercados = { home: ajustes.goalsLocal.total, away: ajustes.goalsVisita.total };
+  return calcularMercados(perfilLocal, perfilVisita, lambdasMercados, {
+    local: statsLocal,
+    visitante: statsVisita,
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -143,12 +151,16 @@ const overDinamicas = (l) => {
   return overFijas(l, [m - 1.5, m - 0.5, m + 0.5].filter((x) => x >= 0.5));
 };
 
-function calcularMercadosExtras(sL, sV, lambdas) {
+function calcularMercadosExtras(sL, sV, lambdas, periodosGoals = null) {
   const r2 = (v) => Math.round(v * 100) / 100;
   const shH = share1T(sL.gf_t1, (sL.gf_t1 || 0) + (sL.gf_t2 || 0), 0.45);
   const shA = share1T(sV.gf_t1, (sV.gf_t1 || 0) + (sV.gf_t2 || 0), 0.45);
-  const lh1 = lambdas.home * shH, lh2 = lambdas.home - lh1;
-  const la1 = lambdas.away * shA, la2 = lambdas.away - la1;
+  const gLocal = periodosGoals?.local || null;
+  const gVisita = periodosGoals?.visitante || null;
+  const lh1 = gLocal ? gLocal.first : lambdas.home * shH;
+  const lh2 = gLocal ? gLocal.second : lambdas.home - lh1;
+  const la1 = gVisita ? gVisita.first : lambdas.away * shA;
+  const la2 = gVisita ? gVisita.second : lambdas.away - la1;
   const shCH = share1T(sL.corners_t1, sL.corners, 0.5);
   const shCV = share1T(sV.corners_t1, sV.corners, 0.5);
   const cH1 = (sL.corners || 0) * shCH, cH2 = (sL.corners || 0) - cH1;
@@ -227,6 +239,128 @@ function statsParaPerfil(perfil, condicion) {
   const especificas = condicion === "local" ? perfil.comoLocal : perfil.comoVisitante;
   if (especificas.n >= 3) return { stats: especificas, fuente: condicion, n: especificas.n };
   return { stats: perfil.ataqueDefensa, fuente: "general", n: perfil.ataqueDefensa.n };
+}
+
+// ---------------------------------------------------------------------------
+// Ajuste de mercados por fuerza del rival (fase 12, validado en TV/TEST):
+//   ataque propio × defensa rival / media de la liga, con shrinkage a la media.
+// Remates: W10 general. Corners: W10 general. Goles: W40 general.
+// El 1X2 sigue usando el Poisson V1; esto sólo cambia los mercados.
+// ---------------------------------------------------------------------------
+const SHRINK_RIVAL = 6;
+const STAT_FIELDS = {
+  shots: {
+    total: "remates",
+    first: "remates_t1",
+    second: "remates_t2",
+    oppTotal: "rematesRecibidos",
+    oppFirst: "remates_t1_r",
+    oppSecond: "remates_t2_r",
+  },
+  corners: {
+    total: "corners",
+    first: "corners_t1",
+    second: "corners_t2",
+    oppTotal: "cornersConcedidos",
+    oppFirst: "corners_t1_r",
+    oppSecond: "corners_t2_r",
+  },
+};
+
+function shrinkRival(m, n, prior) {
+  if (m === null || m === undefined) return prior;
+  if (!n) return prior;
+  return (n * m + SHRINK_RIVAL * prior) / (n + SHRINK_RIVAL);
+}
+
+function adjRival(own, ownN, opp, oppN, prior) {
+  const a = shrinkRival(own, ownN, prior);
+  const d = shrinkRival(opp, oppN, prior);
+  return (a * d) / Math.max(prior, 1e-6);
+}
+
+function mediaGeneral(perfil, campo, W) {
+  const p = W <= 10 ? perfil.ultimos10Promedios : perfil.ataqueDefensa;
+  return { m: p?.[campo] ?? null, n: p?.n ?? 0 };
+}
+
+function mediaCondicion(perfil, cond, campo, W) {
+  const base = cond === "local" ? perfil.comoLocal : perfil.comoVisitante;
+  if (!base) return { m: null, n: 0 };
+  if (W <= 10 && Array.isArray(base.detalle)) {
+    const vals = base.detalle
+      .map((f) => f[campo])
+      .filter((v) => v !== null && v !== undefined && !Number.isNaN(v));
+    return {
+      m: vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null,
+      n: vals.length,
+    };
+  }
+  return { m: base[campo] ?? null, n: base.n ?? 0 };
+}
+
+function ajustarStats(perfilPropio, perfilRival, cond, key, refs, W, condicion) {
+  const f = STAT_FIELDS[key];
+  const condRival = cond === "local" ? "visita" : "local";
+  const getPropio = condicion
+    ? (campo) => mediaCondicion(perfilPropio, cond, campo, W)
+    : (campo) => mediaGeneral(perfilPropio, campo, W);
+  const getRival = condicion
+    ? (campo) => mediaCondicion(perfilRival, condRival, campo, W)
+    : (campo) => mediaGeneral(perfilRival, campo, W);
+  const ref = refs[key] || {};
+  const out = {};
+  for (const [periodo, campoPropio, campoRival, refCampo] of [
+    ["total", f.total, f.oppTotal, "total"],
+    ["first", f.first, f.oppFirst, "first"],
+    ["second", f.second, f.oppSecond, "second"],
+  ]) {
+    const a = getPropio(campoPropio);
+    const d = getRival(campoRival);
+    out[periodo] = adjRival(a.m, a.n, d.m, d.n, ref[refCampo]);
+  }
+  return out;
+}
+
+function ajustarGoals(perfilPropio, perfilRival, cond, refs, W, condicion) {
+  const condRival = cond === "local" ? "visita" : "local";
+  const getPropio = condicion
+    ? (campo) => mediaCondicion(perfilPropio, cond, campo, W)
+    : (campo) => mediaGeneral(perfilPropio, campo, W);
+  const getRival = condicion
+    ? (campo) => mediaCondicion(perfilRival, condRival, campo, W)
+    : (campo) => mediaGeneral(perfilRival, campo, W);
+  const ref = refs.goals || {};
+  const par = (campoPropio, campoRival, refCampo) => {
+    const a = getPropio(campoPropio);
+    const d = getRival(campoRival);
+    return adjRival(a.m, a.n, d.m, d.n, ref[refCampo]);
+  };
+  return {
+    total: par("gf", "gc", "total"),
+    first: par("gf_t1", "gc_t1", "first"),
+    second: par("gf_t2", "gc_t2", "second"),
+  };
+}
+
+function statsMercado(adj, key) {
+  if (key === "shots") {
+    return { remates: adj.total, remates_t1: adj.first, remates_t2: adj.second };
+  }
+  return { corners: adj.total, corners_t1: adj.first, corners_t2: adj.second };
+}
+
+function ajustesRival(perfilLocal, perfilVisita, refs) {
+  const shotsL = ajustarStats(perfilLocal, perfilVisita, "local", "shots", refs, 10, false);
+  const shotsV = ajustarStats(perfilVisita, perfilLocal, "visita", "shots", refs, 10, false);
+  const cornersL = ajustarStats(perfilLocal, perfilVisita, "local", "corners", refs, 10, false);
+  const cornersV = ajustarStats(perfilVisita, perfilLocal, "visita", "corners", refs, 10, false);
+  return {
+    statsLocal: { ...statsMercado(shotsL, "shots"), ...statsMercado(cornersL, "corners") },
+    statsVisita: { ...statsMercado(shotsV, "shots"), ...statsMercado(cornersV, "corners") },
+    goalsLocal: ajustarGoals(perfilLocal, perfilVisita, "local", refs, 40, false),
+    goalsVisita: ajustarGoals(perfilVisita, perfilLocal, "visita", refs, 40, false),
+  };
 }
 
 function construirComparacion(homeStats, awayStats) {
@@ -319,10 +453,11 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
 
   const advertencias = [];
 
-  const [perfilLocal, perfilVisita, h2h] = await Promise.all([
+  const [perfilLocal, perfilVisita, h2h, refsRival] = await Promise.all([
     getPerfilEquipo(nombreLocal, fechaCorte),
     getPerfilEquipo(nombreVisita, fechaCorte),
     getH2H(nombreLocal, nombreVisita, fechaCorte),
+    getReferenciasLiga(league, fechaCorte),
   ]);
 
   if (!perfilLocal.partidosConsiderados)
@@ -355,8 +490,11 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
   const lambdas = { home: pred.internos.lambdaHome, away: pred.internos.lambdaAway };
   const probs = pred.probabilities;
   let ajusteAlineacion = null;
-  let statsLocal = fuenteLocal.stats;
-  let statsVisita = fuenteVisita.stats;
+  const ajustes = ajustesRival(perfilLocal, perfilVisita, refsRival);
+  let statsLocal = { ...fuenteLocal.stats, ...ajustes.statsLocal };
+  let statsVisita = { ...fuenteVisita.stats, ...ajustes.statsVisita };
+  const lambdasMercados = { home: ajustes.goalsLocal.total, away: ajustes.goalsVisita.total };
+  const periodosGoals = { local: ajustes.goalsLocal, visitante: ajustes.goalsVisita };
 
   if (alineacion) {
     const [xh, xv] = await Promise.all([
@@ -383,8 +521,11 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
 
   const comparison = construirComparacion(fuenteLocal.stats, fuenteVisita.stats);
   const principal = prediccionPrincipal(probs);
-  const mercados = calcularMercados(perfilLocal, perfilVisita, lambdas, { local: statsLocal, visitante: statsVisita });
-  const mercadosExtras = calcularMercadosExtras(statsLocal, statsVisita, lambdas);
+  const mercados = calcularMercados(perfilLocal, perfilVisita, lambdasMercados, { local: statsLocal, visitante: statsVisita });
+  const mercadosExtras = calcularMercadosExtras(statsLocal, statsVisita, lambdasMercados, periodosGoals);
+  advertencias.push(
+    "Mercados de goles/remates/corners ajustados por la fuerza del rival; el 1X2 se mantiene con el modelo V1."
+  );
   const noPierde = calcularNoPierde(probs);
   const previsibilidad = await calcularPrevisibilidad(nombreLocal, nombreVisita, fechaCorte);
   // Reales del partido (si ya esta en la base): permiten pintar la columna
@@ -503,5 +644,6 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
 
 module.exports = {
   analizarPartido, calcularMercados, mercadosDePrediccion,
+  ajustesRival, shrinkRival,
   ModeloNoEntrenadoError, EquipoNoEncontradoError,
 };
