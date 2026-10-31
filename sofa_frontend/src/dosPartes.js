@@ -224,3 +224,106 @@ export const combinar3Partes = (infoContenido, statsContenido, jugadoresContenid
     },
   }
 }
+
+// --- PARTE incidencias (feed crudo de Sofascore) ----------------------------
+// El móvil suele guardar sólo la respuesta de /event/{id}/incidents:
+// { incidents: [...], home: {...}, away: {...} }. Se convierte al bloque
+// `incidentes` del dump nuevo (mismas claves que cargaEstadisticas/DB).
+
+const tarjetaNormalizada = (clase) => {
+  const c = String(clase || "").toLowerCase()
+  if (c === "red") return "red"
+  if (c === "yellowred" || c === "secondyellow" || c === "second_yellow") return "second_yellow"
+  if (c === "yellow") return "yellow"
+  return null
+}
+
+export const incidentesDe = (j) => {
+  if (!j) return null
+  // Ya viene normalizado (mismo formato que el dump del escritorio).
+  if (j.incidentes && typeof j.incidentes === "object") {
+    return {
+      goles: Array.isArray(j.incidentes.goles) ? j.incidentes.goles : [],
+      tarjetas: Array.isArray(j.incidentes.tarjetas) ? j.incidentes.tarjetas : [],
+      cambios: Array.isArray(j.incidentes.cambios) ? j.incidentes.cambios : [],
+      descuento: j.incidentes.descuento || {},
+    }
+  }
+  const arr = j.incidents
+  if (!Array.isArray(arr)) return null
+
+  const goles = []
+  const tarjetas = []
+  for (const x of arr) {
+    if (!x || !x.incidentType) continue
+    const minuto = num(x.time)
+    const extra = num(x.addedTime)
+    const minutoExtra = extra !== null && extra !== 999 ? extra : null
+    const texto = minuto === null ? null : `${minuto}${minutoExtra !== null ? `+${minutoExtra}` : ""}`
+    const equipo = x.isHome === true ? "home" : x.isHome === false ? "away" : null
+    if (!equipo) continue
+
+    if (x.incidentType === "goal") {
+      goles.push({
+        minuto,
+        minuto_extra: minutoExtra,
+        minuto_texto: texto,
+        equipo,
+        jugador_id: x.player && x.player.id != null ? String(x.player.id) : null,
+        jugador: (x.player && x.player.name) || null,
+        asistente_id: x.assist1 && x.assist1.id != null ? String(x.assist1.id) : null,
+        asistente: (x.assist1 && x.assist1.name) || null,
+        tipo: x.incidentClass || "regular",
+        marcador_h: num(x.homeScore),
+        marcador_a: num(x.awayScore),
+        parte_cuerpo: null,
+        situacion: null,
+        ubicacion_arco: null,
+      })
+    } else if (x.incidentType === "card") {
+      const tarjeta = tarjetaNormalizada(x.incidentClass)
+      if (!tarjeta) continue
+      tarjetas.push({
+        minuto,
+        minuto_extra: minutoExtra,
+        minuto_texto: texto,
+        equipo,
+        jugador_id: x.player && x.player.id != null ? String(x.player.id) : null,
+        jugador: (x.player && x.player.name) || null,
+        tarjeta,
+        motivo: x.incidentClass || null,
+        anulada: false,
+      })
+    }
+  }
+  return { goles, tarjetas, cambios: [], descuento: {} }
+}
+
+// Añade las incidencias a un dump ya combinado. No pisa las que ya trae el
+// dump (el archivo de escritorio ya las incluye).
+export const fusionarIncidencias = (dumpContenido, incidentesContenido) => {
+  const jd = parsear(dumpContenido, "dump del partido")
+  if (jd.error) return { ok: false, error: jd.error }
+  const ji = parsear(incidentesContenido, "incidents.json")
+  if (ji.error) return { ok: false, error: ji.error }
+
+  const inc = incidentesDe(ji)
+  if (!inc || (!inc.tarjetas.length && !inc.goles.length)) {
+    return {
+      ok: false,
+      error: "incidents.json no trae incidencias (se espera incidents/incidentes con tarjetas o goles).",
+    }
+  }
+
+  const actual = jd.incidentes || {}
+  const tarjetas = Array.isArray(actual.tarjetas) && actual.tarjetas.length ? actual.tarjetas : inc.tarjetas
+  const goles = Array.isArray(actual.goles) && actual.goles.length ? actual.goles : inc.goles
+  const cambios = Array.isArray(actual.cambios) && actual.cambios.length ? actual.cambios : inc.cambios
+  const descuento = actual.descuento && Object.keys(actual.descuento).length ? actual.descuento : inc.descuento
+
+  const contenido = JSON.stringify({
+    ...jd,
+    incidentes: { goles, tarjetas, cambios, descuento },
+  })
+  return { ok: true, contenido, tarjetas: tarjetas.length, goles: goles.length }
+}

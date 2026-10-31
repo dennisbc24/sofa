@@ -28,6 +28,9 @@ const {
 } = require("../../experimentos_fase2t/comun2t");
 const { modeloActivo2T } = require("./modelo_2t_config");
 const { calcularPrevisibilidad } = require("./previsibilidad");
+const {
+  cargarAjusteRoja2T, rojas1TDe, factorC1, factorC4Lado, predecirC2,
+} = require("./ajuste_roja_2t");
 
 // FT (= 1T + pred 2T) sólo para stats donde sumar tiene sentido de flujo.
 const FT_WHITELIST = new Set([GOLES, "Total shots", "Corner kicks", "Yellow cards"]);
@@ -311,11 +314,33 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
   const local = evento.local, visitante = evento.visitante;
   const advertencias = [];
 
+  // Tarjeta roja en el 1T: se detecta del dump (stats/incidencias) y se
+  // aplica el artefacto de ajuste si existe.
+  const rojas = rojas1TDe(json, filas);
+  const artefactoRoja = cargarAjusteRoja2T();
+  const hayRoja = rojas.home + rojas.away > 0;
+
   // 1T actual del partido desde el dump (period1; fallback al marcador).
   const gHL = evento.golesLocal1T;
   const gHA = evento.golesVisitante1T;
   if (gHL === null || gHA === null) {
     advertencias.push("El JSON no trae goles del 1T (homeScore.period1); se usan 0 en features de goles.");
+  }
+  if (hayRoja) {
+    if (artefactoRoja) {
+      advertencias.push(
+        `Tarjeta roja en el 1T (local ${rojas.home}, visita ${rojas.away}; fuente: ${rojas.fuente}): ` +
+        "ajuste C4/C2/C1 aplicado."
+      );
+    } else {
+      advertencias.push(
+        `Tarjeta roja en el 1T (local ${rojas.home}, visita ${rojas.away}; fuente: ${rojas.fuente}), ` +
+        "pero falta modelos/ajuste_roja_2t.json: proyección sin ajuste."
+      );
+    }
+  }
+  if (hayRoja && artefactoRoja && (gHL === null || gHA === null)) {
+    advertencias.push("No se aplica el ajuste C4 a goles por falta de marcador del 1T.");
   }
   const estadoTipo = esNuevo
     ? String((json.info && json.info.estado) || "")
@@ -407,12 +432,15 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
   for (const stat of orden) {
     const info = modelo.stats[stat];
     if (!info) continue;
+    const aj = artefactoRoja && artefactoRoja.stats ? artefactoRoja.stats[stat] : null;
+    const usaC2 = !!(aj && aj.tipo === "C2" && aj.ridge);
     const lado0 = t1De(stat);
     const hay1T = lado0 !== null;
     const l2T = mediaLiga(ctx.sums[stat], familia, base, "s2");
     const l1T = mediaLiga(ctx.sums[stat], familia, base, "s1");
 
     const pred = {};
+    const fPorLado = {};
     let predBase = null;
     let fuente = info.elegido;
     if (!hay1T) {
@@ -435,28 +463,38 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
           stateLado: lado === "home" ? state : -state,
           lado, l2T, l1T,
         });
-        const comps = { L0: f.L0, T: f.T };
-        if (info.ridge) comps.R = clamp0(ridgePredecir(info.ridge, f.feats));
-        else sinRidge.push(etiqueta(stat));
-
+        fPorLado[lado] = f;
+        // C2 (remates/corners): ridge de 13 features con las rojas 1T.
+        const c2 = usaC2
+          ? predecirC2({ ajuste: aj, f, red: rojas, lado, H, hkey: Hkey[stat] })
+          : null;
         let v;
-        if (info.elegido === "B" && info.pesosB && comps.R !== undefined) {
-          v = 0;
-          for (const [k, w] of Object.entries(info.pesosB)) {
-            if (!w) continue;
-            if (k === "H") {
-              const hk = Hkey[stat];
-              v += w * (hk && H[lado] ? H[lado][hk].v : comps.T);
-            } else v += w * (comps[k] !== undefined ? comps[k] : comps.T);
-          }
-        } else if (info.elegido === "TR" && info.pesosTR !== null && comps.R !== undefined) {
-          v = info.pesosTR * comps.R + (1 - info.pesosTR) * comps.T;
-        } else if (info.elegido === "R" && comps.R !== undefined) {
-          v = comps.R;
-        } else if (comps.T !== undefined) {
-          v = comps.T;
+        if (c2) {
+          fuente = aj.elegido;
+          v = c2.v;
         } else {
-          v = comps.L0;
+          const comps = { L0: f.L0, T: f.T };
+          if (info.ridge) comps.R = clamp0(ridgePredecir(info.ridge, f.feats));
+          else sinRidge.push(etiqueta(stat));
+
+          if (info.elegido === "B" && info.pesosB && comps.R !== undefined) {
+            v = 0;
+            for (const [k, w] of Object.entries(info.pesosB)) {
+              if (!w) continue;
+              if (k === "H") {
+                const hk = Hkey[stat];
+                v += w * (hk && H[lado] ? H[lado][hk].v : comps.T);
+              } else v += w * (comps[k] !== undefined ? comps[k] : comps.T);
+            }
+          } else if (info.elegido === "TR" && info.pesosTR !== null && comps.R !== undefined) {
+            v = info.pesosTR * comps.R + (1 - info.pesosTR) * comps.T;
+          } else if (info.elegido === "R" && comps.R !== undefined) {
+            v = comps.R;
+          } else if (comps.T !== undefined) {
+            v = comps.T;
+          } else {
+            v = comps.L0;
+          }
         }
         pred[lado] = clamp0(v);
       }
@@ -469,6 +507,27 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
         predBase = { home: pred.home, away: pred.away };
         pred.home = ajustarPorXI(pred.home, ratiosXI.home[merc], stat);
         pred.away = ajustarPorXI(pred.away, ratiosXI.away[merc], stat);
+      }
+    }
+
+    // Ajuste por roja 1T: C1/C4 se aplican después del XI (multiplicativo).
+    let factorRoja = null;
+    if (aj && hayRoja) {
+      if (aj.tipo === "C1") {
+        const fs = factorC1(aj, rojas);
+        pred.home = clamp0(pred.home * fs.home);
+        pred.away = clamp0(pred.away * fs.away);
+        factorRoja = { tipo: "C1", local: r2(fs.home), visita: r2(fs.away) };
+      } else if (aj.tipo === "C4" && gHL !== null && gHA !== null) {
+        const fs = {};
+        for (const lado of ["home", "away"]) {
+          const f = fPorLado[lado];
+          if (!f) { fs[lado] = 1; continue; }
+          const fuerza = f.feats[3] - f.feats[6];
+          fs[lado] = factorC4Lado({ ajuste: aj, lado, red: rojas, state, fuerza });
+          pred[lado] = clamp0(pred[lado] * fs[lado]);
+        }
+        factorRoja = { tipo: "C4", local: r2(fs.home), visita: r2(fs.away) };
       }
     }
 
@@ -486,6 +545,7 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
       fila.baseLocal2T = r2(predBase.home);
       fila.baseVisita2T = r2(predBase.away);
     }
+    if (factorRoja) fila.factorRoja = factorRoja;
     if (FT_WHITELIST.has(stat) && hay1T) {
       fila.ftLocal = r2(l1 + pred.home);
       fila.ftVisita = r2(a1 + pred.away);
@@ -515,6 +575,15 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
     }
   }
 
+  const backtestRoja = {};
+  if (artefactoRoja) {
+    for (const s of [GOLES, "Total shots", "Corner kicks", "Yellow cards"]) {
+      const aj = artefactoRoja.stats[s];
+      const red = aj && aj.validacion && aj.validacion.pool ? aj.validacion.pool.red : null;
+      if (red) backtestRoja[etiqueta(s)] = red;
+    }
+  }
+
   return {
     archivo: nombre,
     partido: {
@@ -536,16 +605,28 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
     ajusteXI: ratiosXI ? {
       local: ratiosXI.detalle.home,
       visitante: ratiosXI.detalle.away,
-      nota: "1 = XI habitual; >1 = XI más fuerte de lo normal; <1 = más flojo. Se aplica con peso (goles 0.5, remates 0.6, corners 0.25).",
+      nota: "1 = XI habitual; >1 = XI mǭs fuerte de lo normal; <1 = mǭs flojo. Se aplica con peso (goles 0.5, remates 0.6, corners 0.25).",
     } : null,
+    ajusteRoja: {
+      aplicado: hayRoja,
+      local: rojas.home,
+      visita: rojas.away,
+      fuente: rojas.fuente,
+      modelo: artefactoRoja ? "Goles C4 · Remates/Corners C2 · Amarillas C1" : null,
+    },
     advertencias,
     modelo: {
       id: modeloActivo2T().id,
-      name: "Modelo análisis 2T",
+      name: "Modelo anǭlisis 2T",
       version: modelo.version,
       estado: modeloActivo2T().estado,
       entrenadoEn: modelo.entrenadoEn,
       backtestPrincipales,
+      backtestRoja: Object.keys(backtestRoja).length ? backtestRoja : null,
+      ajusteRoja: artefactoRoja ? {
+        version: artefactoRoja.version,
+        entrenadoEn: artefactoRoja.entrenadoEn,
+      } : null,
     },
   };
 }

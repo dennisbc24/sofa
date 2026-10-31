@@ -1,7 +1,7 @@
 import { useRef, useState } from "react"
 import axios from "axios"
 import { API_URL } from "../config.js"
-import { combinar2Partes, combinar3Partes } from "../dosPartes.js"
+import { combinar2Partes, combinar3Partes, fusionarIncidencias } from "../dosPartes.js"
 import { ambosMarcan, clasePrevisibilidad, fondoPrevisibilidad, masMenos, overDinamicas, overLines, previsibilidadConjunta, textoOver } from "../mercados.js"
 import { BloqueNoPierde, BloquePrevisibilidad } from "./PrediccionSecciones.jsx"
 import { CeldaMasMenos } from "./CeldaMasMenos.jsx"
@@ -230,19 +230,25 @@ export const Prediccion2T = () => {
   const [parteInfo, setParteInfo] = useState(null)
   const [parteStats, setParteStats] = useState(null)
   const [partePlayers, setPartePlayers] = useState(null)
+  const [parteIncidencias, setParteIncidencias] = useState(null)
+  const [incidenciasEstado, setIncidenciasEstado] = useState("")
   const carpetaRef = useRef(null)
   const sueltosRef = useRef(null)
   const infoRef = useRef(null)
   const statsRef = useRef(null)
   const playersRef = useRef(null)
+  const incidenciasRef = useRef(null)
 
   const limpiarPartes = () => {
     setParteInfo(null)
     setParteStats(null)
     setPartePlayers(null)
+    setParteIncidencias(null)
+    setIncidenciasEstado("")
     if (infoRef.current) infoRef.current.value = ""
     if (statsRef.current) statsRef.current.value = ""
     if (playersRef.current) playersRef.current.value = ""
+    if (incidenciasRef.current) incidenciasRef.current.value = ""
   }
 
   const limpiar = () => {
@@ -319,7 +325,18 @@ export const Prediccion2T = () => {
       setError(r.error)
       return
     }
-    const contenido = r.contenido
+    let contenido = r.contenido
+    if (parteIncidencias) {
+      const merge = fusionarIncidencias(contenido, parteIncidencias.contenido)
+      if (!merge.ok) {
+        setArchivos([])
+        setCarpeta("")
+        setError(merge.error)
+        return
+      }
+      contenido = merge.contenido
+      setIncidenciasEstado(`incidencias: ${merge.tarjetas} tarjeta(s), ${merge.goles} gol(es)`)
+    }
     setArchivos([
       {
         nombre: `partes_${r.partido.id}.json`,
@@ -329,10 +346,47 @@ export const Prediccion2T = () => {
       },
     ])
     setCarpeta(
-      players
+      (players
         ? `3 partes (info.json + stats.json + players.json, ${r.partido.jugadores} jugadores)`
-        : "2 partes (info.json + stats.json)"
+        : "2 partes (info.json + stats.json)") +
+        (parteIncidencias ? " + incidencias" : "")
     )
+    setError(null)
+  }
+
+  // Incidencias del celular: la respuesta cruda de /event/{id}/incidents.
+  // Se fusiona con el dump combinado (sólo tiene sentido para UN partido).
+  const seleccionarIncidencias = async (e) => {
+    const f = (e.target.files || [])[0]
+    setResultados(null)
+    if (!f) {
+      setParteIncidencias(null)
+      setIncidenciasEstado("")
+      return
+    }
+    if (archivos.length > 1) {
+      setError("El archivo de incidencias sólo se aplica a un partido: deja un único JSON principal.")
+      return
+    }
+    const nuevo = { nombre: f.name, contenido: await f.text() }
+    setParteIncidencias(nuevo)
+    if (archivos.length === 1) {
+      const merge = fusionarIncidencias(archivos[0].contenido, nuevo.contenido)
+      if (!merge.ok) {
+        setError(merge.error)
+        return
+      }
+      const contenido = merge.contenido
+      setArchivos([
+        {
+          ...archivos[0],
+          contenido,
+          tam: contenido.length,
+          vista: previsualizar(contenido),
+        },
+      ])
+      setIncidenciasEstado(`incidencias: ${merge.tarjetas} tarjeta(s), ${merge.goles} gol(es)`)
+    }
     setError(null)
   }
 
@@ -484,9 +538,28 @@ export const Prediccion2T = () => {
             disabled={cargando}
           />
         </label>
+        <label className="field">
+          <span className="field-label">
+            Parte 4 (opcional): incidents.json (feed de tarjetas y goles del celular)
+          </span>
+          <input
+            ref={incidenciasRef}
+            className="field-input"
+            type="file"
+            accept=".json,application/json"
+            onChange={seleccionarIncidencias}
+            disabled={cargando}
+          />
+        </label>
+        {incidenciasEstado && <p className="tabla-status">{incidenciasEstado}</p>}
         <ul className="explicacion">
           <li>Con info.json + stats.json basta para proyectar el 2T (el modelo usa info + stats).</li>
-          <li>Si también subes players.json, se incluye la alineación y los datos por jugador.</li>
+          <li>Si tambiǸn subes players.json, se incluye la alineaci��n y los datos por jugador.</li>
+          <li>
+            incidents.json es s��lo para el extracto del celular: se usa para detectar la tarjeta roja
+            del 1T y ajustar goles, remates, corners y amarillas. Si tu JSON principal ya trae
+            “incidentes”, no hace falta subirlo.
+          </li>
         </ul>
       </section>
 
@@ -617,6 +690,16 @@ export const Prediccion2T = () => {
                     .join(" · ")}
                 </span>
               </div>
+              {activo.ajusteRoja && (
+                <div className="result-row">
+                  <span className="result-label">Ajuste por roja 1T</span>
+                  <span className="result-value">
+                    {activo.ajusteRoja.aplicado
+                      ? `Sí · ${activo.ajusteRoja.local} local / ${activo.ajusteRoja.visita} visita · fuente: ${activo.ajusteRoja.fuente} · ${activo.ajusteRoja.modelo || "modelo de ajuste"}`
+                      : "No se detectaron rojas en el 1T."}
+                  </span>
+                </div>
+              )}
 
               {activo.advertencias && activo.advertencias.length > 0 && (
                 <p className="tabla-status">{activo.advertencias.join(" ")}</p>

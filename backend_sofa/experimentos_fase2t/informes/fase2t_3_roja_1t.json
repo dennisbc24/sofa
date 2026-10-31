@@ -1,0 +1,3787 @@
+{
+  "fase": "2T-3 roja en el 1T",
+  "generadoEn": "2026-10-30T16:41:11.776Z",
+  "nota_deltas": "Los % de 'veredicto' son (candidato - B0)/B0 sobre MAE en el subconjunto CON roja 1T: negativo = mejora (menos error). El subconjunto 'all' incluye todos los partidos.",
+  "dataset": {
+    "fuente": "DB local: partidos + estadisticas 1ST/2ND + Red cards 1ST",
+    "partidos": 2204,
+    "splits": {
+      "counts": {
+        "TRAIN": 1543,
+        "VAL": 331,
+        "TEST": 330
+      },
+      "TRAIN": {
+        "n": 1543,
+        "desde": "2019-06-01",
+        "hasta": "2026-06-20"
+      },
+      "VAL": {
+        "n": 331,
+        "desde": "2026-06-20",
+        "hasta": "2026-09-12"
+      },
+      "TEST": {
+        "n": 330,
+        "desde": "2026-09-12",
+        "hasta": "2026-10-25"
+      }
+    },
+    "conRoja1T": 128,
+    "validacionIncidentes": {
+      "partidosConIncidencias": 524,
+      "acuerdo": 514
+    },
+    "validacionEstadoRoja": {
+      "n": 31,
+      "acuerdo": 28,
+      "celdas": {
+        "empatando|empatando": 14,
+        "ganando|ganando": 5,
+        "perdiendo|perdiendo": 9,
+        "empatando|perdiendo": 2,
+        "empatando|ganando": 1
+      },
+      "nota": "estado_en_roja|estado_al_descanso en los partidos con incidencias (30 rojas 1T); el experimento condiciona por estado al descanso porque estadisticas no trae minuto."
+    },
+    "nota_desacuerdo": "Se usa estadisticas Red cards (periodo/lado); incidentes sólo valida cuando existe. En 10 partidos incidentes no marca roja 1T pero la stat sí (casos de borde 45+/fuera de campo)."
+  },
+  "reglas": {
+    "R1": "Roja 1T desde estadisticas 'Red cards' (ausencia=0)",
+    "R2": "Splits 70/15/15 por fecha; TEST sólo lectura final",
+    "R3": "B0 = modelo M actual por stat (ridge TRAIN, alpha/TR/B en VAL)",
+    "R4": "C1 multiplicador pooled kOwn/kOpp; C2 ridge con rojas; C3 celdas estado x fuerza (encogidas al pooled); C4 efectos principales de estado y fuerza (sin interacción)",
+    "R5": "Éxito = mejora MAE con roja (VAL+TEST) sin degradar sin roja",
+    "R6": "MAE principal; RMSE/bias; 4 ventanas temporales; validación del estado al minuto de la roja con incidencias"
+  },
+  "mercados": {
+    "Goles": {
+      "etiqueta": "Goles",
+      "baseline": {
+        "elegido": "B",
+        "alpha": 1,
+        "pesosTR": 0.8500000000000002,
+        "pesosB": {
+          "L0": 0,
+          "T": 0.1,
+          "R": 0.8500000000000002,
+          "H": 0.04999999999999982
+        }
+      },
+      "candidatoRidge": {
+        "elegido": "B",
+        "alpha": 1,
+        "pesosTR": 1.0000000000000002,
+        "pesosB": {
+          "L0": 0,
+          "T": 0,
+          "R": 0.9500000000000003,
+          "H": 0.04999999999999971
+        }
+      },
+      "n": {
+        "filas": 4408,
+        "trainRed": 188,
+        "valRed": 36,
+        "testRed": 32
+      },
+      "diagnosticoTrain": {
+        "conRojaPropia": {
+          "n": 99,
+          "ratio": 0.44
+        },
+        "conRojaRival": {
+          "n": 99,
+          "ratio": 1.34
+        }
+      },
+      "C1": {
+        "factores": {
+          "kOwn": 0.3,
+          "kOpp": 1.25
+        },
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 0.8184,
+            "rmse": 1.1407,
+            "bias": -0.0918
+          },
+          "red": {
+            "n": 36,
+            "mae": 0.7389,
+            "rmse": 0.9726,
+            "bias": -0.1673
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 0.823,
+            "rmse": 1.1496,
+            "bias": -0.0874
+          },
+          "own": {
+            "n": 18,
+            "mae": 0.3368,
+            "rmse": 0.4121,
+            "bias": -0.0077
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.1409,
+            "rmse": 1.3122,
+            "bias": -0.327
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 0.7347,
+            "rmse": 0.9398,
+            "bias": -0.0391
+          },
+          "red": {
+            "n": 32,
+            "mae": 0.6323,
+            "rmse": 0.9347,
+            "bias": -0.1526
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 0.7399,
+            "rmse": 0.9401,
+            "bias": -0.0333
+          },
+          "own": {
+            "n": 16,
+            "mae": 0.4243,
+            "rmse": 0.5004,
+            "bias": -0.1478
+          },
+          "opp": {
+            "n": 16,
+            "mae": 0.8404,
+            "rmse": 1.2234,
+            "bias": -0.1573
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 0.7766,
+            "rmse": 1.0452,
+            "bias": -0.0655
+          },
+          "red": {
+            "n": 68,
+            "mae": 0.6887,
+            "rmse": 0.9549,
+            "bias": -0.1604
+          }
+        }
+      },
+      "C2": {
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 0.8185,
+            "rmse": 1.14,
+            "bias": -0.084
+          },
+          "red": {
+            "n": 36,
+            "mae": 0.7367,
+            "rmse": 0.955,
+            "bias": -0.0849
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 0.8232,
+            "rmse": 1.1497,
+            "bias": -0.084
+          },
+          "own": {
+            "n": 18,
+            "mae": 0.3582,
+            "rmse": 0.4154,
+            "bias": 0.0651
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.1152,
+            "rmse": 1.2852,
+            "bias": -0.235
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 0.7357,
+            "rmse": 0.9412,
+            "bias": -0.029
+          },
+          "red": {
+            "n": 32,
+            "mae": 0.6307,
+            "rmse": 0.9181,
+            "bias": -0.0621
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 0.7411,
+            "rmse": 0.9423,
+            "bias": -0.0273
+          },
+          "own": {
+            "n": 16,
+            "mae": 0.427,
+            "rmse": 0.4817,
+            "bias": -0.0584
+          },
+          "opp": {
+            "n": 16,
+            "mae": 0.8343,
+            "rmse": 1.2057,
+            "bias": -0.0658
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 0.7772,
+            "rmse": 1.0455,
+            "bias": -0.0565
+          },
+          "red": {
+            "n": 68,
+            "mae": 0.6868,
+            "rmse": 0.9378,
+            "bias": -0.0742
+          }
+        }
+      },
+      "C3": {
+        "celdas": {
+          "own|ganando|fuerte": {
+            "k": 0.3,
+            "kFit": 0.3,
+            "n": 15,
+            "celda": "ganando|fuerte"
+          },
+          "own|perdiendo|debil": {
+            "k": 0.3,
+            "kFit": 0.3,
+            "n": 20,
+            "celda": "perdiendo|debil"
+          },
+          "own|empatando|fuerte": {
+            "k": 0.3,
+            "kFit": 0.3,
+            "n": 16,
+            "celda": "empatando|fuerte"
+          },
+          "own|perdiendo|fuerte": {
+            "k": 0.3,
+            "kFit": 0.3,
+            "n": 23,
+            "celda": "perdiendo|fuerte"
+          },
+          "own|empatando|debil": {
+            "k": 0.3,
+            "kFit": 0.3,
+            "n": 20,
+            "celda": "empatando|debil"
+          },
+          "own|ganando|debil": {
+            "k": 0.3,
+            "kFit": 0.3,
+            "n": 5,
+            "celda": "ganando|debil"
+          },
+          "opp|ganando|fuerte": {
+            "k": 1.335,
+            "kFit": 1.4,
+            "n": 13,
+            "celda": "ganando|fuerte"
+          },
+          "opp|perdiendo|debil": {
+            "k": 1.029,
+            "kFit": 0.95,
+            "n": 28,
+            "celda": "perdiendo|debil"
+          },
+          "opp|empatando|fuerte": {
+            "k": 1.307,
+            "kFit": 1.35,
+            "n": 13,
+            "celda": "empatando|fuerte"
+          },
+          "opp|ganando|debil": {
+            "k": 1.25,
+            "kFit": 1.25,
+            "n": 7,
+            "celda": "ganando|debil"
+          },
+          "opp|empatando|debil": {
+            "k": 1.355,
+            "kFit": 1.4,
+            "n": 23,
+            "celda": "empatando|debil"
+          },
+          "opp|perdiendo|fuerte": {
+            "k": 1.22,
+            "kFit": 1.2,
+            "n": 15,
+            "celda": "perdiendo|fuerte"
+          }
+        },
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 0.8192,
+            "rmse": 1.1418,
+            "bias": -0.0932
+          },
+          "red": {
+            "n": 36,
+            "mae": 0.7535,
+            "rmse": 0.996,
+            "bias": -0.1946
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 0.823,
+            "rmse": 1.1496,
+            "bias": -0.0874
+          },
+          "own": {
+            "n": 18,
+            "mae": 0.3368,
+            "rmse": 0.4121,
+            "bias": -0.0077
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.1702,
+            "rmse": 1.3469,
+            "bias": -0.3815
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 0.7344,
+            "rmse": 0.9403,
+            "bias": -0.0399
+          },
+          "red": {
+            "n": 32,
+            "mae": 0.628,
+            "rmse": 0.9445,
+            "bias": -0.1697
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 0.7399,
+            "rmse": 0.9401,
+            "bias": -0.0333
+          },
+          "own": {
+            "n": 16,
+            "mae": 0.4243,
+            "rmse": 0.5004,
+            "bias": -0.1478
+          },
+          "opp": {
+            "n": 16,
+            "mae": 0.8316,
+            "rmse": 1.2384,
+            "bias": -0.1917
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 0.7769,
+            "rmse": 1.0461,
+            "bias": -0.0666
+          },
+          "red": {
+            "n": 68,
+            "mae": 0.6944,
+            "rmse": 0.9721,
+            "bias": -0.1829
+          }
+        },
+        "porCelda": {
+          "opp|ganando|debil": {
+            "n": 2,
+            "B0": 1.5958,
+            "C1": 1.6198,
+            "C2": 1.5806,
+            "C3": 1.6198,
+            "C4": 1.6185
+          },
+          "own|ganando|debil": {
+            "n": 2,
+            "B0": 0.7026,
+            "C1": 0.2108,
+            "C2": 0.2575,
+            "C3": 0.2108,
+            "C4": 0.1272
+          },
+          "opp|perdiendo|debil": {
+            "n": 11,
+            "B0": 1.0407,
+            "C1": 0.9812,
+            "C2": 0.9709,
+            "C3": 1.0328,
+            "C4": 1.0276
+          },
+          "own|perdiendo|debil": {
+            "n": 14,
+            "B0": 0.4692,
+            "C1": 0.4408,
+            "C2": 0.4022,
+            "C3": 0.4408,
+            "C4": 0.4355
+          },
+          "own|perdiendo|fuerte": {
+            "n": 5,
+            "B0": 0.5473,
+            "C1": 0.4431,
+            "C2": 0.4511,
+            "C3": 0.4431,
+            "C4": 0.4244
+          },
+          "opp|perdiendo|fuerte": {
+            "n": 8,
+            "B0": 1.1099,
+            "C1": 1.1686,
+            "C2": 1.2026,
+            "C3": 1.1616,
+            "C4": 1.1536
+          },
+          "own|empatando|debil": {
+            "n": 7,
+            "B0": 0.5935,
+            "C1": 0.378,
+            "C2": 0.4203,
+            "C3": 0.378,
+            "C4": 0.339
+          },
+          "opp|empatando|fuerte": {
+            "n": 4,
+            "B0": 0.7454,
+            "C1": 0.5567,
+            "C2": 0.4709,
+            "C3": 0.5152,
+            "C4": 0.4484
+          },
+          "opp|empatando|debil": {
+            "n": 8,
+            "B0": 0.9864,
+            "C1": 1.0037,
+            "C2": 0.9883,
+            "C3": 1.0145,
+            "C4": 1.0126
+          },
+          "own|empatando|fuerte": {
+            "n": 5,
+            "B0": 0.7356,
+            "C1": 0.2207,
+            "C2": 0.2792,
+            "C3": 0.2207,
+            "C4": 0.1261
+          },
+          "own|ganando|fuerte": {
+            "n": 1,
+            "B0": 0.9768,
+            "C1": 0.293,
+            "C2": 0.54,
+            "C3": 0.293,
+            "C4": 0.1751
+          },
+          "opp|ganando|fuerte": {
+            "n": 1,
+            "B0": 0.4761,
+            "C1": 0.3451,
+            "C2": 0.1715,
+            "C3": 0.3006,
+            "C4": 0.2689
+          }
+        }
+      },
+      "C4": {
+        "efectos": {
+          "own": {
+            "a": {
+              "ganando": 0.8,
+              "empatando": 0.7652173913043478,
+              "perdiendo": 0.7566037735849056
+            },
+            "b": {
+              "fuerte": 0.746875,
+              "debil": 0.7545454545454545
+            },
+            "n": 99
+          },
+          "opp": {
+            "a": {
+              "ganando": 1.0333333333333337,
+              "empatando": 1.1173913043478263,
+              "perdiendo": 0.8783018867924529
+            },
+            "b": {
+              "fuerte": 1.0803921568627455,
+              "debil": 0.9573529411764707
+            },
+            "n": 99
+          }
+        },
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 0.8173,
+            "rmse": 1.1414,
+            "bias": -0.0954
+          },
+          "red": {
+            "n": 36,
+            "mae": 0.7193,
+            "rmse": 0.9891,
+            "bias": -0.2346
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 0.823,
+            "rmse": 1.1496,
+            "bias": -0.0874
+          },
+          "own": {
+            "n": 18,
+            "mae": 0.2886,
+            "rmse": 0.4253,
+            "bias": -0.0987
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.1499,
+            "rmse": 1.3326,
+            "bias": -0.3704
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 0.7338,
+            "rmse": 0.9407,
+            "bias": -0.0418
+          },
+          "red": {
+            "n": 32,
+            "mae": 0.6154,
+            "rmse": 0.9515,
+            "bias": -0.209
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 0.7399,
+            "rmse": 0.9401,
+            "bias": -0.0333
+          },
+          "own": {
+            "n": 16,
+            "mae": 0.4036,
+            "rmse": 0.5394,
+            "bias": -0.2449
+          },
+          "opp": {
+            "n": 16,
+            "mae": 0.8272,
+            "rmse": 1.2328,
+            "bias": -0.1731
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 0.7757,
+            "rmse": 1.046,
+            "bias": -0.0686
+          },
+          "red": {
+            "n": 68,
+            "mae": 0.6704,
+            "rmse": 0.9716,
+            "bias": -0.2225
+          }
+        }
+      },
+      "sensibilidadKOwn": [
+        {
+          "kOwn": 0.3,
+          "kOpp": 1.25,
+          "VAL": {
+            "n": 36,
+            "mae": 0.7389,
+            "rmse": 0.9726,
+            "bias": -0.1673
+          },
+          "TEST": {
+            "n": 32,
+            "mae": 0.6323,
+            "rmse": 0.9347,
+            "bias": -0.1526
+          }
+        },
+        {
+          "kOwn": 0.35,
+          "kOpp": 1.25,
+          "VAL": {
+            "n": 36,
+            "mae": 0.7484,
+            "rmse": 0.9727,
+            "bias": -0.1495
+          },
+          "TEST": {
+            "n": 32,
+            "mae": 0.6364,
+            "rmse": 0.9319,
+            "bias": -0.1336
+          }
+        },
+        {
+          "kOwn": 0.4,
+          "kOpp": 1.25,
+          "VAL": {
+            "n": 36,
+            "mae": 0.758,
+            "rmse": 0.9735,
+            "bias": -0.1316
+          },
+          "TEST": {
+            "n": 32,
+            "mae": 0.6405,
+            "rmse": 0.9299,
+            "bias": -0.1147
+          }
+        },
+        {
+          "kOwn": 0.45,
+          "kOpp": 1.25,
+          "VAL": {
+            "n": 36,
+            "mae": 0.7675,
+            "rmse": 0.975,
+            "bias": -0.1137
+          },
+          "TEST": {
+            "n": 32,
+            "mae": 0.6447,
+            "rmse": 0.9287,
+            "bias": -0.0958
+          }
+        },
+        {
+          "kOwn": 0.5,
+          "kOpp": 1.25,
+          "VAL": {
+            "n": 36,
+            "mae": 0.7771,
+            "rmse": 0.9772,
+            "bias": -0.0958
+          },
+          "TEST": {
+            "n": 32,
+            "mae": 0.6488,
+            "rmse": 0.9283,
+            "bias": -0.0768
+          }
+        },
+        {
+          "kOwn": 0.6,
+          "kOpp": 1.25,
+          "VAL": {
+            "n": 36,
+            "mae": 0.7962,
+            "rmse": 0.9835,
+            "bias": -0.0601
+          },
+          "TEST": {
+            "n": 32,
+            "mae": 0.657,
+            "rmse": 0.9298,
+            "bias": -0.039
+          }
+        },
+        {
+          "kOwn": 0.7,
+          "kOpp": 1.25,
+          "VAL": {
+            "n": 36,
+            "mae": 0.8153,
+            "rmse": 0.9925,
+            "bias": -0.0243
+          },
+          "TEST": {
+            "n": 32,
+            "mae": 0.6652,
+            "rmse": 0.9346,
+            "bias": -0.0011
+          }
+        }
+      ],
+      "B0": {
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 0.8273,
+            "rmse": 1.1458,
+            "bias": -0.0842
+          },
+          "red": {
+            "n": 36,
+            "mae": 0.9029,
+            "rmse": 1.0774,
+            "bias": -0.0288
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 0.823,
+            "rmse": 1.1496,
+            "bias": -0.0874
+          },
+          "own": {
+            "n": 18,
+            "mae": 0.6042,
+            "rmse": 0.6463,
+            "bias": 0.4929
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.2016,
+            "rmse": 1.3798,
+            "bias": -0.5505
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 0.7372,
+            "rmse": 0.9427,
+            "bias": -0.0315
+          },
+          "red": {
+            "n": 32,
+            "mae": 0.6839,
+            "rmse": 0.993,
+            "bias": 0.0032
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 0.7399,
+            "rmse": 0.9401,
+            "bias": -0.0333
+          },
+          "own": {
+            "n": 16,
+            "mae": 0.5403,
+            "rmse": 0.6119,
+            "bias": 0.3824
+          },
+          "opp": {
+            "n": 16,
+            "mae": 0.8274,
+            "rmse": 1.264,
+            "bias": -0.3759
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 0.7823,
+            "rmse": 1.0493,
+            "bias": -0.0579
+          },
+          "red": {
+            "n": 68,
+            "mae": 0.7998,
+            "rmse": 1.0386,
+            "bias": -0.0137
+          }
+        }
+      },
+      "ventanas": [
+        {
+          "w": 1,
+          "n": 44,
+          "kOwn": 0.3,
+          "kOpp": 1.3,
+          "maeB0": 0.6772,
+          "maeC1": 0.5735,
+          "maeC3": 0.5729,
+          "maeC4": 0.5603,
+          "deltaPct": -15.31,
+          "deltaC3Pct": -15.41,
+          "deltaC4Pct": -17.27,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        },
+        {
+          "w": 2,
+          "n": 38,
+          "kOwn": 0.3,
+          "kOpp": 1.25,
+          "maeB0": 0.7397,
+          "maeC1": 0.6399,
+          "maeC3": 0.6369,
+          "maeC4": 0.6241,
+          "deltaPct": -13.49,
+          "deltaC3Pct": -13.9,
+          "deltaC4Pct": -15.63,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        },
+        {
+          "w": 3,
+          "n": 34,
+          "kOwn": 0.3,
+          "kOpp": 1.25,
+          "maeB0": 0.9191,
+          "maeC1": 0.7695,
+          "maeC3": 0.7861,
+          "maeC4": 0.7564,
+          "deltaPct": -16.28,
+          "deltaC3Pct": -14.47,
+          "deltaC4Pct": -17.7,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        },
+        {
+          "w": 4,
+          "n": 34,
+          "kOwn": 0.3,
+          "kOpp": 1.3,
+          "maeB0": 0.6805,
+          "maeC1": 0.6087,
+          "maeC3": 0.6281,
+          "maeC4": 0.6033,
+          "deltaPct": -10.56,
+          "deltaC3Pct": -7.7,
+          "deltaC4Pct": -11.34,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        }
+      ],
+      "veredicto": {
+        "C1_red_pool": -13.89,
+        "C2_red_pool": -14.13,
+        "C3_red_pool": -13.18,
+        "C4_red_pool": -16.18,
+        "C1_all_pool": -0.73,
+        "C2_all_pool": -0.65,
+        "C3_all_pool": -0.69,
+        "C4_all_pool": -0.84,
+        "C1_red_test": -7.54,
+        "C2_red_test": -7.78,
+        "C3_red_test": -8.17,
+        "C4_red_test": -10.02,
+        "C1_ventanas_gana": "4/4",
+        "C3_ventanas_gana": "4/4",
+        "C4_ventanas_gana": "4/4"
+      }
+    },
+    "Total shots": {
+      "etiqueta": "Remates",
+      "baseline": {
+        "elegido": "B",
+        "alpha": 100,
+        "pesosTR": 0.8500000000000002,
+        "pesosB": {
+          "L0": 0.05,
+          "T": 0.05,
+          "R": 0.8500000000000002,
+          "H": 0.04999999999999971
+        }
+      },
+      "candidatoRidge": {
+        "elegido": "B",
+        "alpha": 100,
+        "pesosTR": 0.8500000000000002,
+        "pesosB": {
+          "L0": 0.05,
+          "T": 0,
+          "R": 0.8500000000000002,
+          "H": 0.09999999999999976
+        }
+      },
+      "n": {
+        "filas": 4408,
+        "trainRed": 188,
+        "valRed": 36,
+        "testRed": 32
+      },
+      "diagnosticoTrain": {
+        "conRojaPropia": {
+          "n": 99,
+          "ratio": 0.7
+        },
+        "conRojaRival": {
+          "n": 99,
+          "ratio": 1.29
+        }
+      },
+      "C1": {
+        "factores": {
+          "kOwn": 0.65,
+          "kOpp": 1.25
+        },
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 2.7662,
+            "rmse": 3.6399,
+            "bias": -0.4498
+          },
+          "red": {
+            "n": 36,
+            "mae": 3.3816,
+            "rmse": 4.2667,
+            "bias": -2.1169
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 2.7308,
+            "rmse": 3.6005,
+            "bias": -0.3539
+          },
+          "own": {
+            "n": 18,
+            "mae": 2.4362,
+            "rmse": 3.1411,
+            "bias": -1.3818
+          },
+          "opp": {
+            "n": 18,
+            "mae": 4.3269,
+            "rmse": 5.152,
+            "bias": -2.8521
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 2.628,
+            "rmse": 3.3792,
+            "bias": -0.3935
+          },
+          "red": {
+            "n": 32,
+            "mae": 2.9278,
+            "rmse": 3.9983,
+            "bias": -1.7226
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 2.6127,
+            "rmse": 3.3446,
+            "bias": -0.3258
+          },
+          "own": {
+            "n": 16,
+            "mae": 2.5842,
+            "rmse": 3.5157,
+            "bias": -1.1545
+          },
+          "opp": {
+            "n": 16,
+            "mae": 3.2713,
+            "rmse": 4.4287,
+            "bias": -2.2908
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 2.6972,
+            "rmse": 3.5122,
+            "bias": -0.4217
+          },
+          "red": {
+            "n": 68,
+            "mae": 3.168,
+            "rmse": 4.1426,
+            "bias": -1.9314
+          }
+        }
+      },
+      "C2": {
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 2.7626,
+            "rmse": 3.6436,
+            "bias": -0.4546
+          },
+          "red": {
+            "n": 36,
+            "mae": 3.3243,
+            "rmse": 4.2214,
+            "bias": -1.8597
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 2.7303,
+            "rmse": 3.6075,
+            "bias": -0.3738
+          },
+          "own": {
+            "n": 18,
+            "mae": 2.2665,
+            "rmse": 2.9007,
+            "bias": -0.8353
+          },
+          "opp": {
+            "n": 18,
+            "mae": 4.382,
+            "rmse": 5.2179,
+            "bias": -2.8842
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 2.6317,
+            "rmse": 3.3793,
+            "bias": -0.4058
+          },
+          "red": {
+            "n": 32,
+            "mae": 2.8605,
+            "rmse": 3.8408,
+            "bias": -1.5355
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 2.6201,
+            "rmse": 3.354,
+            "bias": -0.3482
+          },
+          "own": {
+            "n": 16,
+            "mae": 2.6395,
+            "rmse": 3.3588,
+            "bias": -0.7237
+          },
+          "opp": {
+            "n": 16,
+            "mae": 3.0815,
+            "rmse": 4.2688,
+            "bias": -2.3472
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 2.6973,
+            "rmse": 3.5141,
+            "bias": -0.4302
+          },
+          "red": {
+            "n": 68,
+            "mae": 3.106,
+            "rmse": 4.0468,
+            "bias": -1.7071
+          }
+        }
+      },
+      "C3": {
+        "celdas": {
+          "own|ganando|fuerte": {
+            "k": 0.59,
+            "kFit": 0.55,
+            "n": 15,
+            "celda": "ganando|fuerte"
+          },
+          "own|perdiendo|debil": {
+            "k": 0.617,
+            "kFit": 0.6,
+            "n": 20,
+            "celda": "perdiendo|debil"
+          },
+          "own|empatando|fuerte": {
+            "k": 0.712,
+            "kFit": 0.75,
+            "n": 16,
+            "celda": "empatando|fuerte"
+          },
+          "own|perdiendo|fuerte": {
+            "k": 0.615,
+            "kFit": 0.6,
+            "n": 23,
+            "celda": "perdiendo|fuerte"
+          },
+          "own|empatando|debil": {
+            "k": 0.683,
+            "kFit": 0.7,
+            "n": 20,
+            "celda": "empatando|debil"
+          },
+          "own|ganando|debil": {
+            "k": 0.583,
+            "kFit": 0.45,
+            "n": 5,
+            "celda": "ganando|debil"
+          },
+          "opp|ganando|fuerte": {
+            "k": 1.335,
+            "kFit": 1.4,
+            "n": 13,
+            "celda": "ganando|fuerte"
+          },
+          "opp|perdiendo|debil": {
+            "k": 1.213,
+            "kFit": 1.2,
+            "n": 28,
+            "celda": "perdiendo|debil"
+          },
+          "opp|empatando|fuerte": {
+            "k": 1.335,
+            "kFit": 1.4,
+            "n": 13,
+            "celda": "empatando|fuerte"
+          },
+          "opp|ganando|debil": {
+            "k": 1.559,
+            "kFit": 2,
+            "n": 7,
+            "celda": "ganando|debil"
+          },
+          "opp|empatando|debil": {
+            "k": 1.25,
+            "kFit": 1.25,
+            "n": 23,
+            "celda": "empatando|debil"
+          },
+          "opp|perdiendo|fuerte": {
+            "k": 1.22,
+            "kFit": 1.2,
+            "n": 15,
+            "celda": "perdiendo|fuerte"
+          }
+        },
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 2.7553,
+            "rmse": 3.6276,
+            "bias": -0.4422
+          },
+          "red": {
+            "n": 36,
+            "mae": 3.1817,
+            "rmse": 4.0708,
+            "bias": -1.9775
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 2.7308,
+            "rmse": 3.6005,
+            "bias": -0.3539
+          },
+          "own": {
+            "n": 18,
+            "mae": 2.495,
+            "rmse": 3.2325,
+            "bias": -1.4544
+          },
+          "opp": {
+            "n": 18,
+            "mae": 3.8683,
+            "rmse": 4.7637,
+            "bias": -2.5005
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 2.6319,
+            "rmse": 3.3832,
+            "bias": -0.3952
+          },
+          "red": {
+            "n": 32,
+            "mae": 3.0082,
+            "rmse": 4.0664,
+            "bias": -1.7564
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 2.6127,
+            "rmse": 3.3446,
+            "bias": -0.3258
+          },
+          "own": {
+            "n": 16,
+            "mae": 2.6017,
+            "rmse": 3.5205,
+            "bias": -1.2044
+          },
+          "opp": {
+            "n": 16,
+            "mae": 3.4147,
+            "rmse": 4.5472,
+            "bias": -2.3084
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 2.6937,
+            "rmse": 3.5077,
+            "bias": -0.4187
+          },
+          "red": {
+            "n": 68,
+            "mae": 3.1001,
+            "rmse": 4.0687,
+            "bias": -1.8734
+          }
+        },
+        "porCelda": {
+          "opp|ganando|debil": {
+            "n": 2,
+            "B0": 8.6594,
+            "C1": 5.6992,
+            "C2": 6.6063,
+            "C3": 2.0405,
+            "C4": 4.7125
+          },
+          "own|ganando|debil": {
+            "n": 2,
+            "B0": 0.78,
+            "C1": 0.368,
+            "C2": 1.0527,
+            "C3": 0.5877,
+            "C4": 0.7278
+          },
+          "opp|perdiendo|debil": {
+            "n": 11,
+            "B0": 5.0932,
+            "C1": 4.3809,
+            "C2": 4.3474,
+            "C3": 4.4477,
+            "C4": 4.4724
+          },
+          "own|perdiendo|debil": {
+            "n": 14,
+            "B0": 2.9972,
+            "C1": 3.0504,
+            "C2": 2.7781,
+            "C3": 3.1349,
+            "C4": 3.1832
+          },
+          "own|perdiendo|fuerte": {
+            "n": 5,
+            "B0": 3.8138,
+            "C1": 3.4041,
+            "C2": 3.4909,
+            "C3": 3.4362,
+            "C4": 3.4042
+          },
+          "opp|perdiendo|fuerte": {
+            "n": 8,
+            "B0": 5.2787,
+            "C1": 4.1609,
+            "C2": 3.9193,
+            "C3": 4.295,
+            "C4": 4.1721
+          },
+          "own|empatando|debil": {
+            "n": 7,
+            "B0": 1.5614,
+            "C1": 1.3576,
+            "C2": 1.2105,
+            "C3": 1.325,
+            "C4": 1.3116
+          },
+          "opp|empatando|fuerte": {
+            "n": 4,
+            "B0": 6.0937,
+            "C1": 4.9133,
+            "C2": 4.7048,
+            "C3": 4.6184,
+            "C4": 4.739
+          },
+          "opp|empatando|debil": {
+            "n": 8,
+            "B0": 3.3072,
+            "C1": 2.1209,
+            "C2": 2.0557,
+            "C3": 2.1209,
+            "C4": 2.1209
+          },
+          "own|empatando|fuerte": {
+            "n": 5,
+            "B0": 2.636,
+            "C1": 2.8589,
+            "C2": 3.0806,
+            "C3": 2.7408,
+            "C4": 2.7245
+          },
+          "own|ganando|fuerte": {
+            "n": 1,
+            "B0": 1.2471,
+            "C1": 0.9394,
+            "C2": 0.6989,
+            "C3": 1.3142,
+            "C4": 1.3323
+          },
+          "opp|ganando|fuerte": {
+            "n": 1,
+            "B0": 1.4166,
+            "C1": 0.7292,
+            "C2": 0.5275,
+            "C3": 1.4588,
+            "C4": 1.9045
+          }
+        }
+      },
+      "C4": {
+        "efectos": {
+          "own": {
+            "a": {
+              "ganando": 0.8666666666666667,
+              "empatando": 1.1173913043478263,
+              "perdiendo": 0.9594339622641511
+            },
+            "b": {
+              "fuerte": 1.0421875000000003,
+              "debil": 0.9590909090909092
+            },
+            "n": 99
+          },
+          "opp": {
+            "a": {
+              "ganando": 1.0666666666666669,
+              "empatando": 1.0000000000000002,
+              "perdiendo": 0.9594339622641511
+            },
+            "b": {
+              "fuerte": 1.0401960784313729,
+              "debil": 1.0000000000000002
+            },
+            "n": 99
+          }
+        },
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 2.7656,
+            "rmse": 3.6382,
+            "bias": -0.4512
+          },
+          "red": {
+            "n": 36,
+            "mae": 3.371,
+            "rmse": 4.2407,
+            "bias": -2.1435
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 2.7308,
+            "rmse": 3.6005,
+            "bias": -0.3539
+          },
+          "own": {
+            "n": 18,
+            "mae": 2.5654,
+            "rmse": 3.3085,
+            "bias": -1.4701
+          },
+          "opp": {
+            "n": 18,
+            "mae": 4.1766,
+            "rmse": 5.002,
+            "bias": -2.8169
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 2.631,
+            "rmse": 3.3805,
+            "bias": -0.3926
+          },
+          "red": {
+            "n": 32,
+            "mae": 2.989,
+            "rmse": 4.0206,
+            "bias": -1.7042
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 2.6127,
+            "rmse": 3.3446,
+            "bias": -0.3258
+          },
+          "own": {
+            "n": 16,
+            "mae": 2.5625,
+            "rmse": 3.4238,
+            "bias": -1.1151
+          },
+          "opp": {
+            "n": 16,
+            "mae": 3.4154,
+            "rmse": 4.5397,
+            "bias": -2.2934
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 2.6984,
+            "rmse": 3.5119,
+            "bias": -0.422
+          },
+          "red": {
+            "n": 68,
+            "mae": 3.1912,
+            "rmse": 4.1386,
+            "bias": -1.9368
+          }
+        }
+      },
+      "sensibilidadKOwn": null,
+      "B0": {
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 2.7952,
+            "rmse": 3.6911,
+            "bias": -0.4383
+          },
+          "red": {
+            "n": 36,
+            "mae": 3.915,
+            "rmse": 5.0112,
+            "bias": -1.9059
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 2.7308,
+            "rmse": 3.6005,
+            "bias": -0.3539
+          },
+          "own": {
+            "n": 18,
+            "mae": 2.2199,
+            "rmse": 2.8946,
+            "bias": 0.9254
+          },
+          "opp": {
+            "n": 18,
+            "mae": 5.61,
+            "rmse": 6.4689,
+            "bias": -4.7372
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 2.66,
+            "rmse": 3.4157,
+            "bias": -0.3845
+          },
+          "red": {
+            "n": 32,
+            "mae": 3.5885,
+            "rmse": 4.5926,
+            "bias": -1.5366
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 2.6127,
+            "rmse": 3.3446,
+            "bias": -0.3258
+          },
+          "own": {
+            "n": 16,
+            "mae": 2.9993,
+            "rmse": 3.4611,
+            "bias": 1.0845
+          },
+          "opp": {
+            "n": 16,
+            "mae": 4.1777,
+            "rmse": 5.4959,
+            "bias": -4.1577
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 2.7277,
+            "rmse": 3.5563,
+            "bias": -0.4114
+          },
+          "red": {
+            "n": 68,
+            "mae": 3.7613,
+            "rmse": 4.8188,
+            "bias": -1.7321
+          }
+        }
+      },
+      "ventanas": [
+        {
+          "w": 1,
+          "n": 44,
+          "kOwn": 0.5,
+          "kOpp": 1.3,
+          "maeB0": 2.1653,
+          "maeC1": 2.5199,
+          "maeC3": 2.5972,
+          "maeC4": 2.6055,
+          "deltaPct": 16.38,
+          "deltaC3Pct": 19.95,
+          "deltaC4Pct": 20.33,
+          "gana": false,
+          "ganaC3": false,
+          "ganaC4": false
+        },
+        {
+          "w": 2,
+          "n": 38,
+          "kOwn": 0.6,
+          "kOpp": 1.25,
+          "maeB0": 3.1125,
+          "maeC1": 3.18,
+          "maeC3": 3.3322,
+          "maeC4": 3.2444,
+          "deltaPct": 2.17,
+          "deltaC3Pct": 7.06,
+          "deltaC4Pct": 4.24,
+          "gana": false,
+          "ganaC3": false,
+          "ganaC4": false
+        },
+        {
+          "w": 3,
+          "n": 34,
+          "kOwn": 0.65,
+          "kOpp": 1.25,
+          "maeB0": 3.5845,
+          "maeC1": 3.1481,
+          "maeC3": 2.9435,
+          "maeC4": 3.1269,
+          "deltaPct": -12.17,
+          "deltaC3Pct": -17.88,
+          "deltaC4Pct": -12.77,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        },
+        {
+          "w": 4,
+          "n": 34,
+          "kOwn": 0.7,
+          "kOpp": 1.3,
+          "maeB0": 3.9382,
+          "maeC1": 3.1453,
+          "maeC3": 3.2377,
+          "maeC4": 3.3032,
+          "deltaPct": -20.13,
+          "deltaC3Pct": -17.79,
+          "deltaC4Pct": -16.12,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        }
+      ],
+      "veredicto": {
+        "C1_red_pool": -15.77,
+        "C2_red_pool": -17.42,
+        "C3_red_pool": -17.58,
+        "C4_red_pool": -15.16,
+        "C1_all_pool": -1.12,
+        "C2_all_pool": -1.11,
+        "C3_all_pool": -1.25,
+        "C4_all_pool": -1.07,
+        "C1_red_test": -18.41,
+        "C2_red_test": -20.29,
+        "C3_red_test": -16.17,
+        "C4_red_test": -16.71,
+        "C1_ventanas_gana": "2/4",
+        "C3_ventanas_gana": "2/4",
+        "C4_ventanas_gana": "2/4"
+      }
+    },
+    "Corner kicks": {
+      "etiqueta": "Corners",
+      "baseline": {
+        "elegido": "B",
+        "alpha": 100,
+        "pesosTR": 0.9500000000000003,
+        "pesosB": {
+          "L0": 0,
+          "T": 0.05,
+          "R": 0.9500000000000003,
+          "H": 0
+        }
+      },
+      "candidatoRidge": {
+        "elegido": "TR",
+        "alpha": 100,
+        "pesosTR": 0.9500000000000003,
+        "pesosB": {
+          "L0": 0,
+          "T": 0.05,
+          "R": 0.9500000000000003,
+          "H": 0
+        }
+      },
+      "n": {
+        "filas": 4406,
+        "trainRed": 188,
+        "valRed": 36,
+        "testRed": 32
+      },
+      "diagnosticoTrain": {
+        "conRojaPropia": {
+          "n": 99,
+          "ratio": 0.74
+        },
+        "conRojaRival": {
+          "n": 99,
+          "ratio": 1.4
+        }
+      },
+      "C1": {
+        "factores": {
+          "kOwn": 0.6,
+          "kOpp": 1.25
+        },
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 1.4754,
+            "rmse": 1.8453,
+            "bias": 0.0052
+          },
+          "red": {
+            "n": 36,
+            "mae": 1.4598,
+            "rmse": 1.9416,
+            "bias": -0.7796
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 1.4763,
+            "rmse": 1.8397,
+            "bias": 0.0504
+          },
+          "own": {
+            "n": 18,
+            "mae": 1.4019,
+            "rmse": 2.0354,
+            "bias": -0.9474
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.5178,
+            "rmse": 1.843,
+            "bias": -0.6118
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 1.4387,
+            "rmse": 1.8397,
+            "bias": -0.0288
+          },
+          "red": {
+            "n": 32,
+            "mae": 1.3274,
+            "rmse": 1.8896,
+            "bias": -0.5016
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 1.4444,
+            "rmse": 1.8372,
+            "bias": -0.0047
+          },
+          "own": {
+            "n": 16,
+            "mae": 1.1336,
+            "rmse": 1.7907,
+            "bias": -0.2943
+          },
+          "opp": {
+            "n": 16,
+            "mae": 1.5212,
+            "rmse": 1.9835,
+            "bias": -0.709
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 1.4571,
+            "rmse": 1.8425,
+            "bias": -0.0118
+          },
+          "red": {
+            "n": 68,
+            "mae": 1.3975,
+            "rmse": 1.9173,
+            "bias": -0.6488
+          }
+        }
+      },
+      "C2": {
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 1.4696,
+            "rmse": 1.8385,
+            "bias": 0.0109
+          },
+          "red": {
+            "n": 36,
+            "mae": 1.4057,
+            "rmse": 1.8383,
+            "bias": -0.5054
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 1.4733,
+            "rmse": 1.8385,
+            "bias": 0.0406
+          },
+          "own": {
+            "n": 18,
+            "mae": 1.3309,
+            "rmse": 1.861,
+            "bias": -0.7252
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.4806,
+            "rmse": 1.8153,
+            "bias": -0.2856
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 1.4319,
+            "rmse": 1.8319,
+            "bias": -0.0231
+          },
+          "red": {
+            "n": 32,
+            "mae": 1.2388,
+            "rmse": 1.7445,
+            "bias": -0.1998
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 1.4418,
+            "rmse": 1.8362,
+            "bias": -0.0141
+          },
+          "own": {
+            "n": 16,
+            "mae": 1.0978,
+            "rmse": 1.6686,
+            "bias": -0.0321
+          },
+          "opp": {
+            "n": 16,
+            "mae": 1.3799,
+            "rmse": 1.8172,
+            "bias": -0.3675
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 1.4508,
+            "rmse": 1.8352,
+            "bias": -0.0061
+          },
+          "red": {
+            "n": 68,
+            "mae": 1.3272,
+            "rmse": 1.7948,
+            "bias": -0.3616
+          }
+        }
+      },
+      "C3": {
+        "celdas": {
+          "own|ganando|fuerte": {
+            "k": 0.51,
+            "kFit": 0.45,
+            "n": 15,
+            "celda": "ganando|fuerte"
+          },
+          "own|perdiendo|debil": {
+            "k": 0.567,
+            "kFit": 0.55,
+            "n": 20,
+            "celda": "perdiendo|debil"
+          },
+          "own|empatando|fuerte": {
+            "k": 0.815,
+            "kFit": 0.95,
+            "n": 16,
+            "celda": "empatando|fuerte"
+          },
+          "own|perdiendo|fuerte": {
+            "k": 0.6,
+            "kFit": 0.6,
+            "n": 23,
+            "celda": "perdiendo|fuerte"
+          },
+          "own|empatando|debil": {
+            "k": 0.7,
+            "kFit": 0.75,
+            "n": 20,
+            "celda": "empatando|debil"
+          },
+          "own|ganando|debil": {
+            "k": 0.5,
+            "kFit": 0.3,
+            "n": 5,
+            "celda": "ganando|debil"
+          },
+          "opp|ganando|fuerte": {
+            "k": 1.533,
+            "kFit": 1.75,
+            "n": 13,
+            "celda": "ganando|fuerte"
+          },
+          "opp|perdiendo|debil": {
+            "k": 0.882,
+            "kFit": 0.75,
+            "n": 28,
+            "celda": "perdiendo|debil"
+          },
+          "opp|empatando|fuerte": {
+            "k": 1.193,
+            "kFit": 1.15,
+            "n": 13,
+            "celda": "empatando|fuerte"
+          },
+          "opp|ganando|debil": {
+            "k": 1.394,
+            "kFit": 1.6,
+            "n": 7,
+            "celda": "ganando|debil"
+          },
+          "opp|empatando|debil": {
+            "k": 1.215,
+            "kFit": 1.2,
+            "n": 23,
+            "celda": "empatando|debil"
+          },
+          "opp|perdiendo|fuerte": {
+            "k": 1.34,
+            "kFit": 1.4,
+            "n": 15,
+            "celda": "perdiendo|fuerte"
+          }
+        },
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 1.4733,
+            "rmse": 1.8457,
+            "bias": 0.0006
+          },
+          "red": {
+            "n": 36,
+            "mae": 1.4214,
+            "rmse": 1.9483,
+            "bias": -0.8643
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 1.4763,
+            "rmse": 1.8397,
+            "bias": 0.0504
+          },
+          "own": {
+            "n": 18,
+            "mae": 1.4457,
+            "rmse": 2.0593,
+            "bias": -0.9041
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.3971,
+            "rmse": 1.8306,
+            "bias": -0.8245
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 1.4413,
+            "rmse": 1.8405,
+            "bias": -0.0324
+          },
+          "red": {
+            "n": 32,
+            "mae": 1.3807,
+            "rmse": 1.9058,
+            "bias": -0.5749
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 1.4444,
+            "rmse": 1.8372,
+            "bias": -0.0047
+          },
+          "own": {
+            "n": 16,
+            "mae": 1.1488,
+            "rmse": 1.7669,
+            "bias": -0.2108
+          },
+          "opp": {
+            "n": 16,
+            "mae": 1.6125,
+            "rmse": 2.0352,
+            "bias": -0.9391
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 1.4574,
+            "rmse": 1.8431,
+            "bias": -0.0158
+          },
+          "red": {
+            "n": 68,
+            "mae": 1.4022,
+            "rmse": 1.9284,
+            "bias": -0.7281
+          }
+        },
+        "porCelda": {
+          "opp|ganando|debil": {
+            "n": 2,
+            "B0": 1.7397,
+            "C1": 1.5305,
+            "C2": 1.5353,
+            "C3": 1.534,
+            "C4": 1.5356
+          },
+          "own|ganando|debil": {
+            "n": 2,
+            "B0": 0.7259,
+            "C1": 0.4594,
+            "C2": 0.4255,
+            "C3": 0.4662,
+            "C4": 0.4662
+          },
+          "opp|perdiendo|debil": {
+            "n": 11,
+            "B0": 1.7918,
+            "C1": 1.899,
+            "C2": 1.9789,
+            "C3": 1.7845,
+            "C4": 1.8284
+          },
+          "own|perdiendo|debil": {
+            "n": 14,
+            "B0": 1.5714,
+            "C1": 1.6846,
+            "C2": 1.5671,
+            "C3": 1.7098,
+            "C4": 1.6846
+          },
+          "own|perdiendo|fuerte": {
+            "n": 5,
+            "B0": 2.2494,
+            "C1": 2.0187,
+            "C2": 2.031,
+            "C3": 2.0187,
+            "C4": 2.0187
+          },
+          "opp|perdiendo|fuerte": {
+            "n": 8,
+            "B0": 1.3548,
+            "C1": 0.8367,
+            "C2": 0.649,
+            "C3": 0.7526,
+            "C4": 0.7742
+          },
+          "own|empatando|debil": {
+            "n": 7,
+            "B0": 0.7513,
+            "C1": 0.8725,
+            "C2": 0.7876,
+            "C3": 0.8273,
+            "C4": 0.8194
+          },
+          "opp|empatando|fuerte": {
+            "n": 4,
+            "B0": 1.5185,
+            "C1": 1.1258,
+            "C2": 0.9399,
+            "C3": 1.1885,
+            "C4": 1.1409
+          },
+          "opp|empatando|debil": {
+            "n": 8,
+            "B0": 2.5393,
+            "C1": 2.0492,
+            "C2": 1.8297,
+            "C3": 2.1178,
+            "C4": 2.3369
+          },
+          "own|empatando|fuerte": {
+            "n": 5,
+            "B0": 0.9036,
+            "C1": 0.4622,
+            "C2": 0.4974,
+            "C3": 0.6994,
+            "C4": 0.5917
+          },
+          "own|ganando|fuerte": {
+            "n": 1,
+            "B0": 1.2609,
+            "C1": 0.3565,
+            "C2": 0.5747,
+            "C3": 0.1531,
+            "C4": 0.1304
+          },
+          "opp|ganando|fuerte": {
+            "n": 1,
+            "B0": 0.6956,
+            "C1": 0.1195,
+            "C2": 0.3003,
+            "C3": 0.5326,
+            "C4": 0.7658
+          }
+        }
+      },
+      "C4": {
+        "efectos": {
+          "own": {
+            "a": {
+              "ganando": 0.8333333333333334,
+              "empatando": 1.1956521739130437,
+              "perdiendo": 1.0000000000000002
+            },
+            "b": {
+              "fuerte": 1.0000000000000002,
+              "debil": 1.0000000000000002
+            },
+            "n": 99
+          },
+          "opp": {
+            "a": {
+              "ganando": 1.166666666666667,
+              "empatando": 0.8826086956521739,
+              "perdiendo": 0.9188679245283019
+            },
+            "b": {
+              "fuerte": 1.1205882352941179,
+              "debil": 1.0000000000000002
+            },
+            "n": 99
+          }
+        },
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 1.4764,
+            "rmse": 1.8473,
+            "bias": 0.0054
+          },
+          "red": {
+            "n": 36,
+            "mae": 1.4776,
+            "rmse": 1.9751,
+            "bias": -0.7763
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 1.4763,
+            "rmse": 1.8397,
+            "bias": 0.0504
+          },
+          "own": {
+            "n": 18,
+            "mae": 1.4058,
+            "rmse": 2.016,
+            "bias": -0.8768
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.5493,
+            "rmse": 1.9333,
+            "bias": -0.6759
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 1.4405,
+            "rmse": 1.84,
+            "bias": -0.0294
+          },
+          "red": {
+            "n": 32,
+            "mae": 1.3639,
+            "rmse": 1.8955,
+            "bias": -0.5148
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 1.4444,
+            "rmse": 1.8372,
+            "bias": -0.0047
+          },
+          "own": {
+            "n": 16,
+            "mae": 1.1331,
+            "rmse": 1.769,
+            "bias": -0.2159
+          },
+          "opp": {
+            "n": 16,
+            "mae": 1.5947,
+            "rmse": 2.0141,
+            "bias": -0.8137
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 1.4585,
+            "rmse": 1.8437,
+            "bias": -0.012
+          },
+          "red": {
+            "n": 68,
+            "mae": 1.4241,
+            "rmse": 1.9381,
+            "bias": -0.6533
+          }
+        }
+      },
+      "sensibilidadKOwn": null,
+      "B0": {
+        "VAL": {
+          "all": {
+            "n": 662,
+            "mae": 1.4803,
+            "rmse": 1.847,
+            "bias": 0.0118
+          },
+          "red": {
+            "n": 36,
+            "mae": 1.5498,
+            "rmse": 1.97,
+            "bias": -0.6583
+          },
+          "nonred": {
+            "n": 626,
+            "mae": 1.4763,
+            "rmse": 1.8397,
+            "bias": 0.0504
+          },
+          "own": {
+            "n": 18,
+            "mae": 1.317,
+            "rmse": 1.7186,
+            "bias": -0.0606
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.7826,
+            "rmse": 2.1928,
+            "bias": -1.2561
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 660,
+            "mae": 1.4517,
+            "rmse": 1.8465,
+            "bias": -0.0216
+          },
+          "red": {
+            "n": 32,
+            "mae": 1.5955,
+            "rmse": 2.0215,
+            "bias": -0.3539
+          },
+          "nonred": {
+            "n": 628,
+            "mae": 1.4444,
+            "rmse": 1.8372,
+            "bias": -0.0047
+          },
+          "own": {
+            "n": 16,
+            "mae": 1.3769,
+            "rmse": 1.784,
+            "bias": 0.6344
+          },
+          "opp": {
+            "n": 16,
+            "mae": 1.8141,
+            "rmse": 2.2339,
+            "bias": -1.3422
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1322,
+            "mae": 1.466,
+            "rmse": 1.8468,
+            "bias": -0.0049
+          },
+          "red": {
+            "n": 68,
+            "mae": 1.5713,
+            "rmse": 1.9944,
+            "bias": -0.5151
+          }
+        }
+      },
+      "ventanas": [
+        {
+          "w": 1,
+          "n": 44,
+          "kOwn": 0.45,
+          "kOpp": 1.65,
+          "maeB0": 1.7303,
+          "maeC1": 1.9189,
+          "maeC3": 1.9274,
+          "maeC4": 1.911,
+          "deltaPct": 10.9,
+          "deltaC3Pct": 11.39,
+          "deltaC4Pct": 10.44,
+          "gana": false,
+          "ganaC3": false,
+          "ganaC4": false
+        },
+        {
+          "w": 2,
+          "n": 38,
+          "kOwn": 0.5,
+          "kOpp": 1.3,
+          "maeB0": 1.6231,
+          "maeC1": 1.7117,
+          "maeC3": 1.5937,
+          "maeC4": 1.6836,
+          "deltaPct": 5.46,
+          "deltaC3Pct": -1.81,
+          "deltaC4Pct": 3.73,
+          "gana": false,
+          "ganaC3": true,
+          "ganaC4": false
+        },
+        {
+          "w": 3,
+          "n": 34,
+          "kOwn": 0.6,
+          "kOpp": 1.25,
+          "maeB0": 1.5058,
+          "maeC1": 1.4532,
+          "maeC3": 1.3952,
+          "maeC4": 1.4638,
+          "deltaPct": -3.49,
+          "deltaC3Pct": -7.35,
+          "deltaC4Pct": -2.79,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        },
+        {
+          "w": 4,
+          "n": 34,
+          "kOwn": 0.65,
+          "kOpp": 1.3,
+          "maeB0": 1.6367,
+          "maeC1": 1.3396,
+          "maeC3": 1.3981,
+          "maeC4": 1.3762,
+          "deltaPct": -18.16,
+          "deltaC3Pct": -14.58,
+          "deltaC4Pct": -15.92,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        }
+      ],
+      "veredicto": {
+        "C1_red_pool": -11.06,
+        "C2_red_pool": -15.53,
+        "C3_red_pool": -10.76,
+        "C4_red_pool": -9.37,
+        "C1_all_pool": -0.61,
+        "C2_all_pool": -1.04,
+        "C3_all_pool": -0.59,
+        "C4_all_pool": -0.51,
+        "C1_red_test": -16.8,
+        "C2_red_test": -22.36,
+        "C3_red_test": -13.46,
+        "C4_red_test": -14.52,
+        "C1_ventanas_gana": "2/4",
+        "C3_ventanas_gana": "3/4",
+        "C4_ventanas_gana": "2/4"
+      }
+    },
+    "Yellow cards": {
+      "etiqueta": "Amarillas",
+      "baseline": {
+        "elegido": "B",
+        "alpha": 1,
+        "pesosTR": 0.6,
+        "pesosB": {
+          "L0": 0.44999999999999996,
+          "T": 0.05,
+          "R": 0.5
+        }
+      },
+      "candidatoRidge": {
+        "elegido": "B",
+        "alpha": 1,
+        "pesosTR": 0.6,
+        "pesosB": {
+          "L0": 0.49999999999999994,
+          "T": 0.05,
+          "R": 0.45
+        }
+      },
+      "n": {
+        "filas": 4250,
+        "trainRed": 182,
+        "valRed": 36,
+        "testRed": 32
+      },
+      "diagnosticoTrain": {
+        "conRojaPropia": {
+          "n": 95,
+          "ratio": 0.78
+        },
+        "conRojaRival": {
+          "n": 95,
+          "ratio": 1.04
+        }
+      },
+      "C1": {
+        "factores": {
+          "kOwn": 0.7,
+          "kOpp": 0.75
+        },
+        "VAL": {
+          "all": {
+            "n": 634,
+            "mae": 0.8461,
+            "rmse": 1.0635,
+            "bias": 0.0407
+          },
+          "red": {
+            "n": 36,
+            "mae": 0.8813,
+            "rmse": 1.1619,
+            "bias": -0.2384
+          },
+          "nonred": {
+            "n": 598,
+            "mae": 0.844,
+            "rmse": 1.0573,
+            "bias": 0.0575
+          },
+          "own": {
+            "n": 18,
+            "mae": 0.7512,
+            "rmse": 1.0043,
+            "bias": -0.2386
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.0114,
+            "rmse": 1.3006,
+            "bias": -0.2382
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 648,
+            "mae": 0.9641,
+            "rmse": 1.2046,
+            "bias": -0.0354
+          },
+          "red": {
+            "n": 32,
+            "mae": 0.814,
+            "rmse": 1.1342,
+            "bias": -0.3446
+          },
+          "nonred": {
+            "n": 616,
+            "mae": 0.9719,
+            "rmse": 1.2082,
+            "bias": -0.0193
+          },
+          "own": {
+            "n": 16,
+            "mae": 0.7316,
+            "rmse": 1.1055,
+            "bias": -0.468
+          },
+          "opp": {
+            "n": 16,
+            "mae": 0.8964,
+            "rmse": 1.1622,
+            "bias": -0.2213
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1282,
+            "mae": 0.9057,
+            "rmse": 1.137,
+            "bias": 0.0023
+          },
+          "red": {
+            "n": 68,
+            "mae": 0.8496,
+            "rmse": 1.149,
+            "bias": -0.2884
+          }
+        }
+      },
+      "C2": {
+        "VAL": {
+          "all": {
+            "n": 634,
+            "mae": 0.8513,
+            "rmse": 1.0632,
+            "bias": 0.056
+          },
+          "red": {
+            "n": 36,
+            "mae": 0.9561,
+            "rmse": 1.1391,
+            "bias": 0.0613
+          },
+          "nonred": {
+            "n": 598,
+            "mae": 0.8449,
+            "rmse": 1.0584,
+            "bias": 0.0557
+          },
+          "own": {
+            "n": 18,
+            "mae": 0.8145,
+            "rmse": 0.983,
+            "bias": 0.0128
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.0978,
+            "rmse": 1.2763,
+            "bias": 0.1097
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 648,
+            "mae": 0.9681,
+            "rmse": 1.2025,
+            "bias": -0.0146
+          },
+          "red": {
+            "n": 32,
+            "mae": 0.8743,
+            "rmse": 1.0893,
+            "bias": -0.0215
+          },
+          "nonred": {
+            "n": 616,
+            "mae": 0.9729,
+            "rmse": 1.2081,
+            "bias": -0.0142
+          },
+          "own": {
+            "n": 16,
+            "mae": 0.7668,
+            "rmse": 1.0202,
+            "bias": -0.1916
+          },
+          "opp": {
+            "n": 16,
+            "mae": 0.9818,
+            "rmse": 1.1543,
+            "bias": 0.1486
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1282,
+            "mae": 0.9103,
+            "rmse": 1.1358,
+            "bias": 0.0203
+          },
+          "red": {
+            "n": 68,
+            "mae": 0.9176,
+            "rmse": 1.1159,
+            "bias": 0.0223
+          }
+        }
+      },
+      "C3": {
+        "celdas": {
+          "own|ganando|fuerte": {
+            "k": 0.76,
+            "kFit": 0.8,
+            "n": 15,
+            "celda": "ganando|fuerte"
+          },
+          "own|perdiendo|debil": {
+            "k": 0.668,
+            "kFit": 0.65,
+            "n": 18,
+            "celda": "perdiendo|debil"
+          },
+          "own|empatando|fuerte": {
+            "k": 0.67,
+            "kFit": 0.65,
+            "n": 15,
+            "celda": "empatando|fuerte"
+          },
+          "own|perdiendo|fuerte": {
+            "k": 0.7,
+            "kFit": 0.7,
+            "n": 23,
+            "celda": "perdiendo|fuerte"
+          },
+          "own|empatando|debil": {
+            "k": 0.733,
+            "kFit": 0.75,
+            "n": 19,
+            "celda": "empatando|debil"
+          },
+          "own|ganando|debil": {
+            "k": 0.733,
+            "kFit": 0.8,
+            "n": 5,
+            "celda": "ganando|debil"
+          },
+          "opp|ganando|fuerte": {
+            "k": 0.637,
+            "kFit": 0.55,
+            "n": 13,
+            "celda": "ganando|fuerte"
+          },
+          "opp|perdiendo|debil": {
+            "k": 0.714,
+            "kFit": 0.7,
+            "n": 26,
+            "celda": "perdiendo|debil"
+          },
+          "opp|empatando|fuerte": {
+            "k": 1.077,
+            "kFit": 1.35,
+            "n": 12,
+            "celda": "empatando|fuerte"
+          },
+          "opp|ganando|debil": {
+            "k": 0.976,
+            "kFit": 1.3,
+            "n": 7,
+            "celda": "ganando|debil"
+          },
+          "opp|empatando|debil": {
+            "k": 0.784,
+            "kFit": 0.8,
+            "n": 22,
+            "celda": "empatando|debil"
+          },
+          "opp|perdiendo|fuerte": {
+            "k": 0.81,
+            "kFit": 0.85,
+            "n": 15,
+            "celda": "perdiendo|fuerte"
+          }
+        },
+        "VAL": {
+          "all": {
+            "n": 634,
+            "mae": 0.8453,
+            "rmse": 1.0604,
+            "bias": 0.0431
+          },
+          "red": {
+            "n": 36,
+            "mae": 0.8656,
+            "rmse": 1.1112,
+            "bias": -0.1971
+          },
+          "nonred": {
+            "n": 598,
+            "mae": 0.844,
+            "rmse": 1.0573,
+            "bias": 0.0575
+          },
+          "own": {
+            "n": 18,
+            "mae": 0.7608,
+            "rmse": 1.0083,
+            "bias": -0.2507
+          },
+          "opp": {
+            "n": 18,
+            "mae": 0.9704,
+            "rmse": 1.2054,
+            "bias": -0.1435
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 648,
+            "mae": 0.9647,
+            "rmse": 1.2056,
+            "bias": -0.0342
+          },
+          "red": {
+            "n": 32,
+            "mae": 0.8262,
+            "rmse": 1.1542,
+            "bias": -0.3198
+          },
+          "nonred": {
+            "n": 616,
+            "mae": 0.9719,
+            "rmse": 1.2082,
+            "bias": -0.0193
+          },
+          "own": {
+            "n": 16,
+            "mae": 0.7294,
+            "rmse": 1.114,
+            "bias": -0.4772
+          },
+          "opp": {
+            "n": 16,
+            "mae": 0.923,
+            "rmse": 1.1931,
+            "bias": -0.1624
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1282,
+            "mae": 0.9056,
+            "rmse": 1.1361,
+            "bias": 0.004
+          },
+          "red": {
+            "n": 68,
+            "mae": 0.8471,
+            "rmse": 1.1317,
+            "bias": -0.2548
+          }
+        },
+        "porCelda": {
+          "opp|ganando|debil": {
+            "n": 2,
+            "B0": 0.2098,
+            "C1": 0.1573,
+            "C2": 0.2198,
+            "C3": 0.2047,
+            "C4": 0.1573
+          },
+          "own|ganando|debil": {
+            "n": 2,
+            "B0": 0.8081,
+            "C1": 0.8657,
+            "C2": 0.7971,
+            "C3": 0.8593,
+            "C4": 0.8522
+          },
+          "opp|perdiendo|debil": {
+            "n": 11,
+            "B0": 0.7491,
+            "C1": 0.6011,
+            "C2": 0.7607,
+            "C3": 0.6028,
+            "C4": 0.6011
+          },
+          "own|perdiendo|debil": {
+            "n": 14,
+            "B0": 0.9618,
+            "C1": 0.9102,
+            "C2": 0.9415,
+            "C3": 0.9208,
+            "C4": 0.9195
+          },
+          "own|perdiendo|fuerte": {
+            "n": 5,
+            "B0": 0.643,
+            "C1": 0.4473,
+            "C2": 0.567,
+            "C3": 0.4473,
+            "C4": 0.4473
+          },
+          "opp|perdiendo|fuerte": {
+            "n": 8,
+            "B0": 1.0629,
+            "C1": 0.9847,
+            "C2": 1.0774,
+            "C3": 1.0035,
+            "C4": 0.9941
+          },
+          "own|empatando|debil": {
+            "n": 7,
+            "B0": 0.8571,
+            "C1": 0.7484,
+            "C2": 0.7956,
+            "C3": 0.7413,
+            "C4": 0.7637
+          },
+          "opp|empatando|fuerte": {
+            "n": 4,
+            "B0": 1.5316,
+            "C1": 1.7112,
+            "C2": 1.5267,
+            "C3": 1.4763,
+            "C4": 1.5598
+          },
+          "opp|empatando|debil": {
+            "n": 8,
+            "B0": 1.1814,
+            "C1": 1.0111,
+            "C2": 1.1923,
+            "C3": 1.0342,
+            "C4": 1.1295
+          },
+          "own|empatando|fuerte": {
+            "n": 5,
+            "B0": 0.6565,
+            "C1": 0.4233,
+            "C2": 0.5663,
+            "C3": 0.4481,
+            "C4": 0.4223
+          },
+          "own|ganando|fuerte": {
+            "n": 1,
+            "B0": 0.8014,
+            "C1": 1.161,
+            "C2": 0.919,
+            "C3": 1.0891,
+            "C4": 1.0382
+          },
+          "opp|ganando|fuerte": {
+            "n": 1,
+            "B0": 2.4123,
+            "C1": 2.8092,
+            "C2": 2.3969,
+            "C3": 2.9886,
+            "C4": 2.7616
+          }
+        }
+      },
+      "C4": {
+        "efectos": {
+          "own": {
+            "a": {
+              "ganando": 1.1000000000000003,
+              "empatando": 0.9613636363636364,
+              "perdiendo": 0.9598039215686276
+            },
+            "b": {
+              "fuerte": 1.0420634920634921,
+              "debil": 1.0000000000000002
+            },
+            "n": 95
+          },
+          "opp": {
+            "a": {
+              "ganando": 1.0000000000000002,
+              "empatando": 1.2318181818181821,
+              "perdiendo": 1.0000000000000002
+            },
+            "b": {
+              "fuerte": 1.0400000000000003,
+              "debil": 1.0000000000000002
+            },
+            "n": 95
+          }
+        },
+        "VAL": {
+          "all": {
+            "n": 634,
+            "mae": 0.8455,
+            "rmse": 1.0611,
+            "bias": 0.043
+          },
+          "red": {
+            "n": 36,
+            "mae": 0.8694,
+            "rmse": 1.1234,
+            "bias": -0.1989
+          },
+          "nonred": {
+            "n": 598,
+            "mae": 0.844,
+            "rmse": 1.0573,
+            "bias": 0.0575
+          },
+          "own": {
+            "n": 18,
+            "mae": 0.7588,
+            "rmse": 1.012,
+            "bias": -0.2547
+          },
+          "opp": {
+            "n": 18,
+            "mae": 0.9801,
+            "rmse": 1.2248,
+            "bias": -0.1431
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 648,
+            "mae": 0.9654,
+            "rmse": 1.2052,
+            "bias": -0.033
+          },
+          "red": {
+            "n": 32,
+            "mae": 0.8414,
+            "rmse": 1.1469,
+            "bias": -0.2962
+          },
+          "nonred": {
+            "n": 616,
+            "mae": 0.9719,
+            "rmse": 1.2082,
+            "bias": -0.0193
+          },
+          "own": {
+            "n": 16,
+            "mae": 0.7282,
+            "rmse": 1.1052,
+            "bias": -0.4794
+          },
+          "opp": {
+            "n": 16,
+            "mae": 0.9547,
+            "rmse": 1.1873,
+            "bias": -0.1131
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1282,
+            "mae": 0.9061,
+            "rmse": 1.1362,
+            "bias": 0.0046
+          },
+          "red": {
+            "n": 68,
+            "mae": 0.8563,
+            "rmse": 1.1346,
+            "bias": -0.2447
+          }
+        }
+      },
+      "sensibilidadKOwn": null,
+      "B0": {
+        "VAL": {
+          "all": {
+            "n": 634,
+            "mae": 0.8515,
+            "rmse": 1.0623,
+            "bias": 0.0613
+          },
+          "red": {
+            "n": 36,
+            "mae": 0.976,
+            "rmse": 1.1435,
+            "bias": 0.1245
+          },
+          "nonred": {
+            "n": 598,
+            "mae": 0.844,
+            "rmse": 1.0573,
+            "bias": 0.0575
+          },
+          "own": {
+            "n": 18,
+            "mae": 0.863,
+            "rmse": 0.9987,
+            "bias": 0.1592
+          },
+          "opp": {
+            "n": 18,
+            "mae": 1.0889,
+            "rmse": 1.2719,
+            "bias": 0.0898
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 648,
+            "mae": 0.9677,
+            "rmse": 1.2021,
+            "bias": -0.0167
+          },
+          "red": {
+            "n": 32,
+            "mae": 0.8874,
+            "rmse": 1.0788,
+            "bias": 0.0346
+          },
+          "nonred": {
+            "n": 616,
+            "mae": 0.9719,
+            "rmse": 1.2082,
+            "bias": -0.0193
+          },
+          "own": {
+            "n": 16,
+            "mae": 0.8029,
+            "rmse": 1.0059,
+            "bias": -0.0525
+          },
+          "opp": {
+            "n": 16,
+            "mae": 0.972,
+            "rmse": 1.1471,
+            "bias": 0.1217
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1282,
+            "mae": 0.9102,
+            "rmse": 1.1351,
+            "bias": 0.0219
+          },
+          "red": {
+            "n": 68,
+            "mae": 0.9343,
+            "rmse": 1.1135,
+            "bias": 0.0822
+          }
+        }
+      },
+      "ventanas": [
+        {
+          "w": 1,
+          "n": 42,
+          "kOwn": 0.7,
+          "kOpp": 0.75,
+          "maeB0": 0.8966,
+          "maeC1": 0.8854,
+          "maeC3": 0.9087,
+          "maeC4": 0.9254,
+          "deltaPct": -1.25,
+          "deltaC3Pct": 1.35,
+          "deltaC4Pct": 3.21,
+          "gana": true,
+          "ganaC3": false,
+          "ganaC4": false
+        },
+        {
+          "w": 2,
+          "n": 36,
+          "kOwn": 0.7,
+          "kOpp": 0.75,
+          "maeB0": 1.0474,
+          "maeC1": 0.9765,
+          "maeC3": 1.0257,
+          "maeC4": 0.9744,
+          "deltaPct": -6.77,
+          "deltaC3Pct": -2.07,
+          "deltaC4Pct": -6.97,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        },
+        {
+          "w": 3,
+          "n": 34,
+          "kOwn": 0.7,
+          "kOpp": 0.75,
+          "maeB0": 0.9461,
+          "maeC1": 0.8472,
+          "maeC3": 0.8433,
+          "maeC4": 0.8437,
+          "deltaPct": -10.45,
+          "deltaC3Pct": -10.86,
+          "deltaC4Pct": -10.82,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        },
+        {
+          "w": 4,
+          "n": 34,
+          "kOwn": 0.7,
+          "kOpp": 0.75,
+          "maeB0": 0.9225,
+          "maeC1": 0.852,
+          "maeC3": 0.8495,
+          "maeC4": 0.8669,
+          "deltaPct": -7.64,
+          "deltaC3Pct": -7.91,
+          "deltaC4Pct": -6.03,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        }
+      ],
+      "veredicto": {
+        "C1_red_pool": -9.07,
+        "C2_red_pool": -1.79,
+        "C3_red_pool": -9.33,
+        "C4_red_pool": -8.35,
+        "C1_all_pool": -0.49,
+        "C2_all_pool": 0.01,
+        "C3_all_pool": -0.51,
+        "C4_all_pool": -0.45,
+        "C1_red_test": -8.27,
+        "C2_red_test": -1.48,
+        "C3_red_test": -6.9,
+        "C4_red_test": -5.18,
+        "C1_ventanas_gana": "4/4",
+        "C3_ventanas_gana": "3/4",
+        "C4_ventanas_gana": "3/4"
+      }
+    },
+    "Expected goals": {
+      "etiqueta": "xG",
+      "baseline": {
+        "elegido": "B",
+        "alpha": 20,
+        "pesosTR": 0.65,
+        "pesosB": {
+          "L0": 0.05,
+          "T": 0.3,
+          "R": 0.6499999999999999
+        }
+      },
+      "candidatoRidge": {
+        "elegido": "B",
+        "alpha": 20,
+        "pesosTR": 0.7000000000000001,
+        "pesosB": {
+          "L0": 0.05,
+          "T": 0.25,
+          "R": 0.7
+        }
+      },
+      "n": {
+        "filas": 3164,
+        "trainRed": 112,
+        "valRed": 22,
+        "testRed": 20
+      },
+      "diagnosticoTrain": {
+        "conRojaPropia": {
+          "n": 58,
+          "ratio": 0.56
+        },
+        "conRojaRival": {
+          "n": 58,
+          "ratio": 1.63
+        }
+      },
+      "C1": {
+        "factores": {
+          "kOwn": 0.45,
+          "kOpp": 1.6
+        },
+        "VAL": {
+          "all": {
+            "n": 574,
+            "mae": 0.4295,
+            "rmse": 0.5617,
+            "bias": 0.0306
+          },
+          "red": {
+            "n": 22,
+            "mae": 0.3283,
+            "rmse": 0.4555,
+            "bias": 0.0827
+          },
+          "nonred": {
+            "n": 552,
+            "mae": 0.4335,
+            "rmse": 0.5655,
+            "bias": 0.0285
+          },
+          "own": {
+            "n": 11,
+            "mae": 0.1524,
+            "rmse": 0.2146,
+            "bias": 0.0447
+          },
+          "opp": {
+            "n": 11,
+            "mae": 0.5043,
+            "rmse": 0.6073,
+            "bias": 0.1208
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 560,
+            "mae": 0.4363,
+            "rmse": 0.5661,
+            "bias": -0.0201
+          },
+          "red": {
+            "n": 20,
+            "mae": 0.5021,
+            "rmse": 0.6236,
+            "bias": -0.0073
+          },
+          "nonred": {
+            "n": 540,
+            "mae": 0.4338,
+            "rmse": 0.5639,
+            "bias": -0.0206
+          },
+          "own": {
+            "n": 10,
+            "mae": 0.445,
+            "rmse": 0.5941,
+            "bias": -0.3329
+          },
+          "opp": {
+            "n": 10,
+            "mae": 0.5593,
+            "rmse": 0.6517,
+            "bias": 0.3183
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1134,
+            "mae": 0.4328,
+            "rmse": 0.5639,
+            "bias": 0.0055
+          },
+          "red": {
+            "n": 42,
+            "mae": 0.4111,
+            "rmse": 0.5421,
+            "bias": 0.0399
+          }
+        }
+      },
+      "C2": {
+        "VAL": {
+          "all": {
+            "n": 574,
+            "mae": 0.4315,
+            "rmse": 0.5631,
+            "bias": 0.0284
+          },
+          "red": {
+            "n": 22,
+            "mae": 0.3829,
+            "rmse": 0.4909,
+            "bias": 0.0874
+          },
+          "nonred": {
+            "n": 552,
+            "mae": 0.4334,
+            "rmse": 0.5658,
+            "bias": 0.0261
+          },
+          "own": {
+            "n": 11,
+            "mae": 0.1422,
+            "rmse": 0.1953,
+            "bias": 0.0728
+          },
+          "opp": {
+            "n": 11,
+            "mae": 0.6236,
+            "rmse": 0.6663,
+            "bias": 0.1019
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 560,
+            "mae": 0.4334,
+            "rmse": 0.5636,
+            "bias": -0.0228
+          },
+          "red": {
+            "n": 20,
+            "mae": 0.4361,
+            "rmse": 0.5459,
+            "bias": -0.0034
+          },
+          "nonred": {
+            "n": 540,
+            "mae": 0.4333,
+            "rmse": 0.5643,
+            "bias": -0.0235
+          },
+          "own": {
+            "n": 10,
+            "mae": 0.4045,
+            "rmse": 0.526,
+            "bias": -0.1631
+          },
+          "opp": {
+            "n": 10,
+            "mae": 0.4677,
+            "rmse": 0.5652,
+            "bias": 0.1563
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1134,
+            "mae": 0.4324,
+            "rmse": 0.5634,
+            "bias": 0.0031
+          },
+          "red": {
+            "n": 42,
+            "mae": 0.4082,
+            "rmse": 0.5179,
+            "bias": 0.0441
+          }
+        }
+      },
+      "C3": {
+        "celdas": {
+          "own|perdiendo|fuerte": {
+            "k": 0.354,
+            "kFit": 0.3,
+            "n": 18,
+            "celda": "perdiendo|fuerte"
+          },
+          "own|empatando|fuerte": {
+            "k": 0.487,
+            "kFit": 0.55,
+            "n": 6,
+            "celda": "empatando|fuerte"
+          },
+          "own|empatando|debil": {
+            "k": 0.476,
+            "kFit": 0.5,
+            "n": 11,
+            "celda": "empatando|debil"
+          },
+          "own|ganando|fuerte": {
+            "k": 0.521,
+            "kFit": 0.6,
+            "n": 9,
+            "celda": "ganando|fuerte"
+          },
+          "own|ganando|debil": {
+            "k": 0.407,
+            "kFit": 0.3,
+            "n": 4,
+            "celda": "ganando|debil"
+          },
+          "own|perdiendo|debil": {
+            "k": 0.45,
+            "kFit": 0.45,
+            "n": 10,
+            "celda": "perdiendo|debil"
+          },
+          "opp|perdiendo|debil": {
+            "k": 1.534,
+            "kFit": 1.5,
+            "n": 19,
+            "celda": "perdiendo|debil"
+          },
+          "opp|empatando|debil": {
+            "k": 1.746,
+            "kFit": 1.85,
+            "n": 14,
+            "celda": "empatando|debil"
+          },
+          "opp|perdiendo|fuerte": {
+            "k": 1.387,
+            "kFit": 1.15,
+            "n": 9,
+            "celda": "perdiendo|fuerte"
+          },
+          "opp|ganando|fuerte": {
+            "k": 1.578,
+            "kFit": 1.55,
+            "n": 8,
+            "celda": "ganando|fuerte"
+          },
+          "opp|ganando|debil": {
+            "k": 1.567,
+            "kFit": 1.5,
+            "n": 5,
+            "celda": "ganando|debil"
+          },
+          "opp|empatando|fuerte": {
+            "k": 1.623,
+            "kFit": 1.7,
+            "n": 3,
+            "celda": "empatando|fuerte"
+          }
+        },
+        "VAL": {
+          "all": {
+            "n": 574,
+            "mae": 0.429,
+            "rmse": 0.5609,
+            "bias": 0.03
+          },
+          "red": {
+            "n": 22,
+            "mae": 0.3161,
+            "rmse": 0.4293,
+            "bias": 0.068
+          },
+          "nonred": {
+            "n": 552,
+            "mae": 0.4335,
+            "rmse": 0.5655,
+            "bias": 0.0285
+          },
+          "own": {
+            "n": 11,
+            "mae": 0.1548,
+            "rmse": 0.2145,
+            "bias": 0.0439
+          },
+          "opp": {
+            "n": 11,
+            "mae": 0.4774,
+            "rmse": 0.5679,
+            "bias": 0.092
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 560,
+            "mae": 0.4371,
+            "rmse": 0.5674,
+            "bias": -0.0207
+          },
+          "red": {
+            "n": 20,
+            "mae": 0.5267,
+            "rmse": 0.6558,
+            "bias": -0.024
+          },
+          "nonred": {
+            "n": 540,
+            "mae": 0.4338,
+            "rmse": 0.5639,
+            "bias": -0.0206
+          },
+          "own": {
+            "n": 10,
+            "mae": 0.4572,
+            "rmse": 0.5969,
+            "bias": -0.3491
+          },
+          "opp": {
+            "n": 10,
+            "mae": 0.5962,
+            "rmse": 0.7098,
+            "bias": 0.3011
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1134,
+            "mae": 0.433,
+            "rmse": 0.5641,
+            "bias": 0.005
+          },
+          "red": {
+            "n": 42,
+            "mae": 0.4164,
+            "rmse": 0.5489,
+            "bias": 0.0242
+          }
+        },
+        "porCelda": {
+          "opp|ganando|debil": {
+            "n": 2,
+            "B0": 1.1069,
+            "C1": 0.4961,
+            "C2": 0.7504,
+            "C3": 0.5297,
+            "C4": 0.4795
+          },
+          "own|ganando|debil": {
+            "n": 2,
+            "B0": 0.3038,
+            "C1": 0.0597,
+            "C2": 0.0592,
+            "C3": 0.0585,
+            "C4": 0.0961
+          },
+          "opp|perdiendo|debil": {
+            "n": 8,
+            "B0": 0.4192,
+            "C1": 0.3893,
+            "C2": 0.4638,
+            "C3": 0.3882,
+            "C4": 0.3872
+          },
+          "own|perdiendo|debil": {
+            "n": 9,
+            "B0": 0.4599,
+            "C1": 0.3407,
+            "C2": 0.336,
+            "C3": 0.3407,
+            "C4": 0.3366
+          },
+          "opp|empatando|debil": {
+            "n": 6,
+            "B0": 0.2508,
+            "C1": 0.4734,
+            "C2": 0.4484,
+            "C3": 0.5344,
+            "C4": 0.5436
+          },
+          "own|empatando|debil": {
+            "n": 5,
+            "B0": 0.3654,
+            "C1": 0.3943,
+            "C2": 0.3399,
+            "C3": 0.393,
+            "C4": 0.3919
+          },
+          "own|empatando|fuerte": {
+            "n": 2,
+            "B0": 0.1824,
+            "C1": 0.2443,
+            "C2": 0.1785,
+            "C3": 0.2402,
+            "C4": 0.2453
+          },
+          "opp|perdiendo|fuerte": {
+            "n": 4,
+            "B0": 0.5524,
+            "C1": 0.7972,
+            "C2": 0.6978,
+            "C3": 0.7047,
+            "C4": 0.7204
+          },
+          "own|perdiendo|fuerte": {
+            "n": 3,
+            "B0": 0.3216,
+            "C1": 0.16,
+            "C2": 0.1363,
+            "C3": 0.2156,
+            "C4": 0.2027
+          },
+          "opp|empatando|fuerte": {
+            "n": 1,
+            "B0": 0.4962,
+            "C1": 1.004,
+            "C2": 0.8436,
+            "C3": 1.0234,
+            "C4": 1.0892
+          }
+        }
+      },
+      "C4": {
+        "efectos": {
+          "own": {
+            "a": {
+              "ganando": 1.1413043478260874,
+              "empatando": 1.062962962962963,
+              "perdiendo": 0.8894736842105264
+            },
+            "b": {
+              "fuerte": 0.9232558139534884,
+              "debil": 1.0357142857142858
+            },
+            "n": 58
+          },
+          "opp": {
+            "a": {
+              "ganando": 0.9717391304347827,
+              "empatando": 1.062962962962963,
+              "perdiendo": 0.8894736842105264
+            },
+            "b": {
+              "fuerte": 1.0000000000000002,
+              "debil": 1.0395833333333335
+            },
+            "n": 58
+          }
+        },
+        "VAL": {
+          "all": {
+            "n": 574,
+            "mae": 0.4288,
+            "rmse": 0.5608,
+            "bias": 0.03
+          },
+          "red": {
+            "n": 22,
+            "mae": 0.311,
+            "rmse": 0.4252,
+            "bias": 0.0686
+          },
+          "nonred": {
+            "n": 552,
+            "mae": 0.4335,
+            "rmse": 0.5655,
+            "bias": 0.0285
+          },
+          "own": {
+            "n": 11,
+            "mae": 0.1551,
+            "rmse": 0.2193,
+            "bias": 0.0423
+          },
+          "opp": {
+            "n": 11,
+            "mae": 0.467,
+            "rmse": 0.5599,
+            "bias": 0.0948
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 560,
+            "mae": 0.4375,
+            "rmse": 0.5678,
+            "bias": -0.0206
+          },
+          "red": {
+            "n": 20,
+            "mae": 0.5363,
+            "rmse": 0.6655,
+            "bias": -0.021
+          },
+          "nonred": {
+            "n": 540,
+            "mae": 0.4338,
+            "rmse": 0.5639,
+            "bias": -0.0206
+          },
+          "own": {
+            "n": 10,
+            "mae": 0.4574,
+            "rmse": 0.5995,
+            "bias": -0.3524
+          },
+          "opp": {
+            "n": 10,
+            "mae": 0.6152,
+            "rmse": 0.7256,
+            "bias": 0.3103
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1134,
+            "mae": 0.4331,
+            "rmse": 0.5643,
+            "bias": 0.005
+          },
+          "red": {
+            "n": 42,
+            "mae": 0.4183,
+            "rmse": 0.5528,
+            "bias": 0.0259
+          }
+        }
+      },
+      "sensibilidadKOwn": null,
+      "B0": {
+        "VAL": {
+          "all": {
+            "n": 574,
+            "mae": 0.4333,
+            "rmse": 0.5652,
+            "bias": 0.0284
+          },
+          "red": {
+            "n": 22,
+            "mae": 0.4292,
+            "rmse": 0.5569,
+            "bias": 0.0267
+          },
+          "nonred": {
+            "n": 552,
+            "mae": 0.4335,
+            "rmse": 0.5655,
+            "bias": 0.0285
+          },
+          "own": {
+            "n": 11,
+            "mae": 0.323,
+            "rmse": 0.3479,
+            "bias": 0.2949
+          },
+          "opp": {
+            "n": 11,
+            "mae": 0.5354,
+            "rmse": 0.7065,
+            "bias": -0.2416
+          }
+        },
+        "TEST": {
+          "all": {
+            "n": 560,
+            "mae": 0.433,
+            "rmse": 0.563,
+            "bias": -0.0218
+          },
+          "red": {
+            "n": 20,
+            "mae": 0.4119,
+            "rmse": 0.539,
+            "bias": -0.0544
+          },
+          "nonred": {
+            "n": 540,
+            "mae": 0.4338,
+            "rmse": 0.5639,
+            "bias": -0.0206
+          },
+          "own": {
+            "n": 10,
+            "mae": 0.435,
+            "rmse": 0.5035,
+            "bias": 0.0706
+          },
+          "opp": {
+            "n": 10,
+            "mae": 0.3889,
+            "rmse": 0.5723,
+            "bias": -0.1795
+          }
+        },
+        "pool": {
+          "all": {
+            "n": 1134,
+            "mae": 0.4332,
+            "rmse": 0.5641,
+            "bias": 0.0036
+          },
+          "red": {
+            "n": 42,
+            "mae": 0.421,
+            "rmse": 0.5484,
+            "bias": -0.0119
+          }
+        }
+      },
+      "ventanas": [
+        {
+          "w": 1,
+          "n": 24,
+          "kOwn": 0.3,
+          "kOpp": 1.55,
+          "maeB0": 0.5257,
+          "maeC1": 0.3791,
+          "maeC3": 0.3622,
+          "maeC4": 0.3746,
+          "deltaPct": -27.88,
+          "deltaC3Pct": -31.09,
+          "deltaC4Pct": -28.74,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        },
+        {
+          "w": 2,
+          "n": 22,
+          "kOwn": 0.4,
+          "kOpp": 1.6,
+          "maeB0": 0.455,
+          "maeC1": 0.3969,
+          "maeC3": 0.3888,
+          "maeC4": 0.3933,
+          "deltaPct": -12.77,
+          "deltaC3Pct": -14.56,
+          "deltaC4Pct": -13.56,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        },
+        {
+          "w": 3,
+          "n": 22,
+          "kOwn": 0.45,
+          "kOpp": 1.6,
+          "maeB0": 0.4292,
+          "maeC1": 0.3283,
+          "maeC3": 0.3161,
+          "maeC4": 0.311,
+          "deltaPct": -23.51,
+          "deltaC3Pct": -26.35,
+          "deltaC4Pct": -27.54,
+          "gana": true,
+          "ganaC3": true,
+          "ganaC4": true
+        },
+        {
+          "w": 4,
+          "n": 20,
+          "kOwn": 0.4,
+          "kOpp": 1.6,
+          "maeB0": 0.4119,
+          "maeC1": 0.5105,
+          "maeC3": 0.5514,
+          "maeC4": 0.5532,
+          "deltaPct": 23.92,
+          "deltaC3Pct": 33.85,
+          "deltaC4Pct": 34.3,
+          "gana": false,
+          "ganaC3": false,
+          "ganaC4": false
+        }
+      ],
+      "veredicto": {
+        "C1_red_pool": -2.35,
+        "C2_red_pool": -3.04,
+        "C3_red_pool": -1.09,
+        "C4_red_pool": -0.64,
+        "C1_all_pool": -0.09,
+        "C2_all_pool": -0.18,
+        "C3_all_pool": -0.05,
+        "C4_all_pool": -0.02,
+        "C1_red_test": 21.9,
+        "C2_red_test": 5.88,
+        "C3_red_test": 27.87,
+        "C4_red_test": 30.2,
+        "C1_ventanas_gana": "3/4",
+        "C3_ventanas_gana": "3/4",
+        "C4_ventanas_gana": "3/4"
+      }
+    }
+  }
+}
