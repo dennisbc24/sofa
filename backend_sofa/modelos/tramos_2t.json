@@ -1,0 +1,604 @@
+{
+  "modelo": "tramos_2t",
+  "version": "1.0",
+  "entrenadoEn": "2026-10-31T19:03:59.741Z",
+  "descripcion": "Reparto de la proyección del 2T en tramos 46-60, 61-75 y 76-90+ para goles, remates y amarillas. Pesos elegidos por calibración (Brier de P(>=1)) en VAL y ajustados con todos los partidos completos.",
+  "fuente": {
+    "experimento": "experimentos_fase2t/informes/fase2t_4_tramos.json",
+    "dataset": "DB local: incidentes_goles + remates + incidentes_tarjetas con feed completo",
+    "nota": "Los eventos de 76+ incluyen el tiempo añadido; 45+ se trata como minuto 45. La cobertura exige que la suma por mitad coincida con las stats 1ST/2ND."
+  },
+  "tramos": [
+    {
+      "id": "46-60",
+      "etiqueta": "46-60",
+      "desde": 46,
+      "hasta": 60
+    },
+    {
+      "id": "61-75",
+      "etiqueta": "61-75",
+      "desde": 61,
+      "hasta": 75
+    },
+    {
+      "id": "76-90+",
+      "etiqueta": "76-90+",
+      "desde": 76,
+      "hasta": null
+    }
+  ],
+  "stats": {
+    "Goles": {
+      "etiqueta": "Goles",
+      "esquema": "R",
+      "pesos": {
+        "home": {
+          "46-60": 0.2767175572519084,
+          "61-75": 0.3053435114503817,
+          "76-90+": 0.4179389312977099
+        },
+        "away": {
+          "46-60": 0.2696335078534031,
+          "61-75": 0.2931937172774869,
+          "76-90+": 0.43717277486910994
+        },
+        "global": {
+          "46-60": 0.2737306843267108,
+          "61-75": 0.30022075055187636,
+          "76-90+": 0.4260485651214128
+        }
+      },
+      "n": {
+        "train": 1441,
+        "val": 254,
+        "test": 364,
+        "total": 2059,
+        "equiposPartido": 2059
+      },
+      "validacion": {
+        "VAL": {
+          "oracle": {
+            "n": 762,
+            "mae": 0.1134,
+            "rmse": 0.2658,
+            "bias": 0,
+            "brier": 0.0514,
+            "logloss": 0.1482,
+            "ece": 0.0162,
+            "cobertura80": 1,
+            "cobertura90": 1,
+            "pitMedio": 0.5044,
+            "media": 0.1234,
+            "dispersion": 1.1532,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 579,
+                "p": 0,
+                "obs": 0
+              },
+              {
+                "rango": "0.1-0.25",
+                "n": 38,
+                "p": 0.2392,
+                "obs": 0.2895
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 102,
+                "p": 0.3369,
+                "obs": 0.3824
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 43,
+                "p": 0.6102,
+                "obs": 0.7442
+              }
+            ]
+          },
+          "modelo": {
+            "n": 762,
+            "mae": 0.3324,
+            "rmse": 0.41,
+            "bias": 0.1488,
+            "brier": 0.1139,
+            "logloss": 0.3952,
+            "ece": 0.1296,
+            "cobertura80": 0.9856,
+            "cobertura90": 0.9882,
+            "pitMedio": 0.4362,
+            "media": 0.1234,
+            "dispersion": 1.1532,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 1,
+                "p": 0.0969,
+                "obs": 1
+              },
+              {
+                "rango": "0.1-0.25",
+                "n": 495,
+                "p": 0.1941,
+                "obs": 0.0909
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 263,
+                "p": 0.3085,
+                "obs": 0.1369
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 3,
+                "p": 0.5391,
+                "obs": 0
+              }
+            ]
+          }
+        },
+        "TEST": {
+          "oracle": {
+            "n": 1092,
+            "mae": 0.1931,
+            "rmse": 0.3644,
+            "bias": 0,
+            "brier": 0.0839,
+            "logloss": 0.2395,
+            "ece": 0.0184,
+            "cobertura80": 1,
+            "cobertura90": 1,
+            "pitMedio": 0.5061,
+            "media": 0.196,
+            "dispersion": 1.1685,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 684,
+                "p": 0,
+                "obs": 0
+              },
+              {
+                "rango": "0.1-0.25",
+                "n": 78,
+                "p": 0.2391,
+                "obs": 0.2564
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 240,
+                "p": 0.3496,
+                "obs": 0.3917
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 86,
+                "p": 0.606,
+                "obs": 0.6977
+              },
+              {
+                "rango": "0.75-1.000001",
+                "n": 4,
+                "p": 0.8121,
+                "obs": 1
+              }
+            ]
+          },
+          "modelo": {
+            "n": 1092,
+            "mae": 0.3692,
+            "rmse": 0.4784,
+            "bias": 0.0767,
+            "brier": 0.1392,
+            "logloss": 0.4515,
+            "ece": 0.0722,
+            "cobertura80": 0.9716,
+            "cobertura90": 0.9808,
+            "pitMedio": 0.4649,
+            "media": 0.196,
+            "dispersion": 1.1685,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 1,
+                "p": 0.0963,
+                "obs": 0
+              },
+              {
+                "rango": "0.1-0.25",
+                "n": 698,
+                "p": 0.1924,
+                "obs": 0.1347
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 389,
+                "p": 0.3092,
+                "obs": 0.2108
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 4,
+                "p": 0.5204,
+                "obs": 0.5
+              }
+            ]
+          }
+        }
+      }
+    },
+    "Total shots": {
+      "etiqueta": "Remates",
+      "esquema": "R",
+      "pesos": {
+        "home": {
+          "46-60": 0.30535100638193424,
+          "61-75": 0.2869415807560137,
+          "76-90+": 0.40770741286205203
+        },
+        "away": {
+          "46-60": 0.305204804434863,
+          "61-75": 0.2922697874961503,
+          "76-90+": 0.40252540806898673
+        },
+        "global": {
+          "46-60": 0.3052861630924737,
+          "61-75": 0.2893047397896462,
+          "76-90+": 0.4054090971178801
+        }
+      },
+      "n": {
+        "train": 711,
+        "val": 109,
+        "test": 246,
+        "total": 1066,
+        "equiposPartido": 1066
+      },
+      "validacion": {
+        "VAL": {
+          "oracle": {
+            "n": 327,
+            "mae": 0.9763,
+            "rmse": 1.2541,
+            "bias": 0,
+            "brier": 0.0925,
+            "logloss": 0.3093,
+            "ece": 0.0342,
+            "cobertura80": 0.9633,
+            "cobertura90": 0.9908,
+            "pitMedio": 0.5109,
+            "media": 2.2722,
+            "dispersion": 1.355,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 3,
+                "p": 0,
+                "obs": 0
+              },
+              {
+                "rango": "0.1-0.25",
+                "n": 1,
+                "p": 0.2494,
+                "obs": 0
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 16,
+                "p": 0.3679,
+                "obs": 0.375
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 49,
+                "p": 0.647,
+                "obs": 0.6735
+              },
+              {
+                "rango": "0.75-1.000001",
+                "n": 258,
+                "p": 0.8972,
+                "obs": 0.9341
+              }
+            ]
+          },
+          "modelo": {
+            "n": 327,
+            "mae": 1.3119,
+            "rmse": 1.6813,
+            "bias": 0.0051,
+            "brier": 0.1223,
+            "logloss": 0.4086,
+            "ece": 0.031,
+            "cobertura80": 0.8746,
+            "cobertura90": 0.9511,
+            "pitMedio": 0.4899,
+            "media": 2.2722,
+            "dispersion": 1.355,
+            "fiabilidad": [
+              {
+                "rango": "0.75-1.000001",
+                "n": 327,
+                "p": 0.8873,
+                "obs": 0.8563
+              }
+            ]
+          }
+        },
+        "TEST": {
+          "oracle": {
+            "n": 738,
+            "mae": 1.0631,
+            "rmse": 1.3634,
+            "bias": 0,
+            "brier": 0.0962,
+            "logloss": 0.316,
+            "ece": 0.036,
+            "cobertura80": 0.9444,
+            "cobertura90": 0.9946,
+            "pitMedio": 0.514,
+            "media": 2.4092,
+            "dispersion": 1.5289,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 3,
+                "p": 0,
+                "obs": 0
+              },
+              {
+                "rango": "0.1-0.25",
+                "n": 5,
+                "p": 0.2494,
+                "obs": 0.2
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 52,
+                "p": 0.3817,
+                "obs": 0.5
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 124,
+                "p": 0.6542,
+                "obs": 0.7339
+              },
+              {
+                "rango": "0.75-1.000001",
+                "n": 554,
+                "p": 0.9129,
+                "obs": 0.9314
+              }
+            ]
+          },
+          "modelo": {
+            "n": 738,
+            "mae": 1.427,
+            "rmse": 1.8448,
+            "bias": -0.0593,
+            "brier": 0.1205,
+            "logloss": 0.404,
+            "ece": 0.0337,
+            "cobertura80": 0.8428,
+            "cobertura90": 0.9309,
+            "pitMedio": 0.4926,
+            "media": 2.4092,
+            "dispersion": 1.5289,
+            "fiabilidad": [
+              {
+                "rango": "0.5-0.75",
+                "n": 2,
+                "p": 0.7455,
+                "obs": 0.5
+              },
+              {
+                "rango": "0.75-1.000001",
+                "n": 736,
+                "p": 0.8932,
+                "obs": 0.8601
+              }
+            ]
+          }
+        }
+      }
+    },
+    "Yellow cards": {
+      "etiqueta": "Amarillas",
+      "esquema": "G",
+      "pesos": {
+        "home": {
+          "46-60": 0.2118466898954704,
+          "61-75": 0.27526132404181186,
+          "76-90+": 0.5128919860627178
+        },
+        "away": {
+          "46-60": 0.2118466898954704,
+          "61-75": 0.27526132404181186,
+          "76-90+": 0.5128919860627178
+        },
+        "global": {
+          "46-60": 0.2118466898954704,
+          "61-75": 0.27526132404181186,
+          "76-90+": 0.5128919860627178
+        }
+      },
+      "n": {
+        "train": 983,
+        "val": 174,
+        "test": 295,
+        "total": 1452,
+        "equiposPartido": 1452
+      },
+      "validacion": {
+        "VAL": {
+          "oracle": {
+            "n": 522,
+            "mae": 0.2325,
+            "rmse": 0.4024,
+            "bias": 0,
+            "brier": 0.0953,
+            "logloss": 0.2755,
+            "ece": 0.0252,
+            "cobertura80": 1,
+            "cobertura90": 1,
+            "pitMedio": 0.5084,
+            "media": 0.2912,
+            "dispersion": 1.2746,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 282,
+                "p": 0,
+                "obs": 0
+              },
+              {
+                "rango": "0.1-0.25",
+                "n": 78,
+                "p": 0.2158,
+                "obs": 0.2436
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 90,
+                "p": 0.4079,
+                "obs": 0.5
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 48,
+                "p": 0.607,
+                "obs": 0.6042
+              },
+              {
+                "rango": "0.75-1.000001",
+                "n": 24,
+                "p": 0.8105,
+                "obs": 0.9167
+              }
+            ]
+          },
+          "modelo": {
+            "n": 522,
+            "mae": 0.5074,
+            "rmse": 0.6048,
+            "bias": 0.1627,
+            "brier": 0.1798,
+            "logloss": 0.5429,
+            "ece": 0.1336,
+            "cobertura80": 0.9751,
+            "cobertura90": 0.9828,
+            "pitMedio": 0.4353,
+            "media": 0.2912,
+            "dispersion": 1.2746,
+            "fiabilidad": [
+              {
+                "rango": "0.1-0.25",
+                "n": 71,
+                "p": 0.2166,
+                "obs": 0.0563
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 331,
+                "p": 0.3216,
+                "obs": 0.1873
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 120,
+                "p": 0.5242,
+                "obs": 0.4083
+              }
+            ]
+          }
+        },
+        "TEST": {
+          "oracle": {
+            "n": 885,
+            "mae": 0.3096,
+            "rmse": 0.4688,
+            "bias": 0,
+            "brier": 0.1322,
+            "logloss": 0.3796,
+            "ece": 0.037,
+            "cobertura80": 0.9977,
+            "cobertura90": 1,
+            "pitMedio": 0.5112,
+            "media": 0.3638,
+            "dispersion": 1.1765,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 345,
+                "p": 0,
+                "obs": 0
+              },
+              {
+                "rango": "0.1-0.25",
+                "n": 180,
+                "p": 0.2158,
+                "obs": 0.2833
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 222,
+                "p": 0.4036,
+                "obs": 0.4505
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 96,
+                "p": 0.6139,
+                "obs": 0.6563
+              },
+              {
+                "rango": "0.75-1.000001",
+                "n": 42,
+                "p": 0.8068,
+                "obs": 0.9524
+              }
+            ]
+          },
+          "modelo": {
+            "n": 885,
+            "mae": 0.5322,
+            "rmse": 0.6454,
+            "bias": 0.1014,
+            "brier": 0.2048,
+            "logloss": 0.5979,
+            "ece": 0.0743,
+            "cobertura80": 0.9706,
+            "cobertura90": 0.9808,
+            "pitMedio": 0.4621,
+            "media": 0.3638,
+            "dispersion": 1.1765,
+            "fiabilidad": [
+              {
+                "rango": "0.1-0.25",
+                "n": 140,
+                "p": 0.2363,
+                "obs": 0.2214
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 573,
+                "p": 0.3401,
+                "obs": 0.2653
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 172,
+                "p": 0.534,
+                "obs": 0.4128
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "nota": "lambda_tramo = lambda_2T_equipo * peso. P(>=1) = 1 - exp(-lambda_tramo). El total se calcula como suma Poisson de ambos equipos."
+}

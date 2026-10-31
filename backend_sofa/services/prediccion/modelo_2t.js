@@ -31,6 +31,7 @@ const { calcularPrevisibilidad } = require("./previsibilidad");
 const {
   cargarAjusteRoja2T, rojas1TDe, factorC1, factorC4Lado, predecirC2,
 } = require("./ajuste_roja_2t");
+const { cargarTramos2T, tramosDe } = require("./tramos_2t");
 
 // FT (= 1T + pred 2T) sólo para stats donde sumar tiene sentido de flujo.
 const FT_WHITELIST = new Set([GOLES, "Total shots", "Corner kicks", "Yellow cards"]);
@@ -318,6 +319,7 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
   // aplica el artefacto de ajuste si existe.
   const rojas = rojas1TDe(json, filas);
   const artefactoRoja = cargarAjusteRoja2T();
+  const artefactoTramos = cargarTramos2T();
   const hayRoja = rojas.home + rojas.away > 0;
 
   // 1T actual del partido desde el dump (period1; fallback al marcador).
@@ -546,6 +548,12 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
       fila.baseVisita2T = r2(predBase.away);
     }
     if (factorRoja) fila.factorRoja = factorRoja;
+    // Desglose del 2T por tramos (46-60, 61-75, 76-90+) para las celdas
+    // clicables de goles, remates y amarillas.
+    if ([GOLES, "Total shots", "Yellow cards"].includes(stat)) {
+      const desglose = tramosDe(stat, pred.home, pred.away);
+      if (desglose) fila.tramos = desglose;
+    }
     if (FT_WHITELIST.has(stat) && hay1T) {
       fila.ftLocal = r2(l1 + pred.home);
       fila.ftVisita = r2(a1 + pred.away);
@@ -626,6 +634,10 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
       ajusteRoja: artefactoRoja ? {
         version: artefactoRoja.version,
         entrenadoEn: artefactoRoja.entrenadoEn,
+      } : null,
+      tramos: artefactoTramos ? {
+        version: artefactoTramos.version,
+        entrenadoEn: artefactoTramos.entrenadoEn,
       } : null,
     },
   };
