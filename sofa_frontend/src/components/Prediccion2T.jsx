@@ -226,6 +226,7 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
           visita={visitante}
           col={tramo.col}
           pos={tramo.pos}
+          periodo="2T"
           onCerrar={() => setTramo(null)}
         />
       )}
@@ -850,6 +851,7 @@ export const Prediccion2T = () => {
                   visita={activo.partido?.visitante}
                   col={tramoDetalle.col}
                   pos={tramoDetalle.pos}
+                  periodo="2T"
                   onCerrar={() => setTramoDetalle(null)}
                 />
               )}

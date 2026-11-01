@@ -14,22 +14,39 @@
 // ---------------------------------------------------------------------------
 const path = require("path");
 
-let cache = null;
+let cache2T = null;
+let cache1T = null;
 
 function cargarTramos2T() {
-  if (cache === undefined) return null;
-  if (cache) return cache;
+  if (cache2T === undefined) return null;
+  if (cache2T) return cache2T;
   try {
-    cache = require("../../modelos/tramos_2t.json");
+    cache2T = require("../../modelos/tramos_2t.json");
   } catch {
-    cache = undefined;
+    cache2T = undefined;
     return null;
   }
-  return cache;
+  return cache2T;
+}
+
+function cargarTramos1T() {
+  if (cache1T === undefined) return null;
+  if (cache1T) return cache1T;
+  try {
+    cache1T = require("../../modelos/tramos_1t.json");
+  } catch {
+    cache1T = undefined;
+    return null;
+  }
+  return cache1T;
 }
 
 function rutaTramos2T() {
   return path.join(__dirname, "..", "..", "modelos", "tramos_2t.json");
+}
+
+function rutaTramos1T() {
+  return path.join(__dirname, "..", "..", "modelos", "tramos_1t.json");
 }
 
 const clamp0 = (v) => {
@@ -48,9 +65,8 @@ function pesoDe(pesos, lado, tramo) {
 }
 
 // Devuelve el desglose de un stat para un partido, o null si el stat no tiene
-// artefacto. `local` y `visita` son las lambdas del 2T (no FT).
-function tramosDe(stat, local, visita) {
-  const artefacto = cargarTramos2T();
+// artefacto. `local` y `visita` son las lambdas del periodo (no FT).
+function tramosCon(artefacto, stat, local, visita) {
   if (!artefacto || !artefacto.stats) return null;
   const cfg = artefacto.stats[stat];
   if (!cfg) return null;
@@ -84,9 +100,20 @@ function tramosDe(stat, local, visita) {
   };
 }
 
+function tramosDe(stat, local, visita) {
+  return tramosCon(cargarTramos2T(), stat, local, visita);
+}
+
+function tramos1TDe(stat, local, visita) {
+  return tramosCon(cargarTramos1T(), stat, local, visita);
+}
+
 module.exports = {
   cargarTramos2T,
+  cargarTramos1T,
   rutaTramos2T,
+  rutaTramos1T,
   tramosDe,
+  tramos1TDe,
   poissonP1: p1,
 };

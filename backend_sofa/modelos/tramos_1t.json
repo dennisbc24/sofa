@@ -1,0 +1,254 @@
+{
+  "modelo": "tramos_1t",
+  "version": "1.0",
+  "entrenadoEn": "2026-10-31T19:40:05.955Z",
+  "descripcion": "Reparto de la proyección del 1T en tramos 1-15, 16-30 y 31-45+ para goles y remates. Pesos elegidos por calibración (Brier de P(>=1)) en VAL y ajustados con todos los partidos completos.",
+  "fuente": {
+    "experimento": "experimentos_fase2t/informes/fase2t_5_tramos_1t.json",
+    "dataset": "DB local: incidentes_goles + remates con feed completo del 1T",
+    "nota": "Los eventos de 31+ incluyen el tiempo añadido del 1T (45+ se trata como minuto 45). La cobertura exige que la suma de los tres tramos coincida con la stat 1ST."
+  },
+  "tramos": [
+    {
+      "id": "1-15",
+      "etiqueta": "1-15"
+    },
+    {
+      "id": "16-30",
+      "etiqueta": "16-30"
+    },
+    {
+      "id": "31-45+",
+      "etiqueta": "31-45+"
+    }
+  ],
+  "stats": {
+    "Goles": {
+      "etiqueta": "Goles",
+      "esquema": "U",
+      "pesos": {
+        "home": {
+          "1-15": 0.3333333333333333,
+          "16-30": 0.3333333333333333,
+          "31-45+": 0.3333333333333333
+        },
+        "away": {
+          "1-15": 0.3333333333333333,
+          "16-30": 0.3333333333333333,
+          "31-45+": 0.3333333333333333
+        },
+        "global": {
+          "1-15": 0.3333333333333333,
+          "16-30": 0.3333333333333333,
+          "31-45+": 0.3333333333333333
+        }
+      },
+      "n": {
+        "train": 2129,
+        "val": 427,
+        "test": 480,
+        "total": 3036
+      },
+      "validacion": {
+        "VAL": {
+          "oracle": {
+            "n": 1281,
+            "mae": 0.0604,
+            "rmse": 0.1989,
+            "bias": 0,
+            "brier": 0.0284,
+            "logloss": 0.0806,
+            "ece": 0.0095,
+            "cobertura80": 0.9992,
+            "cobertura90": 1,
+            "pitMedio": 0.5025,
+            "media": 0.0656,
+            "dispersion": 1.1725,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 1122,
+                "p": 0,
+                "obs": 0
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 144,
+                "p": 0.3681,
+                "obs": 0.4306
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 15,
+                "p": 0.653,
+                "obs": 0.8667
+              }
+            ]
+          }
+        },
+        "TEST": {
+          "oracle": {
+            "n": 1440,
+            "mae": 0.1208,
+            "rmse": 0.2696,
+            "bias": 0,
+            "brier": 0.0565,
+            "logloss": 0.1604,
+            "ece": 0.0146,
+            "cobertura80": 1,
+            "cobertura90": 1,
+            "pitMedio": 0.5046,
+            "media": 0.1139,
+            "dispersion": 1.0812,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 1086,
+                "p": 0,
+                "obs": 0
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 339,
+                "p": 0.3446,
+                "obs": 0.4012
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 15,
+                "p": 0.6738,
+                "obs": 0.8
+              }
+            ]
+          }
+        }
+      }
+    },
+    "Total shots": {
+      "etiqueta": "Remates",
+      "esquema": "R",
+      "pesos": {
+        "home": {
+          "1-15": 0.28792822185970635,
+          "16-30": 0.31946710168569875,
+          "31-45+": 0.3926046764545949
+        },
+        "away": {
+          "1-15": 0.28744379107575235,
+          "16-30": 0.3095814597025251,
+          "31-45+": 0.4029747492217226
+        },
+        "global": {
+          "1-15": 0.28771502511797836,
+          "16-30": 0.3151164560815954,
+          "31-45+": 0.39716851880042625
+        }
+      },
+      "n": {
+        "train": 775,
+        "val": 120,
+        "test": 265,
+        "total": 1160
+      },
+      "validacion": {
+        "VAL": {
+          "oracle": {
+            "n": 360,
+            "mae": 0.9101,
+            "rmse": 1.1898,
+            "bias": 0,
+            "brier": 0.1227,
+            "logloss": 0.3821,
+            "ece": 0.028,
+            "cobertura80": 0.9583,
+            "cobertura90": 0.9889,
+            "pitMedio": 0.5115,
+            "media": 1.8417,
+            "dispersion": 1.7315,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 24,
+                "p": 0,
+                "obs": 0
+              },
+              {
+                "rango": "0.1-0.25",
+                "n": 4,
+                "p": 0.2498,
+                "obs": 0.25
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 35,
+                "p": 0.3728,
+                "obs": 0.4857
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 81,
+                "p": 0.641,
+                "obs": 0.6543
+              },
+              {
+                "rango": "0.75-1.000001",
+                "n": 216,
+                "p": 0.8886,
+                "obs": 0.912
+              }
+            ]
+          }
+        },
+        "TEST": {
+          "oracle": {
+            "n": 795,
+            "mae": 0.9793,
+            "rmse": 1.2737,
+            "bias": 0,
+            "brier": 0.1244,
+            "logloss": 0.3928,
+            "ece": 0.0163,
+            "cobertura80": 0.9447,
+            "cobertura90": 0.9899,
+            "pitMedio": 0.5106,
+            "media": 2.039,
+            "dispersion": 1.5631,
+            "fiabilidad": [
+              {
+                "rango": "0-0.1",
+                "n": 18,
+                "p": 0,
+                "obs": 0
+              },
+              {
+                "rango": "0.1-0.25",
+                "n": 7,
+                "p": 0.2498,
+                "obs": 0.5714
+              },
+              {
+                "rango": "0.25-0.5",
+                "n": 72,
+                "p": 0.3797,
+                "obs": 0.4167
+              },
+              {
+                "rango": "0.5-0.75",
+                "n": 158,
+                "p": 0.6398,
+                "obs": 0.6646
+              },
+              {
+                "rango": "0.75-1.000001",
+                "n": 540,
+                "p": 0.896,
+                "obs": 0.9037
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "nota": "lambda_tramo = lambda_1T_equipo * peso. P(>=1) = 1 - exp(-lambda_tramo). El total se calcula como suma Poisson de ambos equipos."
+}

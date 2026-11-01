@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { calcularMercados } = require("../services/prediccion/prediccion");
+const { calcularMercados, calcularMercadosExtras } = require("../services/prediccion/prediccion");
 
 const perfil = (n, stats) => ({
   comoLocal: { n, ...stats },
@@ -47,4 +47,35 @@ test("calcularMercados tolera stats ausentes sin romper", () => {
   assert.equal(m.remates.local, null);
   assert.equal(m.tarjetas.local, null);
   assert.deepEqual(m.goles, { local: 1.75, visitante: 0.9 });
+});
+
+test("calcularMercadosExtras agrega tramos al 1T y 2T de goles y remates", () => {
+  const stats = {
+    gf_t1: 0.8, gf_t2: 0.9,
+    corners: 5, corners_t1: 2.4,
+    remates: 12, remates_t1: 6,
+    amarillas: 2,
+  };
+  const x = calcularMercadosExtras(stats, stats, { home: 1.5, away: 0.9 });
+
+  assert.equal(x.golesPartido.tramos, undefined);
+  assert.ok(x.goles1T.tramos);
+  assert.equal(x.goles1T.tramos.tramos.length, 3);
+  assert.ok(x.goles2T.tramos);
+  assert.equal(x.goles2T.tramos.tramos.length, 3);
+
+  assert.equal(x.rematesPartido.tramos, undefined);
+  assert.ok(x.remates1T.tramos);
+  assert.equal(x.remates1T.tramos.tramos.length, 3);
+  assert.ok(x.remates2T.tramos);
+  assert.equal(x.remates2T.tramos.tramos.length, 3);
+
+  const sumaG1 = x.goles1T.tramos.tramos.reduce((s, t) => s + t.local.lambda, 0);
+  const sumaG2 = x.goles2T.tramos.tramos.reduce((s, t) => s + t.local.lambda, 0);
+  const sumaR1 = x.remates1T.tramos.tramos.reduce((s, t) => s + t.local.lambda, 0);
+  const sumaR2 = x.remates2T.tramos.tramos.reduce((s, t) => s + t.local.lambda, 0);
+  assert.ok(Math.abs(sumaG1 - x.goles1T.local) < 0.02);
+  assert.ok(Math.abs(sumaG2 - x.goles2T.local) < 0.02);
+  assert.ok(Math.abs(sumaR1 - x.remates1T.local) < 0.02);
+  assert.ok(Math.abs(sumaR2 - x.remates2T.local) < 0.02);
 });

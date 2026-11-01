@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { fmtTramo as fmt, pctTramo as pct } from "../tramos.js"
 
-export const TramosPopover = ({ datos, etiqueta, local, visita, col, pos, onCerrar }) => {
+export const TramosPopover = ({ datos, etiqueta, local, visita, col, pos, periodo = "2T", onCerrar }) => {
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") onCerrar()
@@ -29,12 +29,12 @@ export const TramosPopover = ({ datos, etiqueta, local, visita, col, pos, onCerr
         className="tramos-popover"
         style={pos ? { left: pos.x, top: pos.y } : undefined}
         role="dialog"
-        aria-label={`Desglose de ${etiqueta} por tramos del 2T`}
+        aria-label={`Desglose de ${etiqueta} por tramos del ${periodo}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="tramos-header">
           <div>
-            <div className="tramos-titulo">{etiqueta} · proyección 2T</div>
+            <div className="tramos-titulo">{etiqueta} · proyección {periodo}</div>
             <div className="tramos-sub">
               {local || "Local"} vs {visita || "Visita"}
             </div>
@@ -68,8 +68,8 @@ export const TramosPopover = ({ datos, etiqueta, local, visita, col, pos, onCerr
         </div>
 
         <p className="tramos-nota">
-          λ = promedio esperado del tramo. % = probabilidad de al menos 1. El tramo 76-90+
-          incluye el tiempo añadido.
+          λ = promedio esperado del tramo. % = probabilidad de al menos 1. El tramo{" "}
+          {periodo === "1T" ? "31-45+" : "76-90+"} incluye el tiempo añadido.
         </p>
       </div>
     </div>

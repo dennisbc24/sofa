@@ -6,6 +6,7 @@ const { registrarPrediccion } = require("./registro");
 const { calcularPrevisibilidad } = require("./previsibilidad");
 const { estimarRematesXI } = require("./alineacion");
 const { realesDePartido } = require("./reales");
+const { tramosDe, tramos1TDe } = require("./tramos_2t");
 
 // ---------------------------------------------------------------------------
 // Orquestador del análisis pre-partido (FASE 1).
@@ -174,10 +175,20 @@ function calcularMercadosExtras(sL, sV, lambdas, periodosGoals = null) {
   const lt1 = lh1 + la1, lt2 = lh2 + la2, lt = lambdas.home + lambdas.away;
   const ct1 = cH1 + cV1, ct2 = cH2 + cV2, ct = ct1 + ct2;
   const rt1 = rH1 + rV1, rt2 = rH2 + rV2, rt = rt1 + rt2;
+  const conTramos = (obj, stat, local, visita, fn = tramosDe) => {
+    const t = fn(stat, local, visita);
+    return t ? { ...obj, tramos: t } : obj;
+  };
   return {
     ambosMarcan: { si: pct1(si), no: pct1(1 - si) },
-    goles1T: { local: r2(lh1), visita: r2(la1), esperados: r2(lt1), ...overLines(lt1), mm: masMenos(lt1) },
-    goles2T: { local: r2(lh2), visita: r2(la2), esperados: r2(lt2), ...overLines(lt2), mm: masMenos(lt2) },
+    goles1T: conTramos(
+      { local: r2(lh1), visita: r2(la1), esperados: r2(lt1), ...overLines(lt1), mm: masMenos(lt1) },
+      "Goles", lh1, la1, tramos1TDe
+    ),
+    goles2T: conTramos(
+      { local: r2(lh2), visita: r2(la2), esperados: r2(lt2), ...overLines(lt2), mm: masMenos(lt2) },
+      "Goles", lh2, la2
+    ),
     golesPartido: {
       local: r2(lambdas.home), visita: r2(lambdas.away),
       esperados: r2(lt), ...overLines(lt), mm: masMenos(lt),
@@ -190,8 +201,14 @@ function calcularMercadosExtras(sL, sV, lambdas, periodosGoals = null) {
       local: r2(sL.corners || 0), visita: r2(sV.corners || 0),
       esperados: r2(ct), over: overFijas(ct, [8.5, 9.5, 10.5, 11.5]), mm: masMenos(ct),
     },
-    remates1T: { local: r2(rH1), visita: r2(rV1), esperados: r2(rt1), over: overDinamicas(rt1), mm: masMenos(rt1) },
-    remates2T: { local: r2(rH2), visita: r2(rV2), esperados: r2(rt2), over: overDinamicas(rt2), mm: masMenos(rt2) },
+    remates1T: conTramos(
+      { local: r2(rH1), visita: r2(rV1), esperados: r2(rt1), over: overDinamicas(rt1), mm: masMenos(rt1) },
+      "Total shots", rH1, rV1, tramos1TDe
+    ),
+    remates2T: conTramos(
+      { local: r2(rH2), visita: r2(rV2), esperados: r2(rt2), over: overDinamicas(rt2), mm: masMenos(rt2) },
+      "Total shots", rH2, rV2
+    ),
     rematesPartido: {
       local: r2(sL.remates || 0), visita: r2(sV.remates || 0),
       esperados: r2(rt), over: overDinamicas(rt), mm: masMenos(rt),
@@ -643,7 +660,7 @@ async function analizarPartido({ localTeam, awayTeam, date, league, registrar = 
 }
 
 module.exports = {
-  analizarPartido, calcularMercados, mercadosDePrediccion,
+  analizarPartido, calcularMercados, calcularMercadosExtras, mercadosDePrediccion,
   ajustesRival, shrinkRival,
   ModeloNoEntrenadoError, EquipoNoEncontradoError,
 };

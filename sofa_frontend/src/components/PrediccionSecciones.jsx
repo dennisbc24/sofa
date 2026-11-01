@@ -1,6 +1,9 @@
+import { useEffect, useState } from "react"
 import { formatearFecha } from "../utils.js"
 import { clasePrevisibilidad, fondoPrevisibilidad, noPierdeDe, previsibilidadConjunta, textoOver } from "../mercados.js"
 import { CeldaMasMenos } from "./CeldaMasMenos.jsx"
+import { TramosPopover } from "./TramosPopover.jsx"
+import { posicionTramos } from "../tramos.js"
 
 const FILAS_TIEMPO = [
   { key: "gf_t1", etiqueta: "Goles a favor 1T" },
@@ -157,7 +160,13 @@ export const FormaEquipo = ({ titulo, perfil }) => {
 // en la prediccion en vivo se muestra neutra.
 // ---------------------------------------------------------------------------
 export const SeccionesAnalisis = ({ datos, reales }) => {
+  const [tramo, setTramo] = useState(null)
+  useEffect(() => setTramo(null), [datos])
   if (!datos) return null
+  const abrirTramo = (e, datosTramo, etiqueta, col, periodo) => {
+    if (!datosTramo?.tramos) return
+    setTramo({ datos: datosTramo, etiqueta, col, periodo, pos: posicionTramos(e) })
+  }
   const hf = datos.homeFeatures
   const af = datos.awayFeatures
   // Nombres de los equipos para las cabeceras (mejor identificación visual
@@ -199,19 +208,37 @@ export const SeccionesAnalisis = ({ datos, reales }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {[["1T", mx.goles1T], ["2T", mx.goles2T], ["Partido", mx.golesPartido]].map(([t, g]) => (
-                      <tr key={t} className={t === "Partido" ? "fila-total" : undefined}>
-                        <td>{t}</td>
-                        <td className={`tabla-num ${clasePrevisibilidad(pctLocal("golesTotal"))}`} style={fondoPrevisibilidad(pctLocal("golesTotal"))}>{g?.local}</td>
-                        <td className={`tabla-num ${clasePrevisibilidad(pctVisita("golesTotal"))}`} style={fondoPrevisibilidad(pctVisita("golesTotal"))}>{g?.visita}</td>
-                        <td className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto("golesTotal"))}`} style={fondoPrevisibilidad(pctConjunto("golesTotal"))}>{g?.esperados}</td>
-                        <td className="tabla-num">{g?.o05}%</td>
-                        <td className="tabla-num">{g?.o15}%</td>
-                        <td className="tabla-num">{g?.o25}%</td>
-                        <td className="tabla-num">{g?.o35}%</td>
-                        <td className="tabla-num"><CeldaMasMenos mm={g?.mm} real={reales?.goles?.[t]} /></td>
-                      </tr>
-                    ))}
+                    {[["1T", mx.goles1T], ["2T", mx.goles2T], ["Partido", mx.golesPartido]].map(([t, g]) => {
+                      const tramos = t === "Partido" ? null : g?.tramos
+                      return (
+                        <tr key={t} className={t === "Partido" ? "fila-total" : undefined}>
+                          <td>{t}</td>
+                          <td
+                            className={`tabla-num ${clasePrevisibilidad(pctLocal("golesTotal"))} ${tramos ? "celda-click" : ""}`}
+                            style={fondoPrevisibilidad(pctLocal("golesTotal"))}
+                            onClick={tramos ? (e) => abrirTramo(e, tramos, "Goles", "local", t) : undefined}
+                            title={tramos ? `Ver desglose por tramos del ${t}` : undefined}
+                          >{g?.local}</td>
+                          <td
+                            className={`tabla-num ${clasePrevisibilidad(pctVisita("golesTotal"))} ${tramos ? "celda-click" : ""}`}
+                            style={fondoPrevisibilidad(pctVisita("golesTotal"))}
+                            onClick={tramos ? (e) => abrirTramo(e, tramos, "Goles", "visita", t) : undefined}
+                            title={tramos ? `Ver desglose por tramos del ${t}` : undefined}
+                          >{g?.visita}</td>
+                          <td
+                            className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto("golesTotal"))} ${tramos ? "celda-click" : ""}`}
+                            style={fondoPrevisibilidad(pctConjunto("golesTotal"))}
+                            onClick={tramos ? (e) => abrirTramo(e, tramos, "Goles", "total", t) : undefined}
+                            title={tramos ? `Ver desglose por tramos del ${t}` : undefined}
+                          >{g?.esperados}</td>
+                          <td className="tabla-num">{g?.o05}%</td>
+                          <td className="tabla-num">{g?.o15}%</td>
+                          <td className="tabla-num">{g?.o25}%</td>
+                          <td className="tabla-num">{g?.o35}%</td>
+                          <td className="tabla-num"><CeldaMasMenos mm={g?.mm} real={reales?.goles?.[t]} /></td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -263,16 +290,34 @@ export const SeccionesAnalisis = ({ datos, reales }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {[["1T", mx.remates1T], ["2T", mx.remates2T], ["Partido", mx.rematesPartido]].map(([t, r]) => (
-                        <tr key={t} className={t === "Partido" ? "fila-total" : undefined}>
-                          <td>{t}</td>
-                          <td className={`tabla-num ${clasePrevisibilidad(pctLocal("rematesEquipo"))}`} style={fondoPrevisibilidad(pctLocal("rematesEquipo"))}>{r?.local}</td>
-                          <td className={`tabla-num ${clasePrevisibilidad(pctVisita("rematesEquipo"))}`} style={fondoPrevisibilidad(pctVisita("rematesEquipo"))}>{r?.visita}</td>
-                          <td className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto("rematesTotal"))}`} style={fondoPrevisibilidad(pctConjunto("rematesTotal"))}>{r?.esperados}</td>
-                          <td className="tabla-num">{textoOver(r?.over)}</td>
-                          <td className="tabla-num"><CeldaMasMenos mm={r?.mm} real={reales?.remates?.[t]} /></td>
-                        </tr>
-                      ))}
+                      {[["1T", mx.remates1T], ["2T", mx.remates2T], ["Partido", mx.rematesPartido]].map(([t, r]) => {
+                        const tramos = t === "Partido" ? null : r?.tramos
+                        return (
+                          <tr key={t} className={t === "Partido" ? "fila-total" : undefined}>
+                            <td>{t}</td>
+                            <td
+                              className={`tabla-num ${clasePrevisibilidad(pctLocal("rematesEquipo"))} ${tramos ? "celda-click" : ""}`}
+                              style={fondoPrevisibilidad(pctLocal("rematesEquipo"))}
+                              onClick={tramos ? (e) => abrirTramo(e, tramos, "Remates", "local", t) : undefined}
+                              title={tramos ? `Ver desglose por tramos del ${t}` : undefined}
+                            >{r?.local}</td>
+                            <td
+                              className={`tabla-num ${clasePrevisibilidad(pctVisita("rematesEquipo"))} ${tramos ? "celda-click" : ""}`}
+                              style={fondoPrevisibilidad(pctVisita("rematesEquipo"))}
+                              onClick={tramos ? (e) => abrirTramo(e, tramos, "Remates", "visita", t) : undefined}
+                              title={tramos ? `Ver desglose por tramos del ${t}` : undefined}
+                            >{r?.visita}</td>
+                            <td
+                              className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto("rematesTotal"))} ${tramos ? "celda-click" : ""}`}
+                              style={fondoPrevisibilidad(pctConjunto("rematesTotal"))}
+                              onClick={tramos ? (e) => abrirTramo(e, tramos, "Remates", "total", t) : undefined}
+                              title={tramos ? `Ver desglose por tramos del ${t}` : undefined}
+                            >{r?.esperados}</td>
+                            <td className="tabla-num">{textoOver(r?.over)}</td>
+                            <td className="tabla-num"><CeldaMasMenos mm={r?.mm} real={reales?.remates?.[t]} /></td>
+                          </tr>
+                        )
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -518,6 +563,19 @@ export const SeccionesAnalisis = ({ datos, reales }) => {
           )}
           <p className="tabla-status">{datos.modelInfo.backtest?.nota}</p>
         </section>
+      )}
+
+      {tramo && (
+        <TramosPopover
+          datos={tramo.datos}
+          etiqueta={tramo.etiqueta}
+          local={nombreLocal}
+          visita={nombreVisita}
+          col={tramo.col}
+          pos={tramo.pos}
+          periodo={tramo.periodo}
+          onCerrar={() => setTramo(null)}
+        />
       )}
     </>
   )
