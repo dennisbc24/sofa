@@ -22,8 +22,13 @@ const pct = (v) => (v === null || v === undefined ? null : `${v > 0 ? "+" : ""}$
 // con el historial (DosTDetalle).
 // `reales`: valores reales del partido (si ya está en la base) para pintar
 // la columna Más/Menos en verde (acierto) / rojo (fallo).
-export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilidad, noPierde }) => {
+export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilidad, noPierde, momento }) => {
   const [tramo, setTramo] = useState(null)
+  const esRestante = Boolean(momento?.esFraccion2T)
+  const etiqueta2T = esRestante ? "Resto 2T" : "2T"
+  const tituloTramos = esRestante
+    ? "Ver desglose de los tramos restantes del 2T"
+    : "Ver desglose por tramos del 2T"
   const abrirTramo = (e, datos, etiqueta, col) => {
     if (!datos || !datos.tramos) return
     setTramo({ datos, etiqueta, col, pos: posicionTramos(e) })
@@ -39,22 +44,22 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
   const bft = hayFT ? ambosMarcan(g.ftLocal, g.ftVisita) : null
   const o2t = overLines((g.predLocal2T || 0) + (g.predVisita2T || 0))
   const oft = g.ftTotal != null ? overLines(g.ftTotal) : null
-  const realG2T = reales?.goles?.["2T"]
+  const realG2T = esRestante ? null : reales?.goles?.["2T"]
   const realGFT = reales?.goles?.["Partido"]
   const goles = [
-    o2t && { t: "2T", local: fmt(g.predLocal2T), visita: fmt(g.predVisita2T), o: o2t, real: realG2T },
-    oft && { t: "Partido", local: fmt(g.ftLocal), visita: fmt(g.ftVisita), o: oft, real: realGFT },
+    o2t && { t: etiqueta2T, periodo: "2T", local: fmt(g.predLocal2T), visita: fmt(g.predVisita2T), o: o2t, real: realG2T },
+    oft && { t: "Partido", periodo: "FT", local: fmt(g.ftLocal), visita: fmt(g.ftVisita), o: oft, real: realGFT },
   ].filter(Boolean)
   // Corners y remates: mismos campos de la fila (pred 2T + FT del whitelist).
   const statRows = (nombre) => {
     const f = fila(nombre)
     if (!f || f.predLocal2T == null || f.predVisita2T == null) return []
     const t2 = (f.predLocal2T || 0) + (f.predVisita2T || 0)
-    const real2T = reales?.[nombre === "Corner kicks" ? "corners" : "remates"]?.["2T"]
+    const real2T = esRestante ? null : reales?.[nombre === "Corner kicks" ? "corners" : "remates"]?.["2T"]
     const realFT = reales?.[nombre === "Corner kicks" ? "corners" : "remates"]?.["Partido"]
-    const rows = [{ t: "2T", local: fmt(f.predLocal2T), visita: fmt(f.predVisita2T), total: fmt(t2), totalNum: t2, over: overDinamicas(t2), real: real2T, tramos: f.tramos }]
+    const rows = [{ t: etiqueta2T, periodo: "2T", local: fmt(f.predLocal2T), visita: fmt(f.predVisita2T), total: fmt(t2), totalNum: t2, over: overDinamicas(t2), real: real2T, tramos: f.tramos }]
     if (f.ftLocal != null && f.ftVisita != null && f.ftTotal != null) {
-      rows.push({ t: "Partido", local: fmt(f.ftLocal), visita: fmt(f.ftVisita), total: fmt(f.ftTotal), totalNum: f.ftTotal, over: overDinamicas(f.ftTotal), real: realFT })
+      rows.push({ t: "Partido", periodo: "FT", local: fmt(f.ftLocal), visita: fmt(f.ftVisita), total: fmt(f.ftTotal), totalNum: f.ftTotal, over: overDinamicas(f.ftTotal), real: realFT })
     }
     return rows
   }
@@ -78,25 +83,25 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.t} className={row.t === "Partido" ? "fila-total" : undefined}>
+                <tr key={row.t} className={row.periodo === "FT" ? "fila-total" : undefined}>
                   <td>{row.t}</td>
                   <td
                     className={`tabla-num ${clasePrevisibilidad(pctLocal(equipoKey))} ${row.tramos ? "celda-click" : ""}`}
                     style={fondoPrevisibilidad(pctLocal(equipoKey))}
                     onClick={row.tramos ? (e) => abrirTramo(e, row.tramos, titulo, "local") : undefined}
-                    title={row.tramos ? "Ver desglose por tramos del 2T" : undefined}
+                    title={row.tramos ? tituloTramos : undefined}
                   >{row.local}</td>
                   <td
                     className={`tabla-num ${clasePrevisibilidad(pctVisita(equipoKey))} ${row.tramos ? "celda-click" : ""}`}
                     style={fondoPrevisibilidad(pctVisita(equipoKey))}
                     onClick={row.tramos ? (e) => abrirTramo(e, row.tramos, titulo, "visita") : undefined}
-                    title={row.tramos ? "Ver desglose por tramos del 2T" : undefined}
+                    title={row.tramos ? tituloTramos : undefined}
                   >{row.visita}</td>
                   <td
                     className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto(totalKey))} ${row.tramos ? "celda-click" : ""}`}
                     style={fondoPrevisibilidad(pctConjunto(totalKey))}
                     onClick={row.tramos ? (e) => abrirTramo(e, row.tramos, titulo, "total") : undefined}
-                    title={row.tramos ? "Ver desglose por tramos del 2T" : undefined}
+                    title={row.tramos ? tituloTramos : undefined}
                   >{row.total}</td>
                   <td className="tabla-num">{textoOver(row.over)}</td>
                   <td className="tabla-num"><CeldaMasMenos mm={masMenos(row.totalNum)} real={row.real} /></td>
@@ -112,7 +117,9 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
   return (
     <>
       <section className="card">
-        <div className="card-header">Goles, remates y corners esperados (2T)</div>
+        <div className="card-header">
+          Goles, remates y corners esperados ({esRestante ? "2T restante" : "2T"})
+        </div>
         <div className="mercados-grid">
       {goles.length > 0 && (
         <div className="mercado-bloque">
@@ -134,25 +141,25 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
               </thead>
               <tbody>
                 {goles.map((row) => (
-                  <tr key={row.t} className={row.t === "Partido" ? "fila-total" : undefined}>
+                  <tr key={row.t} className={row.periodo === "FT" ? "fila-total" : undefined}>
                     <td>{row.t}</td>
                     <td
-                      className={`tabla-num ${clasePrevisibilidad(pctLocal("golesTotal"))} ${row.t === "2T" && g.tramos ? "celda-click" : ""}`}
+                      className={`tabla-num ${clasePrevisibilidad(pctLocal("golesTotal"))} ${row.periodo === "2T" && g.tramos ? "celda-click" : ""}`}
                       style={fondoPrevisibilidad(pctLocal("golesTotal"))}
-                      onClick={row.t === "2T" && g.tramos ? (e) => abrirTramo(e, g.tramos, "Goles", "local") : undefined}
-                      title={row.t === "2T" && g.tramos ? "Ver desglose por tramos del 2T" : undefined}
+                      onClick={row.periodo === "2T" && g.tramos ? (e) => abrirTramo(e, g.tramos, "Goles", "local") : undefined}
+                      title={row.periodo === "2T" && g.tramos ? tituloTramos : undefined}
                     >{row.local}</td>
                     <td
-                      className={`tabla-num ${clasePrevisibilidad(pctVisita("golesTotal"))} ${row.t === "2T" && g.tramos ? "celda-click" : ""}`}
+                      className={`tabla-num ${clasePrevisibilidad(pctVisita("golesTotal"))} ${row.periodo === "2T" && g.tramos ? "celda-click" : ""}`}
                       style={fondoPrevisibilidad(pctVisita("golesTotal"))}
-                      onClick={row.t === "2T" && g.tramos ? (e) => abrirTramo(e, g.tramos, "Goles", "visita") : undefined}
-                      title={row.t === "2T" && g.tramos ? "Ver desglose por tramos del 2T" : undefined}
+                      onClick={row.periodo === "2T" && g.tramos ? (e) => abrirTramo(e, g.tramos, "Goles", "visita") : undefined}
+                      title={row.periodo === "2T" && g.tramos ? tituloTramos : undefined}
                     >{row.visita}</td>
                     <td
-                      className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto("golesTotal"))} ${row.t === "2T" && g.tramos ? "celda-click" : ""}`}
+                      className={`tabla-num col-total ${clasePrevisibilidad(pctConjunto("golesTotal"))} ${row.periodo === "2T" && g.tramos ? "celda-click" : ""}`}
                       style={fondoPrevisibilidad(pctConjunto("golesTotal"))}
-                      onClick={row.t === "2T" && g.tramos ? (e) => abrirTramo(e, g.tramos, "Goles", "total") : undefined}
-                      title={row.t === "2T" && g.tramos ? "Ver desglose por tramos del 2T" : undefined}
+                      onClick={row.periodo === "2T" && g.tramos ? (e) => abrirTramo(e, g.tramos, "Goles", "total") : undefined}
+                      title={row.periodo === "2T" && g.tramos ? tituloTramos : undefined}
                     >{row.o.esperados}</td>
                     <td className="tabla-num">{row.o.o05}%</td>
                     <td className="tabla-num">{row.o.o15}%</td>
@@ -172,7 +179,9 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
       </section>
 
       <section className="card">
-        <div className="card-header">Mercados adicionales (2T)</div>
+        <div className="card-header">
+          Mercados adicionales ({esRestante ? "2T restante" : "2T"})
+        </div>
         <div className="mercados-grid">
       {(previsibilidad || noPierde) && (
         <>
@@ -195,7 +204,7 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
               <tbody>
                 {b2t && (
                   <tr>
-                    <td>2T</td>
+                    <td>{etiqueta2T}</td>
                     <td className="tabla-num">
                       <strong>{b2t.si}%</strong>
                     </td>
@@ -226,12 +235,29 @@ export const MercadosGoles2T = ({ filas, reales, local, visitante, previsibilida
           visita={visitante}
           col={tramo.col}
           pos={tramo.pos}
-          periodo="2T"
+          periodo={esRestante ? "2T restante" : "2T"}
           onCerrar={() => setTramo(null)}
         />
       )}
     </>
   )
+}
+
+const minutoPrevio = (info, jugadores) => {
+  const estado = String(info?.estado ?? "").toLowerCase()
+  if (/(halftime|half time|half-time|descanso|entretiempo)/.test(estado)) {
+    return "45' (descanso)"
+  }
+  const directo = Number(info?.minuto ?? info?.minute)
+  if (Number.isFinite(directo)) return `${directo}'`
+  let max = null
+  for (const j of jugadores || []) {
+    const m = Number(j?.minutesPlayed ?? j?.minutos)
+    if (Number.isFinite(m) && (max === null || m > max)) max = m
+  }
+  if (max !== null) return `${max}'`
+  if (/(2nd half|second half|\b2t\b)/.test(estado)) return "2T"
+  return "—"
 }
 
 // Lectura ligera del JSON para previsualizar (sin tocar el backend).
@@ -250,6 +276,7 @@ const previsualizar = (contenido) => {
           : "—",
         liga: ev.tournament?.name || "—",
         alDescanso: ev.status?.description || "—",
+        minuto: minutoPrevio({ estado: ev.status?.description }, j.players),
       }
     }
     const info = j && j.info
@@ -260,6 +287,7 @@ const previsualizar = (contenido) => {
         fecha: info.fecha || "—",
         liga: info.torneo || "—",
         alDescanso: info.estado || "—",
+        minuto: minutoPrevio(info, j.jugadores),
       }
     }
     return { valido: false, texto: "no es un dump de partido" }
@@ -501,16 +529,21 @@ export const Prediccion2T = () => {
   const total = resultados?.resultados?.length || 0
   const idxActiva = total ? Math.min(pestana, total - 1) : 0
   const activo = total ? resultados.resultados[idxActiva] : null
+  const proyeccionRestante = Boolean(activo?.momento?.esFraccion2T)
+  const etiquetaProyeccion = proyeccionRestante ? "resto 2T" : "2T"
+  const tituloTramosDetalle = proyeccionRestante
+    ? "Ver desglose de los tramos restantes del 2T"
+    : "Ver desglose por tramos del 2T"
 
   return (
     <section className="prediccion-2t">
       <h2 className="view-title">Proyección 2T (modelo de análisis)</h2>
 
       <section className="card">
-        <div className="card-header">Partidos al descanso</div>
+        <div className="card-header">Partidos al descanso o en 2T</div>
         <label className="field">
           <span className="field-label">
-            Carpeta con los JSON de partidos en juego (1 por partido, formato Sofascore)
+            Carpeta con los JSON de partidos al descanso o en 2T (1 por partido, formato Sofascore)
           </span>
           <input
             ref={carpetaRef}
@@ -538,6 +571,7 @@ export const Prediccion2T = () => {
         </label>
         <ul className="explicacion">
           <li>El modelo estima el 2T con las estadísticas del 1T del JSON + el historial de la base de datos.</li>
+          <li>Si el JSON ya está en 2T, se usa la fracción jugada y sólo se proyectan los minutos restantes.</li>
           <li>Predice goles, remates, corners, amarillas y 37 stats más (41 en total).</li>
           <li>Sólo lectura: los archivos NO se guardan en la base de datos.</li>
         </ul>
@@ -627,6 +661,7 @@ export const Prediccion2T = () => {
                   <th>Fecha</th>
                   <th>Liga</th>
                   <th>Estado</th>
+                  <th>Minuto</th>
                 </tr>
               </thead>
               <tbody>
@@ -639,6 +674,7 @@ export const Prediccion2T = () => {
                     <td className="tabla-num">{a.vista.valido ? a.vista.fecha : "—"}</td>
                     <td>{a.vista.valido ? a.vista.liga : "—"}</td>
                     <td>{a.vista.valido ? a.vista.alDescanso : "—"}</td>
+                    <td className="tabla-num">{a.vista.valido ? a.vista.minuto : "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -727,6 +763,12 @@ export const Prediccion2T = () => {
                   {activo.partido.visitante} (cutoff)
                 </span>
               </div>
+              {activo.momento && (
+                <div className="result-row">
+                  <span className="result-label">Minuto analizado</span>
+                  <span className="result-value">{activo.momento.nota}</span>
+                </div>
+              )}
               <div className="result-row">
                 <span className="result-label">Backtest (MAE TEST)</span>
                 <span className="result-value">
@@ -767,7 +809,7 @@ export const Prediccion2T = () => {
                 const real = gp ? (gp.l > gp.v ? "home" : gp.l < gp.v ? "away" : "draw") : null
                 return (
                   <CardPrediccion1x2
-                    titulo="Predicción final (2T)"
+                    titulo={proyeccionRestante ? "Predicción final (2T restante)" : "Predicción final (2T)"}
                     local={activo.partido?.local}
                     visitante={activo.partido?.visitante}
                     fecha={activo.partido?.fecha ? formatearFecha(activo.partido.fecha) : null}
@@ -781,7 +823,7 @@ export const Prediccion2T = () => {
                         {activo.modelo?.id || activo.modelo?.name}
                       </span>
                     }
-                    nota={`Proyección estadística del 2T con fines analíticos: estima probabilidades, no garantiza resultados. Goles esperados final: ${r1.golesEsperados?.local}-${r1.golesEsperados?.visita}.`}
+                    nota={`Proyección estadística ${proyeccionRestante ? "de los minutos restantes del 2T" : "del 2T"} con fines analíticos: estima probabilidades, no garantiza resultados. Goles esperados final: ${r1.golesEsperados?.local}-${r1.golesEsperados?.visita}.`}
                   />
                 )
               })()}
@@ -794,6 +836,7 @@ export const Prediccion2T = () => {
         visitante={activo.partido?.visitante}
         previsibilidad={activo.previsibilidad}
         noPierde={activo}
+        momento={activo.momento}
       />
 
               <div className="tabla-scroll">
@@ -802,8 +845,12 @@ export const Prediccion2T = () => {
                     <tr>
                       <th>Stat</th>
                       <th>1T</th>
-                      <th className="th-equipo">{activo.partido?.local || "Local"}</th>
-                      <th className="th-equipo">{activo.partido?.visitante || "Visita"}</th>
+                      <th className="th-equipo">
+                        {activo.partido?.local || "Local"} ({etiquetaProyeccion})
+                      </th>
+                      <th className="th-equipo">
+                        {activo.partido?.visitante || "Visita"} ({etiquetaProyeccion})
+                      </th>
                       <th>FT {activo.partido?.local || "Local"}</th>
                       <th>FT {activo.partido?.visitante || "Visita"}</th>
                       <th>FT Total</th>
@@ -822,12 +869,12 @@ export const Prediccion2T = () => {
                         <td
                           className={`tabla-num ${f.tramos ? "celda-click" : ""}`}
                           onClick={f.tramos ? (e) => setTramoDetalle({ datos: f.tramos, etiqueta: f.etiqueta, col: "local", pos: posicionTramos(e) }) : undefined}
-                          title={f.tramos ? "Ver desglose por tramos del 2T" : undefined}
+                          title={f.tramos ? tituloTramosDetalle : undefined}
                         >{fmt(f.predLocal2T)}</td>
                         <td
                           className={`tabla-num ${f.tramos ? "celda-click" : ""}`}
                           onClick={f.tramos ? (e) => setTramoDetalle({ datos: f.tramos, etiqueta: f.etiqueta, col: "visita", pos: posicionTramos(e) }) : undefined}
-                          title={f.tramos ? "Ver desglose por tramos del 2T" : undefined}
+                          title={f.tramos ? tituloTramosDetalle : undefined}
                         >{fmt(f.predVisita2T)}</td>
                         <td className="tabla-num">{f.ftLocal !== undefined ? fmt(f.ftLocal) : "—"}</td>
                         <td className="tabla-num">{f.ftVisita !== undefined ? fmt(f.ftVisita) : "—"}</td>
@@ -851,7 +898,7 @@ export const Prediccion2T = () => {
                   visita={activo.partido?.visitante}
                   col={tramoDetalle.col}
                   pos={tramoDetalle.pos}
-                  periodo="2T"
+                  periodo={proyeccionRestante ? "2T restante" : "2T"}
                   onCerrar={() => setTramoDetalle(null)}
                 />
               )}

@@ -32,9 +32,28 @@ const {
   cargarAjusteRoja2T, rojas1TDe, factorC1, factorC4Lado, predecirC2,
 } = require("./ajuste_roja_2t");
 const { cargarTramos2T, tramosDe } = require("./tramos_2t");
+const { detectarMomento } = require("./momento_2t");
 
 // FT (= 1T + pred 2T) sólo para stats donde sumar tiene sentido de flujo.
 const FT_WHITELIST = new Set([GOLES, "Total shots", "Corner kicks", "Yellow cards"]);
+
+const PESOS_RITMO_2T = {
+  [GOLES]: 0.5,
+  "Total shots": 0.6,
+  "Corner kicks": 0.5,
+  "Yellow cards": 0.4,
+};
+const PESO_RITMO_DEF = 0.3;
+
+function factorRitmoDe(stat, actual, esperado) {
+  if (actual === null || actual === undefined) return 1;
+  const a = Number(actual);
+  if (!Number.isFinite(a)) return 1;
+  const e = Math.max(Number(esperado) || 0, 0.25);
+  const ratio = a / e;
+  const w = PESOS_RITMO_2T[stat] ?? PESO_RITMO_DEF;
+  return Math.min(2, Math.max(0.5, 1 + w * (ratio - 1)));
+}
 
 // ---------------------------------------------------------------------------
 // AJUSTE POR XI EN EL 2T: al descanso el XI ya se conoce (viene en el JSON).
@@ -344,20 +363,32 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
   if (hayRoja && artefactoRoja && (gHL === null || gHA === null)) {
     advertencias.push("No se aplica el ajuste C4 a goles por falta de marcador del 1T.");
   }
+  const statusOld = !esNuevo && json.info && json.info.event ? json.info.event.status : null;
   const estadoTipo = esNuevo
     ? String((json.info && json.info.estado) || "")
-    : String((json.info.event.status && json.info.event.status.type) || "");
-  if (["finished", "ended", "aftertime", "penalties"].includes(estadoTipo.toLowerCase())) {
+    : [statusOld && statusOld.type, statusOld && statusOld.description].filter(Boolean).join(" ");
+  const momento = detectarMomento({ json, filas, estadoTexto: estadoTipo });
+  if (momento.fase === "2T") {
+    advertencias.push(
+      `El JSON está en 2T (${momento.minutoTexto}): se usa la fracción jugada y sólo se proyectan los ${momento.restantes2T}' restantes.`
+    );
+    if (momento.fuenteMinuto === "defecto") {
+      advertencias.push("No se pudo leer el minuto exacto; se asume el inicio del 2T (46').");
+    }
+  } else if (momento.fase === "1T") {
+    advertencias.push(`El JSON está en 1T (${momento.minutoTexto}): el modelo 2T espera el descanso; proyección preliminar.`);
+  } else if (momento.fase === "finalizado") {
     advertencias.push("El partido parece finalizado: la proyección es sólo informativa (el 2T ya se jugó).");
   }
 
-  // Stats del 1T (1ST; fallback ALL con advertencia).
+  // Stats del 1T, acumuladas y de la fracción de 2T ya jugada.
   const porNombre = {};
   for (const f of filas) {
-    if (f.periodo !== "1ST" && f.periodo !== "ALL") continue;
+    if (f.periodo !== "1ST" && f.periodo !== "2ND" && f.periodo !== "ALL") continue;
     if (!porNombre[f.nombre]) porNombre[f.nombre] = {};
     const v = { l: Number(f.valor_local_num ?? 0), a: Number(f.valor_visitante_num ?? 0) };
     if (f.periodo === "1ST") porNombre[f.nombre]["1ST"] = v;
+    else if (f.periodo === "2ND") porNombre[f.nombre]["2ND"] = v;
     else if (!porNombre[f.nombre]["ALL"]) porNombre[f.nombre]["ALL"] = v;
   }
   const t1De = (stat) => {
@@ -368,6 +399,28 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
     }
     const p = porNombre[stat] || {};
     return p["1ST"] || p["ALL"] || null;
+  };
+  const actualDe = (stat) => {
+    if (stat === GOLES) {
+      const gl = Number(evento.golesLocal);
+      const gv = Number(evento.golesVisitante);
+      if (Number.isFinite(gl) && Number.isFinite(gv)) return { l: gl, a: gv };
+      return t1De(GOLES);
+    }
+    const p = porNombre[stat] || {};
+    if (p["ALL"]) return p["ALL"];
+    if (p["1ST"] && p["2ND"]) return { l: p["1ST"].l + p["2ND"].l, a: p["1ST"].a + p["2ND"].a };
+    return p["1ST"] || null;
+  };
+  const fraccionDe = (stat) => {
+    if (stat === GOLES) {
+      const act = actualDe(GOLES);
+      const t1 = t1De(GOLES);
+      if (!act || !t1) return null;
+      return { l: Math.max(0, act.l - t1.l), a: Math.max(0, act.a - t1.a) };
+    }
+    const p = porNombre[stat] || {};
+    return p["2ND"] || null;
   };
   const sin1T = TODOS.filter((s) => !t1De(s));
 
@@ -512,6 +565,30 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
       }
     }
 
+    // Si el JSON ya está en 2T, se proyecta sólo lo que queda: se escala por
+    // los minutos restantes y se corrige por el ritmo observado en la fracción.
+    let factorRitmo = null;
+    if (momento.esFraccion2T) {
+      const frac = fraccionDe(stat);
+      let fullHome = pred.home;
+      let fullAway = pred.away;
+      const jugados = Math.max(1, momento.jugados2T);
+      if (frac) {
+        if (fullHome <= 0 && frac.l > 0) fullHome = (frac.l / jugados) * 45;
+        if (fullAway <= 0 && frac.a > 0) fullAway = (frac.a / jugados) * 45;
+        const esperadoHome = fullHome * (jugados / 45);
+        const esperadoAway = fullAway * (jugados / 45);
+        const fH = factorRitmoDe(stat, frac.l, esperadoHome);
+        const fA = factorRitmoDe(stat, frac.a, esperadoAway);
+        pred.home = clamp0(fullHome * momento.fraccionRestante * fH);
+        pred.away = clamp0(fullAway * momento.fraccionRestante * fA);
+        factorRitmo = { local: r2(fH), visita: r2(fA) };
+      } else {
+        pred.home = clamp0(fullHome * momento.fraccionRestante);
+        pred.away = clamp0(fullAway * momento.fraccionRestante);
+      }
+    }
+
     // Ajuste por roja 1T: C1/C4 se aplican después del XI (multiplicativo).
     let factorRoja = null;
     if (aj && hayRoja) {
@@ -548,16 +625,24 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
       fila.baseVisita2T = r2(predBase.away);
     }
     if (factorRoja) fila.factorRoja = factorRoja;
+    if (factorRitmo) fila.factorRitmo = factorRitmo;
     // Desglose del 2T por tramos (46-60, 61-75, 76-90+) para las celdas
-    // clicables de goles, remates y amarillas.
+    // clicables de goles, remates y amarillas. En 2T se reparte sólo lo que queda.
     if ([GOLES, "Total shots", "Yellow cards"].includes(stat)) {
-      const desglose = tramosDe(stat, pred.home, pred.away);
+      const desglose = tramosDe(stat, pred.home, pred.away, momento.minuto);
       if (desglose) fila.tramos = desglose;
     }
-    if (FT_WHITELIST.has(stat) && hay1T) {
-      fila.ftLocal = r2(l1 + pred.home);
-      fila.ftVisita = r2(a1 + pred.away);
-      fila.ftTotal = r2(l1 + a1 + pred.home + pred.away);
+    if (FT_WHITELIST.has(stat)) {
+      const actual = actualDe(stat);
+      const al = actual ? actual.l : l1;
+      const av = actual ? actual.a : a1;
+      if (al !== null && av !== null) {
+        fila.acumuladoLocal = r2(al);
+        fila.acumuladoVisita = r2(av);
+        fila.ftLocal = r2(al + pred.home);
+        fila.ftVisita = r2(av + pred.away);
+        fila.ftTotal = r2(al + av + pred.home + pred.away);
+      }
     }
     filasPred.push(fila);
   }
@@ -600,6 +685,21 @@ async function predecirArchivo({ nombre, contenido, aplicarXI = false }) {
       jornada: evento.jornada, estado: evento.estado,
     },
     goles1T: { local: gHL, visita: gHA },
+    golesActuales: {
+      local: Number.isFinite(Number(evento.golesLocal)) ? Number(evento.golesLocal) : gHL,
+      visita: Number.isFinite(Number(evento.golesVisitante)) ? Number(evento.golesVisitante) : gHA,
+    },
+    momento: {
+      fase: momento.fase,
+      minuto: momento.minuto,
+      minutoTexto: momento.minutoTexto,
+      nota: momento.nota,
+      jugados2T: momento.jugados2T,
+      restantes2T: momento.restantes2T,
+      fraccionRestante: Math.round(momento.fraccionRestante * 10000) / 10000,
+      esFraccion2T: momento.esFraccion2T,
+      fuenteMinuto: momento.fuenteMinuto,
+    },
     resultado1x2: resultado1x2De(filasPred),
     previsibilidad: await calcularPrevisibilidad(local, visitante, fecha),
     historial: {

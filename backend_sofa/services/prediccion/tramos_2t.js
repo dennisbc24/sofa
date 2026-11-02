@@ -64,19 +64,70 @@ function pesoDe(pesos, lado, tramo) {
   return Number.isFinite(v) ? v : null;
 }
 
+function duracionTramo(t) {
+  if (!t) return 15;
+  const desde = Number(t.desde);
+  const hasta = t.hasta == null ? 90 : Number(t.hasta);
+  if (!Number.isFinite(desde) || !Number.isFinite(hasta)) return 15;
+  return Math.max(1, hasta - desde + 1);
+}
+
+function minutosRestantesTramo(t, minuto) {
+  if (!t) return 0;
+  const desde = Number(t.desde);
+  const hasta = t.hasta == null ? 90 : Number(t.hasta);
+  if (!Number.isFinite(desde) || !Number.isFinite(hasta)) return 0;
+  return Math.max(0, hasta - Math.max(minuto, desde - 1));
+}
+
+function pesosRestantes(tabla, tramos, minuto) {
+  if (!tabla || !Array.isArray(tramos) || !Number.isFinite(minuto)) return null;
+  const pares = [];
+  let suma = 0;
+  for (const t of tramos) {
+    const peso = Number(tabla[t.id]);
+    if (!Number.isFinite(peso)) continue;
+    const restantes = minutosRestantesTramo(t, minuto);
+    if (!restantes) continue;
+    const bruto = (peso / duracionTramo(t)) * restantes;
+    if (!(bruto > 0)) continue;
+    pares.push({ id: t.id, bruto });
+    suma += bruto;
+  }
+  if (!pares.length || suma <= 0) return null;
+  const out = {};
+  for (const p of pares) out[p.id] = p.bruto / suma;
+  return out;
+}
+
 // Devuelve el desglose de un stat para un partido, o null si el stat no tiene
-// artefacto. `local` y `visita` son las lambdas del periodo (no FT).
-function tramosCon(artefacto, stat, local, visita) {
+// artefacto. `local` y `visita` son las lambdas del periodo (no FT). Si se pasa
+// `minuto` y ya se jugó parte del 2T, reparte sólo los minutos restantes.
+function tramosCon(artefacto, stat, local, visita, opciones = {}) {
   if (!artefacto || !artefacto.stats) return null;
   const cfg = artefacto.stats[stat];
   if (!cfg) return null;
 
+  const minuto = opciones.minuto === null || opciones.minuto === undefined
+    ? null
+    : Number.isFinite(Number(opciones.minuto))
+      ? Number(opciones.minuto)
+      : null;
+  const usarRestante = minuto !== null && minuto > 45;
+  const pesosHome = usarRestante
+    ? pesosRestantes((cfg.pesos && cfg.pesos.home) || (cfg.pesos && cfg.pesos.global), artefacto.tramos, minuto)
+    : null;
+  const pesosAway = usarRestante
+    ? pesosRestantes((cfg.pesos && cfg.pesos.away) || (cfg.pesos && cfg.pesos.global), artefacto.tramos, minuto)
+    : null;
+  if (usarRestante && (!pesosHome || !pesosAway)) return null;
+
   const lambdas = { local: clamp0(local), visita: clamp0(visita) };
   const tramos = [];
   for (const t of artefacto.tramos || []) {
-    const wl = pesoDe(cfg.pesos, "home", t.id);
-    const wv = pesoDe(cfg.pesos, "away", t.id);
-    if (wl === null || wv === null) continue;
+    const wl = usarRestante ? pesosHome[t.id] : pesoDe(cfg.pesos, "home", t.id);
+    const wv = usarRestante ? pesosAway[t.id] : pesoDe(cfg.pesos, "away", t.id);
+    if (wl === null || wv === null || wl === undefined || wv === undefined) continue;
     const ll = lambdas.local * wl;
     const lv = lambdas.visita * wv;
     const lt = ll + lv;
@@ -92,6 +143,7 @@ function tramosCon(artefacto, stat, local, visita) {
   return {
     tramos,
     esquema: cfg.esquema || null,
+    desdeMinuto: usarRestante ? minuto : null,
     modelo: {
       id: artefacto.modelo,
       version: artefacto.version,
@@ -100,8 +152,8 @@ function tramosCon(artefacto, stat, local, visita) {
   };
 }
 
-function tramosDe(stat, local, visita) {
-  return tramosCon(cargarTramos2T(), stat, local, visita);
+function tramosDe(stat, local, visita, minuto = null) {
+  return tramosCon(cargarTramos2T(), stat, local, visita, { minuto });
 }
 
 function tramos1TDe(stat, local, visita) {
